@@ -161,5 +161,9 @@ gradle-app.setting
 .settings/
 bin/
 
+#Visual Studio code generator ignores
+codeGenerator/src/*/*/Debug
+codeGenerator/src/.vs
+
 # Simulation GUI and other tools window save file
 *-window.json
