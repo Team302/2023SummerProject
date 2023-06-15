@@ -14,6 +14,7 @@ set OUTPUT_RELATIVE_DIR=..\robotConfiguration
 call %ClassGenerator% --output=%OUTPUT_RELATIVE_DIR% --pascal- %ROBOT_SCHEMA%
 call %ClassGenerator% --output=%OUTPUT_RELATIVE_DIR% --pascal- %STATE_DATA_SCHEMA%
 
+
 call replaceTextInFile.exe %OUTPUT_RELATIVE_DIR%\%ROBOT_CSHARP% "[System.ComponentModel.DefaultValueAttribute(" "//[System.ComponentModel.DefaultValueAttribute("
 call replaceTextInFile.exe %OUTPUT_RELATIVE_DIR%\%ROBOT_CSHARP% "[System.Xml.Serialization.XmlTypeAttribute(" "//[System.Xml.Serialization.XmlTypeAttribute("
 call replaceTextInFile.exe %OUTPUT_RELATIVE_DIR%\%ROBOT_CSHARP% "[System.Xml.Serialization.XmlRootAttribute(" "//[System.Xml.Serialization.XmlRootAttribute("

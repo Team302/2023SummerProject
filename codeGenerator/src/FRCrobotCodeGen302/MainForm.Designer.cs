@@ -70,9 +70,10 @@ namespace FRCrobotCodeGen302
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(767, 404);
+            this.button1.Location = new System.Drawing.Point(682, 323);
+            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(105, 49);
+            this.button1.Size = new System.Drawing.Size(93, 39);
             this.button1.TabIndex = 0;
             this.button1.Text = "Generate";
             this.button1.UseVisualStyleBackColor = true;
@@ -81,22 +82,22 @@ namespace FRCrobotCodeGen302
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(580, 417);
+            this.button2.Location = new System.Drawing.Point(516, 334);
+            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(67, 18);
             this.button2.TabIndex = 1;
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // configurationBrowseButton
             // 
             this.configurationBrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.configurationBrowseButton.Location = new System.Drawing.Point(787, 14);
-            this.configurationBrowseButton.Margin = new System.Windows.Forms.Padding(8);
+            this.configurationBrowseButton.Location = new System.Drawing.Point(700, 11);
+            this.configurationBrowseButton.Margin = new System.Windows.Forms.Padding(7, 6, 7, 6);
             this.configurationBrowseButton.Name = "configurationBrowseButton";
-            this.configurationBrowseButton.Size = new System.Drawing.Size(85, 36);
+            this.configurationBrowseButton.Size = new System.Drawing.Size(76, 29);
             this.configurationBrowseButton.TabIndex = 3;
             this.configurationBrowseButton.Text = "Browse";
             this.configurationBrowseButton.UseVisualStyleBackColor = true;
@@ -108,19 +109,20 @@ namespace FRCrobotCodeGen302
             | System.Windows.Forms.AnchorStyles.Right)));
             this.configurationFilePathNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.configurationFilePathNameTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.configurationFilePathNameTextBox.Location = new System.Drawing.Point(179, 16);
+            this.configurationFilePathNameTextBox.Location = new System.Drawing.Point(159, 13);
+            this.configurationFilePathNameTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.configurationFilePathNameTextBox.Multiline = true;
             this.configurationFilePathNameTextBox.Name = "configurationFilePathNameTextBox";
-            this.configurationFilePathNameTextBox.Size = new System.Drawing.Size(594, 33);
+            this.configurationFilePathNameTextBox.Size = new System.Drawing.Size(528, 27);
             this.configurationFilePathNameTextBox.TabIndex = 4;
             // 
             // outputFolderLabel
             // 
             this.outputFolderLabel.AutoSize = true;
             this.outputFolderLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.outputFolderLabel.Location = new System.Drawing.Point(26, 39);
+            this.outputFolderLabel.Location = new System.Drawing.Point(23, 31);
             this.outputFolderLabel.Name = "outputFolderLabel";
-            this.outputFolderLabel.Size = new System.Drawing.Size(124, 25);
+            this.outputFolderLabel.Size = new System.Drawing.Size(106, 20);
             this.outputFolderLabel.TabIndex = 5;
             this.outputFolderLabel.Text = "Output folder";
             // 
@@ -131,18 +133,18 @@ namespace FRCrobotCodeGen302
             this.configuredOutputFolderLabel.BackColor = System.Drawing.SystemColors.Control;
             this.configuredOutputFolderLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.configuredOutputFolderLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.configuredOutputFolderLabel.Location = new System.Drawing.Point(164, 39);
+            this.configuredOutputFolderLabel.Location = new System.Drawing.Point(146, 31);
             this.configuredOutputFolderLabel.Name = "configuredOutputFolderLabel";
-            this.configuredOutputFolderLabel.Size = new System.Drawing.Size(682, 29);
+            this.configuredOutputFolderLabel.Size = new System.Drawing.Size(606, 24);
             this.configuredOutputFolderLabel.TabIndex = 5;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(26, 20);
+            this.label1.Location = new System.Drawing.Point(23, 16);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(135, 25);
+            this.label1.Size = new System.Drawing.Size(117, 20);
             this.label1.TabIndex = 6;
             this.label1.Text = "Gen config file";
             // 
@@ -150,9 +152,9 @@ namespace FRCrobotCodeGen302
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(30, 85);
+            this.label2.Location = new System.Drawing.Point(27, 68);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(120, 25);
+            this.label2.Size = new System.Drawing.Size(103, 20);
             this.label2.TabIndex = 5;
             this.label2.Text = "Robot config";
             // 
@@ -165,9 +167,11 @@ namespace FRCrobotCodeGen302
             this.configurationGroupBox.Controls.Add(this.label2);
             this.configurationGroupBox.Controls.Add(this.outputFolderLabel);
             this.configurationGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.configurationGroupBox.Location = new System.Drawing.Point(11, 55);
+            this.configurationGroupBox.Location = new System.Drawing.Point(10, 44);
+            this.configurationGroupBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.configurationGroupBox.Name = "configurationGroupBox";
-            this.configurationGroupBox.Size = new System.Drawing.Size(861, 132);
+            this.configurationGroupBox.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.configurationGroupBox.Size = new System.Drawing.Size(765, 106);
             this.configurationGroupBox.TabIndex = 8;
             this.configurationGroupBox.TabStop = false;
             this.configurationGroupBox.Text = "Configuration";
@@ -178,10 +182,12 @@ namespace FRCrobotCodeGen302
             | System.Windows.Forms.AnchorStyles.Right)));
             this.robotConfigurationFileComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.robotConfigurationFileComboBox.FormattingEnabled = true;
-            this.robotConfigurationFileComboBox.Location = new System.Drawing.Point(164, 81);
+            this.robotConfigurationFileComboBox.Location = new System.Drawing.Point(146, 65);
+            this.robotConfigurationFileComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.robotConfigurationFileComboBox.Name = "robotConfigurationFileComboBox";
-            this.robotConfigurationFileComboBox.Size = new System.Drawing.Size(682, 33);
+            this.robotConfigurationFileComboBox.Size = new System.Drawing.Size(607, 28);
             this.robotConfigurationFileComboBox.TabIndex = 8;
+            this.robotConfigurationFileComboBox.SelectedIndexChanged += new System.EventHandler(this.robotConfigurationFileComboBox_SelectedIndexChanged);
             this.robotConfigurationFileComboBox.TextChanged += new System.EventHandler(this.robotConfigurationFileComboBox_TextChanged);
             // 
             // progressTextBox
@@ -189,12 +195,13 @@ namespace FRCrobotCodeGen302
             this.progressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressTextBox.Location = new System.Drawing.Point(11, 193);
+            this.progressTextBox.Location = new System.Drawing.Point(10, 154);
+            this.progressTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.progressTextBox.Multiline = true;
             this.progressTextBox.Name = "progressTextBox";
             this.progressTextBox.ReadOnly = true;
             this.progressTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.progressTextBox.Size = new System.Drawing.Size(861, 205);
+            this.progressTextBox.Size = new System.Drawing.Size(766, 165);
             this.progressTextBox.TabIndex = 9;
             // 
             // theTabControl
@@ -203,9 +210,10 @@ namespace FRCrobotCodeGen302
             this.theTabControl.Controls.Add(this.tabConfigurationPage);
             this.theTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.theTabControl.Location = new System.Drawing.Point(0, 0);
+            this.theTabControl.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.theTabControl.Name = "theTabControl";
             this.theTabControl.SelectedIndex = 0;
-            this.theTabControl.Size = new System.Drawing.Size(886, 495);
+            this.theTabControl.Size = new System.Drawing.Size(788, 396);
             this.theTabControl.TabIndex = 10;
             // 
             // tabMainPage
@@ -218,10 +226,11 @@ namespace FRCrobotCodeGen302
             this.tabMainPage.Controls.Add(this.progressTextBox);
             this.tabMainPage.Controls.Add(this.configurationBrowseButton);
             this.tabMainPage.Controls.Add(this.configurationGroupBox);
-            this.tabMainPage.Location = new System.Drawing.Point(4, 29);
+            this.tabMainPage.Location = new System.Drawing.Point(4, 25);
+            this.tabMainPage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabMainPage.Name = "tabMainPage";
-            this.tabMainPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMainPage.Size = new System.Drawing.Size(878, 462);
+            this.tabMainPage.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabMainPage.Size = new System.Drawing.Size(780, 367);
             this.tabMainPage.TabIndex = 0;
             this.tabMainPage.Text = "Main";
             this.tabMainPage.UseVisualStyleBackColor = true;
@@ -229,9 +238,10 @@ namespace FRCrobotCodeGen302
             // clearReportButton
             // 
             this.clearReportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.clearReportButton.Location = new System.Drawing.Point(11, 404);
+            this.clearReportButton.Location = new System.Drawing.Point(10, 323);
+            this.clearReportButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.clearReportButton.Name = "clearReportButton";
-            this.clearReportButton.Size = new System.Drawing.Size(185, 49);
+            this.clearReportButton.Size = new System.Drawing.Size(164, 39);
             this.clearReportButton.TabIndex = 10;
             this.clearReportButton.Text = "Clear report window";
             this.clearReportButton.UseVisualStyleBackColor = true;
@@ -240,10 +250,11 @@ namespace FRCrobotCodeGen302
             // tabConfigurationPage
             // 
             this.tabConfigurationPage.Controls.Add(this.splitContainer1);
-            this.tabConfigurationPage.Location = new System.Drawing.Point(4, 29);
+            this.tabConfigurationPage.Location = new System.Drawing.Point(4, 25);
+            this.tabConfigurationPage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tabConfigurationPage.Name = "tabConfigurationPage";
-            this.tabConfigurationPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfigurationPage.Size = new System.Drawing.Size(878, 462);
+            this.tabConfigurationPage.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabConfigurationPage.Size = new System.Drawing.Size(780, 367);
             this.tabConfigurationPage.TabIndex = 1;
             this.tabConfigurationPage.Text = "Configuration";
             this.tabConfigurationPage.UseVisualStyleBackColor = true;
@@ -251,7 +262,8 @@ namespace FRCrobotCodeGen302
             // splitContainer1
             // 
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Location = new System.Drawing.Point(3, 2);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -261,8 +273,8 @@ namespace FRCrobotCodeGen302
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.panel1);
-            this.splitContainer1.Size = new System.Drawing.Size(872, 456);
-            this.splitContainer1.SplitterDistance = 305;
+            this.splitContainer1.Size = new System.Drawing.Size(774, 363);
+            this.splitContainer1.SplitterDistance = 270;
             this.splitContainer1.TabIndex = 1;
             // 
             // robotTreeView
@@ -270,8 +282,9 @@ namespace FRCrobotCodeGen302
             this.robotTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.robotTreeView.HideSelection = false;
             this.robotTreeView.Location = new System.Drawing.Point(0, 0);
+            this.robotTreeView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.robotTreeView.Name = "robotTreeView";
-            this.robotTreeView.Size = new System.Drawing.Size(305, 456);
+            this.robotTreeView.Size = new System.Drawing.Size(270, 363);
             this.robotTreeView.TabIndex = 0;
             this.robotTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.robotTreeView_AfterSelect);
             // 
@@ -286,16 +299,18 @@ namespace FRCrobotCodeGen302
             this.panel1.Controls.Add(this.valueTextBox);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(563, 456);
+            this.panel1.Size = new System.Drawing.Size(500, 363);
             this.panel1.TabIndex = 2;
             // 
             // deleteTreeElementButton
             // 
             this.deleteTreeElementButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.deleteTreeElementButton.Location = new System.Drawing.Point(26, 156);
+            this.deleteTreeElementButton.Location = new System.Drawing.Point(23, 123);
+            this.deleteTreeElementButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.deleteTreeElementButton.Name = "deleteTreeElementButton";
-            this.deleteTreeElementButton.Size = new System.Drawing.Size(230, 37);
+            this.deleteTreeElementButton.Size = new System.Drawing.Size(204, 30);
             this.deleteTreeElementButton.TabIndex = 6;
             this.deleteTreeElementButton.Text = "Delete";
             this.deleteTreeElementButton.UseVisualStyleBackColor = true;
@@ -304,9 +319,10 @@ namespace FRCrobotCodeGen302
             // addStateDataFileButton
             // 
             this.addStateDataFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.addStateDataFileButton.Location = new System.Drawing.Point(26, 199);
+            this.addStateDataFileButton.Location = new System.Drawing.Point(23, 157);
+            this.addStateDataFileButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.addStateDataFileButton.Name = "addStateDataFileButton";
-            this.addStateDataFileButton.Size = new System.Drawing.Size(230, 37);
+            this.addStateDataFileButton.Size = new System.Drawing.Size(204, 30);
             this.addStateDataFileButton.TabIndex = 5;
             this.addStateDataFileButton.Text = "Add statedata file";
             this.addStateDataFileButton.UseVisualStyleBackColor = true;
@@ -314,9 +330,10 @@ namespace FRCrobotCodeGen302
             // 
             // addTreeElementButton
             // 
-            this.addTreeElementButton.Location = new System.Drawing.Point(26, 113);
+            this.addTreeElementButton.Location = new System.Drawing.Point(23, 90);
+            this.addTreeElementButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.addTreeElementButton.Name = "addTreeElementButton";
-            this.addTreeElementButton.Size = new System.Drawing.Size(230, 37);
+            this.addTreeElementButton.Size = new System.Drawing.Size(204, 30);
             this.addTreeElementButton.TabIndex = 4;
             this.addTreeElementButton.Text = "button3";
             this.addTreeElementButton.UseVisualStyleBackColor = true;
@@ -325,9 +342,10 @@ namespace FRCrobotCodeGen302
             // 
             // valueNumericUpDown
             // 
-            this.valueNumericUpDown.Location = new System.Drawing.Point(26, 81);
+            this.valueNumericUpDown.Location = new System.Drawing.Point(23, 65);
+            this.valueNumericUpDown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.valueNumericUpDown.Name = "valueNumericUpDown";
-            this.valueNumericUpDown.Size = new System.Drawing.Size(230, 26);
+            this.valueNumericUpDown.Size = new System.Drawing.Size(204, 22);
             this.valueNumericUpDown.TabIndex = 3;
             this.valueNumericUpDown.Visible = false;
             this.valueNumericUpDown.ValueChanged += new System.EventHandler(this.valueNumericUpDown_ValueChanged);
@@ -335,9 +353,10 @@ namespace FRCrobotCodeGen302
             // saveConfigBbutton
             // 
             this.saveConfigBbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveConfigBbutton.Location = new System.Drawing.Point(153, 242);
+            this.saveConfigBbutton.Location = new System.Drawing.Point(136, 192);
+            this.saveConfigBbutton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.saveConfigBbutton.Name = "saveConfigBbutton";
-            this.saveConfigBbutton.Size = new System.Drawing.Size(103, 37);
+            this.saveConfigBbutton.Size = new System.Drawing.Size(92, 30);
             this.saveConfigBbutton.TabIndex = 2;
             this.saveConfigBbutton.Text = "Save";
             this.saveConfigBbutton.UseVisualStyleBackColor = true;
@@ -349,9 +368,10 @@ namespace FRCrobotCodeGen302
             | System.Windows.Forms.AnchorStyles.Right)));
             this.valueComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.valueComboBox.FormattingEnabled = true;
-            this.valueComboBox.Location = new System.Drawing.Point(26, 47);
+            this.valueComboBox.Location = new System.Drawing.Point(23, 38);
+            this.valueComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.valueComboBox.Name = "valueComboBox";
-            this.valueComboBox.Size = new System.Drawing.Size(230, 28);
+            this.valueComboBox.Size = new System.Drawing.Size(205, 24);
             this.valueComboBox.TabIndex = 1;
             this.valueComboBox.Visible = false;
             this.valueComboBox.SelectedValueChanged += new System.EventHandler(this.valueComboBox_SelectedValueChanged);
@@ -360,20 +380,22 @@ namespace FRCrobotCodeGen302
             // 
             this.valueTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.valueTextBox.Location = new System.Drawing.Point(26, 15);
+            this.valueTextBox.Location = new System.Drawing.Point(23, 12);
+            this.valueTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.valueTextBox.Name = "valueTextBox";
-            this.valueTextBox.Size = new System.Drawing.Size(230, 26);
+            this.valueTextBox.Size = new System.Drawing.Size(205, 22);
             this.valueTextBox.TabIndex = 0;
             this.valueTextBox.Visible = false;
             this.valueTextBox.TextChanged += new System.EventHandler(this.valueTextBox_TextChanged);
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 495);
+            this.ClientSize = new System.Drawing.Size(788, 396);
             this.Controls.Add(this.theTabControl);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "MainForm";
             this.Text = "Team 302 code generator";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);

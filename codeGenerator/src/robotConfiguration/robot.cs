@@ -16,10 +16,10 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("robot", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("robot", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("robot", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("robot", Namespace="http://tempuri.org/robot")]
     public partial class robot
     {
         
@@ -65,6 +65,7 @@ namespace Robot
             this._mechanism = new System.Collections.ObjectModel.Collection<mechanism>();
             this._camera = new System.Collections.ObjectModel.Collection<camera>();
             this._roborio = new System.Collections.ObjectModel.Collection<roborio>();
+            this._closedLoopControlParameters = new System.Collections.ObjectModel.Collection<closedLoopControlParameters>();
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -123,7 +124,7 @@ namespace Robot
             }
         }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("chassis")]
         public chassis chassis { get; set; }
         
@@ -210,21 +211,49 @@ namespace Robot
                 return (this.roborio.Count != 0);
             }
         }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.ObjectModel.Collection<closedLoopControlParameters> _closedLoopControlParameters;
+        
+        [System.Xml.Serialization.XmlElementAttribute("closedLoopControlParameters")]
+        public System.Collections.ObjectModel.Collection<closedLoopControlParameters> closedLoopControlParameters
+        {
+            get
+            {
+                return _closedLoopControlParameters;
+            }
+            private set
+            {
+                _closedLoopControlParameters = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the closedLoopControlParameters collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool closedLoopControlParametersSpecified
+        {
+            get
+            {
+                return (this.closedLoopControlParameters.Count != 0);
+            }
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("pdp", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("pdp", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("pdp", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("pdp", Namespace="http://tempuri.org/robot")]
     public partial class pdp
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _canId = 0u;
         
-        //[System.ComponentModel.DefaultValueAttribute(0u)]
+        ////[System.ComponentModel.DefaultValueAttribute(0u)]
         [System.Xml.Serialization.XmlAttributeAttribute("canId")]
         public uint canId
         {
@@ -241,7 +270,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private pdptype _type = Robot.pdptype.CTRE;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.pdptype.CTRE)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.pdptype.CTRE)]
         [System.Xml.Serialization.XmlAttributeAttribute("type")]
         public pdptype type
         {
@@ -258,7 +287,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("pdptype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("pdptype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum pdptype
     {
         
@@ -269,10 +298,10 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("pcm", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("pcm", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("pcm", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("pcm", Namespace="http://tempuri.org/robot")]
     public partial class pcm
     {
         
@@ -282,7 +311,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _canId = 0u;
         
-        //[System.ComponentModel.DefaultValueAttribute(0u)]
+        ////[System.ComponentModel.DefaultValueAttribute(0u)]
         [System.Xml.Serialization.XmlAttributeAttribute("canId")]
         public uint canId
         {
@@ -299,17 +328,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("analogInput", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("analogInput", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("analogInput", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("analogInput", Namespace="http://tempuri.org/robot")]
     public partial class analogInput
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private analogInputtype _type = Robot.analogInputtype.PRESSURE_GAUGE;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.analogInputtype.PRESSURE_GAUGE)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.analogInputtype.PRESSURE_GAUGE)]
         [System.Xml.Serialization.XmlAttributeAttribute("type")]
         public analogInputtype type
         {
@@ -326,7 +355,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private analogInputanalogId _analogId = Robot.analogInputanalogId.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.analogInputanalogId.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.analogInputanalogId.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("analogId")]
         public analogInputanalogId analogId
         {
@@ -343,7 +372,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _voltageMin = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("voltageMin")]
         public string voltageMin
         {
@@ -360,7 +389,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _voltageMax = "5.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("5.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("5.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("voltageMax")]
         public string voltageMax
         {
@@ -374,18 +403,18 @@ namespace Robot
             }
         }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("outputMin")]
         public string outputMin { get; set; }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("outputMax")]
         public string outputMax { get; set; }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("analogInputtype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("analogInputtype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum analogInputtype
     {
         
@@ -394,7 +423,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("analogInputanalogId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("analogInputanalogId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum analogInputanalogId
     {
         
@@ -425,17 +454,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("pigeon", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("pigeon", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("pigeon", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("pigeon", Namespace="http://tempuri.org/robot")]
     public partial class pigeon
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _canId = 0u;
         
-        //[System.ComponentModel.DefaultValueAttribute(0u)]
+        ////[System.ComponentModel.DefaultValueAttribute(0u)]
         [System.Xml.Serialization.XmlAttributeAttribute("canId")]
         public uint canId
         {
@@ -452,7 +481,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _canBusName = "rio";
         
-        //[System.ComponentModel.DefaultValueAttribute("rio")]
+        ////[System.ComponentModel.DefaultValueAttribute("rio")]
         [System.Xml.Serialization.XmlAttributeAttribute("canBusName")]
         public string canBusName
         {
@@ -469,7 +498,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private pigeontype _type = Robot.pigeontype.pigeon1;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.pigeontype.pigeon1)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.pigeontype.pigeon1)]
         [System.Xml.Serialization.XmlAttributeAttribute("type")]
         public pigeontype type
         {
@@ -486,7 +515,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _rotation = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("rotation")]
         public string rotation
         {
@@ -503,7 +532,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private pigeonusage _usage = Robot.pigeonusage.CENTER_OF_ROTATION;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.pigeonusage.CENTER_OF_ROTATION)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.pigeonusage.CENTER_OF_ROTATION)]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public pigeonusage usage
         {
@@ -520,7 +549,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("pigeontype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("pigeontype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum pigeontype
     {
         
@@ -531,7 +560,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("pigeonusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("pigeonusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum pigeonusage
     {
         
@@ -540,17 +569,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("limelight", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("limelight", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("limelight", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("limelight", Namespace="http://tempuri.org/robot")]
     public partial class limelight
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private limelightusage _usage = Robot.limelightusage.MAINLIMELIGHT;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.limelightusage.MAINLIMELIGHT)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.limelightusage.MAINLIMELIGHT)]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public limelightusage usage
         {
@@ -567,7 +596,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private limelighttablename _tablename = Robot.limelighttablename.limelight;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.limelighttablename.limelight)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.limelighttablename.limelight)]
         [System.Xml.Serialization.XmlAttributeAttribute("tablename")]
         public limelighttablename tablename
         {
@@ -581,14 +610,14 @@ namespace Robot
             }
         }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("mountingheight")]
         public string mountingheight { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _horizontaloffset = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("horizontaloffset")]
         public string horizontaloffset
         {
@@ -602,14 +631,14 @@ namespace Robot
             }
         }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("mountingangle")]
         public string mountingangle { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private limelightrotation _rotation = Robot.limelightrotation.Item0Period0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.limelightrotation.Item0Period0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.limelightrotation.Item0Period0)]
         [System.Xml.Serialization.XmlAttributeAttribute("rotation")]
         public limelightrotation rotation
         {
@@ -623,18 +652,18 @@ namespace Robot
             }
         }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("targetheight")]
         public string targetheight { get; set; }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("targetheight2")]
         public string targetheight2 { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private limelightdefaultledmode _defaultledmode = Robot.limelightdefaultledmode.currentpipeline;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.limelightdefaultledmode.currentpipeline)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.limelightdefaultledmode.currentpipeline)]
         [System.Xml.Serialization.XmlAttributeAttribute("defaultledmode")]
         public limelightdefaultledmode defaultledmode
         {
@@ -651,7 +680,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private limelightdefaultcammode _defaultcammode = Robot.limelightdefaultcammode.vision;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.limelightdefaultcammode.vision)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.limelightdefaultcammode.vision)]
         [System.Xml.Serialization.XmlAttributeAttribute("defaultcammode")]
         public limelightdefaultcammode defaultcammode
         {
@@ -668,7 +697,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private limelightstreammode _streammode = Robot.limelightstreammode.sidebyside;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.limelightstreammode.sidebyside)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.limelightstreammode.sidebyside)]
         [System.Xml.Serialization.XmlAttributeAttribute("streammode")]
         public limelightstreammode streammode
         {
@@ -685,7 +714,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private limelightsnapshots _snapshots = Robot.limelightsnapshots.off;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.limelightsnapshots.off)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.limelightsnapshots.off)]
         [System.Xml.Serialization.XmlAttributeAttribute("snapshots")]
         public limelightsnapshots snapshots
         {
@@ -714,7 +743,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("limelightusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("limelightusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum limelightusage
     {
         
@@ -725,7 +754,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("limelighttablename", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("limelighttablename", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum limelighttablename
     {
         
@@ -736,7 +765,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("limelightrotation", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("limelightrotation", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum limelightrotation
     {
         
@@ -755,7 +784,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("limelightdefaultledmode", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("limelightdefaultledmode", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum limelightdefaultledmode
     {
         
@@ -770,7 +799,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("limelightdefaultcammode", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("limelightdefaultcammode", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum limelightdefaultcammode
     {
         
@@ -781,7 +810,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("limelightstreammode", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("limelightstreammode", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum limelightstreammode
     {
         
@@ -794,7 +823,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("limelightsnapshots", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("limelightsnapshots", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum limelightsnapshots
     {
         
@@ -805,10 +834,10 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("chassis", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("chassis", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("chassis", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("chassis", Namespace="http://tempuri.org/robot")]
     public partial class chassis
     {
         
@@ -880,7 +909,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private chassistype _type = Robot.chassistype.TANK;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.chassistype.TANK)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.chassistype.TANK)]
         [System.Xml.Serialization.XmlAttributeAttribute("type")]
         public chassistype type
         {
@@ -894,22 +923,22 @@ namespace Robot
             }
         }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("wheelDiameter")]
         public string wheelDiameter { get; set; }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("wheelBase")]
         public string wheelBase { get; set; }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("track")]
         public string track { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private chassiswheelSpeedCalcOption _wheelSpeedCalcOption = Robot.chassiswheelSpeedCalcOption.ETHER;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.chassiswheelSpeedCalcOption.ETHER)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.chassiswheelSpeedCalcOption.ETHER)]
         [System.Xml.Serialization.XmlAttributeAttribute("wheelSpeedCalcOption")]
         public chassiswheelSpeedCalcOption wheelSpeedCalcOption
         {
@@ -926,7 +955,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private chassisposeEstimationOption _poseEstimationOption = Robot.chassisposeEstimationOption.EULERCHASSIS;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.chassisposeEstimationOption.EULERCHASSIS)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.chassisposeEstimationOption.EULERCHASSIS)]
         [System.Xml.Serialization.XmlAttributeAttribute("poseEstimationOption")]
         public chassisposeEstimationOption poseEstimationOption
         {
@@ -940,19 +969,19 @@ namespace Robot
             }
         }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("maxVelocity")]
         public string maxVelocity { get; set; }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("maxAngularVelocity")]
         public string maxAngularVelocity { get; set; }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("maxAcceleration")]
         public string maxAcceleration { get; set; }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("maxAngularAcceleration")]
         public string maxAngularAcceleration { get; set; }
         
@@ -965,10 +994,10 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motor", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motor", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("motor", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("motor", Namespace="http://tempuri.org/robot")]
     public partial class motor
     {
         
@@ -1008,14 +1037,14 @@ namespace Robot
             this._digitalInput = new System.Collections.ObjectModel.Collection<digitalInput>();
         }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public string usage { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _canId = 0u;
         
-        //[System.ComponentModel.DefaultValueAttribute(0u)]
+        ////[System.ComponentModel.DefaultValueAttribute(0u)]
         [System.Xml.Serialization.XmlAttributeAttribute("canId")]
         public uint canId
         {
@@ -1032,7 +1061,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _canBusName = "rio";
         
-        //[System.ComponentModel.DefaultValueAttribute("rio")]
+        ////[System.ComponentModel.DefaultValueAttribute("rio")]
         [System.Xml.Serialization.XmlAttributeAttribute("canBusName")]
         public string canBusName
         {
@@ -1052,7 +1081,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motortype _type = Robot.motortype.TALONSRX;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motortype.TALONSRX)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motortype.TALONSRX)]
         [System.Xml.Serialization.XmlAttributeAttribute("type")]
         public motortype type
         {
@@ -1069,7 +1098,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorinverted _inverted = Robot.motorinverted.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorinverted.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorinverted.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("inverted")]
         public motorinverted inverted
         {
@@ -1086,7 +1115,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorsensorInverted _sensorInverted = Robot.motorsensorInverted.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorsensorInverted.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorsensorInverted.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("sensorInverted")]
         public motorsensorInverted sensorInverted
         {
@@ -1103,7 +1132,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorfeedbackDevice _feedbackDevice = Robot.motorfeedbackDevice.NONE;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorfeedbackDevice.NONE)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorfeedbackDevice.NONE)]
         [System.Xml.Serialization.XmlAttributeAttribute("feedbackDevice")]
         public motorfeedbackDevice feedbackDevice
         {
@@ -1120,7 +1149,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _countsPerRev = "0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0")]
         [System.Xml.Serialization.XmlAttributeAttribute("countsPerRev")]
         public string countsPerRev
         {
@@ -1137,7 +1166,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _gearRatio = "1";
         
-        //[System.ComponentModel.DefaultValueAttribute("1")]
+        ////[System.ComponentModel.DefaultValueAttribute("1")]
         [System.Xml.Serialization.XmlAttributeAttribute("gearRatio")]
         public string gearRatio
         {
@@ -1154,7 +1183,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorbrakeMode _brakeMode = Robot.motorbrakeMode.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorbrakeMode.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorbrakeMode.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("brakeMode")]
         public motorbrakeMode brakeMode
         {
@@ -1171,7 +1200,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _follow = "-1";
         
-        //[System.ComponentModel.DefaultValueAttribute("-1")]
+        ////[System.ComponentModel.DefaultValueAttribute("-1")]
         [System.Xml.Serialization.XmlAttributeAttribute("follow")]
         public string follow
         {
@@ -1197,7 +1226,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorcurrentLimiting _currentLimiting = Robot.motorcurrentLimiting.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorcurrentLimiting.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorcurrentLimiting.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("currentLimiting")]
         public motorcurrentLimiting currentLimiting
         {
@@ -1214,7 +1243,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorforwardlimitswitch _forwardlimitswitch = Robot.motorforwardlimitswitch.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorforwardlimitswitch.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorforwardlimitswitch.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("forwardlimitswitch")]
         public motorforwardlimitswitch forwardlimitswitch
         {
@@ -1231,7 +1260,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorforwardlimitswitchopen _forwardlimitswitchopen = Robot.motorforwardlimitswitchopen.Item_true;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorforwardlimitswitchopen.Item_true)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorforwardlimitswitchopen.Item_true)]
         [System.Xml.Serialization.XmlAttributeAttribute("forwardlimitswitchopen")]
         public motorforwardlimitswitchopen forwardlimitswitchopen
         {
@@ -1248,7 +1277,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorreverselimitswitch _reverselimitswitch = Robot.motorreverselimitswitch.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorreverselimitswitch.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorreverselimitswitch.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("reverselimitswitch")]
         public motorreverselimitswitch reverselimitswitch
         {
@@ -1265,7 +1294,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorreverselimitswitchopen _reverselimitswitchopen = Robot.motorreverselimitswitchopen.Item_true;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorreverselimitswitchopen.Item_true)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorreverselimitswitchopen.Item_true)]
         [System.Xml.Serialization.XmlAttributeAttribute("reverselimitswitchopen")]
         public motorreverselimitswitchopen reverselimitswitchopen
         {
@@ -1282,7 +1311,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _voltageCompensationSaturation = "12.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("12.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("12.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("voltageCompensationSaturation")]
         public string voltageCompensationSaturation
         {
@@ -1299,7 +1328,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private motorvoltageCompensationEnable _voltageCompensationEnable = Robot.motorvoltageCompensationEnable.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.motorvoltageCompensationEnable.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.motorvoltageCompensationEnable.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("voltageCompensationEnable")]
         public motorvoltageCompensationEnable voltageCompensationEnable
         {
@@ -1316,7 +1345,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _countsPerInch = "0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0")]
         [System.Xml.Serialization.XmlAttributeAttribute("countsPerInch")]
         public string countsPerInch
         {
@@ -1333,7 +1362,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _countsPerDegree = "0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0")]
         [System.Xml.Serialization.XmlAttributeAttribute("countsPerDegree")]
         public string countsPerDegree
         {
@@ -1350,21 +1379,21 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("digitalInput", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("digitalInput", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("digitalInput", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("digitalInput", Namespace="http://tempuri.org/robot")]
     public partial class digitalInput
     {
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public string usage { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private digitalInputdigitalId _digitalId = Robot.digitalInputdigitalId.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.digitalInputdigitalId.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.digitalInputdigitalId.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("digitalId")]
         public digitalInputdigitalId digitalId
         {
@@ -1381,7 +1410,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private digitalInputreversed _reversed = Robot.digitalInputreversed.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.digitalInputreversed.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.digitalInputreversed.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("reversed")]
         public digitalInputreversed reversed
         {
@@ -1398,7 +1427,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _debouncetime = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("debouncetime")]
         public string debouncetime
         {
@@ -1415,7 +1444,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("digitalInputdigitalId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("digitalInputdigitalId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum digitalInputdigitalId
     {
         
@@ -1500,7 +1529,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("digitalInputreversed", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("digitalInputreversed", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum digitalInputreversed
     {
         
@@ -1513,7 +1542,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motortype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motortype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motortype
     {
         
@@ -1528,7 +1557,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorinverted", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorinverted", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorinverted
     {
         
@@ -1541,7 +1570,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorsensorInverted", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorsensorInverted", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorsensorInverted
     {
         
@@ -1554,7 +1583,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorfeedbackDevice", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorfeedbackDevice", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorfeedbackDevice
     {
         
@@ -1583,7 +1612,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorbrakeMode", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorbrakeMode", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorbrakeMode
     {
         
@@ -1596,7 +1625,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorcurrentLimiting", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorcurrentLimiting", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorcurrentLimiting
     {
         
@@ -1609,7 +1638,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorforwardlimitswitch", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorforwardlimitswitch", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorforwardlimitswitch
     {
         
@@ -1622,7 +1651,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorforwardlimitswitchopen", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorforwardlimitswitchopen", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorforwardlimitswitchopen
     {
         
@@ -1635,7 +1664,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorreverselimitswitch", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorreverselimitswitch", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorreverselimitswitch
     {
         
@@ -1648,7 +1677,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorreverselimitswitchopen", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorreverselimitswitchopen", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorreverselimitswitchopen
     {
         
@@ -1661,7 +1690,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("motorvoltageCompensationEnable", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("motorvoltageCompensationEnable", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorvoltageCompensationEnable
     {
         
@@ -1674,10 +1703,10 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("swervemodule", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("swervemodule", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("swervemodule", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("swervemodule", Namespace="http://tempuri.org/robot")]
     public partial class swervemodule
     {
         
@@ -1723,7 +1752,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private swervemoduletype _type = Robot.swervemoduletype.LEFT_FRONT;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.swervemoduletype.LEFT_FRONT)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.swervemoduletype.LEFT_FRONT)]
         [System.Xml.Serialization.XmlAttributeAttribute("type")]
         public swervemoduletype type
         {
@@ -1740,7 +1769,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _turn_p = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("turn_p")]
         public string turn_p
         {
@@ -1757,7 +1786,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _turn_i = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("turn_i")]
         public string turn_i
         {
@@ -1774,7 +1803,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _turn_d = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("turn_d")]
         public string turn_d
         {
@@ -1791,7 +1820,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _turn_f = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("turn_f")]
         public string turn_f
         {
@@ -1808,7 +1837,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _turn_nominal_val = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("turn_nominal_val")]
         public string turn_nominal_val
         {
@@ -1825,7 +1854,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _turn_peak_val = "1.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("1.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("1.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("turn_peak_val")]
         public string turn_peak_val
         {
@@ -1842,7 +1871,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _turn_max_acc = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("turn_max_acc")]
         public string turn_max_acc
         {
@@ -1859,7 +1888,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _turn_cruise_vel = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("turn_cruise_vel")]
         public string turn_cruise_vel
         {
@@ -1876,7 +1905,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _countsOnTurnEncoderPerDegreesOnAngleSensor = "1.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("1.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("1.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("countsOnTurnEncoderPerDegreesOnAngleSensor")]
         public string countsOnTurnEncoderPerDegreesOnAngleSensor
         {
@@ -1893,17 +1922,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("cancoder", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("cancoder", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("cancoder", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("cancoder", Namespace="http://tempuri.org/robot")]
     public partial class cancoder
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _canId = 0u;
         
-        //[System.ComponentModel.DefaultValueAttribute(0u)]
+        ////[System.ComponentModel.DefaultValueAttribute(0u)]
         [System.Xml.Serialization.XmlAttributeAttribute("canId")]
         public uint canId
         {
@@ -1920,7 +1949,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _canBusName = "rio";
         
-        //[System.ComponentModel.DefaultValueAttribute("rio")]
+        ////[System.ComponentModel.DefaultValueAttribute("rio")]
         [System.Xml.Serialization.XmlAttributeAttribute("canBusName")]
         public string canBusName
         {
@@ -1937,7 +1966,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _offset = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("offset")]
         public string offset
         {
@@ -1954,7 +1983,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private cancoderreverse _reverse = Robot.cancoderreverse.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.cancoderreverse.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.cancoderreverse.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("reverse")]
         public cancoderreverse reverse
         {
@@ -1971,7 +2000,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("cancoderreverse", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("cancoderreverse", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum cancoderreverse
     {
         
@@ -1984,7 +2013,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("swervemoduletype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("swervemoduletype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum swervemoduletype
     {
         
@@ -1999,7 +2028,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("chassistype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("chassistype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum chassistype
     {
         
@@ -2012,7 +2041,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("chassiswheelSpeedCalcOption", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("chassiswheelSpeedCalcOption", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum chassiswheelSpeedCalcOption
     {
         
@@ -2026,7 +2055,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("chassisposeEstimationOption", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("chassisposeEstimationOption", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum chassisposeEstimationOption
     {
         
@@ -2043,10 +2072,10 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("mechanism", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("mechanism", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("mechanism", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("mechanism", Namespace="http://tempuri.org/robot")]
     public partial class mechanism
     {
         
@@ -2089,6 +2118,7 @@ namespace Robot
             this._analogInput = new System.Collections.ObjectModel.Collection<analogInput>();
             this._digitalInput = new System.Collections.ObjectModel.Collection<digitalInput>();
             this._cancoder = new System.Collections.ObjectModel.Collection<cancoder>();
+            this._closedLoopControlParameters = new System.Collections.ObjectModel.Collection<closedLoopControlParameters>();
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -2234,34 +2264,56 @@ namespace Robot
         [System.Xml.Serialization.XmlElementAttribute("colorsensor")]
         public colorsensor colorsensor { get; set; }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlAttributeAttribute("type")]
-        public string type { get; set; }
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.ObjectModel.Collection<closedLoopControlParameters> _closedLoopControlParameters;
         
-        [System.Xml.Serialization.XmlAttributeAttribute("networkTable")]
-        public string networkTable { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("closedLoopControlParameters")]
+        public System.Collections.ObjectModel.Collection<closedLoopControlParameters> closedLoopControlParameters
+        {
+            get
+            {
+                return _closedLoopControlParameters;
+            }
+            private set
+            {
+                _closedLoopControlParameters = value;
+            }
+        }
         
-        [System.Xml.Serialization.XmlAttributeAttribute("controlFile")]
-        public string controlFile { get; set; }
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the closedLoopControlParameters collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool closedLoopControlParametersSpecified
+        {
+            get
+            {
+                return (this.closedLoopControlParameters.Count != 0);
+            }
+        }
+        
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("mechanismName")]
+        public string mechanismName { get; set; }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("solenoid", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("solenoid", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("solenoid", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("solenoid", Namespace="http://tempuri.org/robot")]
     public partial class solenoid
     {
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public string usage { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _canId = 0u;
         
-        //[System.ComponentModel.DefaultValueAttribute(0u)]
+        ////[System.ComponentModel.DefaultValueAttribute(0u)]
         [System.Xml.Serialization.XmlAttributeAttribute("canId")]
         public uint canId
         {
@@ -2278,7 +2330,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private solenoidchannel _channel = Robot.solenoidchannel.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.solenoidchannel.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.solenoidchannel.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("channel")]
         public solenoidchannel channel
         {
@@ -2295,7 +2347,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private solenoidreversed _reversed = Robot.solenoidreversed.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.solenoidreversed.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.solenoidreversed.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("reversed")]
         public solenoidreversed reversed
         {
@@ -2312,7 +2364,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private solenoidtype _type = Robot.solenoidtype.REVPH;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.solenoidtype.REVPH)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.solenoidtype.REVPH)]
         [System.Xml.Serialization.XmlAttributeAttribute("type")]
         public solenoidtype type
         {
@@ -2329,7 +2381,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("solenoidchannel", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("solenoidchannel", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum solenoidchannel
     {
         
@@ -2360,7 +2412,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("solenoidreversed", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("solenoidreversed", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum solenoidreversed
     {
         
@@ -2373,7 +2425,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("solenoidtype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("solenoidtype", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum solenoidtype
     {
         
@@ -2384,21 +2436,21 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("servo", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("servo", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("servo", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("servo", Namespace="http://tempuri.org/robot")]
     public partial class servo
     {
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public string usage { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private servopwmId _pwmId = Robot.servopwmId.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.servopwmId.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.servopwmId.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("pwmId")]
         public servopwmId pwmId
         {
@@ -2415,7 +2467,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _minAngle = "0.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("minAngle")]
         public string minAngle
         {
@@ -2432,7 +2484,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _maxAngle = "360.0";
         
-        //[System.ComponentModel.DefaultValueAttribute("360.0")]
+        ////[System.ComponentModel.DefaultValueAttribute("360.0")]
         [System.Xml.Serialization.XmlAttributeAttribute("maxAngle")]
         public string maxAngle
         {
@@ -2449,7 +2501,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("servopwmId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("servopwmId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum servopwmId
     {
         
@@ -2516,17 +2568,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("colorsensor", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("colorsensor", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("colorsensor", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("colorsensor", Namespace="http://tempuri.org/robot")]
     public partial class colorsensor
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private colorsensorport _port = Robot.colorsensorport.kOnboard;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.colorsensorport.kOnboard)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.colorsensorport.kOnboard)]
         [System.Xml.Serialization.XmlAttributeAttribute("port")]
         public colorsensorport port
         {
@@ -2543,7 +2595,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("colorsensorport", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("colorsensorport", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum colorsensorport
     {
         
@@ -2554,17 +2606,76 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("camera", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("closedLoopControlParameters", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("camera", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("closedLoopControlParameters", Namespace="http://tempuri.org/robot")]
+    public partial class closedLoopControlParameters
+    {
+        
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("name")]
+        public string name { get; set; }
+        
+        [System.Xml.Serialization.XmlElementAttribute("pGain")]
+        public double pGain { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the pGain property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool pGainSpecified { get; set; }
+        
+        [System.Xml.Serialization.XmlElementAttribute("iGain")]
+        public double iGain { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the iGain property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool iGainSpecified { get; set; }
+        
+        [System.Xml.Serialization.XmlElementAttribute("dGain")]
+        public double dGain { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the dGain property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool dGainSpecified { get; set; }
+        
+        [System.Xml.Serialization.XmlElementAttribute("fGain")]
+        public double fGain { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the fGain property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool fGainSpecified { get; set; }
+        
+        [System.Xml.Serialization.XmlElementAttribute("iZone")]
+        public double iZone { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the iZone property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool iZoneSpecified { get; set; }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
+    [System.SerializableAttribute()]
+    ////[System.Xml.Serialization.XmlTypeAttribute("camera", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    ////[System.Xml.Serialization.XmlRootAttribute("camera", Namespace="http://tempuri.org/robot")]
     public partial class camera
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _id = "0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0")]
         [System.Xml.Serialization.XmlAttributeAttribute("id")]
         public string id
         {
@@ -2581,7 +2692,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private cameraformat _format = Robot.cameraformat.KMJPEG;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.cameraformat.KMJPEG)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.cameraformat.KMJPEG)]
         [System.Xml.Serialization.XmlAttributeAttribute("format")]
         public cameraformat format
         {
@@ -2598,7 +2709,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _width = "640";
         
-        //[System.ComponentModel.DefaultValueAttribute("640")]
+        ////[System.ComponentModel.DefaultValueAttribute("640")]
         [System.Xml.Serialization.XmlAttributeAttribute("width")]
         public string width
         {
@@ -2615,7 +2726,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _height = "480";
         
-        //[System.ComponentModel.DefaultValueAttribute("480")]
+        ////[System.ComponentModel.DefaultValueAttribute("480")]
         [System.Xml.Serialization.XmlAttributeAttribute("height")]
         public string height
         {
@@ -2632,7 +2743,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _fps = "30";
         
-        //[System.ComponentModel.DefaultValueAttribute("30")]
+        ////[System.ComponentModel.DefaultValueAttribute("30")]
         [System.Xml.Serialization.XmlAttributeAttribute("fps")]
         public string fps
         {
@@ -2649,7 +2760,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private camerathread _thread = Robot.camerathread.Item_false;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.camerathread.Item_false)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.camerathread.Item_false)]
         [System.Xml.Serialization.XmlAttributeAttribute("thread")]
         public camerathread thread
         {
@@ -2666,7 +2777,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("cameraformat", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("cameraformat", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum cameraformat
     {
         
@@ -2683,7 +2794,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("camerathread", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("camerathread", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum camerathread
     {
         
@@ -2696,17 +2807,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("roborio", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("roborio", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("roborio", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("roborio", Namespace="http://tempuri.org/robot")]
     public partial class roborio
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private roborioorientation _orientation = Robot.roborioorientation.X_FORWARD_Y_LEFT;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.roborioorientation.X_FORWARD_Y_LEFT)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.roborioorientation.X_FORWARD_Y_LEFT)]
         [System.Xml.Serialization.XmlAttributeAttribute("orientation")]
         public roborioorientation orientation
         {
@@ -2723,7 +2834,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("roborioorientation", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("roborioorientation", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum roborioorientation
     {
         
@@ -2762,17 +2873,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("pwmultrasonic", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("pwmultrasonic", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("pwmultrasonic", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("pwmultrasonic", Namespace="http://tempuri.org/robot")]
     public partial class pwmultrasonic
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private pwmultrasonicusage _usage = Robot.pwmultrasonicusage.front;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.pwmultrasonicusage.front)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.pwmultrasonicusage.front)]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public pwmultrasonicusage usage
         {
@@ -2789,7 +2900,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private pwmultrasonicpwmId _pwmId = Robot.pwmultrasonicpwmId.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.pwmultrasonicpwmId.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.pwmultrasonicpwmId.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("pwmId")]
         public pwmultrasonicpwmId pwmId
         {
@@ -2806,7 +2917,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("pwmultrasonicusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("pwmultrasonicusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum pwmultrasonicusage
     {
         
@@ -2817,7 +2928,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("pwmultrasonicpwmId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("pwmultrasonicpwmId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum pwmultrasonicpwmId
     {
         
@@ -2884,17 +2995,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("analogultrasonic", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("analogultrasonic", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("analogultrasonic", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("analogultrasonic", Namespace="http://tempuri.org/robot")]
     public partial class analogultrasonic
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private analogultrasonicusage _usage = Robot.analogultrasonicusage.front;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.analogultrasonicusage.front)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.analogultrasonicusage.front)]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public analogultrasonicusage usage
         {
@@ -2911,7 +3022,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private analogultrasonicanalogId _analogId = Robot.analogultrasonicanalogId.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.analogultrasonicanalogId.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.analogultrasonicanalogId.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("analogId")]
         public analogultrasonicanalogId analogId
         {
@@ -2928,7 +3039,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("analogultrasonicusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("analogultrasonicusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum analogultrasonicusage
     {
         
@@ -2939,7 +3050,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("analogultrasonicanalogId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("analogultrasonicanalogId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum analogultrasonicanalogId
     {
         
@@ -2970,17 +3081,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("lidar", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("lidar", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("lidar", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("lidar", Namespace="http://tempuri.org/robot")]
     public partial class lidar
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private lidarusage _usage = Robot.lidarusage.front;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.lidarusage.front)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.lidarusage.front)]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public lidarusage usage
         {
@@ -2997,7 +3108,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _inputpin = "0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0")]
         [System.Xml.Serialization.XmlAttributeAttribute("inputpin")]
         public string inputpin
         {
@@ -3014,7 +3125,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _triggerpin = "0";
         
-        //[System.ComponentModel.DefaultValueAttribute("0")]
+        ////[System.ComponentModel.DefaultValueAttribute("0")]
         [System.Xml.Serialization.XmlAttributeAttribute("triggerpin")]
         public string triggerpin
         {
@@ -3031,7 +3142,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("lidarusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("lidarusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum lidarusage
     {
         
@@ -3042,17 +3153,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("led", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("led", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("led", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("led", Namespace="http://tempuri.org/robot")]
     public partial class led
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private ledpwmId _pwmId = Robot.ledpwmId.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.ledpwmId.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.ledpwmId.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("pwmId")]
         public ledpwmId pwmId
         {
@@ -3066,14 +3177,14 @@ namespace Robot
             }
         }
         
-        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        ////[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlAttributeAttribute("number")]
         public string number { get; set; }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("ledpwmId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("ledpwmId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum ledpwmId
     {
         
@@ -3140,17 +3251,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("blinkin", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("blinkin", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("blinkin", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("blinkin", Namespace="http://tempuri.org/robot")]
     public partial class blinkin
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private blinkinusage _usage = Robot.blinkinusage.front;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.blinkinusage.front)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.blinkinusage.front)]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public blinkinusage usage
         {
@@ -3167,7 +3278,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private blinkinpwmId _pwmId = Robot.blinkinpwmId.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.blinkinpwmId.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.blinkinpwmId.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("pwmId")]
         public blinkinpwmId pwmId
         {
@@ -3184,7 +3295,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("blinkinusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("blinkinusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum blinkinusage
     {
         
@@ -3199,7 +3310,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("blinkinpwmId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("blinkinpwmId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum blinkinpwmId
     {
         
@@ -3266,17 +3377,17 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("talontach", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("talontach", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    //[System.Xml.Serialization.XmlRootAttribute("talontach", Namespace="http://tempuri.org/robot")]
+    ////[System.Xml.Serialization.XmlRootAttribute("talontach", Namespace="http://tempuri.org/robot")]
     public partial class talontach
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private talontachusage _usage = Robot.talontachusage.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.talontachusage.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.talontachusage.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("usage")]
         public talontachusage usage
         {
@@ -3293,7 +3404,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _canId = 0u;
         
-        //[System.ComponentModel.DefaultValueAttribute(0u)]
+        ////[System.ComponentModel.DefaultValueAttribute(0u)]
         [System.Xml.Serialization.XmlAttributeAttribute("canId")]
         public uint canId
         {
@@ -3310,7 +3421,7 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private talontachgeneralpin _generalpin = Robot.talontachgeneralpin.Item0;
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.talontachgeneralpin.Item0)]
+        ////[System.ComponentModel.DefaultValueAttribute(Robot.talontachgeneralpin.Item0)]
         [System.Xml.Serialization.XmlAttributeAttribute("generalpin")]
         public talontachgeneralpin generalpin
         {
@@ -3327,7 +3438,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("talontachusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("talontachusage", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum talontachusage
     {
         
@@ -3355,7 +3466,7 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("talontachgeneralpin", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    ////[System.Xml.Serialization.XmlTypeAttribute("talontachgeneralpin", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum talontachgeneralpin
     {
         

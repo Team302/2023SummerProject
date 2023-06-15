@@ -35,21 +35,6 @@ namespace robotConfiguration
                 if (theRobot.mechanism != null)
                 {
                     addProgress("Loading mechanism files...");
-                    foreach (mechanism mech in theRobot.mechanism)
-                    {
-                        if (string.IsNullOrEmpty(mech.controlFile))
-                        {
-                            progressCallback("controlFile for " + mech.type + " cannot be empty. Skipping");
-                        }
-                        else
-                        {
-                            string mechanismConfig = Path.Combine(rootRobotConfigFolder, "states", mech.controlFile);
-
-                            addProgress("======== Loading mechanism configuration " + mechanismConfig);
-                            statedata sd = loadStateDataConfiguration(mechanismConfig);
-                            mechanismControlDefinition.Add(mech.controlFile, sd);
-                        }
-                    }
                 }
             }
             catch(Exception ex)

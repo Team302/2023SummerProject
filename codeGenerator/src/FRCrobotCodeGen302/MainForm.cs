@@ -217,14 +217,14 @@ namespace FRCrobotCodeGen302
             // of object that is being deserialized.
             var mySerializer = new XmlSerializer(typeof(robot));
             // To read the file, create a FileStream.
-            var myFileStream = new FileStream(@"C:\FRC\robot\deploy\robot_dm_.xml", FileMode.Create);
+            var myFileStream = new FileStream(@"C:\GitRepos\2023SummerProject\codeGenerator\src\robotExample.xml", FileMode.Create);
             robot myRobot = new robot();
             // Call the Deserialize method and cast to the object type.
             mySerializer.Serialize(myFileStream, myRobot);
 
             mySerializer = new XmlSerializer(typeof(statedata));
             // To read the file, create a FileStream.
-            myFileStream = new FileStream(@"C:\FRC\robot\deploy\states\example_dm_.xml", FileMode.Create);
+            myFileStream = new FileStream(@"C:\GitRepos\2023SummerProject\codeGenerator\src\mechExample.xml", FileMode.Create);
             statedata myStates = new statedata();
             // Call the Deserialize method and cast to the object type.
             mySerializer.Serialize(myFileStream, myStates);
@@ -651,6 +651,11 @@ namespace FRCrobotCodeGen302
                     }
                 }
             }
+        }
+
+        private void robotConfigurationFileComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 
