@@ -74,12 +74,14 @@ namespace CoreCodeGenerator
                 string templateString;
                 string filePathName;
 
-                createMechanismFolder(mech.type);
+                string mechanismName = mech.mechanismName;
+
+                createMechanismFolder(mechanismName);
 
                 #region Generate Cpp File
                 templateString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
 
-                filePathName = getMechanismFullFilePathName(mech.type, theToolConfiguration.templateMechanismCppPath);
+                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
 
                 File.WriteAllText(filePathName, templateString);
                 #endregion
@@ -87,7 +89,7 @@ namespace CoreCodeGenerator
                 #region Generate H File
                 templateString = loadTemplate(theToolConfiguration.templateMechanismHPath);
 
-                filePathName = getMechanismFullFilePathName(mech.type, theToolConfiguration.templateMechanismHPath);
+                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
                 File.WriteAllText(filePathName, templateString);
                 #endregion
             }

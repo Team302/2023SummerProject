@@ -20,6 +20,6 @@
     <closedLoopControlParameters>
       <name>FirstGains</name>
     </closedLoopControlParameters>
-    <mechanismName />
+    <mechanismName>SomeMech</mechanismName>
   </mechanism>
 </robot>

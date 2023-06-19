@@ -52,11 +52,11 @@ namespace Configuration
         {
             var mySerializer = new XmlSerializer(typeof(toolConfiguration));
 
-            configurationFullPath = fullFilePathName;
-
             using (var myFileStream = new FileStream(fullFilePathName, FileMode.Open))
             {
-                return (toolConfiguration)mySerializer.Deserialize(myFileStream);
+                toolConfiguration tc = (toolConfiguration)mySerializer.Deserialize(myFileStream);
+                tc.configurationFullPath = fullFilePathName;
+                return tc;
             }
         }
     }
