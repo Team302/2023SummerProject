@@ -47,16 +47,16 @@ namespace CoreCodeGenerator
 
             foreach (mechanism mech in theRobotConfiguration.theRobot.mechanism)
             {
-                statedata sd = theRobotConfiguration.mechanismControlDefinition[mech.controlFile];
+                //statedata sd = theRobotConfiguration.mechanismControlDefinition[mech.mechanismName];
 
-                List<string> genFiles = writeMechanismFiles(rootFolder, generatorConfig, mech, sd);
-                if(genFiles.Count == 3)
-                {
-                    //the order needs to be the same as in writeMechanismFiles
-                    mechMainFiles.Add(genFiles[0].Substring(rootFolder.Length).TrimStart('\\'));
-                    mechStateFiles.Add(genFiles[1].Substring(rootFolder.Length).TrimStart('\\'));
-                    mechStateMgrFiles.Add(genFiles[2].Substring(rootFolder.Length).TrimStart('\\'));
-                }
+                //List<string> genFiles = writeMechanismFiles(rootFolder, generatorConfig, mech, sd);
+                //if(genFiles.Count == 3)
+                //{
+                //    //the order needs to be the same as in writeMechanismFiles
+                //    mechMainFiles.Add(genFiles[0].Substring(rootFolder.Length).TrimStart('\\'));
+                //    mechStateFiles.Add(genFiles[1].Substring(rootFolder.Length).TrimStart('\\'));
+                //    mechStateMgrFiles.Add(genFiles[2].Substring(rootFolder.Length).TrimStart('\\'));
+                //}
             }
 
             writeMechAllHFiles(rootFolder, generatorConfig, mechMainFiles, mechStateFiles, mechStateMgrFiles);
@@ -66,25 +66,6 @@ namespace CoreCodeGenerator
         }
 
         #region Main generator functions
-        private List<string> writeMechanismFiles(string baseFolder, toolConfiguration generatorConfig, mechanism mech, statedata mechanismStateData)
-        {
-            string mechanismFolder = Path.Combine(baseFolder, "mechanisms", getMechanismName(mech.controlFile));
-
-            if (!Directory.Exists(mechanismFolder))
-            {
-                addProgress("Creating folder " + mechanismFolder);
-                Directory.CreateDirectory(mechanismFolder);
-            }
-            else
-                addProgress("Output directory " + mechanismFolder + " already exists");
-
-            List<string> filePathnames = new List<string>();
-            filePathnames.Add(writeMainFiles(mechanismFolder, generatorConfig, mech, mechanismStateData));
-            filePathnames.Add(writeStateFiles(mechanismFolder, generatorConfig, mech, mechanismStateData));
-            filePathnames.Add(writeStateMgrFiles(mechanismFolder, generatorConfig, mech, mechanismStateData));
-
-            return filePathnames;
-        }
         private void writeMechanismsFiles(string baseFolder, toolConfiguration generatorConfig)
         {
             string mechanismFolder = Path.Combine(baseFolder, "mechanisms");
@@ -126,7 +107,7 @@ namespace CoreCodeGenerator
         #region Mechanism files
         private string writeStateMgrFiles(string baseFolder, toolConfiguration generatorConfig, mechanism mech, statedata mechanismStateData)
         {
-            string baseFileName = Path.Combine(baseFolder, FirstCharSubstring(getMechanismName(mech.controlFile)) + "StateMgr");
+            string baseFileName = Path.Combine(baseFolder, FirstCharSubstring(getMechanismName(mech.mechanismName)) + "StateMgr");
             string fullPathFilename_h = baseFileName + ".h";
             string fullPathFilename_cpp = baseFileName + ".cpp";
             string fullPathFilename_User_cpp = baseFileName + "_user.cpp";
@@ -135,7 +116,7 @@ namespace CoreCodeGenerator
             List<string> stateText = new List<string>();
             foreach (mechanismTarget mt in mechanismStateData.mechanismTarget)
             {
-                states.Add(getStateNameFromText(getMechanismName(mech.controlFile), mt.stateIdentifier.ToString()));
+                states.Add(getStateNameFromText(getMechanismName(mech.mechanismName), mt.stateIdentifier.ToString()));
                 stateText.Add(mt.stateIdentifier.ToString());
             }
 
@@ -146,7 +127,7 @@ namespace CoreCodeGenerator
         }
         private string writeStateFiles(string baseFolder, toolConfiguration generatorConfig, mechanism mech, statedata mechanismStateData)
         {
-            string baseFileName = Path.Combine(baseFolder, FirstCharSubstring(getMechanismName(mech.controlFile)) + "State");
+            string baseFileName = Path.Combine(baseFolder, FirstCharSubstring(getMechanismName(mech.mechanismName)) + "State");
             string fullPathFilename_h = baseFileName + ".h";
             string fullPathFilename_cpp = baseFileName + ".cpp";
 
@@ -154,7 +135,7 @@ namespace CoreCodeGenerator
             List<string> stateText = new List<string>();
             foreach (mechanismTarget mt in mechanismStateData.mechanismTarget)
             {
-                states.Add(getStateNameFromText(getMechanismName(mech.controlFile), mt.stateIdentifier.ToString()));
+                states.Add(getStateNameFromText(getMechanismName(mech.mechanismName), mt.stateIdentifier.ToString()));
                 stateText.Add(mt.stateIdentifier.ToString());
             }
             writeState_h_File(fullPathFilename_h, generatorConfig.state_h, mech, generatorConfig, mechanismStateData, states, stateText);
@@ -164,7 +145,7 @@ namespace CoreCodeGenerator
         }
         private string writeMainFiles(string baseFolder, toolConfiguration generatorConfig, mechanism mech, statedata mechanismStateData)
         {
-            string baseFileName = Path.Combine(baseFolder, FirstCharSubstring(getMechanismName(mech.controlFile)));
+            string baseFileName = Path.Combine(baseFolder, FirstCharSubstring(getMechanismName(mech.mechanismName)));
             string fullPathFilename_h = baseFileName + ".h";
             string fullPathFilename_cpp = baseFileName + ".cpp";
 
@@ -172,7 +153,7 @@ namespace CoreCodeGenerator
             List<string> stateText = new List<string>();
             foreach (mechanismTarget mt in mechanismStateData.mechanismTarget)
             {
-                states.Add(getStateNameFromText(getMechanismName(mech.controlFile), mt.stateIdentifier.ToString()));
+                states.Add(getStateNameFromText(getMechanismName(mech.mechanismName), mt.stateIdentifier.ToString()));
                 stateText.Add(mt.stateIdentifier.ToString());
             }
             writeMain_h_File(fullPathFilename_h, generatorConfig.main_h, mech, generatorConfig, mechanismStateData, states, stateText);
@@ -219,9 +200,9 @@ namespace CoreCodeGenerator
             for (int i = 0; i < states.Count; i++)
             {
                 enumContentsStr.AppendFormat("{0},\r\n", states[i]);
-                XmlStringToStateEnumMapStr.AppendFormat("{{\"{0}\", {1}_STATE::{2}}},\r\n", stateText[i], getMechanismName(mech.controlFile).ToUpper(), states[i]);
+                XmlStringToStateEnumMapStr.AppendFormat("{{\"{0}\", {1}_STATE::{2}}},\r\n", stateText[i], getMechanismName(mech.mechanismName).ToUpper(), states[i]);
                 stateStructStr.AppendFormat("const StateStruc m_{2}State = {{ {0}_STATE::{3}, \"{1}\", StateType::{0}_STATE, true }};\r\n",
-                    getMechanismName(mech.controlFile).ToUpper(),
+                    getMechanismName(mech.mechanismName).ToUpper(),
                     stateText[i],
                     states[i].ToLower(),
                     states[i].ToUpper());
@@ -230,9 +211,9 @@ namespace CoreCodeGenerator
             sb = sb.Replace("$STATE_STRUCT$", stateStructStr.ToString());
             sb = sb.Replace("$COMMA_SEPARATED_MECHANISM_STATES$", enumContentsStr.ToString().Trim(new char[] { ',', '\r', '\n' }));
             sb = sb.Replace("$XML_STRING_TO_STATE_ENUM_MAP$", XmlStringToStateEnumMapStr.ToString().Trim(new char[] { ',', '\r', '\n' }));
-            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.controlFile)));
-            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.controlFile).ToUpper());
-            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.controlFile).ToLower());
+            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.mechanismName)));
+            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.mechanismName).ToUpper());
+            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.mechanismName).ToLower());
             File.WriteAllText(fullPathFilename, sb.ToString());
         }
 
@@ -251,9 +232,9 @@ namespace CoreCodeGenerator
             }
 
             sb = sb.Replace("$STATE_MAP_INITIALIZATION$", stateStructStr.ToString());
-            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.controlFile)));
-            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.controlFile).ToUpper());
-            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.controlFile).ToLower());
+            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.mechanismName)));
+            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.mechanismName).ToUpper());
+            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.mechanismName).ToLower());
             File.WriteAllText(fullPathFilename, sb.ToString());
         }
 
@@ -269,9 +250,9 @@ namespace CoreCodeGenerator
             for (int i = 0; i < states.Count; i++)
             {
                 enumContentsStr.AppendFormat("{0},\r\n", states[i]);
-                XmlStringToStateEnumMapStr.AppendFormat("\"{0}\", {1}_STATE::{2},\r\n", stateText[i], getMechanismName(mech.controlFile).ToUpper(), states[i]);
+                XmlStringToStateEnumMapStr.AppendFormat("\"{0}\", {1}_STATE::{2},\r\n", stateText[i], getMechanismName(mech.mechanismName).ToUpper(), states[i]);
                 stateStructStr.AppendFormat("const StateStruc m_{2}State = {{ {0}_STATE::{3}, \"{1}\", StateType::{0}_STATE, true }};\r\n",
-                    getMechanismName(mech.controlFile).ToUpper(),
+                    getMechanismName(mech.mechanismName).ToUpper(),
                     stateText[i],
                     states[i].ToLower(),
                     states[i].ToUpper());
@@ -287,9 +268,9 @@ namespace CoreCodeGenerator
             sb = sb.Replace("$STATE_STRUCT$", stateStructStr.ToString());
             sb = sb.Replace("$COMMA_SEPARATED_MECHANISM_STATES$", enumContentsStr.ToString().Trim(new char[] { ',', '\r', '\n' }));
             sb = sb.Replace("$XML_STRING_TO_STATE_ENUM_MAP$", XmlStringToStateEnumMapStr.ToString().Trim(new char[] { ',', '\r', '\n' }));
-            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.controlFile)));
-            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.controlFile).ToUpper());
-            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.controlFile).ToLower());
+            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.mechanismName)));
+            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.mechanismName).ToUpper());
+            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.mechanismName).ToLower());
             File.WriteAllText(fullPathFilename, sb.ToString());
         }
 
@@ -315,9 +296,9 @@ namespace CoreCodeGenerator
             sb = sb.Replace("$MECHANISM_CONSTRUCTOR_ARGUMENT_LIST$", argumentList);
 
             sb = sb.Replace("$STATE_MAP_INITIALIZATION$", stateStructStr.ToString());
-            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.controlFile)));
-            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.controlFile).ToUpper());
-            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.controlFile).ToLower());
+            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.mechanismName)));
+            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.mechanismName).ToUpper());
+            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.mechanismName).ToLower());
             File.WriteAllText(fullPathFilename, sb.ToString());
         }
 
@@ -343,9 +324,9 @@ namespace CoreCodeGenerator
             sb = sb.Replace("$MECHANISM_CONSTRUCTOR_ARGUMENT_LIST$", argumentList);
 
             sb = sb.Replace("$STATE_MAP_INITIALIZATION$", stateStructStr.ToString());
-            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.controlFile)));
-            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.controlFile).ToUpper());
-            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.controlFile).ToLower());
+            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.mechanismName)));
+            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.mechanismName).ToUpper());
+            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.mechanismName).ToLower());
             File.WriteAllText(fullPathFilename, sb.ToString());
         }
 
@@ -361,9 +342,9 @@ namespace CoreCodeGenerator
             for (int i = 0; i < states.Count; i++)
             {
                 enumContentsStr.AppendFormat("{0},\r\n", states[i]);
-                XmlStringToStateEnumMapStr.AppendFormat("\"{0}\", {1}_STATE::{2},\r\n", stateText[i], getMechanismName(mech.controlFile).ToUpper(), states[i]);
+                XmlStringToStateEnumMapStr.AppendFormat("\"{0}\", {1}_STATE::{2},\r\n", stateText[i], getMechanismName(mech.mechanismName).ToUpper(), states[i]);
                 stateStructStr.AppendFormat("const StateStruc m_{2}State = {{ {0}_STATE::{3}, \"{1}\", StateType::{0}_STATE, true }};\r\n",
-                    getMechanismName(mech.controlFile).ToUpper(),
+                    getMechanismName(mech.mechanismName).ToUpper(),
                     stateText[i],
                     states[i].ToLower(),
                     states[i].ToUpper());
@@ -379,9 +360,9 @@ namespace CoreCodeGenerator
             sb = sb.Replace("$STATE_STRUCT$", stateStructStr.ToString());
             sb = sb.Replace("$COMMA_SEPARATED_MECHANISM_STATES$", enumContentsStr.ToString().Trim(new char[] { ',', '\r', '\n' }));
             sb = sb.Replace("$XML_STRING_TO_STATE_ENUM_MAP$", XmlStringToStateEnumMapStr.ToString().Trim(new char[] { ',', '\r', '\n' }));
-            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.controlFile)));
-            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.controlFile).ToUpper());
-            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.controlFile).ToLower());
+            sb = sb.Replace("$MECHANISM_NAME$", FirstCharSubstring(getMechanismName(mech.mechanismName)));
+            sb = sb.Replace("$MECHANISM_NAME_UPPERCASE$", getMechanismName(mech.mechanismName).ToUpper());
+            sb = sb.Replace("$MECHANISM_NAME_LOWERCASE$", getMechanismName(mech.mechanismName).ToLower());
             File.WriteAllText(fullPathFilename, sb.ToString());
         }
 
@@ -431,7 +412,7 @@ namespace CoreCodeGenerator
             StringBuilder stateStructStr = new StringBuilder();
             foreach (mechanism m in theRobotConfiguration.theRobot.mechanism)
             {
-                stateStructStr.AppendLine(getMechanismName(m.controlFile) + "_STATE,");
+                stateStructStr.AppendLine(getMechanismName(m.mechanismName) + "_STATE,");
             }
             
             sb = sb.Replace("$STATE_STRUCT$", stateStructStr.ToString().ToUpper());
