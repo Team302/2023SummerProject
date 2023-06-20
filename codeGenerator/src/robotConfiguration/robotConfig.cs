@@ -51,30 +51,6 @@ namespace robotConfiguration
 
                 addProgress("Saving robot configuration " + theRobotConfigFullPathFileName);
                 saveRobotConfiguration(theRobotConfigFullPathFileName);
-
-                if (theRobot.mechanism != null)
-                {
-                    addProgress("Saving state data files...");
-                    foreach (KeyValuePair<string, statedata> kvp in mechanismControlDefinition)
-                    {
-                        string path = Path.GetDirectoryName(theRobotConfigFullPathFileName);
-                        path = Path.Combine(path, "states", kvp.Key);
-                        saveStateDataConfiguration(path, kvp.Value);
-                    }
-
-                    //mechanismControlDefinition = new Dictionary<string, statedata>();
-                    //foreach (mechanism mech in theRobot.mechanism)
-                    //{
-                    //    if (string.IsNullOrEmpty(mech.controlFile))
-                    //        throw new Exception("controlFile for " + mech.type + " cannot be empty");
-
-                    //    string mechanismConfig = Path.Combine(rootRobotConfigFolder, "states", mech.controlFile);
-
-                    //    addProgress("======== Loading mechanism configuration " + mechanismConfig);
-                    //    statedata sd = loadStateDataConfiguration(mechanismConfig);
-                    //    mechanismControlDefinition.Add(mech.controlFile, sd);
-                    //}
-                }
             }
             catch(Exception ex)
             {
@@ -84,11 +60,28 @@ namespace robotConfiguration
 
         robot loadRobotConfiguration(string fullPathName)
         {
+            robot theRobot;
+
             var mySerializer = new XmlSerializer(typeof(robot));
             using (var myFileStream = new FileStream(fullPathName, FileMode.Open))
             {
-                return (robot)mySerializer.Deserialize(myFileStream);
+                 theRobot = (robot)mySerializer.Deserialize(myFileStream);
             }
+
+            for(int i = 0; i < theRobot.mechanism.Count; i++)
+            {
+                mechanism mech = theRobot.mechanism[i];
+
+                mySerializer = new XmlSerializer(typeof(mechanism));
+                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.mechanismName + ".xml");
+                
+                using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
+                {
+                    mech = (mechanism)mySerializer.Deserialize(myFileStream);
+                }
+            }
+
+            return theRobot;
         }
 
         void saveRobotConfiguration(string fullPathName)
@@ -100,7 +93,19 @@ namespace robotConfiguration
             var mySerializer = new XmlSerializer(typeof(robot));
             XmlWriter tw = XmlWriter.Create(fullPathName, xmlWriterSettings);
             mySerializer.Serialize(tw, theRobot);
+
             tw.Close();
+
+            foreach (mechanism mech in theRobot.mechanism)
+            {
+                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.mechanismName + ".xml");
+
+                mySerializer = new XmlSerializer(typeof(mechanism));
+                tw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings);
+                mySerializer.Serialize(tw, mech);
+
+                tw.Close();
+            }
         }
 
         statedata loadStateDataConfiguration(string fullPathName)
