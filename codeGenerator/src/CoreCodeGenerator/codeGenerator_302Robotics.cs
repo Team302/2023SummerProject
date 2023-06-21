@@ -71,28 +71,41 @@ namespace CoreCodeGenerator
 
             foreach (mechanism mech in theRobotConfiguration.theRobot.mechanism)
             {
-                string templateString;
                 string filePathName;
+                string resultString;
 
                 string mechanismName = mech.mechanismName;
 
                 createMechanismFolder(mechanismName);
 
                 #region Generate Cpp File
-                templateString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
-
+                resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
                 filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
 
-                File.WriteAllText(filePathName, templateString);
+                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+                resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
+                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+                File.WriteAllText(filePathName, resultString);
                 #endregion
 
                 #region Generate H File
-                templateString = loadTemplate(theToolConfiguration.templateMechanismHPath);
-
+                resultString = loadTemplate(theToolConfiguration.templateMechanismHPath);
                 filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
-                File.WriteAllText(filePathName, templateString);
+
+                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+                File.WriteAllText(filePathName, resultString);
                 #endregion
             }
+        }
+
+        private string getIncludePath(string mechanismName)
+        {
+            return getMechanismOutputPath(mechanismName).Replace(theToolConfiguration.rootOutputFolder, "").Replace(@"\", "/").TrimStart('/');
         }
 
         private void createMechanismFolder(string mechanismName)
