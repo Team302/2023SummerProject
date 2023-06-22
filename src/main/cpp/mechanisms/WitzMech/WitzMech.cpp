@@ -26,16 +26,20 @@
 //==============================================================
 
 
+// FRC Includes
+#include <networktables/NetworkTableInstance.h>
+
+
 #include <mechanisms/WitzMech/WitzMech.h>
 
 WitzMech::WitzMech()
 {
-
 }
 
 void WitzMech::Initialize()
 {
-
+    m_table = nt::NetworkTableInstance::GetDefault().GetTable(m_ntName);
+    m_table.get()->PutBoolean("Enable Tuning for WitzMech?", m_tuning);
 }
 void WitzMech::Cyclic()
 {
@@ -47,9 +51,9 @@ void WitzMech::Cyclic()
 }
 void WitzMech::CheckForTuningEnabled()
 {
-    //set m_tuning from NT
+    m_tuning = m_table.get()->GetBoolean("Enable Tuning for WitzMech?", false);
 }
 void WitzMech::ReadTuningParamsFromNT()
 {
-    //set tunable params from NT
+    
 }

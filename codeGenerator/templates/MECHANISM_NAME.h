@@ -4,7 +4,10 @@ $$_GEN_NOTICE_$$
 #pragma once
 
 #include <string>
-//NT includes
+#include <memory>
+
+// FRC Includes
+#include <networktables/NetworkTable.h>
 
 class $$_MECHANISM_NAME_$$
 {
@@ -19,6 +22,7 @@ class $$_MECHANISM_NAME_$$
 
         $$_TUNABLE_PARAMETERS_$$
 
-        std::string m_ntName = "$$_MECHANISM_NAME_$$_Tuning";
+        std::string m_ntName = "$$_MECHANISM_NAME_$$";
         bool m_tuning = false;
+        std::shared_ptr<nt::NetworkTable> m_table;
 };

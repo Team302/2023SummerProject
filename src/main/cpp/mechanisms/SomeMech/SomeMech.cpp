@@ -26,16 +26,20 @@
 //==============================================================
 
 
+// FRC Includes
+#include <networktables/NetworkTableInstance.h>
+
+
 #include <mechanisms/SomeMech/SomeMech.h>
 
 SomeMech::SomeMech()
 {
-
 }
 
 void SomeMech::Initialize()
 {
-
+    m_table = nt::NetworkTableInstance::GetDefault().GetTable(m_ntName);
+    m_table.get()->PutBoolean("Enable Tuning for SomeMech?", m_tuning);
 }
 void SomeMech::Cyclic()
 {
@@ -47,9 +51,19 @@ void SomeMech::Cyclic()
 }
 void SomeMech::CheckForTuningEnabled()
 {
-    //set m_tuning from NT
+    m_tuning = m_table.get()->GetBoolean("Enable Tuning for SomeMech?", false);
 }
 void SomeMech::ReadTuningParamsFromNT()
 {
-    //set tunable params from NT
+    FirstGains_pGain = m_table.get()->GetNumber("FirstGains_pGain", 0);
+FirstGains_iGain = m_table.get()->GetNumber("FirstGains_iGain", 0);
+FirstGains_dGain = m_table.get()->GetNumber("FirstGains_dGain", 0);
+FirstGains_fGain = m_table.get()->GetNumber("FirstGains_fGain", 0);
+FirstGains_iZone = m_table.get()->GetNumber("FirstGains_iZone", 0);
+SecondGains_pGain = m_table.get()->GetNumber("SecondGains_pGain", 0);
+SecondGains_iGain = m_table.get()->GetNumber("SecondGains_iGain", 0);
+SecondGains_dGain = m_table.get()->GetNumber("SecondGains_dGain", 0);
+SecondGains_fGain = m_table.get()->GetNumber("SecondGains_fGain", 0);
+SecondGains_iZone = m_table.get()->GetNumber("SecondGains_iZone", 0);
+
 }

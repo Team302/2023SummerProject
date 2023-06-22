@@ -29,7 +29,10 @@
 #pragma once
 
 #include <string>
-//NT includes
+#include <memory>
+
+// FRC Includes
+#include <networktables/NetworkTable.h>
 
 class WitzMech
 {
@@ -44,6 +47,7 @@ class WitzMech
 
         
 
-        std::string m_ntName = "WitzMech_Tuning";
+        std::string m_ntName = "WitzMech";
         bool m_tuning = false;
+        std::shared_ptr<nt::NetworkTable> m_table;
 };
