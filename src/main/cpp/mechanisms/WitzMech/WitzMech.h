@@ -44,6 +44,7 @@ class WitzMech
     private:
         void CheckForTuningEnabled();
         void ReadTuningParamsFromNT();
+        void PushTuningParamsToNT();
 
         
 

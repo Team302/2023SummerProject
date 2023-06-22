@@ -41,6 +41,7 @@ void WitzMech::Initialize()
     m_table = nt::NetworkTableInstance::GetDefault().GetTable(m_ntName);
     m_table.get()->PutBoolean("Enable Tuning for WitzMech?", m_tuning);
 }
+
 void WitzMech::Cyclic()
 {
     CheckForTuningEnabled();
@@ -49,11 +50,23 @@ void WitzMech::Cyclic()
         ReadTuningParamsFromNT();
     }
 }
+
 void WitzMech::CheckForTuningEnabled()
 {
+    bool pastTuning = m_tuning;
     m_tuning = m_table.get()->GetBoolean("Enable Tuning for WitzMech?", false);
+    if(pastTuning != m_tuning && m_tuning == true)
+    {
+        PushTuningParamsToNT();
+    }
 }
+
 void WitzMech::ReadTuningParamsFromNT()
+{
+    
+}
+
+void WitzMech::PushTuningParamsToNT()
 {
     
 }

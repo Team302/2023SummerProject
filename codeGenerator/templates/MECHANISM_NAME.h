@@ -19,6 +19,7 @@ class $$_MECHANISM_NAME_$$
     private:
         void CheckForTuningEnabled();
         void ReadTuningParamsFromNT();
+        void PushTuningParamsToNT();
 
         $$_TUNABLE_PARAMETERS_$$
 

@@ -87,7 +87,7 @@ namespace CoreCodeGenerator
                 resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
                 resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
 
-                //closed loop parameters
+                #region Tunable Parameters
                 string allParameterReading = "";
                 foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
                 {
@@ -99,12 +99,30 @@ namespace CoreCodeGenerator
                     {
                         bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
                         if (!skip)
-                            //cLCParams.name_pi.name = m_table.get()->GetNumber("cLCParams.name_pi.name", pi.GetValue(cLCParams));
                             allParameterReading += string.Format("{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", {2});{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
                     }
 
                 }
                 resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
+
+                string allParameterWriting = "";
+                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+                {
+                    Type objType = cLCParams.GetType();
+
+                    PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                    foreach (PropertyInfo pi in propertyInfos)
+                    {
+                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                        if (!skip)
+                            allParameterWriting += string.Format("{0}_{1} = m_table.get()->PutNumber(\"{0}_{1}\", {0}_{1});{2}", cLCParams.name, pi.Name, Environment.NewLine);
+                    }
+
+                }
+                resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
+
+                #endregion
 
                 File.WriteAllText(filePathName, resultString);
                 #endregion

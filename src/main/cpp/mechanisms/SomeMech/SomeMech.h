@@ -44,15 +44,16 @@ class SomeMech
     private:
         void CheckForTuningEnabled();
         void ReadTuningParamsFromNT();
+        void PushTuningParamsToNT();
 
-        double FirstGains_pGain = 0;
-double FirstGains_iGain = 0;
-double FirstGains_dGain = 0;
-double FirstGains_fGain = 0;
-double FirstGains_iZone = 0;
-double SecondGains_pGain = 0;
+        double FirstGains_pGain = 1;
+double FirstGains_iGain = 1;
+double FirstGains_dGain = 6;
+double FirstGains_fGain = 9;
+double FirstGains_iZone = 1;
+double SecondGains_pGain = 3;
 double SecondGains_iGain = 0;
-double SecondGains_dGain = 0;
+double SecondGains_dGain = 2;
 double SecondGains_fGain = 0;
 double SecondGains_iZone = 0;
 
