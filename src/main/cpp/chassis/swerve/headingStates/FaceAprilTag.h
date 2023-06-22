@@ -19,6 +19,8 @@
 #include <chassis/swerve/headingStates/ISwerveDriveOrientation.h>
 #include <DragonVision/DragonVision.h>
 
+#include <numbers>
+
 class FaceAprilTag : public ISwerveDriveOrientation
 {
 public:
@@ -38,8 +40,8 @@ private:
     // Angular movement settings
     const double m_minimumOmega_radps = 0.5;
     const double m_maximumOmega_radps = 1.2;
-    const double m_AngularTolerance_rad = std::numbers::pi * 2.0 / 180.0;
-    const double m_inhibitXspeedAboveAngularError_rad = std::numbers::pi * 5.0 / 180.0;
+    const double m_AngularTolerance_rad = 3.1415 * 2.0 / 180.0;
+    const double m_inhibitXspeedAboveAngularError_rad = 3.1415 * 5.0 / 180.0;
     double m_visionKP_Angle = 4.0;
 
     const units::length::inch_t m_cubeNodeLength = units::length::inch_t(37.0);

@@ -65,12 +65,12 @@ public:
 	/// @brief  convert a number in degress to a number in radians
 	/// @param degrees
 	/// @return value in radians
-	inline static double DegreesToRadians(double degrees) { return degrees * std::numbers::pi / 180.0; }
+	inline static double DegreesToRadians(double degrees) { return degrees * 3.1415 / 180.0; }
 
 	/// @brief  convert a number in radians to a number in degrees
 	/// @param radians
 	/// @return value in degrees
-	inline static double RadiansToDegress(double radians) { return radians * 180.0 / std::numbers::pi; }
+	inline static double RadiansToDegress(double radians) { return radians * 180.0 / 3.1415; }
 
 	//-------------  Linear Position Conversions
 
@@ -78,13 +78,13 @@ public:
 	/// @param [in] revolutions
 	/// @param [in] diameter in inches
 	/// @return double position in inches
-	inline static double RevolutionsToInches(double revolutions, double diameter) { return revolutions * std::numbers::pi * diameter; }
+	inline static double RevolutionsToInches(double revolutions, double diameter) { return revolutions * 3.1415 * diameter; }
 
 	/// @brief Convert from Inches to revolutions
 	/// @param [in] Inches
 	/// @param [in] diameter in inches
 	/// @return double number of revolutions
-	inline static double InchesToRevolutions(double inches, double diameter) { return inches / (std::numbers::pi * diameter); }
+	inline static double InchesToRevolutions(double inches, double diameter) { return inches / (3.1415 * diameter); }
 
 	/// @brief Convert from counts to Inches
 	/// @param [in] counts
@@ -136,13 +136,13 @@ public:
 	/// @param [in] revolutions per second
 	/// @param [in] diameter in inches
 	/// @return double inches per second
-	inline static double RPSToInchesPerSecond(double rps, double diameter) { return rps * std::numbers::pi * diameter; }
+	inline static double RPSToInchesPerSecond(double rps, double diameter) { return rps * 3.1415 * diameter; }
 
 	/// @brief Convert from inches per second to RPS
 	/// @param [in] inches per second
 	/// @param [in] diameter in inches
 	/// @return double revolutions per second
-	inline static double InchesPerSecondToRPS(double inchesPerSecond, double diameter) { return inchesPerSecond / (std::numbers::pi * diameter); }
+	inline static double InchesPerSecondToRPS(double inchesPerSecond, double diameter) { return inchesPerSecond / (3.1415 * diameter); }
 
 	/// @brief Convert from inches per second to units/100ms (ctre units)
 	/// @param [in] inches per second

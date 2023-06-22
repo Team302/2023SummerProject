@@ -26,7 +26,12 @@ void $$_MECHANISM_NAME_$$::Cyclic()
 }
 void $$_MECHANISM_NAME_$$::CheckForTuningEnabled()
 {
+    bool pastTuning = m_tuning;
     m_tuning = m_table.get()->GetBoolean("Enable Tuning for $$_MECHANISM_NAME_$$?", false);
+    if(pastTuning != m_tuning && m_tuning == true)
+    {
+        PushTuningParamsToNT();
+    }
 }
 void $$_MECHANISM_NAME_$$::ReadTuningParamsFromNT()
 {

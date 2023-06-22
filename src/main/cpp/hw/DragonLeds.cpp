@@ -101,7 +101,7 @@ void DragonLeds::commitLedData()
 
 void DragonLeds::setBufferAllLEDsColor(std::array<int, 3> color)
 {
-    for (uint i = 0; i < m_ledBuffer.size(); i++)
+    for (unsigned int i = 0; i < m_ledBuffer.size(); i++)
     {
         m_ledBuffer[i].SetRGB(color[0], color[1], color[2]);
     }
@@ -109,7 +109,7 @@ void DragonLeds::setBufferAllLEDsColor(std::array<int, 3> color)
 
 void DragonLeds::setBufferAllLEDsAlternatingColor(std::array<int, 3> color1, std::array<int, 3> color2)
 {
-    for (uint i = 0; i < m_ledBuffer.size(); i++)
+    for (unsigned int i = 0; i < m_ledBuffer.size(); i++)
     {
         if (i % 2 == 0)
             m_ledBuffer[i].SetRGB(color1[0], color1[1], color1[2]);

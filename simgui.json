@@ -6,7 +6,18 @@
       "/SmartDashboard/Auto Modes": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Logging Levels": "String Chooser",
-      "/SmartDashboard/Logging Options": "String Chooser"
+      "/SmartDashboard/Logging Options": "String Chooser",
+      "/SmartDashboard/Numofpcs": "String Chooser",
+      "/SmartDashboard/StartPos": "String Chooser",
+      "/SmartDashboard/get cube": "String Chooser",
+      "/SmartDashboard/park on charg station": "String Chooser"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SomeMech": {
+        "open": true
+      }
     }
   }
 }
