@@ -42,7 +42,7 @@ class WitzMech
         void CheckForTuningEnabled();
         void ReadTuningParamsFromNT();
 
-        $$_TUNABLE_PARAMETERS_$$
+        
 
         std::string m_ntName = "WitzMech_Tuning";
         bool m_tuning = false;

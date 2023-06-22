@@ -98,6 +98,23 @@ namespace CoreCodeGenerator
                 resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
                 resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
 
+                //closed loop parameters
+                string allParameters = "";
+                foreach(closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+                {
+                    Type objType = cLCParams.GetType();
+
+                    PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                    foreach (PropertyInfo pi in propertyInfos)
+                    {
+                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                        if(!skip)
+                            allParameters += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
+                    }
+                }
+                resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
+
                 File.WriteAllText(filePathName, resultString);
                 #endregion
             }
