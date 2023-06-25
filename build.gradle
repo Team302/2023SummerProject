@@ -55,13 +55,41 @@ model {
             }
 
             sources.cpp {
+                def cppDir = 'src/main/cpp/' //default will be comp bot, will make src/main/cpp/comp later
+                switch(project.frc.getTeamNumber()){
+                    case 302:
+                        println("Building code for comp bot")
+                        //don't need to set cppDir because it already points to comp bot
+                        break;
+                    case 2023:
+                    case 2024:
+                        cppDir='src/main/cpp/practice'
+                        println("Building code for practice bot")
+                        break;
+                    case 1:
+                        cppDir='src/main/cpp/thing1'
+                        println("Building code for thing 1")
+                        break;
+                    case 2:
+                        cppDir='src/main/cpp/thing2'
+                        println("Building code for thing 2")
+                    case 333:
+                        cppDir='src/main/cpp/simulation'
+                        println("Building code for simulation")
+                        break;
+                    default:
+                        println("Team number not found, building code for comp bot")
+                        //don't need to set cppDir because it already points to comp bot
+                        break;
+                }
+
                 source {
-                    srcDir 'src/main/cpp'
+                    srcDir cppDir
                     srcDir 'src/main/thirdparty'
                     include '**/*.cpp','**/*.cxx', '**/*.cc', '**/*.c'
                 }
                 exportedHeaders {
-                    srcDir 'src/main/cpp'
+                    srcDir cppDir
                     srcDir 'src/main/thirdparty'
                     include '**/*.hpp', '**/*.hxx', '**/*.h'
                 }
