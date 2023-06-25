@@ -65,9 +65,7 @@ tasks.build.doLast() {
    // Parse the output into a string
    def branch = stdout.toString().trim()
 
-   new File(
-      projectDir.toString() + "/src/main/utilities",
-      "BuildDetails.txt"
+   new File(projectDir.toString() + "/src/main/utilities", "BuildDetails.txt"
    ).text = "Branch: (B)" + branch + "(B) "+ "\nCommit Hash: (H)" + commitHash + "(H)" + "\nTeam Number: (TN)" + project.frc.getTeamNumber() + "(TN)"
 
     println("Wrote details")
