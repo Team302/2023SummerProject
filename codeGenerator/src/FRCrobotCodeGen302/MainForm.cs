@@ -488,7 +488,7 @@ namespace FRCrobotCodeGen302
                     }
                     enableCallback = true;
                 }
-                else if(e.Node.Tag is robot)
+                else
                 {
                     lastSelectedValueNode = e.Node;
                 }
