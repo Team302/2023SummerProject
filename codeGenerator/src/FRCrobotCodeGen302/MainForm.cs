@@ -632,6 +632,7 @@ namespace FRCrobotCodeGen302
                 if(tn != null)
                     robotTreeView.SelectedNode = tn;
 
+                setNeedsSaving();
             }
 
             else if (lastSelectedArrayNode != null)
@@ -645,6 +646,8 @@ namespace FRCrobotCodeGen302
                 int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
 
                 AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+
+                setNeedsSaving();
             }
         }
 
@@ -766,6 +769,11 @@ namespace FRCrobotCodeGen302
                             parent.Tag.GetType().GetMethod("Remove").Invoke(parent.Tag, new object[] { theObjectToDelete });
                             tn.Remove();
                             setNeedsSaving();
+                           
+                            if((int)parent.Tag.GetType().GetProperty("Count").GetValue(parent.Tag) == 0)
+                            {
+                                parent.Remove();
+                            }
                         }
                     }
                 }
