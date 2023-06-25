@@ -488,7 +488,7 @@ namespace FRCrobotCodeGen302
                     }
                     enableCallback = true;
                 }
-                else
+                else if(e.Node.Tag is robot)
                 {
                     lastSelectedValueNode = e.Node;
                 }
@@ -632,7 +632,6 @@ namespace FRCrobotCodeGen302
                 if(tn != null)
                     robotTreeView.SelectedNode = tn;
 
-                setNeedsSaving();
             }
 
             else if (lastSelectedArrayNode != null)
@@ -646,8 +645,6 @@ namespace FRCrobotCodeGen302
                 int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
 
                 AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
-
-                setNeedsSaving();
             }
         }
 
