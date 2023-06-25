@@ -66,7 +66,7 @@ tasks.build.doLast() {
    def branch = stdout.toString().trim()
 
    new File(projectDir.toString() + "/src/main/utilities", "BuildDetails.txt"
-   ).text = "Branch: (B)" + branch + "(B) "+ "\nCommit Hash: (H)" + commitHash + "(H)" + "\nTeam Number: (TN)" + project.frc.getTeamNumber() + "(TN)"
+   ).text = "Branch: (B)" + branch + "(B) "+ "\nCommit Hash: (H)" + commitHash + "(H)" + "\nTeam Number: (TN)" + project.frc.getTeamOrDefault(302) + "(TN)"
 
     println("Wrote details")
     if(ant.properties.answer == 'N' || ant.properties.answer == 'n')
@@ -87,7 +87,7 @@ model {
             String lastBuildDetails = new File(projectDir.toString() + "/src/main/utilities/BuildDetails.txt").text
 
             String lastTeamNum = lastBuildDetails.takeBetween("(TN)")
-            if(lastTeamNum.toInteger() != project.frc.getTeamNumber())
+            if(lastTeamNum.toInteger() != project.frc.getTeamOrDefault(302))
             {
                 
                 ant.input(message: 'Current team number does not match what code was built with, continue? Y/N:', addproperty: 'answer', defaultValue : 'N')
@@ -101,7 +101,7 @@ model {
 
             sources.cpp {
                 def cppDir = 'src/main/cpp/' //default will be comp bot, will make src/main/cpp/comp later
-                switch(project.frc.getTeamNumber()){
+                switch(project.frc.getTeamOrDefault(302)){
                     case 302:
                         println("Building code for comp bot")
                         //don't need to set cppDir because it already points to comp bot
