@@ -46,9 +46,42 @@ wpi.sim.addGui().defaultEnabled = true
 // Enable DS but not by default
 wpi.sim.addDriverstation()
 
+/// Variables for coloring/formatting terminal output, uses ANSI codes
+def ansiEscape = "\033["
+def boldEffect = "1"
+def resetText = "0"
+def redColor = "31"
+def brightGreenColor = "92"
+def greenColor = "32"
+def yellowColor = "33"
+def ansiEnd = "m"
+def endSequence = ansiEscape + resetText + ansiEnd
+
+/// Check current team number and the team number used to build
+/// If theres a mismatch, allow the user to either continue or stop the build
+tasks.discoverroborio.doFirst() {
+    println("Checking team numbers")
+    //check for version mismatch
+    String lastBuildDetails = new File(projectDir.toString() + "/src/main/utilities/BuildDetails.txt").text
+
+    String lastTeamNum = lastBuildDetails.takeBetween("(TN)")
+    if(lastTeamNum.toInteger() != project.frc.getTeamOrDefault(302))
+    {
+        println("Last built with team number: " + lastTeamNum)
+        println("Current team number: " + project.frc.getTeamOrDefault(302))
+        def startSequence = ansiEscape + boldEffect + ";" + yellowColor + ansiEnd
+        ant.input(message: startSequence + 'WARNING: ' + endSequence + 'Current team number does not match what code was built with, continue? Y/N:', addproperty: 'answer', defaultValue : 'N')
+        def answer = ant.properties.answer
+        if(answer == 'N' || answer == 'n')
+        {
+            startSequence = ansiEscape + boldEffect + ";" + redColor + ansiEnd
+            throw new GradleException(startSequence + "Deploy stopped due to team number mismatch" + endSequence)
+        }
+    }
+}
+
 tasks.build.doLast() {
    def stdout = new ByteArrayOutputStream()
-
    exec {
      commandLine "git", "rev-parse", "HEAD"
      standardOutput = stdout
@@ -65,14 +98,22 @@ tasks.build.doLast() {
    // Parse the output into a string
    def branch = stdout.toString().trim()
 
-   new File(projectDir.toString() + "/src/main/utilities", "BuildDetails.txt"
+   def path = "/src/main/utilities"
+   def filename = "BuildDetails.txt"
+
+   new File(projectDir.toString() + path, filename
    ).text = "Branch: (B)" + branch + "(B) "+ "\nCommit Hash: (H)" + commitHash + "(H)" + "\nTeam Number: (TN)" + project.frc.getTeamOrDefault(302) + "(TN)"
 
-    println("Wrote details")
-    if(ant.properties.answer == 'N' || ant.properties.answer == 'n')
-    {
-        println("Build was not successful even though it says that below.  Please rebuild")
-    }
+    def startSequence = ansiEscape + boldEffect + ";" + brightGreenColor + ansiEnd
+    def secondSequence = ansiEscape + brightGreenColor + ansiEnd
+    println(startSequence + "Wrote build details to: " + endSequence + path + "/" + filename)
+
+    def boldSequence = ansiEscape + boldEffect + ansiEnd
+    def branchString = "\n\t" + boldSequence + "Branch: " + endSequence + branch
+    def commitString = "\n\t" + boldSequence + "Commit Hash: " + endSequence + commitHash
+    def teamNumString = "\n\t" + boldSequence + "Team Number: " + secondSequence + project.frc.getTeamOrDefault(302) + endSequence
+
+    println("Contents: " + branchString + commitString + teamNumString)
 }
 
 model {
@@ -83,47 +124,49 @@ model {
                 targetPlatform wpi.platforms.desktop
             }
 
-            //check for version mismatch
-            String lastBuildDetails = new File(projectDir.toString() + "/src/main/utilities/BuildDetails.txt").text
-
-            String lastTeamNum = lastBuildDetails.takeBetween("(TN)")
-            if(lastTeamNum.toInteger() != project.frc.getTeamOrDefault(302))
-            {
-                
-                ant.input(message: 'Current team number does not match what code was built with, continue? Y/N:', addproperty: 'answer', defaultValue : 'N')
-                def answer = ant.properties.answer
-                if(answer == 'N' || answer == 'n')
-                {
-                    println("Answer was no")
-                    return false
-                }
-            }
-
             sources.cpp {
                 def cppDir = 'src/main/cpp/' //default will be comp bot, will make src/main/cpp/comp later
+                
+                def boldSequence = ansiEscape + boldEffect + ansiEnd
                 switch(project.frc.getTeamOrDefault(302)){
                     case 302:
+                        print(boldSequence)
                         println("Building code for comp bot")
+                        print(endSequence)
                         //don't need to set cppDir because it already points to comp bot
                         break;
                     case 2023:
                     case 2024:
                         cppDir='src/main/cpp/practice'
+
+                        print(boldSequence)
                         println("Building code for practice bot")
+                        print(endSequence)
                         break;
                     case 1:
                         cppDir='src/main/cpp/thing1'
+
+                        print(boldSequence)
                         println("Building code for thing 1")
+                        print(endSequence)
                         break;
                     case 2:
                         cppDir='src/main/cpp/thing2'
+
+                        print(boldSequence)
                         println("Building code for thing 2")
+                        print(endSequence)
+                        break;
                     case 333:
                         cppDir='src/main/cpp/simulation'
+
+                        print(boldSequence)
                         println("Building code for simulation")
+                        print(endSequence)
                         break;
                     default:
-                        println("Team number not found, building code for comp bot")
+                        def startSequence = ansiEscape + boldEffect + ";" + yellowColor + ansiEnd
+                        println(startSequence + "WARNING: " + endSequence + "Team number not found, building code for comp bot")
                         //don't need to set cppDir because it already points to comp bot
                         break;
                 }
