@@ -123,60 +123,24 @@ model {
             if (includeDesktopSupport) {
                 targetPlatform wpi.platforms.desktop
             }
+            binaries.all {
+                def robotVariant = "ROBOT_VARIANT_" + project.frc.getTeamOrDefault(302)
+                cppCompiler.args('-D'+robotVariant)
+            }            
 
             sources.cpp {
-                def cppDir = 'src/main/cpp/' //default will be comp bot, will make src/main/cpp/comp later
-                
-                switch(project.frc.getTeamOrDefault(302)){
-                    case 302:
-                        print(boldSequence)
-                        println("Building code for comp bot")
-                        print(endSequence)
-                        //don't need to set cppDir because it already points to comp bot
-                        break;
-                    case 2023:
-                    case 2024:
-                        cppDir='src/main/cpp/practice'
-
-                        print(boldSequence)
-                        println("Building code for practice bot")
-                        print(endSequence)
-                        break;
-                    case 1:
-                        cppDir='src/main/cpp/thing1'
-
-                        print(boldSequence)
-                        println("Building code for thing 1")
-                        print(endSequence)
-                        break;
-                    case 2:
-                        cppDir='src/main/cpp/thing2'
-
-                        print(boldSequence)
-                        println("Building code for thing 2")
-                        print(endSequence)
-                        break;
-                    case 333:
-                        cppDir='src/main/cpp/simulation'
-
-                        print(boldSequence)
-                        println("Building code for simulation")
-                        print(endSequence)
-                        break;
-                    default:
-                        def startSequence = ansiEscape + boldEffect + ";" + yellowColor + ansiEnd
-                        println(startSequence + "WARNING: " + endSequence + "Team number not found, building code for comp bot")
-                        //don't need to set cppDir because it already points to comp bot
-                        break;
-                }
+                //say which robot we are building for
+                print(boldSequence)
+                println("Building code for robot with team number: " + project.frc.getTeamOrDefault(302))
+                print(endSequence)
 
                 source {
-                    srcDir cppDir
+                    srcDir 'src/main/cpp'
                     srcDir 'src/main/thirdparty'
                     include '**/*.cpp','**/*.cxx', '**/*.cc', '**/*.c'
                 }
                 exportedHeaders {
-                    srcDir cppDir
+                    srcDir 'src/main/cpp'
                     srcDir 'src/main/thirdparty'
                     include '**/*.hpp', '**/*.hxx', '**/*.h'
                 }

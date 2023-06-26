@@ -34,6 +34,10 @@
 /// DEBUGGING
 #include <hw/factories/PigeonFactory.h>
 
+#ifdef ROBOT_VARIANT_302
+#error Comp bot
+#endif
+
 using namespace std;
 
 void Robot::RobotInit()
