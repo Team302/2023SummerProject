@@ -34,9 +34,13 @@
 /// DEBUGGING
 #include <hw/factories/PigeonFactory.h>
 
-#ifdef ROBOT_VARIANT_302
-#error Comp bot
+/* How to check robot variant
+#if ROBOT_VARIANT == 2024
+#warning COMP BOT
+#else
+#warning UNKNOWN
 #endif
+*/
 
 using namespace std;
 

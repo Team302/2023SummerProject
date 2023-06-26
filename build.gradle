@@ -124,7 +124,7 @@ model {
                 targetPlatform wpi.platforms.desktop
             }
             binaries.all {
-                def robotVariant = "ROBOT_VARIANT_" + project.frc.getTeamOrDefault(302)
+                def robotVariant = "ROBOT_VARIANT=" + project.frc.getTeamOrDefault(302)
                 cppCompiler.args('-D'+robotVariant)
             }            
 
