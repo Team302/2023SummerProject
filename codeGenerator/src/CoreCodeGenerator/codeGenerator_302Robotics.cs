@@ -68,93 +68,95 @@ namespace CoreCodeGenerator
             List<string> mechMainFiles = new List<string>();
             List<string> mechStateFiles = new List<string>();
             List<string> mechStateMgrFiles = new List<string>();
-
-            foreach (mechanism mech in theRobotConfiguration.theRobot.mechanism)
+            foreach (robot theRobot in theRobotConfiguration.theRobotVariants.robot)
             {
-                string filePathName;
-                string resultString;
-
-                string mechanismName = mech.mechanismName;
-
-                createMechanismFolder(mechanismName);
-
-                #region Generate Cpp File
-                resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
-                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
-
-                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
-                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                #region Tunable Parameters
-                string allParameterReading = "";
-                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+                foreach (mechanism mech in theRobot.mechanism)
                 {
-                    Type objType = cLCParams.GetType();
+                    string filePathName;
+                    string resultString;
 
-                    PropertyInfo[] propertyInfos = objType.GetProperties();
+                    string mechanismName = mech.mechanismName;
 
-                    foreach (PropertyInfo pi in propertyInfos)
+                    createMechanismFolder(mechanismName);
+
+                    #region Generate Cpp File
+                    resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
+                    filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
+
+                    resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+                    resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+                    resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
+                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+                    #region Tunable Parameters
+                    string allParameterReading = "";
+                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
                     {
-                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                        if (!skip)
-                            allParameterReading += string.Format("{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", {2});{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
+                        Type objType = cLCParams.GetType();
+
+                        PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                        foreach (PropertyInfo pi in propertyInfos)
+                        {
+                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                            if (!skip)
+                                allParameterReading += string.Format("{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", {2});{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
+                        }
+
                     }
+                    resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
 
-                }
-                resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
-
-                string allParameterWriting = "";
-                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                {
-                    Type objType = cLCParams.GetType();
-
-                    PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                    foreach (PropertyInfo pi in propertyInfos)
+                    string allParameterWriting = "";
+                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
                     {
-                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                        if (!skip)
-                            allParameterWriting += string.Format("{0}_{1} = m_table.get()->PutNumber(\"{0}_{1}\", {0}_{1});{2}", cLCParams.name, pi.Name, Environment.NewLine);
+                        Type objType = cLCParams.GetType();
+
+                        PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                        foreach (PropertyInfo pi in propertyInfos)
+                        {
+                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                            if (!skip)
+                                allParameterWriting += string.Format("{0}_{1} = m_table.get()->PutNumber(\"{0}_{1}\", {0}_{1});{2}", cLCParams.name, pi.Name, Environment.NewLine);
+                        }
+
                     }
+                    resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
 
-                }
-                resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
+                    #endregion
 
-                #endregion
+                    File.WriteAllText(filePathName, resultString);
+                    #endregion
 
-                File.WriteAllText(filePathName, resultString);
-                #endregion
+                    #region Generate H File
+                    resultString = loadTemplate(theToolConfiguration.templateMechanismHPath);
+                    filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
 
-                #region Generate H File
-                resultString = loadTemplate(theToolConfiguration.templateMechanismHPath);
-                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
+                    resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+                    resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
 
-                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                //closed loop parameters
-                string allParameters = "";
-                foreach(closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                {
-                    Type objType = cLCParams.GetType();
-
-                    PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                    foreach (PropertyInfo pi in propertyInfos)
+                    //closed loop parameters
+                    string allParameters = "";
+                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
                     {
-                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                        if(!skip)
-                            allParameters += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
+                        Type objType = cLCParams.GetType();
+
+                        PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                        foreach (PropertyInfo pi in propertyInfos)
+                        {
+                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                            if (!skip)
+                                allParameters += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
+                        }
+
                     }
+                    resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
 
+                    File.WriteAllText(filePathName, resultString);
+                    #endregion
                 }
-                resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
-
-                File.WriteAllText(filePathName, resultString);
-                #endregion
             }
         }
 

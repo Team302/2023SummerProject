@@ -11,6 +11,15 @@
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="mechanism" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="camera" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="roborio" />
+				<xs:element name="robotID" type="xs:unsignedInt"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="robotVariants">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="1" maxOccurs="unbounded" ref="robot" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -587,7 +596,7 @@
 				<xs:element default="0" name="countsPerRev" type="xs:string" />
 				<xs:element default="1" name="gearRatio" type="xs:string" />
 				<xs:element default="false" name="brakeMode" type="xs:boolean"/>
-				<xs:element default="-1" name="motorIDtoFollow" ref="canID" />
+				<xs:element default="-1" name="motorIDtoFollow" type="xs:int" />
 			</xs:sequence>
 			
 			<xs:attribute name="peakCurrentDuration" type="xs:string" />
