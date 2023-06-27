@@ -33,6 +33,11 @@ namespace FRCrobotCodeGen302
             theRobotConfiguration.setProgressCallback(addProgress);
             clearNeedsSaving();
 
+            splitContainer1.SplitterDistance = splitContainer1.Width - 180;
+
+            valueComboBox.Location = valueNumericUpDown.Location;
+            valueTextBox.Location = valueNumericUpDown.Location;
+
             this.Text += " Version " + ProductVersion;
         }
 
@@ -92,75 +97,89 @@ namespace FRCrobotCodeGen302
         }
 
 
-        private void AddNode(TreeNode parent, object obj, string nodeName)
+        private TreeNode AddNode(TreeNode parent, object obj, string nodeName)
         {
             // add this object to the tree
             string extendedNodeName = getTreeNodeDisplayName(parent==null?null:parent.Tag, obj, nodeName);
 
-            TreeNode tn;
+            TreeNode tn = null;
             if (parent == null)
                 tn = robotTreeView.Nodes.Add(extendedNodeName);
             else
-                tn = parent.Nodes.Add(extendedNodeName);
-
-            tn.Tag = obj;
-
-            // if it is a collection, add an entry for each item
-            if (isACollection(obj))
             {
-                ICollection ic = obj as ICollection;
-                if (ic.Count > 0)
+                if (isACollection(obj))
                 {
-                    int index = 0;
-                    foreach (var v in ic)
-                    {
-                        AddNode(tn, v, v.GetType().Name + index);
-
-                        index++;
-                    }
+                    ICollection ic = obj as ICollection;
+                    if (ic.Count > 0)
+                        tn = parent.Nodes.Add(extendedNodeName);
                 }
+                else
+                    tn = parent.Nodes.Add(extendedNodeName);
             }
-            else
+
+            if (tn != null)
             {
-                Type objType = obj.GetType();
+                tn.Tag = obj;
 
-                PropertyInfo[] propertyInfos= objType.GetProperties();  
-
-                if( (objType.FullName != "System.String") && (propertyInfos.Length > 0) )
+                // if it is a collection, add an entry for each item
+                if (isACollection(obj))
                 {
-                    // add its children
-                    string previousName = "";
-                    foreach (PropertyInfo pi in propertyInfos)
+                    ICollection ic = obj as ICollection;
+                    if (ic.Count > 0)
                     {
-                        object theObj = pi.GetValue(obj);
-
-                        //strings have to have some extra handling
-                        if(pi.PropertyType.FullName == "System.String")
+                        int index = 0;
+                        foreach (var v in ic)
                         {
-                            if (theObj == null)
-                            {
-                                theObj = "";
-                                pi.SetValue(obj, "");
-                            }
-                        }
+                            AddNode(tn, v, v.GetType().Name + index);
 
-                        if (theObj != null)
-                        {
-                            if (pi.Name != previousName + "Specified")
-                            {
-                                AddNode(tn, theObj, pi.Name);
-                                previousName = pi.Name;
-                            }
+                            index++;
                         }
                     }
                 }
                 else
                 {
-                    // this means that this is a leaf node
-                    leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj);
-                    tn.Tag = lnt;
+                    Type objType = obj.GetType();
+
+                    PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                    if ((objType.FullName != "System.String") && (propertyInfos.Length > 0))
+                    {
+                        // add its children
+                        string previousName = "";
+                        foreach (PropertyInfo pi in propertyInfos)
+                        {
+                            object theObj = pi.GetValue(obj);
+
+                            //strings have to have some extra handling
+                            if (pi.PropertyType.FullName == "System.String")
+                            {
+                                if (theObj == null)
+                                {
+                                    theObj = "";
+                                    pi.SetValue(obj, "");
+                                }
+                            }
+
+                            if (theObj != null)
+                            {
+                                if (pi.Name != previousName + "Specified")
+                                {
+                                    AddNode(tn, theObj, pi.Name);
+                                    previousName = pi.Name;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // this means that this is a leaf node
+                        leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj);
+                        tn.Tag = lnt;
+                    }
                 }
             }
+
+            return tn;
         }
 
         private void populateTree(robotConfig myRobot)
@@ -323,15 +342,60 @@ namespace FRCrobotCodeGen302
             saveConfigBbutton.Enabled = needsSaving;
         }
 
+        List<robotElementType> getEmptyPossibleCollectionSubTypes(object obj)
+        {
+            List<robotElementType> types = new List<robotElementType>();
+
+            PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
+            foreach(PropertyInfo propertyInfo in propertyInfos)
+            {
+                if( isACollection(propertyInfo.PropertyType))
+                {
+                    ICollection ic = propertyInfo.GetValue(obj) as ICollection;
+                    if(ic.Count == 0)
+                        types.Add(new robotElementType( propertyInfo.PropertyType));
+                }
+            }
+            return types;
+        }
+
+        void hideAllValueEntryBoxes()
+        {
+            bool visible = false;
+
+            valueComboBox.Visible = visible;
+            valueNumericUpDown.Visible = visible;
+            valueTextBox.Visible = visible;
+        }
+        void showValueComboBox()
+        {
+            hideAllValueEntryBoxes();
+            valueComboBox.Visible = true;
+        }
+        
+        void showValueNumericUpDown()
+        {
+            hideAllValueEntryBoxes();
+            valueNumericUpDown.Visible = true;
+        }
+
+        void showValueTextBox()
+        {
+            hideAllValueEntryBoxes();
+            valueTextBox.Visible = true;
+        }
+
+
         TreeNode lastSelectedValueNode = null;
         TreeNode lastSelectedArrayNode = null;
         bool enableCallback = false;
+        List<robotElementType> theCurrentElementPossibilities = new List<robotElementType>();
         private void robotTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
             valueTextBox.Visible = false;
             valueComboBox.Visible = false;
             valueNumericUpDown.Visible = false;
-            addTreeElementButton.Visible = false;
+            addTreeElementButton.Enabled = false;
 
             lastSelectedArrayNode = null;
             lastSelectedValueNode= null;
@@ -339,12 +403,29 @@ namespace FRCrobotCodeGen302
             deleteTreeElementButton.Enabled = isDeletable(e.Node);
 
             if (e.Node.Tag != null)
-            {   
+            {
+                bool visible_And_or_Enabled = false;
+
+                theCurrentElementPossibilities = getEmptyPossibleCollectionSubTypes(e.Node.Tag);
+                if (theCurrentElementPossibilities.Count > 0)
+                {
+                    visible_And_or_Enabled = true;
+
+                    robotElementCheckedListBox.Items.Clear();
+                    foreach (robotElementType t in theCurrentElementPossibilities)
+                    {
+                        robotElementCheckedListBox.Items.Add(t);
+                    }
+                }
+
+                robotElementCheckedListBox.Visible = visible_And_or_Enabled;
+                addRobotElementLabel.Visible = visible_And_or_Enabled;
+                addTreeElementButton.Enabled = visible_And_or_Enabled;
+
                 if (isACollection( e.Node.Tag))
                 {
                     lastSelectedArrayNode = e.Node;
-                    addTreeElementButton.Text = "Add " + e.Node.Tag.GetType().GetElementType();
-                    addTreeElementButton.Visible = true;
+                    addTreeElementButton.Enabled = true;
                 }
                 else if ((e.Node.Parent!=null) && (e.Node.Parent.Tag is robot))
                 {
@@ -366,7 +447,7 @@ namespace FRCrobotCodeGen302
                     enableCallback = false;
                     if (lnt.type.IsEnum)
                     {
-                        valueComboBox.Visible = true;
+                        showValueComboBox();
                         valueComboBox.Items.Clear();
 
                         string[] enumList = Enum.GetNames(lnt.type);
@@ -379,17 +460,17 @@ namespace FRCrobotCodeGen302
                     {
                         valueNumericUpDown.DecimalPlaces = 0;
                         valueNumericUpDown.Value = (uint)value;
-                        valueNumericUpDown.Visible = true;
+                        showValueNumericUpDown();
                     }
                     else if (value is double)
                     {
                         valueNumericUpDown.DecimalPlaces = 5;
                         valueNumericUpDown.Value = Convert.ToDecimal(value);
-                        valueNumericUpDown.Visible = true;
+                        showValueNumericUpDown();
                     }
                     else if (lastSelectedValueNode.Text == "controlFile")
                     {
-                        valueComboBox.Visible = true;
+                        showValueComboBox();
                         valueComboBox.Items.Clear();
 
                         string stateDataFilesPath = Path.Combine(Path.GetDirectoryName(generatorConfig.robotConfiguration), "states");
@@ -402,10 +483,14 @@ namespace FRCrobotCodeGen302
                     }
                     else
                     {
-                        valueTextBox.Visible = true;
+                        showValueTextBox();
                         valueTextBox.Text = value.ToString();
                     }
                     enableCallback = true;
+                }
+                else
+                {
+                    lastSelectedValueNode = e.Node;
                 }
             }
         }
@@ -519,23 +604,60 @@ namespace FRCrobotCodeGen302
 
         private void addTreeElementButton_Click(object sender, EventArgs e)
         {
-            if (lastSelectedArrayNode != null)
+            if (lastSelectedValueNode != null)
+            {
+                TreeNode tn = null;
+                foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems)
+                {
+                    // first create a new element instance
+                    Type elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
+                    object obj = Activator.CreateInstance(elementType);
+
+                    // then find the collection of type robotElementObj.t within lastSelectedValueNode
+                    string name = ((robotElementType)robotElementObj).ToString();
+                    PropertyInfo pi =  lastSelectedValueNode.Tag.GetType().GetProperty(name);
+                    
+                    object theCollectionObj = pi.GetValue(lastSelectedValueNode.Tag, null);
+
+
+                    // then add it to the collection
+                    theCollectionObj.GetType().GetMethod("Add").Invoke(theCollectionObj, new object[] { obj });
+                    int count = (int)theCollectionObj.GetType().GetProperty("Count").GetValue(theCollectionObj);
+
+                    tn = AddNode(lastSelectedValueNode, theCollectionObj, name);
+                    tn.EnsureVisible();
+                    tn.Expand();
+                }
+
+                if(tn != null)
+                    robotTreeView.SelectedNode = tn;
+
+                setNeedsSaving();
+            }
+
+            else if (lastSelectedArrayNode != null)
             {
                 // first create a new instance
-                Type elementType = lastSelectedArrayNode.Tag.GetType().GetGenericArguments().Single(); ;
+                Type elementType = lastSelectedArrayNode.Tag.GetType().GetGenericArguments().Single();
                 object obj = Activator.CreateInstance(elementType);
 
                 // then add it to the collection
-                lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] {obj});
+                lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
                 int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
 
-                AddNode(lastSelectedArrayNode, obj, elementType.Name + (count-1));
+                AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+
+                setNeedsSaving();
             }
         }
 
         private bool isACollection(object obj)
         {
-            Type t = obj.GetType();
+            return isACollection(obj.GetType());
+        }
+
+        private bool isACollection(Type t)
+        {
             return ((t.Name == "Collection`1") && (t.Namespace == "System.Collections.ObjectModel"));
         }
 
@@ -647,6 +769,11 @@ namespace FRCrobotCodeGen302
                             parent.Tag.GetType().GetMethod("Remove").Invoke(parent.Tag, new object[] { theObjectToDelete });
                             tn.Remove();
                             setNeedsSaving();
+                           
+                            if((int)parent.Tag.GetType().GetProperty("Count").GetValue(parent.Tag) == 0)
+                            {
+                                parent.Remove();
+                            }
                         }
                     }
                 }
@@ -670,6 +797,25 @@ namespace FRCrobotCodeGen302
             this.type = type;
             this.name = name;
             this.obj = obj;
+        }
+    }
+
+    class robotElementType
+    {
+        public Type t;
+
+        public robotElementType(Type t)
+        {
+            this.t = t;
+        }
+        public override string ToString()
+        {
+            string s = t.ToString();
+            int indexlastDot = s.LastIndexOf('.');
+            s = s.Substring(indexlastDot + 1);
+            s = s.TrimEnd(']');
+
+            return s;
         }
     }
 }
