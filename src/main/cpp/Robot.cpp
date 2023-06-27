@@ -30,6 +30,7 @@
 #include <utils/WaypointXmlParser.h>
 
 #include <AdjustableItemMgr.h>
+#include <mechanisms/SomeMech/SomeMech.h>
 
 /// DEBUGGING
 #include <hw/factories/PigeonFactory.h>
@@ -77,6 +78,9 @@ void Robot::RobotInit()
     m_previewer = new AutonPreviewer(m_cyclePrims); // TODO:: Move to DriveTeamFeedback
     m_field = DragonField::GetInstance();           // TODO: move to drive team feedback
 
+    m_someMech = new SomeMech();
+    m_someMech->Initialize();
+
     //    m_dragonLimeLight = LimelightFactory::GetLimelightFactory()->GetLimelight(); // ToDo:: Move to Dragon Vision
 
     StateMgrHelper::InitStateMgrs();
@@ -96,6 +100,8 @@ void Robot::RobotPeriodic()
 {
     LoggableItemMgr::GetInstance()->LogData();
     Logger::GetLogger()->PeriodicLog();
+
+    m_someMech->Cyclic();
 
     if (m_chassis != nullptr)
     {

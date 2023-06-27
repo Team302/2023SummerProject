@@ -8,5 +8,8 @@
   <closedLoopControlParameters>
     <name>FirstGains</name>
   </closedLoopControlParameters>
+  <closedLoopControlParameters>
+    <name>SecondGains</name>
+  </closedLoopControlParameters>
   <mechanismName>SomeMech</mechanismName>
 </mechanism>

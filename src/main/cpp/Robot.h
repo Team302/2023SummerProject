@@ -30,6 +30,7 @@ class FMSData;
 class DragonField;
 class AutonPreviewer;
 class RobotState;
+class SomeMech;
 
 class Robot : public frc::TimedRobot
 {
@@ -62,4 +63,5 @@ private:
     DragonField *m_field;
     AutonPreviewer *m_previewer;
     RobotState *m_robotState;
+    SomeMech *m_someMech;
 };
