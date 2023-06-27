@@ -1,61 +1,63 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<robot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <pdp
-    canId="0"
-    type="CTRE" />
-  <chassis
-    type="TANK"
-    wheelDiameter=""
-    wheelBase=""
-    track=""
-    wheelSpeedCalcOption="ETHER"
-    poseEstimationOption="EULERCHASSIS"
-    maxVelocity=""
-    maxAngularVelocity=""
-    maxAcceleration=""
-    maxAngularAcceleration=""
-    networkTable=""
-    controlFile="" />
-  <mechanism>
-    <servo
-      usage=""
-      pwmId="4"
-      minAngle="0.0"
-      maxAngle="360.0" />
-    <closedLoopControlParameters>
-      <name>FirstGains</name>
-    </closedLoopControlParameters>
-    <closedLoopControlParameters>
-      <name>SecondGains</name>
-    </closedLoopControlParameters>
-    <mechanismName>SomeMech</mechanismName>
-  </mechanism>
-  <mechanism>
-    <motor
-      usage=""
-      canId="10"
-      canBusName="rio"
-      pdpID=""
-      type="TALONSRX"
-      inverted="false"
-      sensorInverted="false"
-      feedbackDevice="NONE"
-      countsPerRev="0"
-      gearRatio="1"
-      brakeMode="false"
-      follow="-1"
-      peakCurrentDuration=""
-      continuousCurrentLimit=""
-      peakCurrentLimit=""
-      currentLimiting="false"
-      forwardlimitswitch="false"
-      forwardlimitswitchopen="true"
-      reverselimitswitch="false"
-      reverselimitswitchopen="true"
-      voltageCompensationSaturation="12.0"
-      voltageCompensationEnable="false"
-      countsPerInch="0"
-      countsPerDegree="0" />
-    <mechanismName>WitzMech</mechanismName>
-  </mechanism>
-</robot>
+<robotVariants>
+	<robot>
+		<pdp
+		  canId="0"
+		  type="CTRE" />
+		<chassis
+		  type="TANK"
+		  wheelDiameter=""
+		  wheelBase=""
+		  track=""
+		  wheelSpeedCalcOption="ETHER"
+		  poseEstimationOption="EULERCHASSIS"
+		  maxVelocity=""
+		  maxAngularVelocity=""
+		  maxAcceleration=""
+		  maxAngularAcceleration=""
+		  networkTable=""
+		  controlFile="" />
+		<mechanism>
+			<servo
+			  usage=""
+			  pwmId="4"
+			  minAngle="0.0"
+			  maxAngle="360.0" />
+			<closedLoopControlParameters>
+				<name>FirstGains</name>
+			</closedLoopControlParameters>
+			<closedLoopControlParameters>
+				<name>SecondGains</name>
+			</closedLoopControlParameters>
+			<mechanismName>SomeMech</mechanismName>
+		</mechanism>
+		<mechanism>
+			<motor
+			  usage=""
+			  canId="10"
+			  canBusName="rio"
+			  pdpID=""
+			  type="TALONSRX"
+			  inverted="false"
+			  sensorInverted="false"
+			  feedbackDevice="NONE"
+			  countsPerRev="0"
+			  gearRatio="1"
+			  brakeMode="false"
+			  follow="-1"
+			  peakCurrentDuration=""
+			  continuousCurrentLimit=""
+			  peakCurrentLimit=""
+			  currentLimiting="false"
+			  forwardlimitswitch="false"
+			  forwardlimitswitchopen="true"
+			  reverselimitswitch="false"
+			  reverselimitswitchopen="true"
+			  voltageCompensationSaturation="12.0"
+			  voltageCompensationEnable="false"
+			  countsPerInch="0"
+			  countsPerDegree="0" />
+			<mechanismName>WitzMech</mechanismName>
+		</mechanism>
+	</robot>
+</robotVariants>

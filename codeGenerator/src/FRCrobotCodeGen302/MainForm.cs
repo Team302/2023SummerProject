@@ -104,7 +104,16 @@ namespace FRCrobotCodeGen302
 
             TreeNode tn = null;
             if (parent == null)
-                tn = robotTreeView.Nodes.Add(extendedNodeName);
+            {
+                if (isACollection(obj))
+                {
+                    ICollection ic = obj as ICollection;
+                    if (ic.Count > 0)
+                        tn = robotTreeView.Nodes.Add(extendedNodeName);
+                }
+                else
+                    tn = robotTreeView.Nodes.Add(extendedNodeName);
+            }
             else
             {
                 if (isACollection(obj))
@@ -185,11 +194,9 @@ namespace FRCrobotCodeGen302
         private void populateTree(robotConfig myRobot)
         {
             robotTreeView.Nodes.Clear();
-            AddNode(null, myRobot.theRobot, "Robot");
-            foreach (KeyValuePair<string, statedata> kvp in myRobot.mechanismControlDefinition)
-            {
-                AddNode(null, kvp.Value, kvp.Key);
-            }
+            AddNode(null, myRobot.theRobotVariants.robot, "Robot Variant");
+            if (myRobot.theRobotVariants.robot.Count > 0)
+                robotTreeView.Nodes[0].Expand();
         }
 
 
@@ -427,10 +434,11 @@ namespace FRCrobotCodeGen302
                     lastSelectedArrayNode = e.Node;
                     addTreeElementButton.Enabled = true;
                 }
+                /*
                 else if ((e.Node.Parent!=null) && (e.Node.Parent.Tag is robot))
                 {
                     // do nothing
-                }                
+                }   */             
                 else if (e.Node.GetNodeCount(false) == 0)
                 {
                     lastSelectedValueNode = e.Node;
@@ -456,7 +464,7 @@ namespace FRCrobotCodeGen302
 
                         valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
                     }
-                    else if (value is uint)
+                    else if (value is uint || value is UInt32)
                     {
                         valueNumericUpDown.DecimalPlaces = 0;
                         valueNumericUpDown.Value = (uint)value;

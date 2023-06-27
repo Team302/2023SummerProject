@@ -13,7 +13,7 @@ namespace robotConfiguration
 {
     public class robotConfig : baseReportingClass
     {
-        public robot theRobot;
+        public robotVariants theRobotVariants;
         public Dictionary<string, statedata> mechanismControlDefinition;
 
         public void load(string theRobotConfigFullPathFileName)
@@ -23,18 +23,21 @@ namespace robotConfiguration
                 string rootRobotConfigFolder = Path.GetDirectoryName(theRobotConfigFullPathFileName);
 
                 addProgress("Loading robot configuration " + theRobotConfigFullPathFileName);
-                theRobot = loadRobotConfiguration(theRobotConfigFullPathFileName);
+                theRobotVariants = loadRobotConfiguration(theRobotConfigFullPathFileName);
 
-                if (theRobot.pdp == null)
-                    theRobot.pdp = new pdp(); 
-                
-                if (theRobot.chassis == null)
-                    theRobot.chassis = new chassis();
-
-                mechanismControlDefinition = new Dictionary<string, statedata>();
-                if (theRobot.mechanism != null)
+                foreach (robot theRobot in theRobotVariants.robot)
                 {
-                    addProgress("Loading mechanism files...");
+                    if (theRobot.pdp == null)
+                        theRobot.pdp = new pdp();
+
+                    if (theRobot.chassis == null)
+                        theRobot.chassis = new chassis();
+
+                    mechanismControlDefinition = new Dictionary<string, statedata>();
+                    if (theRobot.mechanism != null)
+                    {
+                        addProgress("Loading mechanism files...");
+                    }
                 }
             }
             catch(Exception ex)
@@ -58,30 +61,32 @@ namespace robotConfiguration
             }
         }
 
-        robot loadRobotConfiguration(string fullPathName)
+        robotVariants loadRobotConfiguration(string fullPathName)
         {
-            robot theRobot;
+            robotVariants theRobotVariants;
 
-            var mySerializer = new XmlSerializer(typeof(robot));
+            var mySerializer = new XmlSerializer(typeof(robotVariants));
             using (var myFileStream = new FileStream(fullPathName, FileMode.Open))
             {
-                 theRobot = (robot)mySerializer.Deserialize(myFileStream);
+                 theRobotVariants = (robotVariants)mySerializer.Deserialize(myFileStream);
             }
 
-            for(int i = 0; i < theRobot.mechanism.Count; i++)
+            foreach (robot theRobot in theRobotVariants.robot)
             {
-                mechanism mech = theRobot.mechanism[i];
-
-                mySerializer = new XmlSerializer(typeof(mechanism));
-                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.mechanismName + ".xml");
-                
-                using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
+                for (int i = 0; i < theRobot.mechanism.Count; i++)
                 {
-                    mech = (mechanism)mySerializer.Deserialize(myFileStream);
+                    mechanism mech = theRobot.mechanism[i];
+
+                    mySerializer = new XmlSerializer(typeof(mechanism));
+                    string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.mechanismName + ".xml");
+
+                    using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
+                    {
+                        mech = (mechanism)mySerializer.Deserialize(myFileStream);
+                    }
                 }
             }
-
-            return theRobot;
+            return theRobotVariants;
         }
 
         void saveRobotConfiguration(string fullPathName)
@@ -90,21 +95,23 @@ namespace robotConfiguration
             xmlWriterSettings.NewLineOnAttributes = true;
             xmlWriterSettings.Indent = true;
 
-            var mySerializer = new XmlSerializer(typeof(robot));
+            var mySerializer = new XmlSerializer(typeof(robotVariants));
             XmlWriter tw = XmlWriter.Create(fullPathName, xmlWriterSettings);
-            mySerializer.Serialize(tw, theRobot);
-
+            mySerializer.Serialize(tw, theRobotVariants);
+           
             tw.Close();
-
-            foreach (mechanism mech in theRobot.mechanism)
+            foreach (robot theRobot in theRobotVariants.robot)
             {
-                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.mechanismName + ".xml");
+                foreach (mechanism mech in theRobot.mechanism)
+                {
+                    string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.mechanismName + ".xml");
 
-                mySerializer = new XmlSerializer(typeof(mechanism));
-                tw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings);
-                mySerializer.Serialize(tw, mech);
+                    mySerializer = new XmlSerializer(typeof(mechanism));
+                    tw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings);
+                    mySerializer.Serialize(tw, mech);
 
-                tw.Close();
+                    tw.Close();
+                }
             }
         }
 
