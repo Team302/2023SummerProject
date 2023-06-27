@@ -79,6 +79,12 @@ namespace FRCrobotCodeGen302
                     }
                 }
 
+                if(objType == new robot().GetType())
+                {
+                    robot tempBot = (robot)obj;
+                    nodeName = "Robot #" + tempBot.robotID;
+                }
+
                 nodeName = getTreeNodeDisplayName(nodeValueString, nodeName);
             }
 
