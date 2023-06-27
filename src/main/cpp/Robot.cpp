@@ -35,6 +35,14 @@
 /// DEBUGGING
 #include <hw/factories/PigeonFactory.h>
 
+/* How to check robot variant
+#if ROBOT_VARIANT == 2024
+#warning COMP BOT
+#else
+#warning UNKNOWN
+#endif
+*/
+
 using namespace std;
 
 void Robot::RobotInit()
