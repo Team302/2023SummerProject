@@ -112,14 +112,21 @@ tasks.build.doLast() {
 
    def author = stdout.toString().trim()
 
-   def path = "/src/main/utilities"
-   def filename = "BuildDetails.txt"
-
     //get build date and time
    def date = new Date().format('yyyyMMddHHmmss')
    def formattedDate = new Date().format('MM/dd-HH:mm:ss-yyy')
 
-   new File(projectDir.toString() + path, filename
+   //check that src/main/utilities exists, if it doesnt, create the directory
+   //if this directory does not exist, build fails
+   def path = projectDir.toString() + "/src/main/utilities"
+   def filename = "BuildDetails.txt"
+
+   File dir = new File(path)
+    if (!dir.exists()) {
+        dir.mkdirs()
+    }
+
+   new File(path, filename
    ).text = "Team Number: (TN)" + project.frc.getTeamOrDefault(302) + "(TN)" + "\nBuild Date (Formatted): (FD)" + formattedDate + "(FD)" + "\nBuild Date: (D)" + date + "(D)" + "\nBranch: (B)" + branch + "(B)" + "\nAuthor: (A)" + author + "(A)" + "\nCommit Hash: (H)" + commitHash + "(H)"
 
     def startSequence = ansiEscape + boldEffect + ";" + brightGreenColor + ansiEnd
