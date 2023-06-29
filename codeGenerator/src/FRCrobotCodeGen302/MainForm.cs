@@ -37,6 +37,7 @@ namespace FRCrobotCodeGen302
 
             valueComboBox.Location = valueNumericUpDown.Location;
             valueTextBox.Location = valueNumericUpDown.Location;
+            valueCheckBox.Location = valueNumericUpDown.Location;
 
             this.Text += " Version " + ProductVersion;
         }
@@ -48,7 +49,7 @@ namespace FRCrobotCodeGen302
 
         private string getTreeNodeDisplayName(object parentObject, object obj, string nodeName)
         {
-            if (isACollection(obj))
+            if (isACollection(obj) && !nodeName.EndsWith("s"))
                 nodeName += "s";
             else
             {
@@ -69,17 +70,31 @@ namespace FRCrobotCodeGen302
                         }
                     }
                 }
-                else
+                else if(obj.GetType().GetProperty("useCustomTreeName") != null && ((useCustomTreeName)obj.GetType().GetProperty("useCustomTreeName").GetValue(obj) == useCustomTreeName.Item_true)) /// This needs to be changed to a regular bool, currently don't support a regular bool
                 {
+                    nodeName = "";
                     foreach (string s in generatorConfig.treeviewParentNameExtensions)
                     {
                         PropertyInfo propertyInfo = properties.ToList().Find(p => p.Name == s);
                         if (propertyInfo != null)
-                            nodeValueString += propertyInfo.GetValue(obj) + ", ";
+                        {
+                            if(propertyInfo.Name == "canId" || propertyInfo.Name == "pwmId")
+                            {
+                                nodeName += "ID: " + propertyInfo.GetValue(obj).ToString() + ", ";
+                            }
+                            else
+                            {
+                                nodeName += propertyInfo.GetValue(obj).ToString() + ", ";
+                            }
+                        }   
                     }
+
+                    nodeName = nodeName.Trim();
+                    nodeName = nodeName.Trim(',');
+                    nodeName = nodeName.Trim();
                 }
 
-                if(objType == new robot().GetType())
+                if(objType == typeof(robot))
                 {
                     robot tempBot = (robot)obj;
                     nodeName = "Robot #" + tempBot.robotID;
@@ -221,6 +236,9 @@ namespace FRCrobotCodeGen302
                 {
                     generatorConfig.treeviewParentNameExtensions.Add("usage");
                     generatorConfig.treeviewParentNameExtensions.Add("type");
+                    generatorConfig.treeviewParentNameExtensions.Add("canId");
+                    generatorConfig.treeviewParentNameExtensions.Add("pwmId");
+                    generatorConfig.treeviewParentNameExtensions.Add("name");
                     generatorConfig.treeviewParentNameExtensions.Add("stateIdentifier");
                     generatorConfig.treeviewParentNameExtensions.Add("identifier");
                 }
@@ -379,6 +397,7 @@ namespace FRCrobotCodeGen302
             valueComboBox.Visible = visible;
             valueNumericUpDown.Visible = visible;
             valueTextBox.Visible = visible;
+            valueCheckBox.Visible = visible;
         }
         void showValueComboBox()
         {
@@ -398,6 +417,12 @@ namespace FRCrobotCodeGen302
             valueTextBox.Visible = true;
         }
 
+        void showValueCheckBox()
+        {
+            hideAllValueEntryBoxes();
+            valueCheckBox.Visible = true;
+        }
+
 
         TreeNode lastSelectedValueNode = null;
         TreeNode lastSelectedArrayNode = null;
@@ -408,6 +433,7 @@ namespace FRCrobotCodeGen302
             valueTextBox.Visible = false;
             valueComboBox.Visible = false;
             valueNumericUpDown.Visible = false;
+            valueCheckBox.Visible = false;
             addTreeElementButton.Enabled = false;
 
             lastSelectedArrayNode = null;
@@ -482,6 +508,11 @@ namespace FRCrobotCodeGen302
                         valueNumericUpDown.Value = Convert.ToDecimal(value);
                         showValueNumericUpDown();
                     }
+                    else if (value is bool)
+                    {
+                        valueCheckBox.Checked = Convert.ToBoolean(value);
+                        showValueCheckBox();
+                    }
                     else if (lastSelectedValueNode.Text == "controlFile")
                     {
                         showValueComboBox();
@@ -543,6 +574,33 @@ namespace FRCrobotCodeGen302
             }
         }
 
+        private void valueCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (enableCallback)
+            {
+                if (lastSelectedValueNode != null)
+                {
+                    try
+                    {
+                        leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
+
+                        Type t = lastSelectedValueNode.Tag.GetType();
+                        PropertyInfo prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                        if (null != prop && prop.CanWrite)
+                        {
+                            prop.SetValue(lastSelectedValueNode.Parent.Tag, valueCheckBox.Checked);
+                        }
+
+                        lastSelectedValueNode.Text = getTreeNodeDisplayName(valueCheckBox.Checked.ToString(), lnt.name);
+                        setNeedsSaving();
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Failed to set " + lastSelectedValueNode.Text + " to " + valueCheckBox.Checked);
+                    }
+                }
+            }
+        }
         private void valueTextBox_TextChanged(object sender, EventArgs e)
         {
             if (enableCallback)
@@ -798,6 +856,7 @@ namespace FRCrobotCodeGen302
         {
 
         }
+
     }
 
     class leafNodeTag

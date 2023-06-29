@@ -12,6 +12,9 @@
 <treeviewParentNameExtensions>
 	<string>usage</string>
 	<string>type</string>
+  <string>canId</string>
+  <string>pwmId</string>
+  <string>name</string>
 	<string>stateIdentifier</string>
 	<string>identifier</string>
 </treeviewParentNameExtensions>

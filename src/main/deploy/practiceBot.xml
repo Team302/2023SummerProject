@@ -19,10 +19,11 @@
       controlFile="" />
     <mechanism>
       <servo
-        usage=""
-        pwmId="4"
+        usage="UNKNOWN_USAGE"
         minAngle="0.0"
-        maxAngle="360.0" />
+        maxAngle="360.0">
+        <pwmId>1</pwmId>
+      </servo>
       <closedLoopControlParameters>
         <name>FirstGains</name>
       </closedLoopControlParameters>
@@ -45,11 +46,12 @@
         voltageCompensationEnable="false"
         countsPerInch="0"
         countsPerDegree="0">
+        <usage>IntakeMotor</usage>
         <motorType>TALONSRX</motorType>
         <controller>TALONSRX</controller>
         <canBusName>rio</canBusName>
-        <canId>0</canId>
-        <pdpID />
+        <canId>4</canId>
+        <pdpId>0</pdpId>
         <inverted>false</inverted>
         <sensorInverted>false</sensorInverted>
         <feedbackDevice>NONE</feedbackDevice>
@@ -58,6 +60,19 @@
         <brakeMode>false</brakeMode>
         <motorIDtoFollow>-1</motorIDtoFollow>
       </motor>
+      <solenoid
+        usage="Test_Usage"
+        channel="0"
+        reversed="false"
+        type="REVPH">
+        <canId>0</canId>
+      </solenoid>
+      <servo
+        usage="SomeUsage"
+        minAngle="0.0"
+        maxAngle="360.0">
+        <pwmId>0</pwmId>
+      </servo>
       <mechanismName>WitzMech</mechanismName>
     </mechanism>
     <robotID>3</robotID>

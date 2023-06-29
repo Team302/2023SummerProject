@@ -977,6 +977,23 @@ namespace Robot
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _usage = "UNKNOWN_USAGE";
+        
+        //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("usage")]
+        public string usage
+        {
+            get
+            {
+                return _usage;
+            }
+            set
+            {
+                _usage = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.ObjectModel.Collection<digitalInput> _digitalInput;
         
         [System.Xml.Serialization.XmlElementAttribute("digitalInput")]
@@ -1063,26 +1080,13 @@ namespace Robot
             }
         }
         
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _canId = 0u;
-        
         //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("canId")]
-        public uint canId
-        {
-            get
-            {
-                return _canId;
-            }
-            set
-            {
-                _canId = value;
-            }
-        }
+        public uint canId { get; set; }
         
         //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("pdpID")]
-        public string pdpID { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("pdpId")]
+        public uint pdpId { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private bool _inverted = false;
@@ -1202,6 +1206,15 @@ namespace Robot
                 _motorIDtoFollow = value;
             }
         }
+        
+        [System.Xml.Serialization.XmlAttributeAttribute("useCustomTreeName", Namespace="http://tempuri.org/robot", Form=System.Xml.Schema.XmlSchemaForm.Qualified)]
+        public useCustomTreeName useCustomTreeName { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the useCustomTreeName property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool useCustomTreeNameSpecified { get; set; }
         
         [System.Xml.Serialization.XmlAttributeAttribute("peakCurrentDuration")]
         public string peakCurrentDuration { get; set; }
@@ -1624,6 +1637,19 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
+    //[System.Xml.Serialization.XmlTypeAttribute("useCustomTreeName", Namespace="http://tempuri.org/robot", AnonymousType=true)]
+    public enum useCustomTreeName
+    {
+        
+        [System.Xml.Serialization.XmlEnumAttribute("true")]
+        Item_true,
+        
+        [System.Xml.Serialization.XmlEnumAttribute("false")]
+        Item_false,
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
+    [System.SerializableAttribute()]
     //[System.Xml.Serialization.XmlTypeAttribute("motorcurrentLimiting", Namespace="http://tempuri.org/robot", AnonymousType=true)]
     public enum motorcurrentLimiting
     {
@@ -1764,6 +1790,15 @@ namespace Robot
                 _type = value;
             }
         }
+        
+        [System.Xml.Serialization.XmlAttributeAttribute("useCustomTreeName", Namespace="http://tempuri.org/robot", Form=System.Xml.Schema.XmlSchemaForm.Qualified)]
+        public useCustomTreeName useCustomTreeName { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the useCustomTreeName property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool useCustomTreeNameSpecified { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _turn_p = "0.0";
@@ -2306,25 +2341,34 @@ namespace Robot
     {
         
         //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public string usage { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("canId")]
+        public uint canId { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _canId = 0u;
+        private string _usage = "UNKNOWN_USAGE";
         
-        //[System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.Xml.Serialization.XmlAttributeAttribute("canId")]
-        public uint canId
+        //[System.ComponentModel.DefaultValueAttribute("UNKNOWN_USAGE")]
+        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
+        public string usage
         {
             get
             {
-                return _canId;
+                return _usage;
             }
             set
             {
-                _canId = value;
+                _usage = value;
             }
         }
+        
+        [System.Xml.Serialization.XmlAttributeAttribute("useCustomTreeName", Namespace="http://tempuri.org/robot", Form=System.Xml.Schema.XmlSchemaForm.Qualified)]
+        public useCustomTreeName useCustomTreeName { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the useCustomTreeName property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool useCustomTreeNameSpecified { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private solenoidchannel _channel = Robot.solenoidchannel.Item0;
@@ -2443,25 +2487,34 @@ namespace Robot
     {
         
         //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public string usage { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("pwmId")]
+        public uint pwmId { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private servopwmId _pwmId = Robot.servopwmId.Item0;
+        private string _usage = "UNKNOWN_USAGE";
         
-        //[System.ComponentModel.DefaultValueAttribute(Robot.servopwmId.Item0)]
-        [System.Xml.Serialization.XmlAttributeAttribute("pwmId")]
-        public servopwmId pwmId
+        //[System.ComponentModel.DefaultValueAttribute("UNKNOWN_USAGE")]
+        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
+        public string usage
         {
             get
             {
-                return _pwmId;
+                return _usage;
             }
             set
             {
-                _pwmId = value;
+                _usage = value;
             }
         }
+        
+        [System.Xml.Serialization.XmlAttributeAttribute("useCustomTreeName", Namespace="http://tempuri.org/robot", Form=System.Xml.Schema.XmlSchemaForm.Qualified)]
+        public useCustomTreeName useCustomTreeName { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the useCustomTreeName property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool useCustomTreeNameSpecified { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _minAngle = "0.0";
@@ -2496,73 +2549,6 @@ namespace Robot
                 _maxAngle = value;
             }
         }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
-    [System.SerializableAttribute()]
-    //[System.Xml.Serialization.XmlTypeAttribute("servopwmId", Namespace="http://tempuri.org/robot", AnonymousType=true)]
-    public enum servopwmId
-    {
-        
-        [System.Xml.Serialization.XmlEnumAttribute("0")]
-        Item0,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("1")]
-        Item1,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("2")]
-        Item2,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("3")]
-        Item3,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("4")]
-        Item4,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("5")]
-        Item5,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("6")]
-        Item6,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("7")]
-        Item7,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("8")]
-        Item8,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("9")]
-        Item9,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("10")]
-        Item10,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("11")]
-        Item11,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("12")]
-        Item12,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("13")]
-        Item13,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("14")]
-        Item14,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("15")]
-        Item15,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("16")]
-        Item16,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("17")]
-        Item17,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("18")]
-        Item18,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("19")]
-        Item19,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
@@ -2660,6 +2646,15 @@ namespace Robot
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         public bool iZoneSpecified { get; set; }
+        
+        [System.Xml.Serialization.XmlAttributeAttribute("useCustomTreeName", Namespace="http://tempuri.org/robot", Form=System.Xml.Schema.XmlSchemaForm.Qualified)]
+        public useCustomTreeName useCustomTreeName { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the useCustomTreeName property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool useCustomTreeNameSpecified { get; set; }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]

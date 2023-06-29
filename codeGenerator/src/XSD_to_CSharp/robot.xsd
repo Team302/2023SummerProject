@@ -50,6 +50,7 @@
 				<xs:element minOccurs="0" maxOccurs="1" name="fGain" type="xs:double"/>
 				<xs:element minOccurs="0" maxOccurs="1" name="iZone" type="xs:double"/>
 			</xs:sequence>
+      <xs:attribute ref="useCustomTreeName" />
 		</xs:complexType>
 	</xs:element>
 	
@@ -437,6 +438,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
+      <xs:attribute ref="useCustomTreeName" />
 			<xs:attribute default="0.0" name="turn_p" type="xs:string" />
 			<xs:attribute default="0.0" name="turn_i" type="xs:string" />
 			<xs:attribute default="0.0" name="turn_d" type="xs:string" />
@@ -450,9 +452,11 @@
 	</xs:element>
 	<xs:element name="solenoid">
 		<xs:complexType>
-			<xs:attribute name="usage" type="xs:string" use="required" />
-			<xs:attribute default="0" name="canId" type="xs:unsignedInt">
-			</xs:attribute>
+      <xs:sequence>
+        <xs:element ref="canId"/>
+      </xs:sequence>
+			<xs:attribute default="UNKNOWN_USAGE" name="usage" type="xs:string"/>
+      <xs:attribute ref="useCustomTreeName" />
 			<xs:attribute default="0" name="channel">
 				<xs:simpleType>
 					<xs:restriction base="xs:NMTOKEN">
@@ -487,33 +491,11 @@
 	</xs:element>
 	<xs:element name="servo">
 		<xs:complexType>
-			<xs:attribute name="usage" type="xs:string" use="required" />
-			<xs:attribute default="0" name="pwmId">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="0" />
-						<xs:enumeration value="1" />
-						<xs:enumeration value="2" />
-						<xs:enumeration value="3" />
-						<xs:enumeration value="4" />
-						<xs:enumeration value="5" />
-						<xs:enumeration value="6" />
-						<xs:enumeration value="7" />
-						<xs:enumeration value="8" />
-						<xs:enumeration value="9" />
-						<xs:enumeration value="10" />
-						<xs:enumeration value="11" />
-						<xs:enumeration value="12" />
-						<xs:enumeration value="13" />
-						<xs:enumeration value="14" />
-						<xs:enumeration value="15" />
-						<xs:enumeration value="16" />
-						<xs:enumeration value="17" />
-						<xs:enumeration value="18" />
-						<xs:enumeration value="19" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
+      <xs:sequence>
+        <xs:element ref="pwmId"/>
+      </xs:sequence>
+			<xs:attribute default="UNKNOWN_USAGE" name="usage" type="xs:string"/>
+      <xs:attribute ref="useCustomTreeName" />
 			<xs:attribute default="0.0" name="minAngle" type="xs:string" />
 			<xs:attribute default="360.0" name="maxAngle" type="xs:string" />
 		</xs:complexType>
@@ -533,6 +515,7 @@
 	<xs:element name="motor">
 		<xs:complexType>
 			<xs:sequence>
+        <xs:element minOccurs="1" default="UNKNOWN_USAGE" name="usage" type="xs:string"/>
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="digitalInput" />
 				<xs:element default="TALONSRX" name="motorType">
 					<xs:simpleType>
@@ -572,8 +555,8 @@
 					</xs:simpleType>
 				</xs:element>
 				<xs:element default="rio" name="canBusName" type="xs:string"/>
-				<xs:element default="0" name="canId" type="xs:unsignedInt"/>
-				<xs:element name="pdpID" type="xs:string"/>
+				<xs:element ref="canId"/>
+				<xs:element ref="pdpId"/>
 				<xs:element default="false" name="inverted" type="xs:boolean"/>
 				<xs:element default="false" name="sensorInverted" type="xs:boolean"/>
 				<xs:element default="NONE" name="feedbackDevice">
@@ -598,6 +581,8 @@
 				<xs:element default="false" name="brakeMode" type="xs:boolean"/>
 				<xs:element default="-1" name="motorIDtoFollow" type="xs:int" />
 			</xs:sequence>
+
+      <xs:attribute ref="useCustomTreeName" />
 			
 			<xs:attribute name="peakCurrentDuration" type="xs:string" />
 			<xs:attribute name="continuousCurrentLimit" type="xs:string" />
@@ -783,4 +768,17 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
+
+  <xs:attribute default="true" name="useCustomTreeName">
+    <xs:simpleType>
+      <xs:restriction base="xs:NMTOKEN">
+        <xs:enumeration value="true" />
+        <xs:enumeration value="false" />
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+  <xs:element default="0" name="canId" type="xs:unsignedInt"/>
+  <xs:element default="0" name="pdpId" type="xs:unsignedInt"/>
+  <xs:element default="0" name="pwmId" type="xs:unsignedInt"/>
+  <xs:element default="0" name="analogId" type="xs:unsignedInt"/>
 </xs:schema>

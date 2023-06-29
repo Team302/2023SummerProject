@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <mechanism xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <servo
-    usage=""
-    pwmId="4"
+    usage="UNKNOWN_USAGE"
     minAngle="0.0"
-    maxAngle="360.0" />
+    maxAngle="360.0">
+    <pwmId>1</pwmId>
+  </servo>
   <closedLoopControlParameters>
     <name>FirstGains</name>
   </closedLoopControlParameters>
