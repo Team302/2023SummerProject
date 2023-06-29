@@ -61,7 +61,10 @@ namespace CoreCodeGenerator
 
             generateMechanismFiles();
         }
-
+        private bool isACollection(Type t)
+        {
+            return ((t.Name == "Collection`1") && (t.Namespace == "System.Collections.ObjectModel"));
+        }
         private void generateMechanismFiles()
         {
             addProgress("Writing mechanism files...");
@@ -136,7 +139,7 @@ namespace CoreCodeGenerator
                     resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
                     resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
 
-                    //closed loop parameters
+                    #region closed loop parameters
                     string allParameters = "";
                     foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
                     {
@@ -150,9 +153,35 @@ namespace CoreCodeGenerator
                             if (!skip)
                                 allParameters += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
                         }
-
                     }
                     resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
+                    #endregion
+
+                    #region Hardware
+                    string allHardware = "";
+                    //foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+                    //{
+                    //Type objType = cLCParams.GetType();
+
+                    PropertyInfo[] MechPropertyInfos = mech.GetType().GetProperties();
+
+                    foreach (PropertyInfo pi in MechPropertyInfos)
+                    {
+                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                        if (!skip)
+                        {
+                            if (isACollection(pi.GetType()))
+                            {
+                            //    foreach (PropertyInfo pi2 in MechPropertyInfos)
+                            //    allHardware += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
+
+                            }
+                        }
+                    }
+
+                    //}
+                    resultString = resultString.Replace("$$_HARDWARE_$$", allHardware);
+                    #endregion
 
                     File.WriteAllText(filePathName, resultString);
                     #endregion

@@ -23,6 +23,8 @@ class $$_MECHANISM_NAME_$$
 
         $$_TUNABLE_PARAMETERS_$$
 
+        $$_HARDWARE_$$
+
         std::string m_ntName = "$$_MECHANISM_NAME_$$";
         bool m_tuning = false;
         std::shared_ptr<nt::NetworkTable> m_table;
