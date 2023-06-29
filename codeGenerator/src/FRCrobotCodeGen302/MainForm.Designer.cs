@@ -48,6 +48,7 @@ namespace FRCrobotCodeGen302
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.robotTreeView = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.valueCheckBox = new System.Windows.Forms.CheckBox();
             this.addRobotElementLabel = new System.Windows.Forms.Label();
             this.deleteTreeElementButton = new System.Windows.Forms.Button();
             this.addTreeElementButton = new System.Windows.Forms.Button();
@@ -96,7 +97,7 @@ namespace FRCrobotCodeGen302
             // 
             this.configurationBrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.configurationBrowseButton.Location = new System.Drawing.Point(525, 9);
-            this.configurationBrowseButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.configurationBrowseButton.Margin = new System.Windows.Forms.Padding(5);
             this.configurationBrowseButton.Name = "configurationBrowseButton";
             this.configurationBrowseButton.Size = new System.Drawing.Size(57, 23);
             this.configurationBrowseButton.TabIndex = 3;
@@ -297,6 +298,7 @@ namespace FRCrobotCodeGen302
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.valueCheckBox);
             this.panel1.Controls.Add(this.addRobotElementLabel);
             this.panel1.Controls.Add(this.deleteTreeElementButton);
             this.panel1.Controls.Add(this.addTreeElementButton);
@@ -311,6 +313,17 @@ namespace FRCrobotCodeGen302
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(388, 293);
             this.panel1.TabIndex = 2;
+            // 
+            // valueCheckBox
+            // 
+            this.valueCheckBox.AutoSize = true;
+            this.valueCheckBox.Location = new System.Drawing.Point(74, 238);
+            this.valueCheckBox.Name = "valueCheckBox";
+            this.valueCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.valueCheckBox.TabIndex = 9;
+            this.valueCheckBox.UseVisualStyleBackColor = true;
+            this.valueCheckBox.Visible = false;
+            this.valueCheckBox.CheckedChanged += new System.EventHandler(this.valueCheckBox_CheckedChanged);
             // 
             // addRobotElementLabel
             // 
@@ -401,7 +414,7 @@ namespace FRCrobotCodeGen302
             | System.Windows.Forms.AnchorStyles.Right)));
             this.robotElementCheckedListBox.FormattingEnabled = true;
             this.robotElementCheckedListBox.Location = new System.Drawing.Point(2, 24);
-            this.robotElementCheckedListBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.robotElementCheckedListBox.Margin = new System.Windows.Forms.Padding(2);
             this.robotElementCheckedListBox.Name = "robotElementCheckedListBox";
             this.robotElementCheckedListBox.Size = new System.Drawing.Size(382, 139);
             this.robotElementCheckedListBox.TabIndex = 7;
@@ -463,6 +476,7 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.Button deleteTreeElementButton;
         private System.Windows.Forms.CheckedListBox robotElementCheckedListBox;
         private System.Windows.Forms.Label addRobotElementLabel;
+        private System.Windows.Forms.CheckBox valueCheckBox;
     }
 }
 
