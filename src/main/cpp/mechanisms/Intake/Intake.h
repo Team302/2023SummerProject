@@ -15,6 +15,7 @@
 //====================================================================================================================================================
 
 #pragma once
+
 #include <mechanisms/base/Mech2Motors1Solenoid.h>
 
 #include <hw/DragonDigitalInput.h>
