@@ -34,7 +34,7 @@
 #include <utils/logging/LoggableItem.h>
 
 // third part
-#include <robinHood/robin_hood.h>
+#include <RobinHood/robin_hood.h>
 
 class TeleopControl : LoggableItem
 {
