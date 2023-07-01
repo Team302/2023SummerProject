@@ -30,7 +30,7 @@
 
 // Team 302 includes
 #include <mechanisms/base/StateMgr.h>
-#include <mechanisms/Arm/arm.h>
+#include <mechanisms/arm/arm.h>
 #include <mechanisms/StateStruc.h>
 
 //========= Hand modified code start section 0 ========
