@@ -24,6 +24,9 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v3
+    
+    #Caches dependencies between runs
+    - uses: actions/cache@v3
 
     # Declares the repository safe and not under dubious ownership.
     - name: Add repository to git safe directories
