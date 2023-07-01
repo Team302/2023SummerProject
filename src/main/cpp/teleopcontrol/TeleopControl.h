@@ -23,7 +23,7 @@
 #include <vector>
 
 // FRC includes
-#include <frc/Driverstation.h>
+#include <frc/DriverStation.h>
 
 // Team 302 includes
 #include <gamepad/IDragonGamePad.h>

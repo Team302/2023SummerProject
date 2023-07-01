@@ -21,7 +21,7 @@
 #include <set>
 
 // FRC includes
-#include <frc/SmartDashboard/SendableChooser.h>
+#include <frc/smartdashboard/SendableChooser.h>
 
 // Team 302 includes
 #include <utils/logging/LoggerData.h>

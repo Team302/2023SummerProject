@@ -20,7 +20,7 @@
 
 #include <string>
 #include <vector>
-#include <frc/SmartDashboard/SendableChooser.h>
+#include <frc/smartdashboard/SendableChooser.h>
 
 class AutonSelector
 {
