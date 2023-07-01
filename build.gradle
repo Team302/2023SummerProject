@@ -118,7 +118,7 @@ tasks.build.doLast() {
 
             //get build date and time
         def date = new Date().format('yyyyMMddHHmmss')
-        def formattedDate = new Date().format('MM/dd-HH:mm:ss-yyy')
+        def formattedDate = new Date().format('HH:mm:ss MM/dd/yyyy')
 
         //check that src/main/utilities exists, if it doesnt, create the directory
         //if this directory does not exist, build fails
