@@ -27,7 +27,7 @@
 #include <hw/DistanceAngleCalcStruc.h>
 
 // Third Party Includes
-#include <ctre/phoenix/MotorControl/FeedbackDevice.h>
+#include <ctre/phoenix/motorcontrol/FeedbackDevice.h>
 
 /// @brief  This is a singleton that creates motor motorControllers (IDragonMotorController).  This
 /// @brief  allows us to interact with motor motorControllers such as TalonSRX, Rev Spark Max without
