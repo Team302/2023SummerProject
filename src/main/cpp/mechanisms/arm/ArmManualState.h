@@ -15,7 +15,7 @@
 
 #include <mechanisms/arm/ArmState.h>
 #include <robotstate/IRobotStateChangeSubscriber.h>
-#include <mechanisms/intake/IntakeStateMgr.h>
+#include <mechanisms/Intake/IntakeStateMgr.h>
 
 class ControlData;
 class Arm;

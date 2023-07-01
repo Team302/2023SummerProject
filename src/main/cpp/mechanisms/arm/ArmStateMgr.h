@@ -34,7 +34,7 @@
 #include <mechanisms/StateStruc.h>
 
 //========= Hand modified code start section 0 ========
-#include <mechanisms/intake/IntakeStateMgr.h>
+#include <mechanisms/Intake/IntakeStateMgr.h>
 #include <robotstate/IRobotStateChangeSubscriber.h>
 #include <robotstate/RobotStateChanges.h>
 //========= Hand modified code end section 0 ========

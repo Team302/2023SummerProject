@@ -17,7 +17,7 @@
 
 // Team 302 Includes
 #include <robotstate/RobotStateChanges.h>
-#include <mechanisms/intake/IntakeStateMgr.h>
+#include <mechanisms/Intake/IntakeStateMgr.h>
 
 class ArmHoldPosHelper
 {
