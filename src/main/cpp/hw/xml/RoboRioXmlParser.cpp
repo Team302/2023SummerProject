@@ -26,7 +26,7 @@
 #include <hw/usages/ServoUsage.h>
 #include <hw/xml/RoboRioXmlParser.h>
 #include <utils/HardwareIDValidation.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 #include <pugixml/pugixml.hpp>

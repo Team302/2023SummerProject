@@ -26,10 +26,10 @@
 
 // Team 302 includes
 #include <hw/xml/SolenoidXmlParser.h>
-#include <hw/DragonSolenoid.h>
+#include "hw/DragonSolenoid.h"
 #include <hw/usages/SolenoidUsage.h>
 #include <utils/HardwareIDValidation.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 #include <pugixml/pugixml.hpp>

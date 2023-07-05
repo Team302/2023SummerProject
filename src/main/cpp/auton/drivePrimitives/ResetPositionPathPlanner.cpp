@@ -24,7 +24,7 @@
 #include <auton/drivePrimitives/IPrimitive.h>
 #include <chassis/ChassisFactory.h>
 #include <hw/factories/PigeonFactory.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <DragonVision/DragonVision.h>
 
 // Third Party Includes

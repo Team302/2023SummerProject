@@ -21,7 +21,7 @@
 #include <string>
 
 // Team 302 includes
-#include <hw/DragonDigitalInput.h>
+#include "hw/DragonDigitalInput.h"
 
 // Third Party includes
 #include <pugixml/pugixml.hpp>

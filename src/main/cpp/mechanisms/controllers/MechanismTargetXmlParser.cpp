@@ -22,8 +22,8 @@
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/controllers/MechanismTargetData.h>
-#include <utils/logging/Logger.h>
+#include "mechanisms/controllers/MechanismTargetData.h"
+#include "utils/logging/Logger.h"
 #include <mechanisms/controllers/MechanismTargetXmlParser.h>
 
 // Third Party Includes

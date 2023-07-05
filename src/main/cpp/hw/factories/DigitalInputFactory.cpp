@@ -20,7 +20,7 @@
 // FRC includes
 
 // Team 302 includes
-#include <hw/DragonDigitalInput.h>
+#include "hw/DragonDigitalInput.h"
 #include <hw/factories/DigitalInputFactory.h>
 #include <hw/usages/DigitalInputUsage.h>
 

@@ -19,7 +19,7 @@
 #include <chassis/ChassisFactory.h>
 
 /// DEBUGGING
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 MaintainHeading::MaintainHeading() : ISwerveDriveOrientation(ChassisOptionEnums::HeadingOption::MAINTAIN)
 {

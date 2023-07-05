@@ -15,7 +15,7 @@
 //====================================================================================================================================================
 
 #include <hw/MotorData.h>
-#include <hw/interfaces/IDragonMotorController.h>
+#include "hw/interfaces/IDragonMotorController.h"
 
 MotorData *MotorData::m_instance = nullptr;
 MotorData *MotorData::GetInstance()

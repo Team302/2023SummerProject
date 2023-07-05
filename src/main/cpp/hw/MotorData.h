@@ -22,7 +22,7 @@
 // Third Party Includes
 
 // 302 includes
-#include <hw/interfaces/IDragonMotorController.h>
+#include "hw/interfaces/IDragonMotorController.h"
 
 class MotorData
 {

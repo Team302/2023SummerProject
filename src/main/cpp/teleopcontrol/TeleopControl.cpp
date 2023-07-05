@@ -30,11 +30,11 @@
 #include <gamepad/IDragonGamePad.h>
 #include <gamepad/DragonXBox.h>
 #include <gamepad/DragonGamePad.h>
-#include <teleopcontrol/TeleopControl.h>
+#include "teleopcontrol/TeleopControl.h"
 #include <teleopcontrol/TeleopControlFunctions.h>
 #include <teleopcontrol/TeleopControlMap.h>
 #include <frc/DriverStation.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // using namespace frc;
 // using namespace std;

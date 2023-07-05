@@ -15,11 +15,12 @@
 //====================================================================================================================================================
 
 #pragma once
+/**
 #include <string>
 
 #include <mechanisms/base/Mech1IndMotor.h>
-#include <State.h>
-#include <mechanisms/controllers/ControlData.h>
+#include "State.h"
+#include "mechanisms/controllers/ControlData.h"
 
 class Mech1IndMotorState : public State
 {
@@ -58,3 +59,4 @@ private:
     bool m_positionBased;
     bool m_speedBased;
 };
+**/

@@ -47,6 +47,8 @@ public:
     void DisabledPeriodic() override;
     void TestInit() override;
     void TestPeriodic() override;
+    void SimulationInit() override;
+    void SimulationPeriodic() override;
 
 private:
     TeleopControl *m_controller;

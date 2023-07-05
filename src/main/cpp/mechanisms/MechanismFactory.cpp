@@ -23,24 +23,24 @@
 // Team 302 includes
 #include <hw/DragonAnalogInput.h>
 #include <hw/DragonCanCoder.h>
-#include <hw/DragonDigitalInput.h>
+#include "hw/DragonDigitalInput.h"
 #include <hw/DragonServo.h>
-#include <hw/DragonSolenoid.h>
-#include <hw/usages/MotorControllerUsage.h>
-#include <hw/interfaces/IDragonMotorController.h>
+#include "hw/DragonSolenoid.h"
+#include "hw/usages/MotorControllerUsage.h"
+#include "hw/interfaces/IDragonMotorController.h"
 #include <hw/usages/AnalogInputMap.h>
 #include <hw/usages/DigitalInputMap.h>
 #include <hw/usages/DragonSolenoidMap.h>
 #include <hw/usages/IDragonMotorControllerMap.h>
 #include <hw/usages/ServoMap.h>
-#include <mechanisms/base/Mech.h>
+#include "mechanisms/base/Mech.h"
 #include <mechanisms/MechanismFactory.h>
-#include <mechanisms/MechanismTypes.h>
-#include <utils/logging/Logger.h>
+#include "mechanisms/MechanismTypes.h"
+#include "utils/logging/Logger.h"
 // @ADDMECH include for your mechanism
-#include <mechanisms/arm/Arm.h>
-#include <mechanisms/extender/Extender.h>
-#include <mechanisms/intake/Intake.h>
+// #include <mechanisms/arm/Arm.h>
+// #include <mechanisms/extender/Extender.h>
+// #include <mechanisms/intake/Intake.h>
 // Third Party Includes
 #include <ctre/phoenix/sensors/CANCoder.h>
 
@@ -62,12 +62,12 @@ MechanismFactory *MechanismFactory::GetMechanismFactory()
 	return MechanismFactory::m_mechanismFactory;
 }
 
-MechanismFactory::MechanismFactory() : m_arm(nullptr),
-									   m_extender(nullptr),
-									   m_intake(nullptr)
+MechanismFactory::MechanismFactory() //: m_arm(nullptr),
+									 //  m_extender(nullptr),
+									 //  m_intake(nullptr)
 // @ADDMECH Initialize mechanism to NULLPTR
 {
-	Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("IntakeDebugging"), string("intake created"), false);
+	// Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("IntakeDebugging"), string("intake created"), false);
 }
 
 /// @brief      create the requested mechanism
@@ -95,6 +95,7 @@ void MechanismFactory::CreateMechanism(
 
 		// @ADDMECH  Add case for Mechanism
 
+	/**
 	case MechanismTypes::ARM:
 	{
 		auto motor = GetMotorController(motorControllers, MotorControllerUsage::ARM);
@@ -133,7 +134,7 @@ void MechanismFactory::CreateMechanism(
 		}
 	}
 	break;
-
+**/
 	default:
 	{
 		string msg = "unknown Mechanism type ";
@@ -150,19 +151,20 @@ Mech *MechanismFactory::GetMechanism(MechanismTypes::MECHANISM_TYPE type) const
 	{
 
 		// @ADDMECH  Add case for Mechanism
+		/**
+			case MechanismTypes::ARM:
+				return m_arm;
+				break;
 
-	case MechanismTypes::ARM:
-		return m_arm;
-		break;
+			case MechanismTypes::EXTENDER:
+				return m_extender;
+				break;
 
-	case MechanismTypes::EXTENDER:
-		return m_extender;
-		break;
-
-	case MechanismTypes::INTAKE:
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("IntakeDebugging"), string("Getting intake"), m_intake != nullptr ? "true" : "false");
-		return m_intake;
-		break;
+			case MechanismTypes::INTAKE:
+				Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("IntakeDebugging"), string("Getting intake"), m_intake != nullptr ? "true" : "false");
+				return m_intake;
+				break;
+				**/
 	default:
 		return nullptr;
 		break;

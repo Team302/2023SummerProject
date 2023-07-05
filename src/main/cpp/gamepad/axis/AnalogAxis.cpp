@@ -32,7 +32,7 @@
 #include <gamepad/axis/ScaledDeadbandValue.h>
 #include <gamepad/axis/SquaredProfile.h>
 #include <gamepad/IDragonGamePad.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 #include <units/dimensionless.h>

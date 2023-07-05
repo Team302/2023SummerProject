@@ -29,7 +29,7 @@
 // Team 302 includes
 #include <hw/DragonAnalogInput.h>
 #include <hw/DragonCanCoder.h>
-#include <hw/interfaces/IDragonMotorController.h>
+#include "hw/interfaces/IDragonMotorController.h"
 #include <hw/usages/AnalogInputMap.h>
 #include <hw/usages/DigitalInputMap.h>
 #include <hw/usages/DragonSolenoidMap.h>
@@ -41,11 +41,11 @@
 #include <hw/xml/MotorXmlParser.h>
 #include <hw/xml/ServoXmlParser.h>
 #include <hw/xml/SolenoidXmlParser.h>
-#include <mechanisms/base/Mech.h>
+#include "mechanisms/base/Mech.h"
 #include <mechanisms/base/MechanismXmlParser.h>
 #include <mechanisms/MechanismFactory.h>
-#include <mechanisms/MechanismTypes.h>
-#include <utils/logging/Logger.h>
+#include "mechanisms/MechanismTypes.h"
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 #include <pugixml/pugixml.hpp>

@@ -20,10 +20,9 @@
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/base/Mech.h>
-#include <mechanisms/MechanismTypes.h>
-#include <utils/DragonAssert.h>
-#include <utils/logging/Logger.h>
+#include "mechanisms/base/Mech.h"
+#include "mechanisms/MechanismTypes.h"
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 #include <units/time.h>
@@ -89,6 +88,5 @@ void Mech::AddStateMgr(
 
 StateMgr *Mech::GetStateMgr() const
 {
-    DragonAssert::GetDragonAssert()->Assert(m_stateMgr != nullptr, string("No StateManager in Mech::GetStateMgr()"));
     return m_stateMgr;
 }

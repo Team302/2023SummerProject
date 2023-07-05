@@ -25,9 +25,9 @@
 #include <frc/motorcontrol/MotorController.h>
 
 // Team 302 includes
-#include <hw/usages/MotorControllerUsage.h>
+#include "hw/usages/MotorControllerUsage.h"
 #include <mechanisms/controllers/ControlModes.h>
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/RemoteSensorSource.h>

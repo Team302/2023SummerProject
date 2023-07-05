@@ -20,7 +20,7 @@
 #include <DragonVision/LimelightFactory.h>
 #include <DragonVision/LimelightUsages.h>
 #include <hw/xml/LimelightXmlParser.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 #include <pugixml/pugixml.hpp>
 

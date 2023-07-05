@@ -26,7 +26,7 @@
 // Team 302 includes
 #include <hw/factories/CompressorFactory.h>
 #include <utils/HardwareIDValidation.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <hw/xml/PCMXmlParser.h>
 #include <frc/PneumaticsModuleType.h>
 #include <frc/Compressor.h>

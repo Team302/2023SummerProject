@@ -16,15 +16,15 @@
 #include <chassis/mecanum/MecanumChassis.h>
 #include <driveteamfeedback/DriverFeedback.h>
 #include <DragonVision/LimelightFactory.h>
-#include <mechanisms/StateMgrHelper.h>
+#include <PeriodicLooper.h>
 #include <Robot.h>
 #include <robotstate/RobotState.h>
 #include <RobotXmlParser.h>
-#include <teleopcontrol/TeleopControl.h>
+#include "teleopcontrol/TeleopControl.h"
 #include <utils/DragonField.h>
 #include <utils/FMSData.h>
 #include <utils/logging/LoggableItemMgr.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <utils/logging/LoggerData.h>
 #include <utils/logging/LoggerEnums.h>
 #include <utils/WaypointXmlParser.h>
@@ -68,10 +68,6 @@ void Robot::RobotInit()
     m_cyclePrims = new CyclePrimitives();
     m_previewer = new AutonPreviewer(m_cyclePrims); // TODO:: Move to DriveTeamFeedback
     m_field = DragonField::GetInstance();           // TODO: move to drive team feedback
-
-    //    m_dragonLimeLight = LimelightFactory::GetLimelightFactory()->GetLimelight(); // ToDo:: Move to Dragon Vision
-
-    StateMgrHelper::InitStateMgrs();
 
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("end"));
 }
@@ -197,11 +193,11 @@ void Robot::AutonomousInit()
 {
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("AutonomousInit"), string("arrived"));
 
-    StateMgrHelper::SetCheckGamepadInputsForStateTransitions(false);
     if (m_cyclePrims != nullptr)
     {
         m_cyclePrims->Init();
     }
+    PeriodicLooper::GetInstance()->AutonRunCurrentState();
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("AutonomousInit"), string("end"));
 }
 
@@ -211,6 +207,7 @@ void Robot::AutonomousPeriodic()
     {
         m_cyclePrims->Run();
     }
+    PeriodicLooper::GetInstance()->AutonRunCurrentState();
 }
 
 void Robot::TeleopInit()
@@ -222,7 +219,6 @@ void Robot::TeleopInit()
         m_controller = TeleopControl::GetInstance();
     }
 
-    StateMgrHelper::SetCheckGamepadInputsForStateTransitions(true);
     if (m_chassis != nullptr && m_controller != nullptr)
     {
         if (m_holonomic != nullptr)
@@ -236,13 +232,9 @@ void Robot::TeleopInit()
         resetMoveInfo.headingOption = ChassisOptionEnums::HeadingOption::MAINTAIN;
 
         m_chassis->Drive();
-    }
-    StateMgrHelper::RunCurrentMechanismStates();
-
-    if (m_chassis != nullptr)
-    {
         dynamic_cast<VisionDrive *>(m_chassis->GetSpecifiedDriveState(ChassisOptionEnums::DriveStateType::VISION_DRIVE))->setInAutonMode(false);
     }
+    PeriodicLooper::GetInstance()->TeleopRunCurrentState();
 
     // now in teleop, clear field of trajectories
     if (m_field != nullptr)
@@ -264,7 +256,7 @@ void Robot::TeleopPeriodic()
             m_holonomic->Run();
         }
     }
-    StateMgrHelper::RunCurrentMechanismStates();
+    PeriodicLooper::GetInstance()->TeleopRunCurrentState();
 
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("TeleopPeriodic"), string("end"));
 }
@@ -287,6 +279,16 @@ void Robot::TestInit()
 
 void Robot::TestPeriodic()
 {
+}
+
+void Robot::SimulationInit()
+{
+    PeriodicLooper::GetInstance()->SimulationRunCurrentState();
+}
+
+void Robot::SimulationPeriodic()
+{
+    PeriodicLooper::GetInstance()->SimulationRunCurrentState();
 }
 
 #ifndef RUNNING_FRC_TESTS

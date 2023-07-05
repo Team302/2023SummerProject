@@ -29,8 +29,8 @@
 // FRC includes
 
 // Team 302 includes
-#include <hw/usages/MotorControllerUsage.h>
-#include <utils/logging/Logger.h>
+#include "hw/usages/MotorControllerUsage.h"
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 
@@ -72,4 +72,16 @@ MotorControllerUsage::MOTOR_CONTROLLER_USAGE MotorControllerUsage::GetUsage(
 	}
 	Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("MotorControllerUsage::GetUsage"), string("unknown usage"), usageString);
 	return MotorControllerUsage::MOTOR_CONTROLLER_USAGE::UNKNOWN_MOTOR_CONTROLLER_USAGE;
+}
+
+std::string MotorControllerUsage::GetUsage(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage)
+{
+	for (auto thisUsage : m_usageMap)
+	{
+		if (thisUsage.second == usage)
+		{
+			return thisUsage.first;
+		}
+	}
+	return string("");
 }

@@ -24,7 +24,7 @@
 #include <hw/factories/DragonServoFactory.h>
 #include <hw/usages/ServoUsage.h>
 #include <utils/HardwareIDValidation.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <hw/xml/ServoXmlParser.h>
 
 // Third Party Includes

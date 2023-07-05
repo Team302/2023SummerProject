@@ -18,7 +18,7 @@
 #include <array>
 #include <string>
 #include <vector>
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 
 class MechanismTargetData
 {

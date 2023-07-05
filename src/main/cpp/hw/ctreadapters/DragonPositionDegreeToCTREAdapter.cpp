@@ -22,7 +22,7 @@
 #include <hw/DistanceAngleCalcStruc.h>
 #include <hw/ctreadapters/DragonControlToCTREAdapter.h>
 #include <hw/ctreadapters/DragonPositionDegreeToCTREAdapter.h>
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
 #include <utils/ConversionUtils.h>
 

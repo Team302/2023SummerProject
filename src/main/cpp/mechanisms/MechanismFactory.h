@@ -39,14 +39,14 @@
 #include <hw/usages/DragonSolenoidMap.h>
 #include <hw/usages/IDragonMotorControllerMap.h>
 #include <hw/usages/ServoMap.h>
-#include <mechanisms/MechanismTypes.h>
-#include <mechanisms/base/Mech.h>
+#include "mechanisms/MechanismTypes.h"
+#include "mechanisms/base/Mech.h"
 
 // @ADDMECH include for your mechanism
-#include <mechanisms/arm/Arm.h>
-#include <mechanisms/extender/Extender.h>
-#include <mechanisms/intake/Intake.h>
-#include <utils/logging/Logger.h>
+// #include <mechanisms/arm/Arm.h>
+// #include <mechanisms/extender/Extender.h>
+// #include <mechanisms/intake/Intake.h>
+#include "utils/logging/Logger.h"
 // Third Party Includes
 
 // forward declares
@@ -76,13 +76,13 @@ public:
 		DragonCanCoder *canCoder);
 
 	// @ADDMECH  Add inline Get method for your mechanism
-	inline Arm *GetArm() const { return m_arm; }
-	inline Extender *GetExtender() const { return m_extender; }
-	inline Intake *GetIntake() const
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, std::string("IntakeDebugging"), std::string("Getting intake2"), m_intake != nullptr ? "true" : "false");
-		return m_intake;
-	}
+	// inline Arm *GetArm() const { return m_arm; }
+	// inline Extender *GetExtender() const { return m_extender; }
+	// inline Intake *GetIntake() const
+	//{
+	//	Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, std::string("IntakeDebugging"), std::string("Getting intake2"), m_intake != nullptr ? "true" : "false");
+	// return m_intake;
+	//}
 
 	Mech *GetMechanism(
 		MechanismTypes::MECHANISM_TYPE type) const;
@@ -101,7 +101,7 @@ private:
 	static MechanismFactory *m_mechanismFactory;
 
 	// @ADDMECH  Add your mechanism here
-	Arm *m_arm;
-	Extender *m_extender;
-	Intake *m_intake;
+	// Arm *m_arm;
+	// Extender *m_extender;
+	// Intake *m_intake;
 };

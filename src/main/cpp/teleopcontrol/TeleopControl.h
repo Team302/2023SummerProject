@@ -31,7 +31,7 @@
 #include <teleopcontrol/TeleopControlButton.h>
 #include <teleopcontrol/TeleopControlFunctions.h>
 #include <teleopcontrol/TeleopControlMappingEnums.h>
-#include <utils/logging/LoggableItem.h>
+#include "utils/logging/LoggableItem.h"
 
 // third part
 #include <robinHood/robin_hood.h>

@@ -15,7 +15,7 @@
 
 #include <frc/Timer.h>
 
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/DragonPID.h>
 
 DragonPID::DragonPID(

@@ -24,9 +24,9 @@
 #include <hw/interfaces/IDragonControlToVendorControlAdapter.h>
 #include <hw/ctreadapters/DragonControlToCTREAdapter.h>
 #include <hw/ctreadapters/DragonPercentOutputToCTREAdapter.h>
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/ControlMode.h>
@@ -52,7 +52,7 @@ DragonControlToCTREAdapter::DragonControlToCTREAdapter(
 {
 	SetPeakAndNominalValues(networkTableName, controlInfo);
 
-	if (controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABSOLUTE ||
+	if (controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
 		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES ||
 		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
 		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_INCH ||
@@ -66,7 +66,7 @@ DragonControlToCTREAdapter::DragonControlToCTREAdapter(
 		SetPIDConstants(networkTableName, controllerSlot, controlInfo);
 	}
 
-	if ( // controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABSOLUTE ||
+	if ( // controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
 		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
 		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
 	{

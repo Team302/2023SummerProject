@@ -20,7 +20,7 @@
 
 // FRC Includes
 #include <frc/geometry/Pose2d.h>
-#include <units/velocity.h>
+#include "units/velocity.h"
 #include <units/acceleration.h>
 #include <frc/trajectory/Trajectory.h>
 #include <frc/trajectory/TrajectoryConfig.h>

@@ -22,8 +22,8 @@
 
 // Team 302 includes
 #include <chassis/differential/DifferentialChassis.h>
-#include <teleopcontrol/TeleopControl.h>
-#include <State.h>
+#include "teleopcontrol/TeleopControl.h"
+#include "State.h"
 
 class ArcadeDrive : public State
 {

@@ -21,7 +21,7 @@
 #include <string>
 
 // Team 302 includes
-#include <hw/DragonSolenoid.h>
+#include "hw/DragonSolenoid.h"
 
 // Third Party Includes
 #include <pugixml/pugixml.hpp>

@@ -25,9 +25,9 @@
 // Team 302 includes
 #include <auton/PrimitiveEnums.h>
 #include <chassis/ChassisOptionEnums.h>
-#include <mechanisms/arm/ArmStateMgr.h>
-#include <mechanisms/extender/ExtenderStateMgr.h>
-#include <mechanisms/intake/IntakeStateMgr.h>
+// #include <mechanisms/arm/ArmStateMgr.h>
+// #include <mechanisms/extender/ExtenderStateMgr.h>
+// #include <mechanisms/intake/IntakeStateMgr.h>
 #include <dragonVision/DragonLimelight.h>
 #include <chassis/swerve/driveStates/VisionDrive.h>
 // @ADDMECH include for your mechanism
@@ -51,9 +51,9 @@ public:
         float endDriveSpeed,
         std::string pathName,
         // @ADDMECH add parameter for your mechanism state
-        ArmStateMgr::ARM_STATE armState,
-        ExtenderStateMgr::EXTENDER_STATE extenderState,
-        IntakeStateMgr::INTAKE_STATE intakeState,
+        // ArmStateMgr::ARM_STATE armState,
+        // ExtenderStateMgr::EXTENDER_STATE extenderState,
+        // IntakeStateMgr::INTAKE_STATE intakeState,
 
         // VisionDrive settings start
         DragonLimelight::PIPELINE_MODE pipelineMode
@@ -75,9 +75,9 @@ public:
     float GetDriveSpeed() const { return m_startDriveSpeed; };
     float GetEndDriveSpeed() const { return m_endDriveSpeed; };
     std::string GetPathName() const { return m_pathName; };
-    ArmStateMgr::ARM_STATE GetArmState() const { return m_armState; };
-    ExtenderStateMgr::EXTENDER_STATE GetExtenderState() const { return m_extenderState; };
-    IntakeStateMgr::INTAKE_STATE GetIntakeState() const { return m_intakeState; }
+    // ArmStateMgr::ARM_STATE GetArmState() const { return m_armState; };
+    // ExtenderStateMgr::EXTENDER_STATE GetExtenderState() const { return m_extenderState; };
+    // IntakeStateMgr::INTAKE_STATE GetIntakeState() const { return m_intakeState; }
     DragonLimelight::PIPELINE_MODE GetPipelineMode() const { return m_pipelineMode; }
 
     // @ADDMECH Add methods to get the state mgr for mechanism
@@ -103,9 +103,9 @@ private:
     float m_endDriveSpeed;
     std::string m_pathName;
     // @ADDMECH add attribute for your mechanism state
-    ArmStateMgr::ARM_STATE m_armState;
-    ExtenderStateMgr::EXTENDER_STATE m_extenderState;
-    IntakeStateMgr::INTAKE_STATE m_intakeState;
+    // ArmStateMgr::ARM_STATE m_armState;
+    // ExtenderStateMgr::EXTENDER_STATE m_extenderState;
+    // IntakeStateMgr::INTAKE_STATE m_intakeState;
     DragonLimelight::PIPELINE_MODE m_pipelineMode;
 };
 

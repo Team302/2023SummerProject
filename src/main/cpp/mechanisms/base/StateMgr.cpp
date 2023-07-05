@@ -25,15 +25,14 @@
 
 // Team 302 includes
 #include <auton/PrimitiveParams.h>
-#include <State.h>
-#include <mechanisms/base/Mech.h>
-#include <mechanisms/base/StateMgr.h>
-#include <mechanisms/controllers/MechanismTargetData.h>
+#include "State.h"
+#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/StateMgr.h"
+#include "mechanisms/controllers/MechanismTargetData.h"
 #include <mechanisms/controllers/StateDataXmlParser.h>
-#include <mechanisms/MechanismFactory.h>
 #include <mechanisms/StateMgrHelper.h>
 #include <mechanisms/StateStruc.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 

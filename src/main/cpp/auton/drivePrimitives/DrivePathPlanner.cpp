@@ -19,7 +19,7 @@
 // FRC Includes
 #include <frc/kinematics/ChassisSpeeds.h>
 #include <frc/trajectory/TrajectoryUtil.h>
-#include <units/angular_velocity.h>
+#include "units/angular_velocity.h"
 #include <wpi/fs.h>
 
 // 302 Includes
@@ -29,7 +29,7 @@
 #include <chassis/ChassisOptionEnums.h>
 #include <chassis/ChassisFactory.h>
 #include <chassis/IChassis.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <chassis/swerve/driveStates/TrajectoryDrivePathPlanner.h>
 
 // third party includes

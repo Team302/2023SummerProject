@@ -22,7 +22,7 @@
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 
 // Third Party Includes
 #include <pugixml/pugixml.hpp>

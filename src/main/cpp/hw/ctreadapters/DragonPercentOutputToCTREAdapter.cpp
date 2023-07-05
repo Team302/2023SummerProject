@@ -22,7 +22,7 @@
 // Team 302 includes
 #include <hw/ctreadapters/DragonControlToCTREAdapter.h>
 #include <hw/ctreadapters/DragonPercentOutputToCTREAdapter.h>
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
 
 // Third Party Includes

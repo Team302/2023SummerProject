@@ -56,8 +56,8 @@ public:
 
 	static MotorControllerUsage *GetInstance();
 
-	MOTOR_CONTROLLER_USAGE GetUsage(
-		std::string usageString);
+	MOTOR_CONTROLLER_USAGE GetUsage(std::string usageString);
+	std::string GetUsage(MOTOR_CONTROLLER_USAGE usate);
 
 private:
 	static MotorControllerUsage *m_instance;

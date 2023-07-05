@@ -24,7 +24,7 @@
 #include <frc/Timer.h>
 
 // Team 302 includes
-#include <State.h>
+#include "State.h"
 
 // Third Party Includes
 
@@ -32,13 +32,6 @@ class AutonSelector;
 class IPrimitive;
 class PrimitiveFactory;
 class PrimitiveParams;
-
-class LeftIntakeStateMgr;
-class RightIntakeStateMgr;
-class ShooterStateMgr;
-class LeftIndexerStateMgr;
-class RightIndexerStateMgr;
-class LiftStateMgr;
 
 class CyclePrimitives : public State
 {

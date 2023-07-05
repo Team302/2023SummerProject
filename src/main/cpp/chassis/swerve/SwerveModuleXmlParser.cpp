@@ -31,9 +31,9 @@
 #include <chassis/ChassisFactory.h>
 #include <chassis/swerve/SwerveModule.h>
 #include <hw/DragonCanCoder.h>
-#include <hw/interfaces/IDragonMotorController.h>
+#include "hw/interfaces/IDragonMotorController.h"
 #include <hw/usages/IDragonMotorControllerMap.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <hw/xml/CancoderXmlParser.h>
 #include <hw/xml/MotorXmlParser.h>
 #include <chassis/swerve/SwerveModuleXmlParser.h>

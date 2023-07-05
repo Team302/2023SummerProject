@@ -30,8 +30,7 @@
 #include <auton/PrimitiveParams.h>
 #include <auton/PrimitiveParser.h>
 #include <auton/drivePrimitives/IPrimitive.h>
-#include <mechanisms/MechanismFactory.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <mechanisms/StateMgrHelper.h>
 #include <chassis/IChassis.h>
 #include <chassis/ChassisOptionEnums.h>
@@ -75,8 +74,6 @@ void CyclePrimitives::Run()
 	if (m_currentPrim != nullptr)
 	{
 		m_currentPrim->Run();
-		StateMgrHelper::RunCurrentMechanismStates();
-
 		if (m_currentPrim->IsDone())
 		{
 			GetNextPrim();
@@ -137,9 +134,9 @@ void CyclePrimitives::RunDriveStop()
 										  0.0, // end drive speed
 										  string(),
 										  // @ADDMECH mechanism state
-										  ArmStateMgr::ARM_STATE::HOLD_POSITION_ROTATE,
-										  ExtenderStateMgr::EXTENDER_STATE::HOLD_POSITION_EXTEND,
-										  IntakeStateMgr::INTAKE_STATE::HOLD,
+										  // ArmStateMgr::ARM_STATE::HOLD_POSITION_ROTATE,
+										  // ExtenderStateMgr::EXTENDER_STATE::HOLD_POSITION_EXTEND,
+										  // IntakeStateMgr::INTAKE_STATE::HOLD,
 										  DragonLimelight::PIPELINE_MODE::UNKNOWN);
 		m_DriveStop = m_primFactory->GetIPrimitive(params);
 		m_DriveStop->Init(params);

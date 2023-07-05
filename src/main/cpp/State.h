@@ -17,7 +17,7 @@
 #pragma once
 #include <string>
 
-#include <utils/logging/LoggableItem.h>
+#include "utils/logging/LoggableItem.h"
 
 ///	 @interface     State
 ///  @brief      	Interface for state classes
@@ -35,6 +35,9 @@ public:
     virtual void Run() = 0;
     virtual void Exit() = 0;
     virtual bool AtTarget() const = 0;
+
+    virtual bool IsTransitionCondition() const;
+
     void LogInformation() const override;
 
     inline std::string GetStateName() const { return m_stateName; }

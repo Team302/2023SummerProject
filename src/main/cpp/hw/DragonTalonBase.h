@@ -22,8 +22,8 @@
 #include <frc/motorcontrol/MotorController.h>
 
 #include <mechanisms/controllers/ControlModes.h>
-#include <hw/interfaces/IDragonMotorController.h>
-#include <hw/usages/MotorControllerUsage.h>
+#include "hw/interfaces/IDragonMotorController.h"
+#include "hw/usages/MotorControllerUsage.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/RemoteSensorSource.h>

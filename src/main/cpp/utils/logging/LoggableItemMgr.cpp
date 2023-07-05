@@ -18,7 +18,7 @@
 
 // Team 302 includes
 #include <utils/logging/LoggableItemMgr.h>
-#include <utils/logging/LoggableItem.h>
+#include "utils/logging/LoggableItem.h"
 
 // Third Party Includes
 

@@ -25,9 +25,9 @@
 // Team 302 includes
 #include <hw/DragonTalonSRX.h>
 #include <hw/factories/DragonMotorControllerFactory.h>
-#include <hw/interfaces/IDragonMotorController.h>
+#include "hw/interfaces/IDragonMotorController.h"
 #include <utils/HardwareIDValidation.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <hw/xml/MotorXmlParser.h>
 #include <hw/DistanceAngleCalcStruc.h>
 

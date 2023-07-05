@@ -23,7 +23,7 @@
 #include <auton/PrimitiveParams.h>
 #include <auton/PrimitiveParser.h>
 #include <auton/drivePrimitives/IPrimitive.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 #include <pugixml/pugixml.hpp>
 
@@ -125,9 +125,9 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
                     auto xloc = 0.0;
                     auto yloc = 0.0;
                     std::string pathName;
-                    auto armstate = ArmStateMgr::ARM_STATE::HOLD_POSITION_ROTATE;
-                    auto extenderstate = ExtenderStateMgr::EXTENDER_STATE::HOLD_POSITION_EXTEND;
-                    auto intakestate = IntakeStateMgr::INTAKE_STATE::HOLD;
+                    // auto armstate = ArmStateMgr::ARM_STATE::HOLD_POSITION_ROTATE;
+                    // auto extenderstate = ExtenderStateMgr::EXTENDER_STATE::HOLD_POSITION_EXTEND;
+                    // auto intakestate = IntakeStateMgr::INTAKE_STATE::HOLD;
                     auto pipelineMode = DragonLimelight::PIPELINE_MODE::UNKNOWN;
 
                     // @ADDMECH Initialize your mechanism state
@@ -191,6 +191,7 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
                         {
                             pathName = attr.value();
                         }
+                        /**
                         else if (strcmp(attr.name(), "arm") == 0)
                         {
                             auto armItr = ArmStateMgr::GetInstance()->m_armXmlStringToStateEnumMap.find(attr.value());
@@ -230,6 +231,7 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
                                 hasError = true;
                             }
                         }
+                        **/
                         else if (strcmp(attr.name(), "pipeline") == 0)
                         {
                             if (strcmp(attr.value(), "UNKNOWN") == 0)
@@ -279,9 +281,9 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
                                                                      endDriveSpeed,
                                                                      pathName,
                                                                      // @ADDMECH add parameter for your mechanism state
-                                                                     armstate,
-                                                                     extenderstate,
-                                                                     intakestate,
+                                                                     // armstate,
+                                                                     // extenderstate,
+                                                                     // intakestate,
                                                                      pipelineMode));
                     }
                     else
@@ -330,10 +332,10 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
         logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("End Drive Speed"), param->GetEndDriveSpeed());
         logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("Path Name"), param->GetPathName());
         // @ADDMECH Log state data
-        logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("armstate"), param->GetArmState());
-        logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("extenderstate"), param->GetExtenderState());
-        logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("intakestate"), param->GetIntakeState());
-        logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("PIPELINE_MODE"), param->GetIntakeState());
+        // logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("armstate"), param->GetArmState());
+        // logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("extenderstate"), param->GetExtenderState());
+        // logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("intakestate"), param->GetIntakeState());
+        // logger->LogData(LOGGER_LEVEL::PRINT, ntName, string("PIPELINE_MODE"), param->GetIntakeState());
         slot++;
     }
 

@@ -17,8 +17,8 @@
 #pragma once
 #include <vector>
 
-#include <mechanisms/MechanismTypes.h>
-#include <mechanisms/controllers/MechanismTargetData.h>
+#include "mechanisms/MechanismTypes.h"
+#include "mechanisms/controllers/MechanismTargetData.h"
 
 //========================================================================================================
 /// StateDataXmlParser.h

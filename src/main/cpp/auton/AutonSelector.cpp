@@ -31,7 +31,7 @@
 
 // Team302 includes
 #include <auton/AutonSelector.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <utils/FMSData.h>
 
 #include <pugixml/pugixml.hpp>

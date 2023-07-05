@@ -1,5 +1,5 @@
 #include <string>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <pugixml/pugixml.hpp>
 #include <utils/HardwareIDValidation.h>
 #include <hw/xml/ThroughBoreEncoderXmlParser.h>

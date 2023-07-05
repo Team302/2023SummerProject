@@ -21,7 +21,7 @@
 #include <string>
 
 // Team 302 includes
-#include <hw/interfaces/IDragonMotorController.h>
+#include "hw/interfaces/IDragonMotorController.h"
 
 // Third Party Includes
 #include <pugixml/pugixml.hpp>

@@ -21,7 +21,7 @@
 #include <chassis/ChassisFactory.h>
 #include <chassis/IChassis.h>
 #include <robotstate/RobotStateChangeBroker.h>
-#include <teleopcontrol/TeleopControl.h>
+#include "teleopcontrol/TeleopControl.h"
 #include <utils/DragonField.h>
 #include <hw/factories/CompressorFactory.h>
 

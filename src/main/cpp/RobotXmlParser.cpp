@@ -47,7 +47,7 @@
 #include <hw/xml/RoboRioXmlParser.h>
 #include <mechanisms/base/MechanismXmlParser.h>
 #include <RobotXmlParser.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <hw/xml/PCMXmlParser.h>
 
 // Third Party Includes

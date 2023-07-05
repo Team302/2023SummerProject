@@ -20,8 +20,8 @@
 #include <string>
 
 // Team 302 includes
-#include <utils/logging/LoggableItem.h>
-#include <mechanisms/MechanismTypes.h>
+#include "utils/logging/LoggableItem.h"
+#include "mechanisms/MechanismTypes.h"
 
 // Forward Declares
 class StateMgr;
@@ -35,10 +35,9 @@ public:
     /// @param [in] MechanismTypes::MECHANISM_TYPE the type of mechansim
     /// @param [in] std::string the name of the file that will set control parameters for this mechanism
     /// @param [in] std::string the name of the network table for logging information
-    Mech(
-        MechanismTypes::MECHANISM_TYPE type,
-        std::string controlFileName,
-        std::string networkTableName);
+    Mech(MechanismTypes::MECHANISM_TYPE type,
+         std::string controlFileName,
+         std::string networkTableName);
 
     /// @brief          Indicates the type of mechanism this is
     /// @return         MechanismTypes::MECHANISM_TYPE

@@ -21,10 +21,10 @@
 // FRC includes
 
 // Team302 includes
-#include <hw/DragonDigitalInput.h>
+#include "hw/DragonDigitalInput.h"
 #include <hw/usages/DigitalInputUsage.h>
 #include <utils/HardwareIDValidation.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <hw/xml/DigitalInputXmlParser.h>
 
 // Third Party includes

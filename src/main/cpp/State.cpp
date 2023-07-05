@@ -19,19 +19,21 @@
 // FRC includes
 
 // Team 302 includes
-#include <State.h>
+#include "State.h"
 
 // Third Party Includes
 
-using namespace std;
+using std::string;
 
-State::State(
-    string stateName,
-    int stateId) : m_stateName(stateName),
-                   m_stateId(stateId)
+State::State(string stateName, int stateId) : m_stateName(stateName),
+                                              m_stateId(stateId)
 {
 }
 
+bool State::IsTransitionCondition() const
+{
+    return false;
+}
 void State::LogInformation() const
 {
 }

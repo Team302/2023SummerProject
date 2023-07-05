@@ -23,8 +23,8 @@
 #include <hw/DistanceAngleCalcStruc.h>
 #include <hw/ctreadapters/DragonControlToCTREAdapter.h>
 #include <hw/factories/DragonControlToCTREAdapterFactory.h>
-#include <mechanisms/controllers/ControlData.h>
-#include <utils/logging/Logger.h>
+#include "mechanisms/controllers/ControlData.h"
+#include "utils/logging/Logger.h"
 
 #include <hw/ctreadapters/DragonControlToCTREAdapter.h>
 #include <hw/ctreadapters/DragonPercentOutputToCTREAdapter.h>
@@ -82,7 +82,7 @@ DragonControlToCTREAdapter *DragonControlToCTREAdapterFactory::CreateAdapter(
             return new DragonPercentOutputToCTREAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
-        case ControlModes::CONTROL_TYPE::POSITION_ABSOLUTE:
+        case ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS:
             return new DragonTicksToCTREAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 

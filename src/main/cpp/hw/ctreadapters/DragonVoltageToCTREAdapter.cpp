@@ -23,7 +23,7 @@
 #include <hw/DistanceAngleCalcStruc.h>
 #include <hw/ctreadapters/DragonControlToCTREAdapter.h>
 #include <hw/ctreadapters/DragonVoltageToCTREAdapter.h>
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
 
 // Third Party Includes

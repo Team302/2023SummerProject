@@ -26,9 +26,9 @@
 #include <networktables/NetworkTableInstance.h>
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
-#include <units/angle.h>
-#include <units/length.h>
-#include <units/velocity.h>
+#include "units/angle.h"
+#include "units/length.h"
+#include "units/velocity.h"
 
 // Team 302 includes
 #include <chassis/ChassisFactory.h>
@@ -36,10 +36,10 @@
 #include <chassis/swerve/SwerveChassis.h>
 #include <chassis/swerve/SwerveModule.h>
 #include <hw/DragonCanCoder.h>
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
 #include <utils/AngleUtils.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
@@ -76,7 +76,7 @@ SwerveModule::SwerveModule(
                                                          m_turnSensor(canCoder),
                                                          m_driveVelocityControlData(new ControlData()),
                                                          m_drivePercentControlData(new ControlData()),
-                                                         m_turnPositionControlData(new ControlData(ControlModes::CONTROL_TYPE::POSITION_ABSOLUTE,
+                                                         m_turnPositionControlData(new ControlData(ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS,
                                                                                                    ControlModes::CONTROL_RUN_LOCS::MOTOR_CONTROLLER,
                                                                                                    string("Turn Angle"),
                                                                                                    turnP,
