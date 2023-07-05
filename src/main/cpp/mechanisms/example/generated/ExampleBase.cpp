@@ -34,8 +34,11 @@ using std::string;
 /// @param solenoid Solenoid in the mechanism - code generator should probably use the usage for the variable name
 /// Additional actuators and sensors are also in this list.
 ExampleBase::ExampleBase(string controlFileName,
-                         string networkTableName) : Mech(MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM, controlFileName, networkTableName),
-                                                    IExample()
+                         string networkTableName) : IExample(),
+                                                    Mech(MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM, controlFileName, networkTableName),
+                                                    m_motorMap(),
+                                                    m_solenoidMap()
+
 {
 }
 

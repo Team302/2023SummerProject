@@ -46,6 +46,78 @@ wpi.sim.addGui().defaultEnabled = true
 // Enable DS but not by default
 wpi.sim.addDriverstation()
 
+/// Variables for coloring/formatting terminal output, uses ANSI codes
+def ansiEscape = "\033["
+def boldEffect = "1"
+def resetText = "0"
+def redColor = "31"
+def brightGreenColor = "92"
+def greenColor = "32"
+def yellowColor = "33"
+def ansiEnd = "m"
+def endSequence = ansiEscape + resetText + ansiEnd
+def boldSequence = ansiEscape + boldEffect + ansiEnd
+
+/// Check current team number and the team number used to build
+/// If theres a mismatch, allow the user to either continue or stop the build
+tasks.discoverroborio.doFirst() {
+    println("Checking team numbers...")
+    // Comment this out as it breaks the build
+    //check for version mismatch
+    //String lastBuildDetails = new File(projectDir.toString() + "/src/main/utilities/BuildDetails.txt").text
+
+    // String lastTeamNum = lastBuildDetails.takeBetween("(TN)")
+    // if(lastTeamNum.toInteger() != project.frc.getTeamOrDefault(302))
+    // {
+    //     println(boldSequence + "> Last built with team number: " + endSequence + lastTeamNum)
+    //     println(boldSequence + "> Current team number: " + endSequence + project.frc.getTeamOrDefault(302))
+    //     def startSequence = ansiEscape + boldEffect + ";" + yellowColor + ansiEnd
+    //     ant.input(message: startSequence + 'WARNING: ' + endSequence + 'Current team number does not match what code was built with, continue? Y/N:', addproperty: 'answer', defaultValue : 'N')
+    //     def answer = ant.properties.answer
+    //     if(answer == 'N' || answer == 'n')
+    //     {
+    //         startSequence = ansiEscape + boldEffect + ";" + redColor + ansiEnd
+    //         throw new GradleException(startSequence + "Deploy stopped due to team number mismatch" + endSequence)
+    //     }
+    // }
+}
+
+tasks.build.doLast() {
+    // comment out as it breaks the build
+//    def stdout = new ByteArrayOutputStream()
+//    exec {
+//      commandLine "git", "rev-parse", "HEAD"
+//      standardOutput = stdout
+//    }
+
+//    def commitHash = stdout.toString().trim()
+
+//     stdout = new ByteArrayOutputStream()
+//     exec {
+//       commandLine "git", "rev-parse", "--abbrev-ref", "HEAD"
+//       standardOutput = stdout
+//    }
+
+//    // Parse the output into a string
+//    def branch = stdout.toString().trim()
+
+//    def path = "/src/main/utilities"
+//    def filename = "BuildDetails.txt"
+
+//    new File(projectDir.toString() + path, filename
+//    ).text = "Branch: (B)" + branch + "(B) "+ "\nCommit Hash: (H)" + commitHash + "(H)" + "\nTeam Number: (TN)" + project.frc.getTeamOrDefault(302) + "(TN)"
+
+//     def startSequence = ansiEscape + boldEffect + ";" + brightGreenColor + ansiEnd
+//     def secondSequence = ansiEscape + brightGreenColor + ansiEnd
+//     println(startSequence + "Wrote build details to: " + endSequence + path + "/" + filename)
+
+//     def branchString = "\n\t" + boldSequence + "Branch: " + endSequence + branch
+//     def commitString = "\n\t" + boldSequence + "Commit Hash: " + endSequence + commitHash
+//     def teamNumString = "\n\t" + boldSequence + "Team Number: " + secondSequence + project.frc.getTeamOrDefault(302) + endSequence
+
+//     println("Contents: " + branchString + commitString + teamNumString)
+}
+
 model {
     components {
         frcUserProgram(NativeExecutableSpec) {
@@ -53,8 +125,17 @@ model {
             if (includeDesktopSupport) {
                 targetPlatform wpi.platforms.desktop
             }
+            binaries.all {
+                def robotVariant = "ROBOT_VARIANT=" + project.frc.getTeamOrDefault(302)
+                cppCompiler.args('-D'+robotVariant)
+            }            
 
             sources.cpp {
+                //say which robot we are building for
+                print(boldSequence)
+                println("Building code for robot with team number: " + project.frc.getTeamOrDefault(302))
+                print(endSequence)
+
                 source {
                     srcDir 'src/main/cpp'
                     srcDir 'src/main/thirdparty'

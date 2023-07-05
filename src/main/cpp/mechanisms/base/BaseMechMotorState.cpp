@@ -97,4 +97,5 @@ void BaseMechMotorState::Exit()
 
 bool BaseMechMotorState::AtTarget() const
 {
+    return false;
 }

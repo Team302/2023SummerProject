@@ -30,9 +30,18 @@
 #include <utils/WaypointXmlParser.h>
 
 #include <AdjustableItemMgr.h>
+#include <mechanisms/SomeMech/SomeMech.h>
 
 /// DEBUGGING
 #include <hw/factories/PigeonFactory.h>
+
+/* How to check robot variant
+#if ROBOT_VARIANT == 2024
+#warning COMP BOT
+#else
+#warning UNKNOWN
+#endif
+*/
 
 using namespace std;
 
@@ -84,6 +93,8 @@ void Robot::RobotPeriodic()
 {
     LoggableItemMgr::GetInstance()->LogData();
     Logger::GetLogger()->PeriodicLog();
+
+    m_someMech->Cyclic();
 
     if (m_chassis != nullptr)
     {
