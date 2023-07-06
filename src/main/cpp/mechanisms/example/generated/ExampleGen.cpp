@@ -15,6 +15,7 @@
 
 // C++ Includes
 #include <string>
+#include <vector>
 
 // FRC Includes
 
@@ -22,9 +23,10 @@
 #include "hw/interfaces/IDragonMotorController.h"
 #include "mechanisms/base/Mech.h"
 #include "mechanisms/base/BaseMechMotor.h"
-#include "mechanisms/example/generated/ExampleBase.h"
+#include "mechanisms/example/generated/ExampleGen.h"
 
 using std::string;
+using std::vector;
 
 /// @brief  This method constructs the mechanism using composition with its various actuators and sensors.
 /// @param controlFileName The control file with the PID constants and Targets for each state
@@ -33,21 +35,21 @@ using std::string;
 /// @param otherMotor Same as previous
 /// @param solenoid Solenoid in the mechanism - code generator should probably use the usage for the variable name
 /// Additional actuators and sensors are also in this list.
-ExampleBase::ExampleBase(string controlFileName,
-                         string networkTableName) : IExample(),
-                                                    Mech(MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM, controlFileName, networkTableName),
-                                                    m_motorMap(),
-                                                    m_solenoidMap()
+ExampleGen::ExampleGen(string controlFileName,
+                       string networkTableName) : IExampleGen(),
+                                                  Mech(MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM, controlFileName, networkTableName),
+                                                  m_motorMap(),
+                                                  m_solenoidMap()
 
 {
 }
 
-void ExampleBase::AddMotor(IDragonMotorController &motor)
+void ExampleGen::AddMotor(IDragonMotorController &motor)
 {
     m_motorMap[motor.GetType()] = new BaseMechMotor(GetNetworkTableName(), motor, BaseMechMotor::EndOfTravelSensorOption::NONE, nullptr, BaseMechMotor::EndOfTravelSensorOption::NONE, nullptr);
 }
 
-void ExampleBase::AddSolenoid(DragonSolenoid &solenoid)
+void ExampleGen::AddSolenoid(DragonSolenoid &solenoid)
 {
     m_solenoidMap[solenoid.GetType()] = new BaseMechSolenoid(GetNetworkTableName(), solenoid);
 }
@@ -55,7 +57,7 @@ void ExampleBase::AddSolenoid(DragonSolenoid &solenoid)
 /// @brief  Set the control constants (e.g. PIDF values).
 /// @param [in] ControlData*                                   pid:  the control constants
 /// @return void
-void ExampleBase::SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, int slot, ControlData *pid)
+void ExampleGen::SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, int slot, ControlData *pid)
 {
     auto motor = GetMotorMech(identifier);
     if (motor != nullptr)
@@ -66,7 +68,7 @@ void ExampleBase::SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USA
 
 /// @brief update the output to the mechanism using the current controller and target value(s)
 /// @return void
-void ExampleBase::Update()
+void ExampleGen::Update()
 {
     for (auto motor : m_motorMap)
     {
@@ -74,7 +76,7 @@ void ExampleBase::Update()
     }
 }
 
-void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, double percentOutput)
+void ExampleGen::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, double percentOutput)
 {
     auto motor = GetMotorMech(identifier);
     if (motor != nullptr)
@@ -83,7 +85,7 @@ void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE iden
     }
 }
 
-void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angle::degree_t angle)
+void ExampleGen::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angle::degree_t angle)
 {
     auto motor = GetMotorMech(identifier);
     if (motor != nullptr)
@@ -92,7 +94,7 @@ void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE iden
     }
 }
 
-void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angular_velocity::revolutions_per_minute_t angVel)
+void ExampleGen::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angular_velocity::revolutions_per_minute_t angVel)
 {
     auto motor = GetMotorMech(identifier);
     if (motor != nullptr)
@@ -100,7 +102,7 @@ void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE iden
         motor->UpdateTarget(angVel);
     }
 }
-void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::length::inch_t position)
+void ExampleGen::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::length::inch_t position)
 {
     auto motor = GetMotorMech(identifier);
     if (motor != nullptr)
@@ -108,7 +110,7 @@ void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE iden
         motor->UpdateTarget(position);
     }
 }
-void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::velocity::feet_per_second_t velocity)
+void ExampleGen::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::velocity::feet_per_second_t velocity)
 {
     auto motor = GetMotorMech(identifier);
     if (motor != nullptr)
@@ -116,7 +118,7 @@ void ExampleBase::UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE iden
         motor->UpdateTarget(velocity);
     }
 }
-void ExampleBase::UpdateTarget(SolenoidUsage::SOLENOID_USAGE identifier, bool extend)
+void ExampleGen::UpdateTarget(SolenoidUsage::SOLENOID_USAGE identifier, bool extend)
 {
     auto sol = GetSolenoidMech(identifier);
     if (sol != nullptr)
@@ -125,7 +127,7 @@ void ExampleBase::UpdateTarget(SolenoidUsage::SOLENOID_USAGE identifier, bool ex
     }
 }
 
-BaseMechMotor *ExampleBase::GetMotorMech(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage) const
+BaseMechMotor *ExampleGen::GetMotorMech(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage) const
 {
     auto itr = m_motorMap.find(usage);
     if (itr != m_motorMap.end())
@@ -134,7 +136,7 @@ BaseMechMotor *ExampleBase::GetMotorMech(MotorControllerUsage::MOTOR_CONTROLLER_
     }
     return nullptr;
 }
-BaseMechSolenoid *ExampleBase::GetSolenoidMech(SolenoidUsage::SOLENOID_USAGE usage) const
+BaseMechSolenoid *ExampleGen::GetSolenoidMech(SolenoidUsage::SOLENOID_USAGE usage) const
 {
     auto itr = m_solenoidMap.find(usage);
     if (itr != m_solenoidMap.end())
@@ -142,4 +144,23 @@ BaseMechSolenoid *ExampleBase::GetSolenoidMech(SolenoidUsage::SOLENOID_USAGE usa
         return itr->second;
     }
     return nullptr;
+}
+
+vector<MotorControllerUsage::MOTOR_CONTROLLER_USAGE> ExampleGen::GetMotorUsages() const
+{
+    vector<MotorControllerUsage::MOTOR_CONTROLLER_USAGE> output;
+    for (auto itr = m_motorMap.begin(); itr != m_motorMap.end(); ++itr)
+    {
+        output.emplace_back(itr->first);
+    }
+    return output;
+}
+vector<SolenoidUsage::SOLENOID_USAGE> ExampleGen::GetSolenoidUsages() const
+{
+    vector<SolenoidUsage::SOLENOID_USAGE> output;
+    for (auto itr = m_solenoidMap.begin(); itr != m_solenoidMap.end(); ++itr)
+    {
+        output.emplace_back(itr->first);
+    }
+    return output;
 }

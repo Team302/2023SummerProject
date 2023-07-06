@@ -15,26 +15,53 @@
 //====================================================================================================================================================
 
 // C++ Includes
+#include <memory>
 #include <string>
 
 // FRC includes
 
 // Team 302 includes
 #include "State.h"
-#include "mechanisms/example/generated/ExampleStateGen.h"
-#include <mechanisms/example/modifyable/ExampleState.h>
-#include "mechanisms/controllers/ControlData.h"
+#include "mechanisms/base/BaseMechSolenoid.h"
+#include "mechanisms/base/BaseMechSolenoidState.h"
 #include "mechanisms/base/Mech.h"
 #include "utils/logging/Logger.h"
+
+#include "teleopcontrol/TeleopControl.h"
 
 // Third Party Includes
 
 using namespace std;
 
-/// @class ExampleState
+/// @class BaseMechSolenoidState
 /// @brief information about the control (open loop, closed loop position, closed loop velocity, etc.) for a mechanism state
-ExampleState::ExampleState(std::string stateName,
-                           int stateId,
-                           ExampleStateGen *generatedState) : State(stateName, stateId), m_genState(generatedState)
+BaseMechSolenoidState::BaseMechSolenoidState(string stateName,
+                                             int stateId,
+                                             BaseMechSolenoid &mech) : State(stateName, stateId),
+                                                                       m_mech(mech)
 {
+}
+
+/// @brief Set the target value for the actuator
+/// @param identifier Motor Control Usage to indicate what motor to update
+/// @param percentOutput target value
+void BaseMechSolenoidState::SetTarget(bool activate)
+{
+}
+
+void BaseMechSolenoidState::Init()
+{
+}
+
+void BaseMechSolenoidState::Run()
+{
+}
+
+void BaseMechSolenoidState::Exit()
+{
+}
+
+bool BaseMechSolenoidState::AtTarget() const
+{
+    return false;
 }

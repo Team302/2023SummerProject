@@ -15,26 +15,57 @@
 //====================================================================================================================================================
 
 // C++ Includes
+#include <memory>
 #include <string>
 
 // FRC includes
+#include "units/angle.h"
 
 // Team 302 includes
 #include "State.h"
-#include "mechanisms/example/generated/ExampleStateGen.h"
-#include <mechanisms/example/modifyable/ExampleState.h>
+#include "mechanisms/base/BaseMechMotor.h"
+#include "mechanisms/base/BaseMechServoState.h"
 #include "mechanisms/controllers/ControlData.h"
+#include "mechanisms/controllers/MechanismTargetData.h"
 #include "mechanisms/base/Mech.h"
 #include "utils/logging/Logger.h"
+
+#include "teleopcontrol/TeleopControl.h"
 
 // Third Party Includes
 
 using namespace std;
 
-/// @class ExampleState
+/// @class BaseMechServoState
 /// @brief information about the control (open loop, closed loop position, closed loop velocity, etc.) for a mechanism state
-ExampleState::ExampleState(std::string stateName,
-                           int stateId,
-                           ExampleStateGen *generatedState) : State(stateName, stateId), m_genState(generatedState)
+BaseMechServoState::BaseMechServoState(string stateName,
+                                       int stateId,
+                                       BaseMechServo &mech) : State(stateName, stateId),
+                                                              m_mech(mech)
 {
+}
+
+/// @brief Set the target value for the actuator
+/// @param identifier Motor Control Usage to indicate what motor to update
+/// @param controlConst pid constants for controling motor
+/// @param angle target value
+void BaseMechServoState::SetTarget(units::angle::degree_t angle)
+{
+}
+
+void BaseMechServoState::Init()
+{
+}
+
+void BaseMechServoState::Run()
+{
+}
+
+void BaseMechServoState::Exit()
+{
+}
+
+bool BaseMechServoState::AtTarget() const
+{
+    return false;
 }

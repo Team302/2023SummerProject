@@ -21,11 +21,11 @@
 // FRC Includes
 
 // Team 302 includes
-#include "mechanisms/example/generated/IExample.h"
+#include "mechanisms/example/generated/IExampleGen.h"
 
 // forward declares
 
-class Example : public IExample
+class Example : public IExampleGen
 {
 public:
     /// @brief  This method constructs the mechanism using composition with its various actuators and sensors.
@@ -35,10 +35,10 @@ public:
     /// @param otherMotor Same as previous
     /// @param solenoid Solenoid in the mechanism - code generator should probably use the usage for the variable name
     /// Additional actuators and sensors are also in this list.
-    Example(IExample *generatedMech);
+    Example(IExampleGen *generatedMech);
     Example() = delete;
     ~Example() = default;
 
 private:
-    IExample *m_example;
+    IExampleGen *m_example;
 };

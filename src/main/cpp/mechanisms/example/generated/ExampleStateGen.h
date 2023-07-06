@@ -17,53 +17,67 @@
 #include <string>
 
 #include "State.h"
+#include "mechanisms/base/BaseMechMotorState.h"
+#include "mechanisms/base/BaseMechSolenoidState.h"
 #include "mechanisms/controllers/MechanismTargetData.h"
 #include "mechanisms/controllers/ControlData.h"
-#include "mechanisms/base/BaseMechMotor.h"
+#include "mechanisms/example/generated/ExampleGen.h"
 
-class BaseMechMotorState : public State
+class ExampleStateGen : public State
 {
 public:
-    BaseMechMotorState(std::string stateName,
-                       int stateId,
-                       BaseMechMotor &mech);
-    BaseMechMotorState() = delete;
-    ~BaseMechMotorState() = default;
+    ExampleStateGen(std::string stateName,
+                    int stateId,
+                    ExampleGen &example);
+    ExampleStateGen() = delete;
+    ~ExampleStateGen() = default;
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param percentOutput target value
-    void SetTargetControl(double percentOutput);
+    void SetTargetControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, double percentOutput);
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param controlConst pid constants for controling motor
     /// @param angle target value
-    void SetTargetControl(ControlData &controlConst, units::angle::degree_t angle);
+    void SetTargetControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, ControlData &controlConst, units::angle::degree_t angle);
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param controlConst pid constants for controling motor
     /// @param angularVelocity target value
-    void SetTargetControl(ControlData &controlConst, units::angular_velocity::revolutions_per_minute_t angVel);
+    void SetTargetControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, ControlData &controlConst, units::angular_velocity::revolutions_per_minute_t angVel);
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param controlConst pid constants for controling motor
     /// @param position target value
-    void SetTargetControl(ControlData &controlConst, units::length::inch_t position);
+    void SetTargetControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, ControlData &controlConst, units::length::inch_t position);
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param controlConst pid constants for controling motor
     /// @param velocity target value
-    void SetTargetControl(ControlData &controlConst, units::velocity::feet_per_second_t velocity);
+    void SetTargetControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, ControlData &controlConst, units::velocity::feet_per_second_t velocity);
+
+    /// @brief Set the target value for the actuator
+    /// @param identifier solenoid Usage to indicate what motor to update
+    /// @param extend target value
+    void SetTargetControl(SolenoidUsage::SOLENOID_USAGE identifier, bool extend);
 
     void Init() override;
     void Run() override;
     void Exit() override;
     bool AtTarget() const override;
 
+    ExampleGen GetExample() { return m_example; }
+
 private:
-    BaseMechMotor m_mech;
+    BaseMechMotorState *GetMotorMechState(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage) const;
+    BaseMechSolenoidState *GetSolenoidMechState(SolenoidUsage::SOLENOID_USAGE usage) const;
+
+    ExampleGen m_example;
+    std::unordered_map<MotorControllerUsage::MOTOR_CONTROLLER_USAGE, BaseMechMotorState *> m_motorMap;
+    std::unordered_map<SolenoidUsage::SOLENOID_USAGE, BaseMechSolenoidState *> m_solenoidMap;
 };

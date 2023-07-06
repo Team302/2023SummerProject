@@ -17,20 +17,28 @@
 #include <string>
 
 #include "State.h"
-#include "mechanisms/controllers/MechanismTargetData.h"
+#include "mechanisms/base/BaseMechSolenoid.h"
 
-#include "mechanisms/example/generated/ExampleStateGen.h"
-
-using namespace std;
-class ExampleState : public State
+class BaseMechSolenoidState : public State
 {
 public:
-    ExampleState() = delete;
-    ExampleState(std::string stateName,
-                 int stateId,
-                 ExampleStateGen *generatedState);
-    ~ExampleState() = default;
+    BaseMechSolenoidState(std::string stateName,
+                          int stateId,
+                          BaseMechSolenoid &mech);
+    BaseMechSolenoidState() = delete;
+    ~BaseMechSolenoidState() = default;
+
+    /// @brief Set the target value for the actuator
+    /// @param identifier Motor Control Usage to indicate what motor to update
+    /// @param controlConst pid constants for controling motor
+    /// @param angle target value
+    void SetTarget(bool activate);
+
+    void Init() override;
+    void Run() override;
+    void Exit() override;
+    bool AtTarget() const override;
 
 private:
-    ExampleStateGen *m_genState;
+    BaseMechSolenoid m_mech;
 };

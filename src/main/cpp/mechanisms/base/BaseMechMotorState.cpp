@@ -47,7 +47,7 @@ BaseMechMotorState::BaseMechMotorState(string stateName,
 /// @brief Set the target value for the actuator
 /// @param identifier Motor Control Usage to indicate what motor to update
 /// @param percentOutput target value
-void BaseMechMotorState::SetTargetIControl(double percentOutput)
+void BaseMechMotorState::SetTargetControl(double percentOutput)
 {
 }
 
@@ -55,7 +55,7 @@ void BaseMechMotorState::SetTargetIControl(double percentOutput)
 /// @param identifier Motor Control Usage to indicate what motor to update
 /// @param controlConst pid constants for controling motor
 /// @param angle target value
-void BaseMechMotorState::SetTargetIControl(ControlData &controlConst, units::angle::degree_t angle)
+void BaseMechMotorState::SetTargetControl(ControlData &controlConst, units::angle::degree_t angle)
 {
 }
 
@@ -63,7 +63,7 @@ void BaseMechMotorState::SetTargetIControl(ControlData &controlConst, units::ang
 /// @param identifier Motor Control Usage to indicate what motor to update
 /// @param controlConst pid constants for controling motor
 /// @param angularVelocity target value
-void BaseMechMotorState::SetTargetIControl(ControlData &controlConst, units::angular_velocity::revolutions_per_minute_t angVel)
+void BaseMechMotorState::SetTargetControl(ControlData &controlConst, units::angular_velocity::revolutions_per_minute_t angVel)
 {
 }
 
@@ -71,7 +71,7 @@ void BaseMechMotorState::SetTargetIControl(ControlData &controlConst, units::ang
 /// @param identifier Motor Control Usage to indicate what motor to update
 /// @param controlConst pid constants for controling motor
 /// @param position target value
-void BaseMechMotorState::SetTargetIControl(ControlData &controlConst, units::length::inch_t position)
+void BaseMechMotorState::SetTargetControl(ControlData &controlConst, units::length::inch_t position)
 {
 }
 
@@ -79,7 +79,7 @@ void BaseMechMotorState::SetTargetIControl(ControlData &controlConst, units::len
 /// @param identifier Motor Control Usage to indicate what motor to update
 /// @param controlConst pid constants for controling motor
 /// @param velocity target value
-void BaseMechMotorState::SetTargetIControl(ControlData &controlConst, units::velocity::feet_per_second_t velocity)
+void BaseMechMotorState::SetTargetControl(ControlData &controlConst, units::velocity::feet_per_second_t velocity)
 {
 }
 

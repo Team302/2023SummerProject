@@ -16,21 +16,31 @@
 #pragma once
 #include <string>
 
+#include "units/angle.h"
+
 #include "State.h"
-#include "mechanisms/controllers/MechanismTargetData.h"
+#include "mechanisms/base/BaseMechServo.h"
 
-#include "mechanisms/example/generated/ExampleStateGen.h"
-
-using namespace std;
-class ExampleState : public State
+class BaseMechServoState : public State
 {
 public:
-    ExampleState() = delete;
-    ExampleState(std::string stateName,
-                 int stateId,
-                 ExampleStateGen *generatedState);
-    ~ExampleState() = default;
+    BaseMechServoState(std::string stateName,
+                       int stateId,
+                       BaseMechServo &mech);
+    BaseMechServoState() = delete;
+    ~BaseMechServoState() = default;
+
+    /// @brief Set the target value for the actuator
+    /// @param identifier Motor Control Usage to indicate what motor to update
+    /// @param controlConst pid constants for controling motor
+    /// @param angle target value
+    void SetTarget(units::angle::degree_t angle);
+
+    void Init() override;
+    void Run() override;
+    void Exit() override;
+    bool AtTarget() const override;
 
 private:
-    ExampleStateGen *m_genState;
+    BaseMechServo m_mech;
 };

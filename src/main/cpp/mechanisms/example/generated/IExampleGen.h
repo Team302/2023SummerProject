@@ -1,3 +1,4 @@
+
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -14,66 +15,74 @@
 //====================================================================================================================================================
 
 #pragma once
+
+// C++ Includes
+#include <map>
 #include <string>
 
-#include "State.h"
-#include "mechanisms/base/BaseMechMotorState.h"
-#include "mechanisms/controllers/MechanismTargetData.h"
-#include "mechanisms/controllers/ControlData.h"
-#include "mechanisms/example/generated/ExampleBase.h"
+// FRC Includes
+#include "units/angle.h"
+#include "units/angular_velocity.h"
+#include "units/length.h"
+#include "units/velocity.h"
 
-class ExampleStateBase : public State
+// Team 302 includes
+#include "hw/usages/MotorControllerUsage.h"
+#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMechMotor.h"
+#include "mechanisms/base/BaseMechSolenoid.h"
+
+// forward declares
+class IDragonMotorController;
+
+class IExampleGen
 {
 public:
-    ExampleStateBase(std::string stateName,
-                     int stateId,
-                     ExampleBase &example);
-    ExampleStateBase() = delete;
-    ~ExampleStateBase() = default;
+    /// @brief  This method constructs the mechanism using composition with its various actuators and sensors.
+    /// @param controlFileName The control file with the PID constants and Targets for each state
+    /// @param networkTableName Location for logging information
+    IExampleGen() = default;
+    ~IExampleGen() = default;
+
+    virtual void AddMotor(IDragonMotorController &motor) = 0;
+    virtual void AddSolenoid(DragonSolenoid &solenoid) = 0;
+
+    /// @brief Set the control constants (e.g. PIDF values).
+    /// @param indentifier the motor controller usage to identify the motor
+    /// @param slot position on the motor controller to set
+    /// @param pid control data / constants
+    virtual void SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE indentifier, int slot, ControlData *pid) = 0;
+
+    /// @brief update the output to the mechanism using the current controller and target value(s)
+    virtual void Update() = 0;
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param percentOutput target value
-    void SetTargetIControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, double percentOutput);
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, double percentOutput) = 0;
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
-    /// @param controlConst pid constants for controling motor
     /// @param angle target value
-    void SetTargetIControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, ControlData &controlConst, units::angle::degree_t angle);
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angle::degree_t angle) = 0;
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
-    /// @param controlConst pid constants for controling motor
     /// @param angularVelocity target value
-    void SetTargetIControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, ControlData &controlConst, units::angular_velocity::revolutions_per_minute_t angVel);
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angular_velocity::revolutions_per_minute_t angVel) = 0;
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
-    /// @param controlConst pid constants for controling motor
     /// @param position target value
-    void SetTargetIControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, ControlData &controlConst, units::length::inch_t position);
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::length::inch_t position) = 0;
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
-    /// @param controlConst pid constants for controling motor
     /// @param velocity target value
-    void SetTargetIControl(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, ControlData &controlConst, units::velocity::feet_per_second_t velocity);
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::velocity::feet_per_second_t velocity) = 0;
 
     /// @brief Set the target value for the actuator
     /// @param identifier solenoid Usage to indicate what motor to update
     /// @param extend target value
-    void SetTargetIControl(SolenoidUsage::SOLENOID_USAGE identifier, bool extend);
-
-    void Init() override;
-    void Run() override;
-    void Exit() override;
-    bool AtTarget() const override;
-
-    ExampleBase GetExample() { return m_example; }
-
-private:
-    ExampleBase m_example;
-    std::unordered_map<MotorControllerUsage::MOTOR_CONTROLLER_USAGE, BaseMechMotorState *> m_motorMap;
-    // std::unordered_map<SolenoidUsage::SOLENOID_USAGE, BaseMechSolenoid *> m_solenoidMap;
+    virtual void UpdateTarget(SolenoidUsage::SOLENOID_USAGE identifier, bool extend) = 0;
 };
