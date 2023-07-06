@@ -125,12 +125,7 @@ namespace CoreCodeGenerator
                                             //we need to hijack testResultString here to have multiple lines for each element of collection
                                             if (isACollection(pi.GetValue(mech)))
                                             {
-                                                Type propertyType = pi.GetValue(mech).GetType();
-                                                foreach (object o in (pi.GetValue(mech) as IEnumerable))
-                                                {
-                                                    repeatsForCollection++;
-
-                                                }
+                                                repeatsForCollection = (pi.GetValue(mech) as IList).Count;
                                             }
                                         }
                                     }
@@ -148,46 +143,51 @@ namespace CoreCodeGenerator
                         Type objType = mech.GetType();
 
                         PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
-                        if (array2[i].StartsWith("^"))
+                        foreach (string s in array2)
                         {
-                            string propertyName = array2[i].Trim('^');
-
-                            //if we are trying to access a collection in some place, don't worry about that for now
-                            if (array2[i].IndexOf("%") !=  -1)
+                            //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
+                            if (s.StartsWith("^"))
                             {
-                                int percentCount = Regex.Matches(propertyName, "%").Count + 1;
-;                               propertyName = propertyName.Split(new string[] { "%" }, percentCount, StringSplitOptions.None)[0];
-                            }
+                                string propertyName = s.Trim('^');
 
-                            //find the property after the ^
-                            foreach (PropertyInfo pi in propertyInfos)
-                            {
-                                if (pi.Name == propertyName)
+                                //if we are trying to access a collection in some place, don't worry about that for now
+                                if (s.IndexOf("%") != -1)
                                 {
-                                    //check if property is a collection
-                                    //we need to hijack testResultString here to have multiple lines for each element of collection
-                                    if(isACollection(pi.GetValue(mech)))
+                                    int percentCount = Regex.Matches(propertyName, "%").Count + 1;
+                                    propertyName = propertyName.Split(new string[] { "%" }, percentCount, StringSplitOptions.None)[0];
+                                }
+
+                                //find the property after the ^
+                                foreach (PropertyInfo pi in propertyInfos)
+                                {
+                                    if (pi.Name == propertyName)
                                     {
+                                        //check if property is a collection
+                                        //we need to hijack testResultString here to have multiple lines for each element of collection
+                                        if (isACollection(pi.GetValue(mech)))
+                                        {
+                                            IList list = (IList)pi.GetValue(mech);
+                                            object element = list[i];
 
-                                        object element = (pi.GetValue(mech) as List<object>)[i];
+                                            Type collectionType = element.GetType();
+                                            string collectionProperty = s.Split(new string[] { "%" }, 2, StringSplitOptions.None)[1];
+                                            string value = element.GetType().GetProperty(collectionProperty).GetValue(element).ToString();
+                                            testResultString += value;
 
-                                        Type collectionType = element.GetType();
-                                        string collectionProperty = array2[i].Split(new string[] { "%" }, 2, StringSplitOptions.None)[1];
-                                        string value = element.GetType().GetProperty(collectionProperty).GetValue(element).ToString();
-                                        testResultString += value;
-                                        
+                                        }
+                                        else
+                                            testResultString += pi.GetValue(mech).ToString();
                                     }
-                                    else
-                                    testResultString += pi.GetValue(mech).ToString();
                                 }
                             }
+                            else
+                            {
+                                testResultString += s;
+                            }
                         }
-                        else
-                        {
-                            testResultString += array2[i];
-                        }
+                        //make sure we don't put a new line after last element
+                        if(i != (repeatsForCollection -1))
+                            testResultString += Environment.NewLine;
                     }
 
                     Debug.WriteLine(testResultString);
