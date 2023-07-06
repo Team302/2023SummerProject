@@ -18,6 +18,7 @@
 
 #include "State.h"
 #include "mechanisms/base/BaseMechMotorState.h"
+#include "mechanisms/base/BaseMechServoState.h"
 #include "mechanisms/base/BaseMechSolenoidState.h"
 #include "mechanisms/controllers/MechanismTargetData.h"
 #include "mechanisms/controllers/ControlData.h"
@@ -66,6 +67,11 @@ public:
     /// @param extend target value
     void SetTargetControl(SolenoidUsage::SOLENOID_USAGE identifier, bool extend);
 
+    /// @brief Set the target value for the actuator
+    /// @param identifier solenoid Usage to indicate what motor to update
+    /// @param extend target value
+    void SetTargetControl(ServoUsage::SERVO_USAGE identifier, units::angle::degree_t angle);
+
     void Init() override;
     void Run() override;
     void Exit() override;
@@ -76,8 +82,10 @@ public:
 private:
     BaseMechMotorState *GetMotorMechState(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage) const;
     BaseMechSolenoidState *GetSolenoidMechState(SolenoidUsage::SOLENOID_USAGE usage) const;
+    BaseMechServoState *GetServoMechState(ServoUsage::SERVO_USAGE usage) const;
 
     ExampleGen m_example;
     std::unordered_map<MotorControllerUsage::MOTOR_CONTROLLER_USAGE, BaseMechMotorState *> m_motorMap;
     std::unordered_map<SolenoidUsage::SOLENOID_USAGE, BaseMechSolenoidState *> m_solenoidMap;
+    std::unordered_map<ServoUsage::SERVO_USAGE, BaseMechServoState *> m_servoMap;
 };

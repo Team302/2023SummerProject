@@ -29,9 +29,12 @@
 
 // Team 302 includes
 #include "hw/usages/MotorControllerUsage.h"
+#include "hw/usages/ServoUsage.h"
+#include "hw/usages/SolenoidUsage.h"
 #include "mechanisms/base/Mech.h"
 #include "mechanisms/base/BaseMechMotor.h"
 #include "mechanisms/base/BaseMechSolenoid.h"
+#include "mechanisms/base/BaseMechServo.h"
 #include "mechanisms/example/generated/IExampleGen.h"
 
 // forward declares
@@ -100,7 +103,11 @@ public:
     std::vector<SolenoidUsage::SOLENOID_USAGE> GetSolenoidUsages() const;
     BaseMechSolenoid *GetSolenoidMech(SolenoidUsage::SOLENOID_USAGE usage) const;
 
+    std::vector<ServoUsage::SERVO_USAGE> GetServoUsages() const;
+    BaseMechServo *GetServoMech(ServoUsage::SERVO_USAGE usage) const;
+
 private:
     std::unordered_map<MotorControllerUsage::MOTOR_CONTROLLER_USAGE, BaseMechMotor *> m_motorMap;
     std::unordered_map<SolenoidUsage::SOLENOID_USAGE, BaseMechSolenoid *> m_solenoidMap;
+    std::unordered_map<ServoUsage::SERVO_USAGE, BaseMechServo *> m_servoMap;
 };

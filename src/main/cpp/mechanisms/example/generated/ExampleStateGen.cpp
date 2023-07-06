@@ -17,6 +17,7 @@
 // C++ Includes
 #include <memory>
 #include <string>
+#include <vector>
 
 // FRC includes
 
@@ -38,6 +39,18 @@
 
 using namespace std;
 
+// Helper functions
+void InitMotorMechState(State *state)
+{
+}
+void RunMotorMechState(State *state)
+{
+}
+
+void ExitMotorMechState(State *state)
+{
+}
+
 /// @class ExampleStateGen
 /// @brief information about the control (open loop, closed loop position, closed loop velocity, etc.) for a mechanism state
 ExampleStateGen::ExampleStateGen(string stateName,
@@ -45,7 +58,8 @@ ExampleStateGen::ExampleStateGen(string stateName,
                                  ExampleGen &mech) : State(stateName, stateId),
                                                      m_example(mech),
                                                      m_motorMap(),
-                                                     m_solenoidMap()
+                                                     m_solenoidMap(),
+                                                     m_servoMap()
 {
     auto motorUsages = m_example.GetMotorUsages();
     for (auto usage : motorUsages)
@@ -58,6 +72,12 @@ ExampleStateGen::ExampleStateGen(string stateName,
     {
         auto solmech = m_example.GetSolenoidMech(usage);
         m_solenoidMap[usage] = new BaseMechSolenoidState(stateName, stateId, *solmech);
+    }
+    auto servoUsages = m_example.GetServoUsages();
+    for (auto usage : servoUsages)
+    {
+        auto servoMech = m_example.GetServoMech(usage);
+        m_servoMap[usage] = new BaseMechServoState(stateName, stateId, *servoMech);
     }
 }
 
@@ -137,6 +157,15 @@ void ExampleStateGen::SetTargetControl(SolenoidUsage::SOLENOID_USAGE identifier,
     }
 }
 
+void ExampleStateGen::SetTargetControl(ServoUsage::SERVO_USAGE identifier, units::angle::degree_t angle)
+{
+    auto servomech = GetServoMechState(identifier);
+    if (servomech != nullptr)
+    {
+        servomech->SetTarget(angle);
+    }
+}
+
 void ExampleStateGen::Init()
 {
     auto motorUsages = m_example.GetMotorUsages();
@@ -152,6 +181,15 @@ void ExampleStateGen::Init()
     for (auto usage : solUsages)
     {
         auto state = GetSolenoidMechState(usage);
+        if (state != nullptr)
+        {
+            state->Init();
+        }
+    }
+    auto servoUsages = m_example.GetServoUsages();
+    for (auto usage : servoUsages)
+    {
+        auto state = GetServoMechState(usage);
         if (state != nullptr)
         {
             state->Init();
@@ -179,6 +217,15 @@ void ExampleStateGen::Run()
             state->Run();
         }
     }
+    auto servoUsages = m_example.GetServoUsages();
+    for (auto usage : servoUsages)
+    {
+        auto state = GetServoMechState(usage);
+        if (state != nullptr)
+        {
+            state->Run();
+        }
+    }
 }
 
 void ExampleStateGen::Exit()
@@ -196,6 +243,15 @@ void ExampleStateGen::Exit()
     for (auto usage : solUsages)
     {
         auto state = GetSolenoidMechState(usage);
+        if (state != nullptr)
+        {
+            state->Exit();
+        }
+    }
+    auto servoUsages = m_example.GetServoUsages();
+    for (auto usage : servoUsages)
+    {
+        auto state = GetServoMechState(usage);
         if (state != nullptr)
         {
             state->Exit();
@@ -235,6 +291,22 @@ bool ExampleStateGen::AtTarget() const
                 }
             }
         }
+        if (attarget)
+        {
+            auto servoUsages = m_example.GetServoUsages();
+            for (auto usage : servoUsages)
+            {
+                auto state = GetServoMechState(usage);
+                if (state != nullptr)
+                {
+                    attarget = state->AtTarget();
+                    if (!attarget)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
     }
     return attarget;
 }
@@ -253,6 +325,15 @@ BaseMechSolenoidState *ExampleStateGen::GetSolenoidMechState(SolenoidUsage::SOLE
 {
     auto itr = m_solenoidMap.find(usage);
     if (itr != m_solenoidMap.end())
+    {
+        return itr->second;
+    }
+    return nullptr;
+}
+BaseMechServoState *ExampleStateGen::GetServoMechState(ServoUsage::SERVO_USAGE usage) const
+{
+    auto itr = m_servoMap.find(usage);
+    if (itr != m_servoMap.end())
     {
         return itr->second;
     }

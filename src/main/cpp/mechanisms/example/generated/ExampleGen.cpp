@@ -21,8 +21,6 @@
 
 // Team 302 includes
 #include "hw/interfaces/IDragonMotorController.h"
-#include "mechanisms/base/Mech.h"
-#include "mechanisms/base/BaseMechMotor.h"
 #include "mechanisms/example/generated/ExampleGen.h"
 
 using std::string;
@@ -136,15 +134,6 @@ BaseMechMotor *ExampleGen::GetMotorMech(MotorControllerUsage::MOTOR_CONTROLLER_U
     }
     return nullptr;
 }
-BaseMechSolenoid *ExampleGen::GetSolenoidMech(SolenoidUsage::SOLENOID_USAGE usage) const
-{
-    auto itr = m_solenoidMap.find(usage);
-    if (itr != m_solenoidMap.end())
-    {
-        return itr->second;
-    }
-    return nullptr;
-}
 
 vector<MotorControllerUsage::MOTOR_CONTROLLER_USAGE> ExampleGen::GetMotorUsages() const
 {
@@ -155,10 +144,41 @@ vector<MotorControllerUsage::MOTOR_CONTROLLER_USAGE> ExampleGen::GetMotorUsages(
     }
     return output;
 }
+
+BaseMechSolenoid *ExampleGen::GetSolenoidMech(SolenoidUsage::SOLENOID_USAGE usage) const
+{
+    auto itr = m_solenoidMap.find(usage);
+    if (itr != m_solenoidMap.end())
+    {
+        return itr->second;
+    }
+    return nullptr;
+}
+
 vector<SolenoidUsage::SOLENOID_USAGE> ExampleGen::GetSolenoidUsages() const
 {
     vector<SolenoidUsage::SOLENOID_USAGE> output;
     for (auto itr = m_solenoidMap.begin(); itr != m_solenoidMap.end(); ++itr)
+    {
+        output.emplace_back(itr->first);
+    }
+    return output;
+}
+
+BaseMechServo *ExampleGen::GetServoMech(ServoUsage::SERVO_USAGE usage) const
+{
+    auto itr = m_servoMap.find(usage);
+    if (itr != m_servoMap.end())
+    {
+        return itr->second;
+    }
+    return nullptr;
+}
+
+vector<ServoUsage::SERVO_USAGE> ExampleGen::GetServoUsages() const
+{
+    vector<ServoUsage::SERVO_USAGE> output;
+    for (auto itr = m_servoMap.begin(); itr != m_servoMap.end(); ++itr)
     {
         output.emplace_back(itr->first);
     }
