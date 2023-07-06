@@ -2329,6 +2329,15 @@ namespace Robot
         //[System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("mechanismName")]
         public string mechanismName { get; set; }
+        
+        [System.Xml.Serialization.XmlAttributeAttribute("useCustomTreeName", Namespace="http://tempuri.org/robot", Form=System.Xml.Schema.XmlSchemaForm.Qualified)]
+        public useCustomTreeName useCustomTreeName { get; set; }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets or sets a value indicating whether the useCustomTreeName property is specified.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool useCustomTreeNameSpecified { get; set; }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]

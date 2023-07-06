@@ -239,6 +239,7 @@ namespace FRCrobotCodeGen302
                     generatorConfig.treeviewParentNameExtensions.Add("canId");
                     generatorConfig.treeviewParentNameExtensions.Add("pwmId");
                     generatorConfig.treeviewParentNameExtensions.Add("name");
+                    generatorConfig.treeviewParentNameExtensions.Add("mechanismName");
                     generatorConfig.treeviewParentNameExtensions.Add("stateIdentifier");
                     generatorConfig.treeviewParentNameExtensions.Add("identifier");
                 }
