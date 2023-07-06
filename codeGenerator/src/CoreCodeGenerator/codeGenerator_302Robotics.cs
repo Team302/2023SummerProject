@@ -81,7 +81,8 @@ namespace CoreCodeGenerator
                     createMechanismFolder(mechanismName);
 
                     /// Testing
-                    string str = "This is a test __^mechanismName__, now for the second test __^motor%canId__, now the third test __^motor%canBusName__ test is over";
+                    //string str = "This is a test __^mechanismName__, now for the second test __^motor%canId__, now the third test __^motor%canBusName__ test is over";
+                    string str = "This is a test __^mechanismName__, now for the second test __^closedLoopControlParameters%pGain__ test is over";
 
                     string marker = "__";
 
@@ -179,6 +180,11 @@ namespace CoreCodeGenerator
 
                                             Type collectionType = element.GetType();
                                             string collectionProperty = s.Split(new string[] { "%" }, 2, StringSplitOptions.None)[1];
+
+                                            /// TODO: Add functionality to iterate through whole collection, getting all of its properties
+                                            /// this can be done similar to closedLoopControlParameters like below
+                                            /// Need to get a new propertyinfo of the type of collection we're accessing (motors or closedLoopControlParameters)
+                                            /// then iterate through that and print out the value wanted from the string
                                             string value = element.GetType().GetProperty(collectionProperty).GetValue(element).ToString();
                                             testResultString += value;
 
