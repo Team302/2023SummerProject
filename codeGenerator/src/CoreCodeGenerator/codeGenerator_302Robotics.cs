@@ -14,6 +14,7 @@ using StateData;
 using System.Collections;
 using System.Reflection;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace CoreCodeGenerator
 {
@@ -78,6 +79,118 @@ namespace CoreCodeGenerator
                     string mechanismName = mech.mechanismName;
 
                     createMechanismFolder(mechanismName);
+
+                    /// Testing
+                    string str = "This is a test __^mechanismName__, test is over";
+                    string str2 = "This is a test __^mechanismName__, now for the second test __^motor%canId__, test is over";
+
+                    string marker = "__";
+
+                    //plus 1 is to account for chunk at beginning before markers
+                    int count = Regex.Matches(str, marker).Count + 1;
+                    int count2 = Regex.Matches(str2, marker).Count + 1;
+
+                    //will need to dynamically find 3 and 5 like in whiteboard
+                    string[] array = str.Split(new string[] {marker}, count, StringSplitOptions.None);
+                    string[] array2 = str2.Split(new string[] {marker}, count2, StringSplitOptions.None);
+
+                    string testResultString = "";
+                    int repeatsForCollection = 0;
+
+                    //if we are access a collection, do separate logic for multiple lines
+                    if (str2.Contains("%"))
+                    {
+                        foreach (string s in array2)
+                        {
+                            if (s.Contains("%"))
+                            {
+                                Type objType = mech.GetType();
+
+                                PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                                //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
+                                if (s.StartsWith("^"))
+                                {
+                                    string propertyName = s.Trim('^');
+
+                                    //if we are trying to access a collection in some place, don't worry about that for now
+                                    propertyName = propertyName.Split(new string[] { "%" }, 2, StringSplitOptions.None)[0];
+
+                                    //find the property after the ^
+                                    foreach (PropertyInfo pi in propertyInfos)
+                                    {
+                                        if (pi.Name == propertyName)
+                                        {
+                                            //check if property is a collection
+                                            //we need to hijack testResultString here to have multiple lines for each element of collection
+                                            if (isACollection(pi.GetValue(mech)))
+                                            {
+                                                Type propertyType = pi.GetValue(mech).GetType();
+                                                foreach (object o in (pi.GetValue(mech) as IEnumerable))
+                                                {
+                                                    repeatsForCollection++;
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        repeatsForCollection = 1;
+                    }
+
+                    for(int i = 0; i < repeatsForCollection; i++)
+                    {
+                        Type objType = mech.GetType();
+
+                        PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                        //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
+                        if (array2[i].StartsWith("^"))
+                        {
+                            string propertyName = array2[i].Trim('^');
+
+                            //if we are trying to access a collection in some place, don't worry about that for now
+                            if (array2[i].IndexOf("%") !=  -1)
+                            {
+                                int percentCount = Regex.Matches(propertyName, "%").Count + 1;
+;                               propertyName = propertyName.Split(new string[] { "%" }, percentCount, StringSplitOptions.None)[0];
+                            }
+
+                            //find the property after the ^
+                            foreach (PropertyInfo pi in propertyInfos)
+                            {
+                                if (pi.Name == propertyName)
+                                {
+                                    //check if property is a collection
+                                    //we need to hijack testResultString here to have multiple lines for each element of collection
+                                    if(isACollection(pi.GetValue(mech)))
+                                    {
+
+                                        object element = (pi.GetValue(mech) as List<object>)[i];
+
+                                        Type collectionType = element.GetType();
+                                        string collectionProperty = array2[i].Split(new string[] { "%" }, 2, StringSplitOptions.None)[1];
+                                        string value = element.GetType().GetProperty(collectionProperty).GetValue(element).ToString();
+                                        testResultString += value;
+                                        
+                                    }
+                                    else
+                                    testResultString += pi.GetValue(mech).ToString();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            testResultString += array2[i];
+                        }
+                    }
+
+                    Debug.WriteLine(testResultString);
 
                     #region Generate Cpp File
                     resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
@@ -182,6 +295,16 @@ namespace CoreCodeGenerator
         private string getMechanismOutputPath(string mechanismName)
         {
             return Path.Combine(theToolConfiguration.rootOutputFolder, "mechanisms", mechanismName);
+        }
+
+        private bool isACollection(object obj)
+        {
+            return isACollection(obj.GetType());
+        }
+
+        private bool isACollection(Type t)
+        {
+            return ((t.Name == "Collection`1") && (t.Namespace == "System.Collections.ObjectModel"));
         }
     }
 }
