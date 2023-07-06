@@ -81,33 +81,33 @@ namespace CoreCodeGenerator
                     createMechanismFolder(mechanismName);
 
                     /// Testing
-                    string str = "This is a test __^mechanismName__, test is over";
-                    string str2 = "This is a test __^mechanismName__, now for the second test __^motor%canId__, test is over";
+                    string str = "This is a test __^mechanismName__, now for the second test __^motor%canId__, now the third test __^motor%canBusName__ test is over";
 
                     string marker = "__";
 
                     //plus 1 is to account for chunk at beginning before markers
+                    //this gets the amount of markers ("__") in a string so that we can split up the string into it's different parts
                     int count = Regex.Matches(str, marker).Count + 1;
-                    int count2 = Regex.Matches(str2, marker).Count + 1;
 
                     //will need to dynamically find 3 and 5 like in whiteboard
                     string[] array = str.Split(new string[] {marker}, count, StringSplitOptions.None);
-                    string[] array2 = str2.Split(new string[] {marker}, count2, StringSplitOptions.None);
 
                     string testResultString = "";
-                    int repeatsForCollection = 0;
+                    int timesToRun = 0;
 
+                    #region Check for collection
                     //if we are access a collection, do separate logic for multiple lines
-                    if (str2.Contains("%"))
+                    if (str.Contains("%"))
                     {
-                        foreach (string s in array2)
+                        Type objType = mech.GetType();
+
+                        PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                        foreach (string s in array)
                         {
+                            //checks if we are trying to access a collection
                             if (s.Contains("%"))
                             {
-                                Type objType = mech.GetType();
-
-                                PropertyInfo[] propertyInfos = objType.GetProperties();
-
                                 //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
                                 if (s.StartsWith("^"))
                                 {
@@ -119,13 +119,17 @@ namespace CoreCodeGenerator
                                     //find the property after the ^
                                     foreach (PropertyInfo pi in propertyInfos)
                                     {
+                                        //if we are on the property that matches what we found from the string
                                         if (pi.Name == propertyName)
                                         {
                                             //check if property is a collection
-                                            //we need to hijack testResultString here to have multiple lines for each element of collection
                                             if (isACollection(pi.GetValue(mech)))
                                             {
-                                                repeatsForCollection = (pi.GetValue(mech) as IList).Count;
+                                                int collectionSize = (pi.GetValue(mech) as IList).Count;
+                                                //check to make sure if multiple collections are being accessed, only repeat for lowest size to avoid index out of bounds
+                                                //the 0 check is to make sure repeatsForCollection is set for the first collection found
+                                                if (collectionSize < timesToRun || timesToRun == 0)
+                                                    timesToRun = collectionSize;
                                             }
                                         }
                                     }
@@ -133,17 +137,21 @@ namespace CoreCodeGenerator
                             }
                         }
                     }
-                    else
+                    else //we aren't accessing a collection, so only write one line
                     {
-                        repeatsForCollection = 1;
+                        timesToRun = 1;
                     }
+                    #endregion
 
-                    for(int i = 0; i < repeatsForCollection; i++)
+                    #region Replace text however many times for a collection or just once
+                    //write lines for how many times we need to run
+                    for (int i = 0; i < timesToRun; i++)
                     {
                         Type objType = mech.GetType();
 
                         PropertyInfo[] propertyInfos = objType.GetProperties();
-                        foreach (string s in array2)
+                        //go through each "chunk" that was separated by the markers ("__" in this test case)
+                        foreach (string s in array)
                         {
                             //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
                             if (s.StartsWith("^"))
@@ -186,9 +194,10 @@ namespace CoreCodeGenerator
                             }
                         }
                         //make sure we don't put a new line after last element
-                        if(i != (repeatsForCollection -1))
+                        if(i != (timesToRun -1))
                             testResultString += Environment.NewLine;
                     }
+                    #endregion
 
                     Debug.WriteLine(testResultString);
 
