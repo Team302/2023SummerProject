@@ -82,7 +82,7 @@ namespace CoreCodeGenerator
                     
                     /// Testing
                     //string str = "This is a test __^mechanismName__, now for the second test __^motor%canId__, now the third test __^motor%canBusName__ test is over";
-                    string str = "This is a test __^mechanismName__, now for the second test __^closedLoopControlParameters%ALL^NAME__ test is over";
+                    string str = "This is a test __^mechanismName__, now for the second test __^closedLoopControlParameters%ALL^NAME_name_Specified__ test is over";
 
                     string marker = "__";
 
@@ -94,6 +94,7 @@ namespace CoreCodeGenerator
                     string[] array = str.Split(new string[] {marker}, count, StringSplitOptions.None);
 
                     string testResultString = "";
+                    string testTempString = "";
                     int timesToRun = 0;
 
                     #region Check for collection
@@ -129,20 +130,11 @@ namespace CoreCodeGenerator
                                                 int collectionSize = (pi.GetValue(mech) as IList).Count;
                                                 Debug.WriteLine(collectionSize);
 
-                                                if(collectionSize > 0)
-                                                {
-                                                    Debug.WriteLine((pi.GetValue(mech) as IList)[0].GetType());
-                                                }
-
-                                                if (collectionSize > 0 && isACollection((pi.GetValue(mech) as IList)[0]))
-                                                {
-                                                    collectionSize = ((pi.GetValue(mech) as IList)[0] as IList).Count;
-                                                }
-
                                                 //check to make sure if multiple collections are being accessed, only repeat for lowest size to avoid index out of bounds
                                                 //the 0 check is to make sure repeatsForCollection is set for the first collection found
                                                 if (collectionSize < timesToRun || timesToRun == 0)
                                                     timesToRun = collectionSize;
+                                                Debug.WriteLine(timesToRun);
                                             }
                                         }
                                     }
@@ -188,7 +180,7 @@ namespace CoreCodeGenerator
                                         if (isACollection(pi.GetValue(mech)))
                                         {
                                             IList list = (IList)pi.GetValue(mech);
-                                            object element = list[i];
+                                            object element = list[0];
 
                                             Type collectionType = element.GetType();
                                             string collectionProperty = s.Split(new string[] { "%" }, 2, StringSplitOptions.None)[1];
@@ -202,47 +194,58 @@ namespace CoreCodeGenerator
                                             if(collectionProperty.Contains("ALL"))
                                             {
                                                 PropertyInfo[] collectionPropertyInfos = collectionType.GetProperties();
+                                                //timesToRun += collectionPropertyInfos.Length - i;
+                                                timesToRun = collectionPropertyInfos.Length;
 
                                                 //find the propertyinfo property of these
                                                 string property = collectionProperty.Split(new string[] { "^" }, 2, StringSplitOptions.None)[1];
-                                                if (property == "NAME")
+                                                if (property.Contains("NAME"))
                                                 {
                                                     int excludeMarkers = Regex.Matches(property, "_").Count + 1;
                                                     if(excludeMarkers > 1)
                                                     {
                                                         string[] excludeArray = property.Split(new string[] { "_"}, excludeMarkers, StringSplitOptions.None);
-                                                        foreach(string excludeString in excludeArray)
+                                                        bool excluded = false;
+                                                        for(int j = 1; j < excludeArray.Length; j++)
                                                         {
-                                                            if(collectionPropertyInfos[i].Name.Contains(excludeString))
+                                                            if (collectionPropertyInfos[i].Name.Contains(excludeArray[j]))
                                                             {
-                                                                testResultString += "EXCLUDED";
+                                                                testTempString += "EXCLUDED";
+                                                                excluded = true;
                                                             }
-                                                            else
-                                                                testResultString += collectionPropertyInfos[i].Name;
                                                         }
+                                                        if(!excluded)
+                                                            testTempString += collectionPropertyInfos[i].Name; 
                                                     }
                                                     else
-                                                        testResultString += collectionPropertyInfos[i].Name;
+                                                        testTempString += collectionPropertyInfos[i].Name;
                                                 }
                                             }
                                             else
                                             {
-                                                testResultString += element.GetType().GetProperty(collectionProperty).GetValue(element).ToString();
+                                                testTempString += element.GetType().GetProperty(collectionProperty).GetValue(element).ToString();
                                             }
                                         }
                                         else
-                                            testResultString += pi.GetValue(mech).ToString();
+                                            testTempString += pi.GetValue(mech).ToString();
                                     }
                                 }
                             }
                             else
                             {
-                                testResultString += s;
+                                testTempString += s;
                             }
                         }
                         //make sure we don't put a new line after last element
                         if(i != (timesToRun -1))
-                            testResultString += Environment.NewLine;
+                        {
+                            if (testTempString.Contains("EXCLUDED"))
+                                testTempString = "";
+                            else
+                                testResultString += testTempString + Environment.NewLine;
+                            testTempString = "";
+                        }
+                            
                     }
                     #endregion
 
