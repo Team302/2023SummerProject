@@ -24,7 +24,7 @@
 #include "State.h"
 #include "mechanisms/base/BaseMechSolenoid.h"
 #include "mechanisms/base/BaseMechSolenoidState.h"
-#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMech.h"
 #include "utils/logging/Logger.h"
 
 #include "teleopcontrol/TeleopControl.h"

@@ -40,8 +40,7 @@
 #include <hw/usages/IDragonMotorControllerMap.h>
 #include <hw/usages/ServoMap.h>
 #include "mechanisms/MechanismTypes.h"
-#include "mechanisms/base/Mech.h"
-
+#include "mechanisms/base/BaseMech.h"
 // @ADDMECH include for your mechanism
 // #include <mechanisms/arm/Arm.h>
 // #include <mechanisms/extender/Extender.h>
@@ -56,7 +55,7 @@ class DragonDigitalInput;
 class DragonServo;
 class DragonSolenoid;
 class IDragonMotorController;
-class Mech;
+class BaseMech;
 
 class MechanismFactory
 {
@@ -84,8 +83,7 @@ public:
 	// return m_intake;
 	//}
 
-	Mech *GetMechanism(
-		MechanismTypes::MECHANISM_TYPE type) const;
+	BaseMech *GetMechanism(MechanismTypes::MECHANISM_TYPE type) const;
 
 private:
 	std::shared_ptr<IDragonMotorController> GetMotorController(const IDragonMotorControllerMap &motorcontrollers, MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage);

@@ -26,7 +26,7 @@
 #include "utils/logging/LoggableItem.h"
 
 // forward declare
-class Mech;
+class BaseMech;
 class PrimitiveParams;
 
 // Third Party Includes
@@ -36,7 +36,7 @@ class StateMgr : public LoggableItem
 public:
     StateMgr();
     ~StateMgr() = default;
-    void Init(Mech *mech, const std::map<std::string, StateStruc> &stateMap);
+    void Init(BaseMech *mech, const std::map<std::string, StateStruc> &stateMap);
 
     /// @brief  run the current state
     /// @return void
@@ -73,7 +73,7 @@ protected:
     std::vector<State *> GetStateVector() { return m_stateVector; };
 
 private:
-    Mech *m_mech;
+    BaseMech *m_mech;
     State *m_currentState;
     std::vector<State *> m_stateVector;
     int m_currentStateID;

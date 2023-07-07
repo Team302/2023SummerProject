@@ -22,8 +22,7 @@
 // Team 302 includes
 #include <hw/usages/DigitalInputUsage.h>
 
-#include <units/time.h>
-
+#include "units/time.h"
 // Forward declares
 class DragonDigitalInput;
 

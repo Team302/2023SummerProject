@@ -30,7 +30,7 @@
 #include "mechanisms/example/generated/ExampleStateGen.h"
 #include "mechanisms/controllers/ControlData.h"
 #include "mechanisms/controllers/MechanismTargetData.h"
-#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMech.h"
 #include "utils/logging/Logger.h"
 
 #include "teleopcontrol/TeleopControl.h"

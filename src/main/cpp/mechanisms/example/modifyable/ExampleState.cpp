@@ -24,7 +24,7 @@
 #include "mechanisms/example/generated/ExampleStateGen.h"
 #include <mechanisms/example/modifyable/ExampleState.h>
 #include "mechanisms/controllers/ControlData.h"
-#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMech.h"
 #include "utils/logging/Logger.h"
 
 // Third Party Includes

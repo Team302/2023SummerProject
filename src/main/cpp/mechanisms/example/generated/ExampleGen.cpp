@@ -35,7 +35,7 @@ using std::vector;
 /// Additional actuators and sensors are also in this list.
 ExampleGen::ExampleGen(string controlFileName,
                        string networkTableName) : IExampleGen(),
-                                                  Mech(MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM, controlFileName, networkTableName),
+                                                  BaseMech(MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM, controlFileName, networkTableName),
                                                   m_motorMap(),
                                                   m_solenoidMap()
 

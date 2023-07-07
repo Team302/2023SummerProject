@@ -25,8 +25,7 @@
 #include <hw/usages/DigitalInputUsage.h>
 
 // Third Party Includes
-#include <units/time.h>
-
+#include "units/time.h"
 using namespace std;
 
 /// @brief    Find or create the Digital input factory

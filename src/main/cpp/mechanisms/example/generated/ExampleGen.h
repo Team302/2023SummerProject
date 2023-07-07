@@ -31,7 +31,7 @@
 #include "hw/usages/MotorControllerUsage.h"
 #include "hw/usages/ServoUsage.h"
 #include "hw/usages/SolenoidUsage.h"
-#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMech.h"
 #include "mechanisms/base/BaseMechMotor.h"
 #include "mechanisms/base/BaseMechSolenoid.h"
 #include "mechanisms/base/BaseMechServo.h"
@@ -40,7 +40,7 @@
 // forward declares
 class IDragonMotorController;
 
-class ExampleGen : public IExampleGen, public Mech
+class ExampleGen : public IExampleGen, public BaseMech
 {
 public:
     /// @brief  This method constructs the mechanism using composition with its various actuators and sensors.

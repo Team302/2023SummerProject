@@ -22,7 +22,7 @@
 
 // Team 302 includes
 #include "hw/DragonServo.h"
-#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMech.h"
 #include "mechanisms/base/BaseMechServo.h"
 #include "utils/logging/Logger.h"
 
@@ -32,12 +32,8 @@ using namespace std;
 
 /// @brief Create a generic mechanism wiht 1 servo
 /// @param [in] std::shared_ptr<DragonServo> servo used by this mechanism
-BaseMechServo::BaseMechServo(
-    MechanismTypes::MECHANISM_TYPE type,
-    std::string controlFileName,
-    std::string networkTableName,
-    DragonServo *servo) : Mech(type, controlFileName, networkTableName),
-                          m_servo(servo)
+BaseMechServo::BaseMechServo(std::string networkTableName, DragonServo *servo) : LoggableItem(),
+                                                                                 m_servo(servo)
 {
     if (m_servo == nullptr)
     {

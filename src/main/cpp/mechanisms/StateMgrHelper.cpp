@@ -17,7 +17,7 @@
 
 #include <auton/PrimitiveParams.h>
 #include "State.h"
-#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMech.h"
 #include "mechanisms/base/StateMgr.h"
 #include "mechanisms/controllers/MechanismTargetData.h"
 #include <mechanisms/MechanismFactory.h>
@@ -105,7 +105,7 @@ void StateMgrHelper::SetCheckGamepadInputsForStateTransitions(bool check)
     **/
 }
 
-State *StateMgrHelper::CreateState(Mech *mech, StateStruc &stateInfo, MechanismTargetData *targetData)
+State *StateMgrHelper::CreateState(BaseMech *mech, StateStruc &stateInfo, MechanismTargetData *targetData)
 {
     // auto controlData = targetData->GetController();
     // auto controlData2 = targetData->GetController2();

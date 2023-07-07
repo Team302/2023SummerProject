@@ -33,7 +33,7 @@
 #include <hw/usages/DragonSolenoidMap.h>
 #include <hw/usages/IDragonMotorControllerMap.h>
 #include <hw/usages/ServoMap.h>
-#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMech.h"
 #include <mechanisms/MechanismFactory.h>
 #include "mechanisms/MechanismTypes.h"
 #include "utils/logging/Logger.h"
@@ -145,7 +145,7 @@ void MechanismFactory::CreateMechanism(
 	}
 }
 
-Mech *MechanismFactory::GetMechanism(MechanismTypes::MECHANISM_TYPE type) const
+BaseMech *MechanismFactory::GetMechanism(MechanismTypes::MECHANISM_TYPE type) const
 {
 	switch (type)
 	{

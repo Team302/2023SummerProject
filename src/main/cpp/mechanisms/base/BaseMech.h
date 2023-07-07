@@ -19,36 +19,52 @@
 // C++ Includes
 #include <string>
 
-// FRC includes
-#include "units/angle.h"
-
 // Team 302 includes
-#include "mechanisms/base/BaseMech.h"
+#include "utils/logging/LoggableItem.h"
 #include "mechanisms/MechanismTypes.h"
-#include "mechanisms/base/StateMgr.h"
 
-// forward declares
-class DragonServo;
+// Forward Declares
+class StateMgr;
 
-class BaseMechServo : public LoggableItem
+///	 @class Mech
+///  @brief	base mechanism class
+class BaseMech : public LoggableItem
 {
 public:
-    /// @brief Create a generic mechanism wiht 1 servo
-    /// @param [in] std::shared_ptr<DragonServo> servo used by this mechanism
-    BaseMechServo(std::string networkTableName, DragonServo *servo);
-    BaseMechServo() = delete;
-    virtual ~BaseMechServo() = default;
+    /// @brief create the general mechanism
+    /// @param [in] MechanismTypes::MECHANISM_TYPE the type of mechansim
+    /// @param [in] std::string the name of the file that will set control parameters for this mechanism
+    /// @param [in] std::string the name of the network table for logging information
+    BaseMech(MechanismTypes::MECHANISM_TYPE type,
+             std::string controlFileName,
+             std::string networkTableName);
 
-    /// @brief      Move servo to the desired angle
-    /// @param [in] double angle: Target angle in degrees
-    /// @return     void
-    void SetAngle(units::angle::degree_t angle);
+    /// @brief          Indicates the type of mechanism this is
+    /// @return         MechanismTypes::MECHANISM_TYPE
+    virtual MechanismTypes::MECHANISM_TYPE GetType() const;
 
-    units::angle::degree_t GetAngle() const;
+    /// @brief indicate the file used to get the control parameters from
+    /// @return std::string the name of the file
+    virtual std::string GetControlFileName() const;
+
+    /// @brief indicate the Network Table name used to setting tracking parameters
+    /// @return std::string the name of the network table
+    virtual std::string GetNetworkTableName() const;
 
     /// @brief log data to the network table if it is activated and time period has past
     void LogInformation() const override;
 
+    virtual StateMgr *GetStateMgr() const;
+    virtual void AddStateMgr(
+        StateMgr *mgr);
+
+    virtual ~BaseMech() = default;
+
 private:
-    DragonServo *m_servo;
+    BaseMech() = delete;
+
+    MechanismTypes::MECHANISM_TYPE m_type;
+    std::string m_controlFile;
+    std::string m_ntName;
+    StateMgr *m_stateMgr;
 };

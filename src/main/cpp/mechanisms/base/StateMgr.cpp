@@ -26,7 +26,7 @@
 // Team 302 includes
 #include <auton/PrimitiveParams.h>
 #include "State.h"
-#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMech.h"
 #include "mechanisms/base/StateMgr.h"
 #include "mechanisms/controllers/MechanismTargetData.h"
 #include <mechanisms/controllers/StateDataXmlParser.h>
@@ -46,7 +46,7 @@ StateMgr::StateMgr() : m_checkGamePadTransitions(true),
                        m_currentStateID(0)
 {
 }
-void StateMgr::Init(Mech *mech, const map<string, StateStruc> &stateMap)
+void StateMgr::Init(BaseMech *mech, const map<string, StateStruc> &stateMap)
 {
     m_mech = mech;
     if (mech != nullptr)

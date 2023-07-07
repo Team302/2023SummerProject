@@ -41,7 +41,7 @@
 #include <hw/xml/MotorXmlParser.h>
 #include <hw/xml/ServoXmlParser.h>
 #include <hw/xml/SolenoidXmlParser.h>
-#include "mechanisms/base/Mech.h"
+#include "mechanisms/base/BaseMech.h"
 #include <mechanisms/base/MechanismXmlParser.h>
 #include <mechanisms/MechanismFactory.h>
 #include "mechanisms/MechanismTypes.h"
