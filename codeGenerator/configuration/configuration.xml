@@ -47,7 +47,16 @@
 
 <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
 <templateMechanismHPath>..\templates\MECHANISM_NAME.h</templateMechanismHPath>
-	
 
+<mechanismReplacements>
+	<Replacement>
+		<Item1>$$_MECHANISM_NAME_$$</Item1>
+		<Item2>$$^mechanismName$$</Item2>
+	</Replacement>
+	<Replacement>
+		<Item1>$$_READ_TUNABLE_PARAMETERS_$$</Item1>
+		<Item2>$$^closedLoopControlParameters%name^VALUE$$_$$^closedLoopControlParameters%ALL^NAME-Specified-name$$ = m_table.get()->GetNumber("$$^closedLoopControlParameters%name^VALUE$$_$$^closedLoopControlParameters%ALL^NAME-Specified-name$$", $$^closedLoopControlParameters%ALL^VALUE-Specified-Name$$);</Item2>
+	</Replacement>
+</mechanismReplacements>
 
 </toolConfiguration>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<toolConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <rootOutputFolder />
+  <robotConfiguration />
+  <robotConfigurations />
+  <treeviewParentNameExtensions />
+  <templateMechanismCppPath />
+  <templateMechanismHPath />
+  <mechanismReplacements>
+    <Replacement>
+      <Item1>marker</Item1>
+      <Item2>replace</Item2>
+    </Replacement>
+    <Replacement>
+      <Item1>tag</Item1>
+      <Item2>replacement</Item2>
+    </Replacement>
+  </mechanismReplacements>
+  <CopyrightNotice />
+  <GenerationNotice />
+</toolConfiguration>

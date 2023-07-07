@@ -244,7 +244,6 @@ namespace FRCrobotCodeGen302
 
         private void button2_Click(object sender, EventArgs e)
         {
-
             // Construct an instance of the XmlSerializer with the type
             // of object that is being deserialized.
             var mySerializer = new XmlSerializer(typeof(robot));
@@ -260,6 +259,11 @@ namespace FRCrobotCodeGen302
             statedata myStates = new statedata();
             // Call the Deserialize method and cast to the object type.
             mySerializer.Serialize(myFileStream, myStates);
+
+            mySerializer = new XmlSerializer(typeof(toolConfiguration));
+            toolConfiguration myTc = new toolConfiguration();
+            myFileStream = new FileStream(@"C:\GitRepos\2023SummerProject\codeGenerator\src\configExample.xml", FileMode.Create);
+            mySerializer.Serialize(myFileStream, myTc);
         }
 
         private void configurationBrowseButton_Click(object sender, EventArgs e)

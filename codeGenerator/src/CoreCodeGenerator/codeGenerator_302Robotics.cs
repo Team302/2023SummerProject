@@ -15,6 +15,7 @@ using System.Collections;
 using System.Reflection;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CoreCodeGenerator
 {
@@ -80,197 +81,6 @@ namespace CoreCodeGenerator
 
                     createMechanismFolder(mechanismName);
                     
-                    /// Testing
-                    //string str = "This is a test __^mechanismName__, now for the second test __^motor%canId__, now the third test __^motor%canBusName__ test is over";
-                    string str = "This is a test __^mechanismName__, now for the second test __^closedLoopControlParameters%ALL^NAME_Specified__, now third test __^closedLoopControlParameters%ALL^VALUE_Specified__, now fourth test __^closedLoopControlParameters%pGain^VALUE__ test is over";
-
-                    string marker = "__";
-
-                    //plus 1 is to account for chunk at beginning before markers
-                    //this gets the amount of markers ("__") in a string so that we can split up the string into it's different parts
-                    int count = Regex.Matches(str, marker).Count + 1;
-
-                    //will need to dynamically find 3 and 5 like in whiteboard
-                    string[] array = str.Split(new string[] {marker}, count, StringSplitOptions.None);
-
-                    string testResultString = "";
-                    string testTempString = "";
-                    int timesToRun = 0;
-
-                    #region Check for collection
-                    //if we are access a collection, do separate logic for multiple lines
-                    if (str.Contains("%"))
-                    {
-                        Type objType = mech.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        foreach (string s in array)
-                        {
-                            //checks if we are trying to access a collection
-                            if (s.Contains("%"))
-                            {
-                                //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
-                                if (s.StartsWith("^"))
-                                {
-                                    string propertyName = s.Trim('^');
-
-                                    //if we are trying to access a collection in some place, don't worry about that for now
-                                    propertyName = propertyName.Split(new string[] { "%" }, 2, StringSplitOptions.None)[0];
-
-                                    //find the property after the ^
-                                    foreach (PropertyInfo pi in propertyInfos)
-                                    {
-                                        //if we are on the property that matches what we found from the string
-                                        if (pi.Name == propertyName)
-                                        {
-                                            //check if property is a collection
-                                            if (isACollection(pi.GetValue(mech)))
-                                            {
-                                                int collectionSize = (pi.GetValue(mech) as IList).Count;
-                                                Debug.WriteLine(collectionSize);
-
-                                                //check to make sure if multiple collections are being accessed, only repeat for lowest size to avoid index out of bounds
-                                                //the 0 check is to make sure repeatsForCollection is set for the first collection found
-                                                if (collectionSize < timesToRun || timesToRun == 0)
-                                                    timesToRun = collectionSize;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else //we aren't accessing a collection, so only write one line
-                    {
-                        timesToRun = 1;
-                    }
-                    #endregion
-
-                    int numberOfInsideCollections = 0;
-                    int currentInsideCollection = 0;
-
-                    #region Replace text however many times for a collection or just once
-                    //write lines for how many times we need to run
-                    for (int i = 0; i < timesToRun; i++)
-                    {
-                        Type objType = mech.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-                        //go through each "chunk" that was separated by the markers ("__" in this test case)
-                        foreach (string s in array)
-                        {
-                            //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
-                            if (s.StartsWith("^"))
-                            {
-                                string propertyName = s.TrimStart('^');
-
-                                //if we are trying to access a collection in some place, don't worry about that for now
-                                if (s.IndexOf("%") != -1)
-                                {
-                                    int percentCount = Regex.Matches(propertyName, "%").Count + 1;
-                                    propertyName = propertyName.Split(new string[] { "%" }, percentCount, StringSplitOptions.None)[0];
-                                }
-
-                                //find the property after the ^
-                                foreach (PropertyInfo pi in propertyInfos)
-                                {
-                                    if (pi.Name == propertyName)
-                                    {
-                                        //check if property is a collection
-                                        //we need to hijack testResultString here to have multiple lines for each element of collection
-                                        if (isACollection(pi.GetValue(mech)))
-                                        {
-                                            IList list = (IList)pi.GetValue(mech);
-                                            object element = list[currentInsideCollection];
-
-                                            numberOfInsideCollections = list.Count;
-
-                                            Type collectionType = element.GetType();
-                                            string collectionProperty = s.Split(new string[] { "%" }, 2, StringSplitOptions.None)[1];
-
-                                            /// TODO: Add functionality to iterate through whole collection, getting all of its properties
-                                            /// this can be done similar to closedLoopControlParameters like below
-                                            /// Need to get a new propertyinfo of the type of collection we're accessing (motors or closedLoopControlParameters)
-                                            /// then iterate through that and print out the value wanted from the string
-
-                                            //if we are trying to access all the elements in the collection
-                                            if(collectionProperty.Contains("ALL"))
-                                            {
-                                                PropertyInfo[] collectionPropertyInfos = collectionType.GetProperties();
-                                                timesToRun = collectionPropertyInfos.Length * numberOfInsideCollections;
-                                                currentInsideCollection = (i / collectionPropertyInfos.Length);
-
-                                                //find the propertyinfo property of these
-                                                string property = collectionProperty.Split(new string[] { "^" }, 2, StringSplitOptions.None)[1];
-                                                
-                                                int index = i - currentInsideCollection * collectionPropertyInfos.Length;
-
-                                                int excludeMarkers = Regex.Matches(property, "_").Count + 1;
-                                                if(excludeMarkers > 1)
-                                                {
-                                                    string[] excludeArray = property.Split(new string[] { "_"}, excludeMarkers, StringSplitOptions.None);
-                                                    bool excluded = false;
-                                                    for(int j = 1; j < excludeArray.Length; j++)
-                                                    {
-                                                        if (collectionPropertyInfos[index].Name.Contains(excludeArray[j]))
-                                                        {
-                                                            testTempString += "EXCLUDED";
-                                                            excluded = true;
-                                                        }
-                                                    }
-                                                    if(!excluded)
-                                                    {
-                                                        if (property.Contains("NAME"))
-                                                            testTempString += collectionPropertyInfos[index].Name;
-                                                        else if (property.Contains("VALUE"))
-                                                            testTempString += collectionPropertyInfos[index].GetValue(element).ToString();
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (property.Contains("NAME"))
-                                                        testTempString += collectionPropertyInfos[index].Name;
-                                                    else if (property.Contains("VALUE"))
-                                                        testTempString += collectionPropertyInfos[index].GetValue(element).ToString();
-                                                }
-                                            }
-                                            else
-                                            {
-                                                string[] chunks = collectionProperty.Split(new string[] { "^" }, 2, StringSplitOptions.None);
-                                                string property = chunks[0];
-                                                string type = chunks[1];    
-                                                if (type.Contains("NAME"))
-                                                    testTempString += element.GetType().GetProperty(property).Name;
-                                                else if (type.Contains("VALUE"))
-                                                    testTempString += element.GetType().GetProperty(property).GetValue(element).ToString();
-                                            }
-                                        }
-                                        else
-                                            testTempString += pi.GetValue(mech).ToString();
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                testTempString += s;
-                            }
-                        }
-                        //make sure we don't put a new line after last element
-                        if(i != (timesToRun -1))
-                        {
-                            if (testTempString.Contains("EXCLUDED"))
-                                testTempString = "";
-                            else
-                                testResultString += testTempString + Environment.NewLine;
-                            testTempString = "";
-                        }
-                            
-                    }
-                    #endregion
-
-                    Debug.WriteLine(testResultString);
-                    
                     #region Generate Cpp File
                     resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
                     filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
@@ -278,7 +88,15 @@ namespace CoreCodeGenerator
                     resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
                     resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
                     resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
-                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+                    foreach((string,string) pair in theToolConfiguration.mechanismReplacements)
+                    {
+                        //Debug.WriteLine("Item1: " + pair.Item1);
+                        //Debug.WriteLine("Item2: " + pair.Item2);
+                        string replacement = findReplacementString(pair.Item2, mech);
+                        Debug.WriteLine(replacement);
+                        resultString = resultString.Replace(pair.Item1, replacement);
+                    }
+                    
 
                     #region Tunable Parameters
                     string allParameterReading = "";
@@ -296,7 +114,7 @@ namespace CoreCodeGenerator
                         }
 
                     }
-                    resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
+                    //resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
 
                     string allParameterWriting = "";
                     foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
@@ -350,6 +168,205 @@ namespace CoreCodeGenerator
                     #endregion
                 }
             }
+        }
+
+        private string findReplacementString(string replacement, mechanism mech)
+        {
+            string marker = "$$";
+            string excludeMarker = "-";
+
+            //plus 1 is to account for chunk at beginning before markers
+            //this gets the amount of markers ("__") in a string so that we can split up the string into it's different parts
+            int count = countOccurencesInString(replacement, marker) + 1;
+
+            //will need to dynamically find 3 and 5 like in whiteboard
+            string[] array = replacement.Split(new string[] { marker }, count, StringSplitOptions.None);
+
+            string resultString = "";
+            string tempString = "";
+            int timesToRun = 0;
+
+            #region Check for collection
+            //if we are access a collection, do separate logic for multiple lines
+            if (replacement.Contains("%"))
+            {
+                Type objType = mech.GetType();
+
+                PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                foreach (string s in array)
+                {
+                    //checks if we are trying to access a collection
+                    if (s.Contains("%"))
+                    {
+                        //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
+                        if (s.StartsWith("^"))
+                        {
+                            string propertyName = s.Trim('^');
+
+                            //if we are trying to access a collection in some place, don't worry about that for now
+                            propertyName = propertyName.Split(new string[] { "%" }, 2, StringSplitOptions.None)[0];
+
+                            //find the property after the ^
+                            foreach (PropertyInfo pi in propertyInfos)
+                            {
+                                //if we are on the property that matches what we found from the string
+                                if (pi.Name == propertyName)
+                                {
+                                    //check if property is a collection
+                                    if (isACollection(pi.GetValue(mech)))
+                                    {
+                                        int collectionSize = (pi.GetValue(mech) as IList).Count;
+                                        Debug.WriteLine(collectionSize);
+
+                                        //check to make sure if multiple collections are being accessed, only repeat for lowest size to avoid index out of bounds
+                                        //the 0 check is to make sure repeatsForCollection is set for the first collection found
+                                        if (collectionSize < timesToRun || timesToRun == 0)
+                                            timesToRun = collectionSize;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else //we aren't accessing a collection, so only write one line
+            {
+                timesToRun = 1;
+            }
+            #endregion
+
+            int numberOfInsideCollections = 0;
+            int currentInsideCollection = 0;
+
+            #region Replace text however many times for a collection or just once
+            //write lines for how many times we need to run
+            for (int i = 0; i < timesToRun; i++)
+            {
+                Type objType = mech.GetType();
+
+                PropertyInfo[] propertyInfos = objType.GetProperties();
+                //go through each "chunk" that was separated by the markers ("__" in this test case)
+                foreach (string s in array)
+                {
+                    //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
+                    if (s.StartsWith("^"))
+                    {
+                        string propertyName = s.TrimStart('^');
+
+                        //if we are trying to access a collection in some place, don't worry about that for now
+                        if (s.IndexOf("%") != -1)
+                        {
+                            int percentCount = Regex.Matches(propertyName, "%").Count + 1;
+                            propertyName = propertyName.Split(new string[] { "%" }, percentCount, StringSplitOptions.None)[0];
+                        }
+
+                        //find the property after the ^
+                        foreach (PropertyInfo pi in propertyInfos)
+                        {
+                            if (pi.Name == propertyName)
+                            {
+                                //check if property is a collection
+                                //we need to hijack testResultString here to have multiple lines for each element of collection
+                                if (isACollection(pi.GetValue(mech)))
+                                {
+                                    IList list = (IList)pi.GetValue(mech);
+                                    object element = list[currentInsideCollection];
+
+                                    numberOfInsideCollections = list.Count;
+
+                                    Type collectionType = element.GetType();
+                                    string collectionProperty = s.Split(new string[] { "%" }, 2, StringSplitOptions.None)[1];
+
+                                    //if we are trying to access all the elements in the collection
+                                    if (collectionProperty.Contains("ALL"))
+                                    {
+                                        PropertyInfo[] collectionPropertyInfos = collectionType.GetProperties();
+                                        timesToRun = collectionPropertyInfos.Length * numberOfInsideCollections;
+                                        currentInsideCollection = (i / collectionPropertyInfos.Length);
+
+                                        //find the propertyinfo property of these
+                                        string property = collectionProperty.Split(new string[] { "^" }, 2, StringSplitOptions.None)[1];
+
+                                        int index = i - currentInsideCollection * collectionPropertyInfos.Length;
+
+                                        int excludeMarkers = Regex.Matches(property, excludeMarker).Count + 1;
+                                        if (excludeMarkers > 1)
+                                        {
+                                            string[] excludeArray = property.Split(new string[] { excludeMarker }, excludeMarkers, StringSplitOptions.None);
+                                            bool excluded = false;
+                                            for (int j = 1; j < excludeArray.Length; j++)
+                                            {
+                                                if (collectionPropertyInfos[index].Name.Contains(excludeArray[j]))
+                                                {
+                                                    tempString += "EXCLUDED";
+                                                    excluded = true;
+                                                }
+                                            }
+                                            if (!excluded)
+                                            {
+                                                if (property.Contains("NAME"))
+                                                    tempString += collectionPropertyInfos[index].Name;
+                                                else if (property.Contains("VALUE"))
+                                                    tempString += collectionPropertyInfos[index].GetValue(element).ToString();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (property.Contains("NAME"))
+                                                tempString += collectionPropertyInfos[index].Name;
+                                            else if (property.Contains("VALUE"))
+                                                tempString += collectionPropertyInfos[index].GetValue(element).ToString();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        string[] chunks = collectionProperty.Split(new string[] { "^" }, 2, StringSplitOptions.None);
+                                        string property = chunks[0];
+                                        string type = chunks[1];
+                                        if (type.Contains("NAME"))
+                                            tempString += element.GetType().GetProperty(property).Name;
+                                        else if (type.Contains("VALUE"))
+                                            tempString += element.GetType().GetProperty(property).GetValue(element).ToString();
+                                    }
+                                }
+                                else
+                                    tempString += pi.GetValue(mech).ToString();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        tempString += s;
+                    }
+                }
+                
+                if (tempString.Contains("EXCLUDED"))
+                    tempString = "";
+                else 
+                {
+                    resultString += tempString;
+                    if (i != (timesToRun - 1)) //make sure we don't put a new line after last element
+                    {
+                        resultString += Environment.NewLine;
+                    }   
+                    tempString = "";
+                }
+            }
+            #endregion
+
+            return resultString;
+        }
+
+        public static int countOccurencesInString(string text, string search)
+        {
+            int count = 0, minIndex = text.IndexOf(search, 0);
+            while (minIndex != -1)
+            {
+                minIndex = text.IndexOf(search, minIndex + search.Length);
+                count++;
+            }
+            return count;
         }
 
         private string getIncludePath(string mechanismName)

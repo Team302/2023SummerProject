@@ -22,6 +22,9 @@ namespace Configuration
         public string templateMechanismCppPath = "";
         public string templateMechanismHPath = "";
 
+        [XmlArrayItem("Replacement")]
+        public List<(string, string)> mechanismReplacements = new List<(string, string)>();
+
         public string CopyrightNotice = "";
         public string GenerationNotice = "";
 
