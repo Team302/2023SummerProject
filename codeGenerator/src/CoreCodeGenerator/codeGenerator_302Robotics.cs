@@ -82,7 +82,7 @@ namespace CoreCodeGenerator
                     
                     /// Testing
                     //string str = "This is a test __^mechanismName__, now for the second test __^motor%canId__, now the third test __^motor%canBusName__ test is over";
-                    string str = "This is a test __^mechanismName__, now for the second test __^closedLoopControlParameters%ALL^NAME_name_Specified__ test is over";
+                    string str = "This is a test __^mechanismName__, now for the second test __^closedLoopControlParameters%ALL^NAME_Specified__, now third test __^closedLoopControlParameters%ALL^VALUE_Specified__, now fourth test __^closedLoopControlParameters%pGain^VALUE__ test is over";
 
                     string marker = "__";
 
@@ -134,7 +134,6 @@ namespace CoreCodeGenerator
                                                 //the 0 check is to make sure repeatsForCollection is set for the first collection found
                                                 if (collectionSize < timesToRun || timesToRun == 0)
                                                     timesToRun = collectionSize;
-                                                Debug.WriteLine(timesToRun);
                                             }
                                         }
                                     }
@@ -147,6 +146,9 @@ namespace CoreCodeGenerator
                         timesToRun = 1;
                     }
                     #endregion
+
+                    int numberOfInsideCollections = 0;
+                    int currentInsideCollection = 0;
 
                     #region Replace text however many times for a collection or just once
                     //write lines for how many times we need to run
@@ -180,7 +182,9 @@ namespace CoreCodeGenerator
                                         if (isACollection(pi.GetValue(mech)))
                                         {
                                             IList list = (IList)pi.GetValue(mech);
-                                            object element = list[0];
+                                            object element = list[currentInsideCollection];
+
+                                            numberOfInsideCollections = list.Count;
 
                                             Type collectionType = element.GetType();
                                             string collectionProperty = s.Split(new string[] { "%" }, 2, StringSplitOptions.None)[1];
@@ -194,36 +198,52 @@ namespace CoreCodeGenerator
                                             if(collectionProperty.Contains("ALL"))
                                             {
                                                 PropertyInfo[] collectionPropertyInfos = collectionType.GetProperties();
-                                                //timesToRun += collectionPropertyInfos.Length - i;
-                                                timesToRun = collectionPropertyInfos.Length;
+                                                timesToRun = collectionPropertyInfos.Length * numberOfInsideCollections;
+                                                currentInsideCollection = (i / collectionPropertyInfos.Length);
 
                                                 //find the propertyinfo property of these
                                                 string property = collectionProperty.Split(new string[] { "^" }, 2, StringSplitOptions.None)[1];
-                                                if (property.Contains("NAME"))
+                                                
+                                                int index = i - currentInsideCollection * collectionPropertyInfos.Length;
+
+                                                int excludeMarkers = Regex.Matches(property, "_").Count + 1;
+                                                if(excludeMarkers > 1)
                                                 {
-                                                    int excludeMarkers = Regex.Matches(property, "_").Count + 1;
-                                                    if(excludeMarkers > 1)
+                                                    string[] excludeArray = property.Split(new string[] { "_"}, excludeMarkers, StringSplitOptions.None);
+                                                    bool excluded = false;
+                                                    for(int j = 1; j < excludeArray.Length; j++)
                                                     {
-                                                        string[] excludeArray = property.Split(new string[] { "_"}, excludeMarkers, StringSplitOptions.None);
-                                                        bool excluded = false;
-                                                        for(int j = 1; j < excludeArray.Length; j++)
+                                                        if (collectionPropertyInfos[index].Name.Contains(excludeArray[j]))
                                                         {
-                                                            if (collectionPropertyInfos[i].Name.Contains(excludeArray[j]))
-                                                            {
-                                                                testTempString += "EXCLUDED";
-                                                                excluded = true;
-                                                            }
+                                                            testTempString += "EXCLUDED";
+                                                            excluded = true;
                                                         }
-                                                        if(!excluded)
-                                                            testTempString += collectionPropertyInfos[i].Name; 
                                                     }
-                                                    else
-                                                        testTempString += collectionPropertyInfos[i].Name;
+                                                    if(!excluded)
+                                                    {
+                                                        if (property.Contains("NAME"))
+                                                            testTempString += collectionPropertyInfos[index].Name;
+                                                        else if (property.Contains("VALUE"))
+                                                            testTempString += collectionPropertyInfos[index].GetValue(element).ToString();
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (property.Contains("NAME"))
+                                                        testTempString += collectionPropertyInfos[index].Name;
+                                                    else if (property.Contains("VALUE"))
+                                                        testTempString += collectionPropertyInfos[index].GetValue(element).ToString();
                                                 }
                                             }
                                             else
                                             {
-                                                testTempString += element.GetType().GetProperty(collectionProperty).GetValue(element).ToString();
+                                                string[] chunks = collectionProperty.Split(new string[] { "^" }, 2, StringSplitOptions.None);
+                                                string property = chunks[0];
+                                                string type = chunks[1];    
+                                                if (type.Contains("NAME"))
+                                                    testTempString += element.GetType().GetProperty(property).Name;
+                                                else if (type.Contains("VALUE"))
+                                                    testTempString += element.GetType().GetProperty(property).GetValue(element).ToString();
                                             }
                                         }
                                         else
