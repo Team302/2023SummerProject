@@ -79,10 +79,10 @@ namespace CoreCodeGenerator
                     string mechanismName = mech.mechanismName;
 
                     createMechanismFolder(mechanismName);
-
+                    
                     /// Testing
                     //string str = "This is a test __^mechanismName__, now for the second test __^motor%canId__, now the third test __^motor%canBusName__ test is over";
-                    string str = "This is a test __^mechanismName__, now for the second test __^closedLoopControlParameters%pGain__ test is over";
+                    string str = "This is a test __^mechanismName__, now for the second test __^closedLoopControlParameters%ALL^NAME__ test is over";
 
                     string marker = "__";
 
@@ -127,6 +127,18 @@ namespace CoreCodeGenerator
                                             if (isACollection(pi.GetValue(mech)))
                                             {
                                                 int collectionSize = (pi.GetValue(mech) as IList).Count;
+                                                Debug.WriteLine(collectionSize);
+
+                                                if(collectionSize > 0)
+                                                {
+                                                    Debug.WriteLine((pi.GetValue(mech) as IList)[0].GetType());
+                                                }
+
+                                                if (collectionSize > 0 && isACollection((pi.GetValue(mech) as IList)[0]))
+                                                {
+                                                    collectionSize = ((pi.GetValue(mech) as IList)[0] as IList).Count;
+                                                }
+
                                                 //check to make sure if multiple collections are being accessed, only repeat for lowest size to avoid index out of bounds
                                                 //the 0 check is to make sure repeatsForCollection is set for the first collection found
                                                 if (collectionSize < timesToRun || timesToRun == 0)
@@ -157,7 +169,7 @@ namespace CoreCodeGenerator
                             //checks if accessing property of mechanism  may not need this if we're always accessing from this mech object
                             if (s.StartsWith("^"))
                             {
-                                string propertyName = s.Trim('^');
+                                string propertyName = s.TrimStart('^');
 
                                 //if we are trying to access a collection in some place, don't worry about that for now
                                 if (s.IndexOf("%") != -1)
@@ -185,9 +197,38 @@ namespace CoreCodeGenerator
                                             /// this can be done similar to closedLoopControlParameters like below
                                             /// Need to get a new propertyinfo of the type of collection we're accessing (motors or closedLoopControlParameters)
                                             /// then iterate through that and print out the value wanted from the string
-                                            string value = element.GetType().GetProperty(collectionProperty).GetValue(element).ToString();
-                                            testResultString += value;
 
+                                            //if we are trying to access all the elements in the collection
+                                            if(collectionProperty.Contains("ALL"))
+                                            {
+                                                PropertyInfo[] collectionPropertyInfos = collectionType.GetProperties();
+
+                                                //find the propertyinfo property of these
+                                                string property = collectionProperty.Split(new string[] { "^" }, 2, StringSplitOptions.None)[1];
+                                                if (property == "NAME")
+                                                {
+                                                    int excludeMarkers = Regex.Matches(property, "_").Count + 1;
+                                                    if(excludeMarkers > 1)
+                                                    {
+                                                        string[] excludeArray = property.Split(new string[] { "_"}, excludeMarkers, StringSplitOptions.None);
+                                                        foreach(string excludeString in excludeArray)
+                                                        {
+                                                            if(collectionPropertyInfos[i].Name.Contains(excludeString))
+                                                            {
+                                                                testResultString += "EXCLUDED";
+                                                            }
+                                                            else
+                                                                testResultString += collectionPropertyInfos[i].Name;
+                                                        }
+                                                    }
+                                                    else
+                                                        testResultString += collectionPropertyInfos[i].Name;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                testResultString += element.GetType().GetProperty(collectionProperty).GetValue(element).ToString();
+                                            }
                                         }
                                         else
                                             testResultString += pi.GetValue(mech).ToString();
@@ -206,7 +247,7 @@ namespace CoreCodeGenerator
                     #endregion
 
                     Debug.WriteLine(testResultString);
-
+                    
                     #region Generate Cpp File
                     resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
                     filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
