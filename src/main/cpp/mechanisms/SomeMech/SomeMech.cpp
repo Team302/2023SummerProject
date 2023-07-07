@@ -29,7 +29,6 @@
 // FRC Includes
 #include <networktables/NetworkTableInstance.h>
 
-
 #include <mechanisms/SomeMech/SomeMech.h>
 
 SomeMech::SomeMech()
@@ -45,7 +44,7 @@ void SomeMech::Initialize()
 void SomeMech::Cyclic()
 {
     CheckForTuningEnabled();
-    if(m_tuning)
+    if (m_tuning)
     {
         ReadTuningParamsFromNT();
     }
@@ -55,7 +54,7 @@ void SomeMech::CheckForTuningEnabled()
 {
     bool pastTuning = m_tuning;
     m_tuning = m_table.get()->GetBoolean("Enable Tuning for SomeMech?", false);
-    if(pastTuning != m_tuning && m_tuning == true)
+    if (pastTuning != m_tuning && m_tuning == true)
     {
         PushTuningParamsToNT();
     }
@@ -64,27 +63,29 @@ void SomeMech::CheckForTuningEnabled()
 void SomeMech::ReadTuningParamsFromNT()
 {
     FirstGains_pGain = m_table.get()->GetNumber("FirstGains_pGain", 0);
-	FirstGains_iGain = m_table.get()->GetNumber("FirstGains_iGain", 0);
-	FirstGains_dGain = m_table.get()->GetNumber("FirstGains_dGain", 0);
-	FirstGains_fGain = m_table.get()->GetNumber("FirstGains_fGain", 0);
-	FirstGains_iZone = m_table.get()->GetNumber("FirstGains_iZone", 0);
-	SecondGains_pGain = m_table.get()->GetNumber("SecondGains_pGain", 0);
-	SecondGains_iGain = m_table.get()->GetNumber("SecondGains_iGain", 0);
-	SecondGains_dGain = m_table.get()->GetNumber("SecondGains_dGain", 0);
-	SecondGains_fGain = m_table.get()->GetNumber("SecondGains_fGain", 0);
-	SecondGains_iZone = m_table.get()->GetNumber("SecondGains_iZone", 0);
+FirstGains_iGain = m_table.get()->GetNumber("FirstGains_iGain", 0);
+FirstGains_dGain = m_table.get()->GetNumber("FirstGains_dGain", 0);
+FirstGains_fGain = m_table.get()->GetNumber("FirstGains_fGain", 0);
+FirstGains_iZone = m_table.get()->GetNumber("FirstGains_iZone", 0);
+SecondGains_pGain = m_table.get()->GetNumber("SecondGains_pGain", 0);
+SecondGains_iGain = m_table.get()->GetNumber("SecondGains_iGain", 0);
+SecondGains_dGain = m_table.get()->GetNumber("SecondGains_dGain", 0);
+SecondGains_fGain = m_table.get()->GetNumber("SecondGains_fGain", 0);
+SecondGains_iZone = m_table.get()->GetNumber("SecondGains_iZone", 0);
 }
 
 void SomeMech::PushTuningParamsToNT()
 {
     FirstGains_pGain = m_table.get()->PutNumber("FirstGains_pGain", FirstGains_pGain);
-	FirstGains_iGain = m_table.get()->PutNumber("FirstGains_iGain", FirstGains_iGain);
-	FirstGains_dGain = m_table.get()->PutNumber("FirstGains_dGain", FirstGains_dGain);
-	FirstGains_fGain = m_table.get()->PutNumber("FirstGains_fGain", FirstGains_fGain);
-	FirstGains_iZone = m_table.get()->PutNumber("FirstGains_iZone", FirstGains_iZone);
-	SecondGains_pGain = m_table.get()->PutNumber("SecondGains_pGain", SecondGains_pGain);
-	SecondGains_iGain = m_table.get()->PutNumber("SecondGains_iGain", SecondGains_iGain);
-	SecondGains_dGain = m_table.get()->PutNumber("SecondGains_dGain", SecondGains_dGain);
-	SecondGains_fGain = m_table.get()->PutNumber("SecondGains_fGain", SecondGains_fGain);
-	SecondGains_iZone = m_table.get()->PutNumber("SecondGains_iZone", SecondGains_iZone);
+FirstGains_iGain = m_table.get()->PutNumber("FirstGains_iGain", FirstGains_iGain);
+FirstGains_dGain = m_table.get()->PutNumber("FirstGains_dGain", FirstGains_dGain);
+FirstGains_fGain = m_table.get()->PutNumber("FirstGains_fGain", FirstGains_fGain);
+FirstGains_iZone = m_table.get()->PutNumber("FirstGains_iZone", FirstGains_iZone);
+SecondGains_pGain = m_table.get()->PutNumber("SecondGains_pGain", SecondGains_pGain);
+SecondGains_iGain = m_table.get()->PutNumber("SecondGains_iGain", SecondGains_iGain);
+SecondGains_dGain = m_table.get()->PutNumber("SecondGains_dGain", SecondGains_dGain);
+SecondGains_fGain = m_table.get()->PutNumber("SecondGains_fGain", SecondGains_fGain);
+SecondGains_iZone = m_table.get()->PutNumber("SecondGains_iZone", SecondGains_iZone);
+    5 testing
+			Indentation and other value SomeMech
 }

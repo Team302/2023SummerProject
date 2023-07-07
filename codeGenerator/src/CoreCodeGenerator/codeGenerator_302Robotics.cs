@@ -90,50 +90,10 @@ namespace CoreCodeGenerator
                     resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
                     foreach((string,string) pair in theToolConfiguration.mechanismReplacements)
                     {
-                        //Debug.WriteLine("Item1: " + pair.Item1);
-                        //Debug.WriteLine("Item2: " + pair.Item2);
                         string replacement = findReplacementString(pair.Item2, mech);
                         Debug.WriteLine(replacement);
                         resultString = resultString.Replace(pair.Item1, replacement);
                     }
-                    
-
-                    #region Tunable Parameters
-                    string allParameterReading = "";
-                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                    {
-                        Type objType = cLCParams.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        foreach (PropertyInfo pi in propertyInfos)
-                        {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                            if (!skip)
-                                allParameterReading += string.Format("{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", {2});{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
-                        }
-
-                    }
-                    //resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
-
-                    string allParameterWriting = "";
-                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                    {
-                        Type objType = cLCParams.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        foreach (PropertyInfo pi in propertyInfos)
-                        {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                            if (!skip)
-                                allParameterWriting += string.Format("{0}_{1} = m_table.get()->PutNumber(\"{0}_{1}\", {0}_{1});{2}", cLCParams.name, pi.Name, Environment.NewLine);
-                        }
-
-                    }
-                    //resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
-
-                    #endregion
 
                     File.WriteAllText(filePathName, resultString);
                     #endregion
@@ -184,7 +144,7 @@ namespace CoreCodeGenerator
 
             string resultString = "";
             string tempString = "";
-            int timesToRun = 0;
+            int timesToRun = 1;
 
             #region Check for collection
             //if we are access a collection, do separate logic for multiple lines
@@ -230,13 +190,8 @@ namespace CoreCodeGenerator
                     }
                 }
             }
-            else //we aren't accessing a collection, so only write one line
-            {
-                timesToRun = 1;
-            }
             #endregion
 
-            int numberOfInsideCollections = 0;
             int currentInsideCollection = 0;
 
             #region Replace text however many times for a collection or just once
@@ -273,7 +228,7 @@ namespace CoreCodeGenerator
                                     IList list = (IList)pi.GetValue(mech);
                                     object element = list[currentInsideCollection];
 
-                                    numberOfInsideCollections = list.Count;
+                                    int numberOfInsideCollections = list.Count;
 
                                     Type collectionType = element.GetType();
                                     string collectionProperty = s.Split(new string[] { "%" }, 2, StringSplitOptions.None)[1];
@@ -290,7 +245,8 @@ namespace CoreCodeGenerator
 
                                         int index = i - currentInsideCollection * collectionPropertyInfos.Length;
 
-                                        int excludeMarkers = Regex.Matches(property, excludeMarker).Count + 1;
+                                        //int excludeMarkers = Regex.Matches(property, excludeMarker).Count + 1;
+                                        int excludeMarkers = countOccurencesInString(property, excludeMarker) + 1;
                                         if (excludeMarkers > 1)
                                         {
                                             string[] excludeArray = property.Split(new string[] { excludeMarker }, excludeMarkers, StringSplitOptions.None);
@@ -321,6 +277,7 @@ namespace CoreCodeGenerator
                                     }
                                     else
                                     {
+                                        //currentInsideCollection = (i);
                                         string[] chunks = collectionProperty.Split(new string[] { "^" }, 2, StringSplitOptions.None);
                                         string property = chunks[0];
                                         string type = chunks[1];
@@ -345,9 +302,9 @@ namespace CoreCodeGenerator
                     tempString = "";
                 else 
                 {
-                    if(i != 0 && resultString != "") //we aren't on first replacement so we can indent
+                    if(i != 0 && resultString != "") //we aren't on first replacement so we can go to a new line
                     {
-                        resultString += Environment.NewLine + "\t";
+                        resultString += Environment.NewLine;
                     }
 
                     resultString += tempString; 

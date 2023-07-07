@@ -4,7 +4,6 @@ $$_GEN_NOTICE_$$
 // FRC Includes
 #include <networktables/NetworkTableInstance.h>
 
-
 #include <$$_INCLUDE_PATH_$$/$$_MECHANISM_NAME_$$.h>
 
 $$_MECHANISM_NAME_$$::$$_MECHANISM_NAME_$$()
@@ -20,7 +19,7 @@ void $$_MECHANISM_NAME_$$::Initialize()
 void $$_MECHANISM_NAME_$$::Cyclic()
 {
     CheckForTuningEnabled();
-    if(m_tuning)
+    if (m_tuning)
     {
         ReadTuningParamsFromNT();
     }
@@ -30,7 +29,7 @@ void $$_MECHANISM_NAME_$$::CheckForTuningEnabled()
 {
     bool pastTuning = m_tuning;
     m_tuning = m_table.get()->GetBoolean("Enable Tuning for $$_MECHANISM_NAME_$$?", false);
-    if(pastTuning != m_tuning && m_tuning == true)
+    if (pastTuning != m_tuning && m_tuning == true)
     {
         PushTuningParamsToNT();
     }
@@ -44,4 +43,5 @@ void $$_MECHANISM_NAME_$$::ReadTuningParamsFromNT()
 void $$_MECHANISM_NAME_$$::PushTuningParamsToNT()
 {
     $$_PUSH_TUNABLE_PARAMETERS_$$
+    $$_TEST_TAG_$$
 }

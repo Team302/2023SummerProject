@@ -29,7 +29,6 @@
 // FRC Includes
 #include <networktables/NetworkTableInstance.h>
 
-
 #include <mechanisms/WitzMech/WitzMech.h>
 
 WitzMech::WitzMech()
@@ -45,7 +44,7 @@ void WitzMech::Initialize()
 void WitzMech::Cyclic()
 {
     CheckForTuningEnabled();
-    if(m_tuning)
+    if (m_tuning)
     {
         ReadTuningParamsFromNT();
     }
@@ -55,7 +54,7 @@ void WitzMech::CheckForTuningEnabled()
 {
     bool pastTuning = m_tuning;
     m_tuning = m_table.get()->GetBoolean("Enable Tuning for WitzMech?", false);
-    if(pastTuning != m_tuning && m_tuning == true)
+    if (pastTuning != m_tuning && m_tuning == true)
     {
         PushTuningParamsToNT();
     }
@@ -69,4 +68,6 @@ void WitzMech::ReadTuningParamsFromNT()
 void WitzMech::PushTuningParamsToNT()
 {
     
+    0 testing
+			Indentation and other value WitzMech
 }
