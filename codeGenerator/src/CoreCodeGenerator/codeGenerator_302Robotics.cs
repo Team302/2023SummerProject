@@ -131,7 +131,7 @@ namespace CoreCodeGenerator
                         }
 
                     }
-                    resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
+                    //resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
 
                     #endregion
 
@@ -345,11 +345,12 @@ namespace CoreCodeGenerator
                     tempString = "";
                 else 
                 {
-                    resultString += tempString;
-                    if (i != (timesToRun - 1)) //make sure we don't put a new line after last element
+                    if(i != 0 && resultString != "") //we aren't on first replacement so we can indent
                     {
-                        resultString += Environment.NewLine;
-                    }   
+                        resultString += Environment.NewLine + "\t";
+                    }
+
+                    resultString += tempString; 
                     tempString = "";
                 }
             }
