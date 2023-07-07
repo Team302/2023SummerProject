@@ -94,7 +94,7 @@ public:
 
     /// @brief  Set the control constants (e.g. PIDF values).
     /// @param [in] ControlData* pid:  the control constants
-    void SetControlConstants(int slot, ControlData *pid) override;
+    void SetControlConstants(int slot, ControlData pid) override;
 
     IDragonMotorController &GetMotor() const { return m_motor; }
 

@@ -84,7 +84,7 @@ public:
 
     /// @brief  Set the control constants (e.g. PIDF values).
     /// @param [in] ControlData* pid:  the control constants
-    virtual void SetControlConstants(int slot, ControlData *pid) = 0;
+    virtual void SetControlConstants(int slot, ControlData pid) = 0;
 
 protected:
     enum MotorTargetType

@@ -49,8 +49,7 @@ DragonSolenoid::DragonSolenoid(
     InitDouble(networkTableName, usage, pcmID, pcmType, forwardChannel, reverseChannel, reversed);
 }
 
-void DragonSolenoid::Set(
-    bool on)
+void DragonSolenoid::Set(bool on)
 {
     if (m_solenoid != nullptr)
     {

@@ -55,7 +55,7 @@ void ExampleGen::AddSolenoid(DragonSolenoid &solenoid)
 /// @brief  Set the control constants (e.g. PIDF values).
 /// @param [in] ControlData*                                   pid:  the control constants
 /// @return void
-void ExampleGen::SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, int slot, ControlData *pid)
+void ExampleGen::SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, int slot, ControlData pid)
 {
     auto motor = GetMotorMech(identifier);
     if (motor != nullptr)

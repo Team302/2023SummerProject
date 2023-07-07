@@ -18,6 +18,7 @@
 #include <memory>
 
 // FRC includes
+#include "units/angle.h"
 
 // Team 302 includes
 #include <hw/DragonServo.h>
@@ -49,8 +50,8 @@ DragonServo *ServoXmlParser::ParseXML(
     // initialize attributes to default values
     int pwmID = 0;
     ServoUsage::SERVO_USAGE usage = ServoUsage::UNKNOWN_SERVO_USAGE;
-    double minAngle = 0.0;
-    double maxAngle = 360.0;
+    units::angle::degree_t minAngle = units::angle::degree_t(0.0);
+    units::angle::degree_t maxAngle = units::angle::degree_t(360.0);
 
     bool hasError = false;
 
@@ -69,11 +70,11 @@ DragonServo *ServoXmlParser::ParseXML(
         }
         else if (attrName.compare("minAngle") == 0)
         {
-            minAngle = attr.as_int();
+            minAngle = units::angle::degree_t(attr.as_double());
         }
         else if (attrName.compare("maxAngle") == 0)
         {
-            maxAngle = attr.as_int();
+            maxAngle = units::angle::degree_t(attr.as_double());
         }
         else
         {

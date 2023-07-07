@@ -39,9 +39,9 @@ VisionDrive::VisionDrive(RobotDrive *robotDrive) : RobotDrive(),
                                                    m_robotDrive(robotDrive),
                                                    m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
                                                    m_vision(DragonVision::GetDragonVision()),
+                                                   m_lostGamePieceTimer(new frc::Timer()),
                                                    m_haveGamePiece(false),
-                                                   m_moveInXDir(false),
-                                                   m_lostGamePieceTimer(new frc::Timer())
+                                                   m_moveInXDir(false)
 {
     RobotState::GetInstance()->RegisterForStateChanges(this, RobotStateChanges::StateChange::HoldingGamePiece);
 }
@@ -66,12 +66,12 @@ std::array<frc::SwerveModuleState, 4> VisionDrive::UpdateSwerveModuleStates(Chas
     {
         if (m_vision->getPipeline(DragonVision::LIMELIGHT_POSITION::FRONT) == targetData->getTargetType())
         {
-            bool atTarget_x = false;
-            bool atTarget_angle = false;
+            // bool atTarget_angle = false;
 
             units::angle::radian_t angleError = units::angle::radian_t(0.0);
 
-            atTarget_angle = AtTargetAngle(targetData, &angleError);
+            // atTarget_angle = AtTargetAngle(targetData, &angleError);
+            AtTargetAngle(targetData, &angleError);
 
             Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "VisionDrive", "Angle Error (Deg)", units::angle::degree_t(angleError).to<double>());
 

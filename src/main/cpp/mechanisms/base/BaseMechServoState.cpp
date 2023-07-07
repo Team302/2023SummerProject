@@ -41,7 +41,8 @@ using namespace std;
 BaseMechServoState::BaseMechServoState(string stateName,
                                        int stateId,
                                        BaseMechServo &mech) : State(stateName, stateId),
-                                                              m_mech(mech)
+                                                              m_mech(mech),
+                                                              m_targetAngle(units::angle::degree_t(0.0))
 {
 }
 
@@ -51,18 +52,20 @@ BaseMechServoState::BaseMechServoState(string stateName,
 /// @param angle target value
 void BaseMechServoState::SetTarget(units::angle::degree_t angle)
 {
+    m_targetAngle = angle;
 }
 
 void BaseMechServoState::Init()
-{
+{ // No-Op nothing to initialize
 }
 
 void BaseMechServoState::Run()
 {
+    m_mech.SetAngle(m_targetAngle);
 }
 
 void BaseMechServoState::Exit()
-{
+{ // No-Op nothing to do on exit
 }
 
 bool BaseMechServoState::AtTarget() const

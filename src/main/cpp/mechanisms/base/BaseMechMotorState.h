@@ -16,6 +16,11 @@
 #pragma once
 #include <string>
 
+#include "units/angle.h"
+#include "units/angular_velocity.h"
+#include "units/length.h"
+#include "units/velocity.h"
+
 #include "State.h"
 #include "mechanisms/controllers/MechanismTargetData.h"
 #include "mechanisms/controllers/ControlData.h"
@@ -65,5 +70,20 @@ public:
     bool AtTarget() const override;
 
 private:
+    enum motorMode
+    {
+        PERCENT,
+        ANGLE,
+        ANGULAR_VELOCITY,
+        POSITION,
+        VELOCITY
+    };
     BaseMechMotor m_mech;
+    motorMode m_mode;
+    ControlData m_control;
+    double m_target;
+    units::angle::degree_t m_targetAngle;
+    units::angular_velocity::revolutions_per_minute_t m_targetAngularVelocity;
+    units::length::inch_t m_targetPosition;
+    units::velocity::feet_per_second_t m_targetVelocity;
 };

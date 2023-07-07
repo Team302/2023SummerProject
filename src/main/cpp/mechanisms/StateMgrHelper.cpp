@@ -107,18 +107,18 @@ void StateMgrHelper::SetCheckGamepadInputsForStateTransitions(bool check)
 
 State *StateMgrHelper::CreateState(Mech *mech, StateStruc &stateInfo, MechanismTargetData *targetData)
 {
-    auto controlData = targetData->GetController();
-    auto controlData2 = targetData->GetController2();
-    auto target = targetData->GetTarget();
-    auto secondaryTarget = targetData->GetSecondTarget();
-    auto solenoidState = targetData->GetSolenoidState();
+    // auto controlData = targetData->GetController();
+    // auto controlData2 = targetData->GetController2();
+    // auto target = targetData->GetTarget();
+    // auto secondaryTarget = targetData->GetSecondTarget();
+    // auto solenoidState = targetData->GetSolenoidState();
     //  auto solenoid2State = targetData->GetSolenoid2State();
     //  auto robotPitch = targetData->GetRobotPitch();
     //  auto function1Coeff = targetData->GetFunction1Coeff();
     //  auto function2Coeff = targetData->GetFunction2Coeff();
     auto type = stateInfo.type;
-    auto xmlString = stateInfo.xmlIdentifier;
-    auto id = stateInfo.id;
+    // auto xmlString = stateInfo.xmlIdentifier;
+    // auto id = stateInfo.id;
 
     State *thisState = nullptr;
     switch (type)

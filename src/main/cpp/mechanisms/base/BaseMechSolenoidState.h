@@ -41,4 +41,5 @@ public:
 
 private:
     BaseMechSolenoid m_mech;
+    bool m_activate;
 };

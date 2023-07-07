@@ -43,4 +43,5 @@ public:
 
 private:
     BaseMechServo m_mech;
+    units::angle::degree_t m_targetAngle;
 };

@@ -28,16 +28,14 @@ using namespace std;
 DragonServo::DragonServo(
     ServoUsage::SERVO_USAGE deviceUsage, // <I> - Usage of the servo
     int deviceID,                        // <I> - PWM ID
-    double minAngle,                     // <I> - Minimun desired angle
-    double maxAngle                      // <I> - Maximum desired angle
+    units::angle::degree_t minAngle,     // <I> - Minimun desired angle
+    units::angle::degree_t maxAngle      // <I> - Maximum desired angle
 
     ) : m_usage(deviceUsage),
         m_servo(new frc::Servo(deviceID)),
         m_minAngle(minAngle),
         m_maxAngle(maxAngle)
 {
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Servo ") + to_string(deviceID), string("min angle "), m_servo->GetMinAngle());
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Servo ") + to_string(deviceID), string("max angle "), m_servo->GetMaxAngle());
     m_servo->SetAngle(0.0);
 }
 
@@ -64,20 +62,19 @@ double DragonServo::Get() const
     }
     return value;
 }
-void DragonServo::SetAngle(double angle)
+void DragonServo::SetAngle(units::angle::degree_t angle)
 {
     if (m_servo != nullptr)
     {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Servo ") + to_string(m_servo->GetChannel()), string("angle "), m_servo->GetAngle());
-        m_servo->SetAngle(angle);
+        m_servo->SetAngle(angle.to<double>());
     }
 }
-double DragonServo::GetAngle() const
+units::angle::degree_t DragonServo::GetAngle() const
 {
-    double angle = 0.0;
+    units::angle::degree_t angle = units::angle::degree_t(0.0);
     if (m_servo != nullptr)
     {
-        angle = m_servo->GetAngle();
+        angle = units::angle::degree_t(m_servo->GetAngle());
     }
     return angle;
 }

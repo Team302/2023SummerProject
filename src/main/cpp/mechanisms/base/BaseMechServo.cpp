@@ -48,8 +48,7 @@ BaseMechServo::BaseMechServo(
 /// @brief      Move servo to the desired angle
 /// @param [in] double angle: Target angle in degrees
 /// @return     void
-void BaseMechServo::SetAngle(
-    double angle)
+void BaseMechServo::SetAngle(units::angle::degree_t angle)
 {
     if (m_servo != nullptr)
     {
@@ -57,13 +56,13 @@ void BaseMechServo::SetAngle(
     }
 }
 
-double BaseMechServo::GetAngle() const
+units::angle::degree_t BaseMechServo::GetAngle() const
 {
     if (m_servo != nullptr)
     {
         return m_servo->GetAngle();
     }
-    return 0.0;
+    return units::angle::degree_t(0.0);
 }
 
 /// @brief log data to the network table if it is activated and time period has past

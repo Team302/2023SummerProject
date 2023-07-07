@@ -51,7 +51,7 @@ public:
     /// @param indentifier the motor controller usage to identify the motor
     /// @param slot position on the motor controller to set
     /// @param pid control data / constants
-    virtual void SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE indentifier, int slot, ControlData *pid) = 0;
+    virtual void SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE indentifier, int slot, ControlData pid) = 0;
 
     /// @brief update the output to the mechanism using the current controller and target value(s)
     virtual void Update() = 0;

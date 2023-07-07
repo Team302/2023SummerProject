@@ -62,7 +62,7 @@ public:
     /// @param indentifier the motor controller usage to identify the motor
     /// @param slot position on the motor controller to set
     /// @param pid control data / constants
-    void SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE indentifier, int slot, ControlData *pid) override;
+    void SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE indentifier, int slot, ControlData pid) override;
 
     /// @brief update the output to the mechanism using the current controller and target value(s)
     void Update() override;

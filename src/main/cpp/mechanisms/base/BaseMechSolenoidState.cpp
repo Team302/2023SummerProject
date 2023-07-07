@@ -38,7 +38,8 @@ using namespace std;
 BaseMechSolenoidState::BaseMechSolenoidState(string stateName,
                                              int stateId,
                                              BaseMechSolenoid &mech) : State(stateName, stateId),
-                                                                       m_mech(mech)
+                                                                       m_mech(mech),
+                                                                       m_activate(false)
 {
 }
 
@@ -47,21 +48,23 @@ BaseMechSolenoidState::BaseMechSolenoidState(string stateName,
 /// @param percentOutput target value
 void BaseMechSolenoidState::SetTarget(bool activate)
 {
+    m_activate = activate;
 }
 
 void BaseMechSolenoidState::Init()
-{
+{ // No-Op nothing to initialize
 }
 
 void BaseMechSolenoidState::Run()
 {
+    m_mech.ActivateSolenoid(m_activate);
 }
 
 void BaseMechSolenoidState::Exit()
-{
+{ // No-Op nothing to do on exit
 }
 
 bool BaseMechSolenoidState::AtTarget() const
 {
-    return false;
+    return true; // happens instantaneously
 }

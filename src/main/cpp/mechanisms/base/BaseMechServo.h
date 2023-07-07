@@ -19,6 +19,9 @@
 // C++ Includes
 #include <string>
 
+// FRC includes
+#include "units/angle.h"
+
 // Team 302 includes
 #include "mechanisms/base/Mech.h"
 #include "mechanisms/MechanismTypes.h"
@@ -43,10 +46,9 @@ public:
     /// @brief      Move servo to the desired angle
     /// @param [in] double angle: Target angle in degrees
     /// @return     void
-    void SetAngle(
-        double angle);
+    void SetAngle(units::angle::degree_t angle);
 
-    double GetAngle() const;
+    units::angle::degree_t GetAngle() const;
 
     /// @brief log data to the network table if it is activated and time period has past
     void LogInformation() const override;

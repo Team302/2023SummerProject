@@ -154,9 +154,9 @@ bool BaseMechMotor::IsAtMaxTravel() const
 /// @brief  Set the control constants (e.g. PIDF values).
 /// @param [in] ControlData* pid:  the control constants
 /// @return void
-void BaseMechMotor::SetControlConstants(int slot, ControlData *pid)
+void BaseMechMotor::SetControlConstants(int slot, ControlData pid)
 {
-    m_motor.SetControlConstants(slot, pid);
+    m_motor.SetControlConstants(slot, &pid);
 }
 
 /// @brief log data to the network table if it is activated and time period has past
