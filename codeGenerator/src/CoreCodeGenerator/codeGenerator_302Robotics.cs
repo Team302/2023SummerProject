@@ -135,6 +135,23 @@ namespace CoreCodeGenerator
             string marker = "$$";
             string excludeMarker = "-";
 
+            //get the number of markers to properly split up the replacement string
+            int count = countOccurencesInString(replacement, marker) + 1;
+
+            string[] array = replacement.Split(new string[] { marker }, count, StringSplitOptions.None);
+
+            
+
+
+
+
+
+
+
+            /*
+            string marker = "$$";
+            string excludeMarker = "-";
+
             //plus 1 is to account for chunk at beginning before markers
             //this gets the amount of markers ("__") in a string so that we can split up the string into it's different parts
             int count = countOccurencesInString(replacement, marker) + 1;
@@ -312,7 +329,7 @@ namespace CoreCodeGenerator
                 }
             }
             #endregion
-
+            */
             return resultString;
         }
 

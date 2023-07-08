@@ -29,19 +29,19 @@
 // FRC Includes
 #include <networktables/NetworkTableInstance.h>
 
-#include <mechanisms/WitzMech/WitzMech.h>
+#include <mechanisms/WitzMech/WitzMech and fun.h>
 
-WitzMech::WitzMech()
+WitzMech and fun::WitzMech and fun()
 {
 }
 
-void WitzMech::Initialize()
+void WitzMech and fun::Initialize()
 {
     m_table = nt::NetworkTableInstance::GetDefault().GetTable(m_ntName);
-    m_table.get()->PutBoolean("Enable Tuning for WitzMech?", m_tuning);
+    m_table.get()->PutBoolean("Enable Tuning for WitzMech and fun?", m_tuning);
 }
 
-void WitzMech::Cyclic()
+void WitzMech and fun::Cyclic()
 {
     CheckForTuningEnabled();
     if (m_tuning)
@@ -50,22 +50,22 @@ void WitzMech::Cyclic()
     }
 }
 
-void WitzMech::CheckForTuningEnabled()
+void WitzMech and fun::CheckForTuningEnabled()
 {
     bool pastTuning = m_tuning;
-    m_tuning = m_table.get()->GetBoolean("Enable Tuning for WitzMech?", false);
+    m_tuning = m_table.get()->GetBoolean("Enable Tuning for WitzMech and fun?", false);
     if (pastTuning != m_tuning && m_tuning == true)
     {
         PushTuningParamsToNT();
     }
 }
 
-void WitzMech::ReadTuningParamsFromNT()
+void WitzMech and fun::ReadTuningParamsFromNT()
 {
     
 }
 
-void WitzMech::PushTuningParamsToNT()
+void WitzMech and fun::PushTuningParamsToNT()
 {
     
     0 testing
