@@ -23,7 +23,7 @@ namespace Configuration
         public string templateMechanismHPath = "";
 
         [XmlArrayItem("Replacement")]
-        public List<(string, string)> mechanismReplacements = new List<(string, string)>();
+        public List<(string TagToReplace, string Replacement)> mechanismReplacements = new List<(string, string)>();
 
         public string CopyrightNotice = "";
         public string GenerationNotice = "";
