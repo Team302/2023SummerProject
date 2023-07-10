@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics.Eventing.Reader;
+using System.Runtime.InteropServices;
 
 namespace CoreCodeGenerator
 {
@@ -97,7 +98,7 @@ namespace CoreCodeGenerator
                     //}
 
                     //string replacement = "testing $$^mechanismName$$ testing";
-                    string replacement = "testing $$^closedLoopControlParameters^name$$ testing";
+                    string replacement = "CLC Name: $$^closedLoopControlParameters^name$$ and all params $$^closedLoopControlParameters^ALL^NAME$$:$$^closedLoopControlParameters^ALL$$";
                     string result = replace(replacement, mech, theRobot);
                     Debug.WriteLine("Result: " + result);
 
@@ -141,7 +142,7 @@ namespace CoreCodeGenerator
         private string replace(string text, object curObject, robot currentRobot)
         {
             string marker = "$$";
-            List<string> resultList = new List<string>() { text.Replace("$$", "") };
+            List<string> resultList = new List<string>() { text }; //.Replace("$$", "") used to replace $$
 
             //get the number of markers to properly split up the replacement string
             int count = countOccurencesInString(text, marker) + 1;
@@ -162,7 +163,9 @@ namespace CoreCodeGenerator
                     {
                         for(int i = 0; i < numberOfReplacements; i++)
                         {
-                            tempStringList.Add(str.Replace(s, replacements[i]));
+                            //maybe instead of blindly replacing, take index of s in str and replace by index
+                            //also, keep $$ in and use that as your bounds, can replace $$something$$ but not $$somethingandsomething$$
+                            tempStringList.Add(str.Replace("$$" + s + "$$", replacements[i]));
                         }
                     }
                     resultList = tempStringList;
@@ -193,21 +196,17 @@ namespace CoreCodeGenerator
 
             string[] excludes = str.Split(new string[] { "-" }, StringSplitOptions.None);
 
-            ///Debugging
-            //Debug.WriteLine("Current object name: " + curObject.GetType().Name);
-            //Debug.WriteLine("String: " + str);
-
             if (arr[0] != "")
             {
                 //not using default parent object (mechanism), need to find new parent
                 findReplacements(str.Remove(0, arr[0].Length), findObject(arr[0], currentRobot), currentRobot); //this must always be currentRobot
 
                 /// Debugging
-                Debug.WriteLine("arr[0] != \"\"");
+                //Debug.WriteLine("arr[0] != \"\"");
             }
             else
             {
-                Debug.WriteLine("arr[0] == \"\"");
+                //Debug.WriteLine("arr[0] == \"\"");
                 if (excludes.Length > 1)
                 {
                     for (int i = 1; i < excludes.Length; i++)
@@ -219,7 +218,7 @@ namespace CoreCodeGenerator
                     }   
                 }
 
-                Debug.WriteLine("Arr[1]: " + arr[1]);
+                //Debug.WriteLine("Arr[1]: " + arr[1]);
 
                 switch (arr[1])
                 {
@@ -227,19 +226,27 @@ namespace CoreCodeGenerator
                         { 
                             if (isACollection(curObject))
                             {
+                                int num = 0;
                                 foreach (object o in (curObject as IList))
                                 {
-                                    findReplacements(str.Remove(0, arr[1].Length), o, currentRobot);
+                                    num = 0;
+                                    Type objType = o.GetType();
+                                    PropertyInfo[] propertyInfo = objType.GetProperties();
+                                    foreach(PropertyInfo pi in propertyInfo)
+                                    {
+                                        int tempNum = 0;
+                                        List<string> newReplacements = new List<string>();
+                                        (tempNum, newReplacements) = findReplacements(str.Replace(arr[1], pi.Name), o, currentRobot);
+                                        num += tempNum;
+                                        foreach (string s in newReplacements)
+                                            replacements.Add(s);
+                                    }
+                                }
+                                if(num > numberOfReplacements)
+                                {
+                                    numberOfReplacements = num;
                                 }
                             }
-                            break;
-                        }
-
-                    case "NAME":
-                        { 
-                            string name = curObject.GetType().Name;
-                            replacements.Add(name);
-                            numberOfReplacements++;
                             break;
                         }
                     case "VALUE":
@@ -276,9 +283,15 @@ namespace CoreCodeGenerator
                                     foreach(string s in newReplacements)
                                         replacements.Add(s);
                                 }
+                                else if (arr.Length == 3 && arr[2] == "NAME")
+                                {
+                                    string value = arr[1];
+                                    replacements.Add(value);
+                                    numberOfReplacements++;
+                                }
                                 else
                                 {
-                                    Debug.WriteLine("Value: " + curObject.GetType().GetProperty(arr[1]).GetValue(curObject));
+                                    //Debug.WriteLine("Value: " + curObject.GetType().GetProperty(arr[1]).GetValue(curObject));
                                     string value = curObject.GetType().GetProperty(arr[1]).GetValue(curObject).ToString();
                                     replacements.Add(value);
                                     numberOfReplacements++;
