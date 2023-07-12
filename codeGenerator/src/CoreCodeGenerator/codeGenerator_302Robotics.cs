@@ -98,7 +98,7 @@ namespace CoreCodeGenerator
                     //}
 
                     //string replacement = "testing $$^mechanismName$$ testing";
-                    string replacement = "CLC Name: $$^closedLoopControlParameters^name$$ and all params $$^closedLoopControlParameters^ALL^NAME$$:$$^closedLoopControlParameters^ALL$$";
+                    string replacement = "$$^mechanismName$$";
                     string result = replace(replacement, mech, theRobot);
                     Debug.WriteLine("Result: " + result);
 
@@ -148,6 +148,17 @@ namespace CoreCodeGenerator
             int count = countOccurencesInString(text, marker) + 1;
 
             string[] arr = text.Split(new string[] { marker }, StringSplitOptions.None);
+
+            //need to switch how collections are handled
+            //if a collection is discovered using multiple elements, instead of reiterating through result list,
+            //replace within text then populate result list
+            //recreate text string with the specified values
+            //$$closedLoopControlParams^ALL$$
+            //-> $$closedLoopControlParams^pGain$$
+            //-> $$closedLoopControlParams^iGain$$
+            //...
+
+            //if using a collection, create multiple lines of text with each element of collection
 
             foreach (string s in arr)
             {
