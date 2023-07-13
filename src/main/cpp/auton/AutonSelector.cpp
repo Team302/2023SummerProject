@@ -26,7 +26,7 @@
 #include <dirent.h>
 #endif
 
-#include <frc/SmartDashboard/SmartDashboard.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/Filesystem.h>
 
 // Team302 includes

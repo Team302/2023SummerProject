@@ -42,10 +42,9 @@
 #include "mechanisms/MechanismTypes.h"
 #include "mechanisms/base/BaseMech.h"
 // @ADDMECH include for your mechanism
-// #include <mechanisms/arm/Arm.h>
-// #include <mechanisms/extender/Extender.h>
-// #include <mechanisms/intake/Intake.h>
-#include "utils/logging/Logger.h"
+
+#include <utils/logging/Logger.h>
+
 // Third Party Includes
 
 // forward declares

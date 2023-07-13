@@ -50,7 +50,7 @@
 
 // FRC includes
 #include <frc/AnalogInput.h>
-#include <frc/SmartDashboard/SmartDashboard.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 // Team302 includes
 #include <hw/DragonAnalogInput.h>

@@ -14,7 +14,7 @@
 //====================================================================================================================================================
 
 // FRC Includes
-#include <frc/SmartDashboard/SmartDashboard.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/DriverStation.h>
 
 // Team 302 Includes

@@ -23,7 +23,7 @@
 #include <vector>
 
 // FRC includes
-#include <frc/Driverstation.h>
+#include <frc/DriverStation.h>
 
 // Team 302 includes
 #include <gamepad/IDragonGamePad.h>
@@ -34,7 +34,7 @@
 #include "utils/logging/LoggableItem.h"
 
 // third part
-#include <robinHood/robin_hood.h>
+#include <RobinHood/robin_hood.h>
 
 class TeleopControl : LoggableItem
 {

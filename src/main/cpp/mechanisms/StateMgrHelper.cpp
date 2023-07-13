@@ -27,14 +27,7 @@
 #include "utils/logging/Logger.h"
 
 //@ADDMech Add includes for mech states and mech state mgr
-// #include <mechanisms/arm/ArmState.h>
-// #include <mechanisms/arm/ArmManualState.h>
-// #include <mechanisms/arm/ArmStateMgr.h>
-// #include <mechanisms/extender/ExtenderState.h>
-// #include <mechanisms/extender/ExtenderManualState.h>
-// #include <mechanisms/extender/ExtenderStateMgr.h>
-// #include <mechanisms/intake/IntakeState.h>
-// #include <mechanisms/intake/IntakeStateMgr.h>
+
 
 using namespace std;
 

@@ -15,7 +15,7 @@
 #pragma once
 
 // FRC Includes
-#include <frc/SmartDashboard/SendableChooser.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <frc/DriverStation.h>
 
 class FMSData
