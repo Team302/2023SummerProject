@@ -18,20 +18,6 @@
       networkTable=""
       controlFile="" />
     <mechanism>
-      <servo
-        usage=""
-        pwmId="4"
-        minAngle="0.0"
-        maxAngle="360.0" />
-      <closedLoopControlParameters>
-        <name>FirstGains</name>
-      </closedLoopControlParameters>
-      <closedLoopControlParameters>
-        <name>SecondGains</name>
-      </closedLoopControlParameters>
-      <mechanismName>SomeMech</mechanismName>
-    </mechanism>
-    <mechanism>
       <motor
         peakCurrentDuration=""
         continuousCurrentLimit=""
@@ -45,11 +31,12 @@
         voltageCompensationEnable="false"
         countsPerInch="0"
         countsPerDegree="0">
+        <usage>UNKNOWN_USAGE</usage>
         <motorType>TALONSRX</motorType>
         <controller>TALONSRX</controller>
         <canBusName>rio</canBusName>
         <canId>0</canId>
-        <pdpID />
+        <pdpId>0</pdpId>
         <inverted>false</inverted>
         <sensorInverted>false</sensorInverted>
         <feedbackDevice>NONE</feedbackDevice>
@@ -58,7 +45,13 @@
         <brakeMode>false</brakeMode>
         <motorIDtoFollow>-1</motorIDtoFollow>
       </motor>
-      <mechanismName>WitzMech</mechanismName>
+      <closedLoopControlParameters>
+        <name>FirstGains</name>
+      </closedLoopControlParameters>
+      <closedLoopControlParameters>
+        <name>SecondGains</name>
+      </closedLoopControlParameters>
+      <mechanismName>SomeMech</mechanismName>
     </mechanism>
     <robotID>3</robotID>
   </robot>
