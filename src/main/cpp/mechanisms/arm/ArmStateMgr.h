@@ -30,11 +30,11 @@
 
 // Team 302 includes
 #include <mechanisms/base/StateMgr.h>
-#include <mechanisms/Arm/arm.h>
+#include <mechanisms/arm/Arm.h>
 #include <mechanisms/StateStruc.h>
 
 //========= Hand modified code start section 0 ========
-#include <mechanisms/intake/IntakeStateMgr.h>
+#include <mechanisms/Intake/IntakeStateMgr.h>
 #include <robotstate/IRobotStateChangeSubscriber.h>
 #include <robotstate/RobotStateChanges.h>
 //========= Hand modified code end section 0 ========

@@ -15,7 +15,7 @@
 
 // Team 302 Includes
 #include <mechanisms/arm/ArmHoldPosHelper.h>
-#include <mechanisms/intake/IntakeStateMgr.h>
+#include <mechanisms/Intake/IntakeStateMgr.h>
 
 /// DEBUGGING
 #include <utils/logging/Logger.h>

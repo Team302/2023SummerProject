@@ -4,6 +4,8 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2023.4.3"
 }
 
+import org.apache.tools.ant.taskdefs.condition.Os
+
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
@@ -82,38 +84,72 @@ tasks.discoverroborio.doFirst() {
 }
 
 tasks.build.doLast() {
-   def stdout = new ByteArrayOutputStream()
-   exec {
-     commandLine "git", "rev-parse", "HEAD"
-     standardOutput = stdout
-   }
+    if(Os.isFamily(Os.FAMILY_WINDOWS))
+    {
+        //get commit hash
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine "git", "rev-parse", "HEAD"
+            standardOutput = stdout
+        }
 
-   def commitHash = stdout.toString().trim()
+        def commitHash = stdout.toString().trim()
+        //get commit hash
 
-    stdout = new ByteArrayOutputStream()
-    exec {
-      commandLine "git", "rev-parse", "--abbrev-ref", "HEAD"
-      standardOutput = stdout
-   }
+        //get branch name
+        stdout = new ByteArrayOutputStream()
+        exec {
+                commandLine "git", "rev-parse", "--abbrev-ref", "HEAD"
+                standardOutput = stdout
+        }
 
-   // Parse the output into a string
-   def branch = stdout.toString().trim()
+        def branch = stdout.toString().trim()
+        //get branch name
 
-   def path = "/src/main/utilities"
-   def filename = "BuildDetails.txt"
+            //get author username
+            stdout = new ByteArrayOutputStream()
+            exec {
+                commandLine "git", "config", "user.name"
+                standardOutput = stdout
+            }
+            //get author username
 
-   new File(projectDir.toString() + path, filename
-   ).text = "Branch: (B)" + branch + "(B) "+ "\nCommit Hash: (H)" + commitHash + "(H)" + "\nTeam Number: (TN)" + project.frc.getTeamOrDefault(302) + "(TN)"
+        def author = stdout.toString().trim()
 
-    def startSequence = ansiEscape + boldEffect + ";" + brightGreenColor + ansiEnd
-    def secondSequence = ansiEscape + brightGreenColor + ansiEnd
-    println(startSequence + "Wrote build details to: " + endSequence + path + "/" + filename)
+            //get build date and time
+        def date = new Date().format('yyyyMMddHHmmss')
+        def formattedDate = new Date().format('MM/dd-HH:mm:ss-yyy')
 
-    def branchString = "\n\t" + boldSequence + "Branch: " + endSequence + branch
-    def commitString = "\n\t" + boldSequence + "Commit Hash: " + endSequence + commitHash
-    def teamNumString = "\n\t" + boldSequence + "Team Number: " + secondSequence + project.frc.getTeamOrDefault(302) + endSequence
+        //check that src/main/utilities exists, if it doesnt, create the directory
+        //if this directory does not exist, build fails
+        def path = projectDir.toString() + "/src/main/utilities"
+        def filename = "BuildDetails.txt"
 
-    println("Contents: " + branchString + commitString + teamNumString)
+        File dir = new File(path)
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+
+        new File(path, filename
+        ).text = "Team Number: (TN)" + project.frc.getTeamOrDefault(302) + "(TN)" + "\nBuild Date (Formatted): (FD)" + formattedDate + "(FD)" + "\nBuild Date: (D)" + date + "(D)" + "\nBranch: (B)" + branch + "(B)" + "\nAuthor: (A)" + author + "(A)" + "\nCommit Hash: (H)" + commitHash + "(H)"
+
+        def startSequence = ansiEscape + boldEffect + ";" + brightGreenColor + ansiEnd
+        def secondSequence = ansiEscape + brightGreenColor + ansiEnd
+
+        println(startSequence + "Wrote build details to: " + endSequence + path + "/" + filename)
+
+        def teamNumString = "\n\t" + boldSequence + "Team Number: " + secondSequence + project.frc.getTeamOrDefault(302) + endSequence
+        def dateString = "\n\t" + boldSequence + "Build Date: " + endSequence + formattedDate
+        def authorString = "\n\t" + boldSequence + "Author: " + endSequence + author
+        def branchString = "\n\t" + boldSequence + "Branch: " + endSequence + branch
+        def commitString = "\n\t" + boldSequence + "Commit Hash: " + endSequence + commitHash
+
+        println("Contents: " + teamNumString + dateString + authorString + branchString + commitString)
+    }
+    else
+    {
+        println("Operating system is not windows, skipping writing BuildDetails")
+    }
 }
 
 model {

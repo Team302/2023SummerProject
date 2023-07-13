@@ -21,7 +21,7 @@
 
 // Team 302 includes
 #include <mechanisms/base/StateMgr.h>
-#include <mechanisms/intake/Intake.h>
+#include <mechanisms/Intake/Intake.h>
 #include <mechanisms/StateStruc.h>
 
 #include <robotstate/IRobotStateChangeSubscriber.h>

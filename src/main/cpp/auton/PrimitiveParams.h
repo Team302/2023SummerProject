@@ -27,8 +27,8 @@
 #include <chassis/ChassisOptionEnums.h>
 #include <mechanisms/arm/ArmStateMgr.h>
 #include <mechanisms/extender/ExtenderStateMgr.h>
-#include <mechanisms/intake/IntakeStateMgr.h>
-#include <dragonVision/DragonLimelight.h>
+#include <mechanisms/Intake/IntakeStateMgr.h>
+#include <DragonVision/DragonLimelight.h>
 #include <chassis/swerve/driveStates/VisionDrive.h>
 // @ADDMECH include for your mechanism
 

@@ -23,9 +23,9 @@
 #include <mechanisms/MechanismFactory.h>
 #include <mechanisms/base/StateMgr.h>
 #include <mechanisms/StateStruc.h>
-#include <mechanisms/intake/Intake.h>
-#include <mechanisms/intake/IntakeState.h>
-#include <mechanisms/intake/IntakeStateMgr.h>
+#include <mechanisms/Intake/Intake.h>
+#include <mechanisms/Intake/IntakeState.h>
+#include <mechanisms/Intake/IntakeStateMgr.h>
 #include <robotstate/RobotState.h>
 #include <robotstate/RobotStateChanges.h>
 #include <utils/logging/Logger.h>

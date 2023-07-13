@@ -33,8 +33,8 @@
 #include <mechanisms/extender/ExtenderState.h>
 #include <mechanisms/extender/ExtenderManualState.h>
 #include <mechanisms/extender/ExtenderStateMgr.h>
-#include <mechanisms/intake/IntakeState.h>
-#include <mechanisms/intake/IntakeStateMgr.h>
+#include <mechanisms/Intake/IntakeState.h>
+#include <mechanisms/Intake/IntakeStateMgr.h>
 
 using namespace std;
 

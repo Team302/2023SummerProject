@@ -31,7 +31,7 @@
 
 // Team 302 includes
 #include <mechanisms/base/StateMgr.h>
-#include <mechanisms/Extender/extender.h>
+#include <mechanisms/extender/Extender.h>
 #include <mechanisms/StateStruc.h>
 
 //========= Hand modified code start section 0 ========

@@ -31,9 +31,9 @@
 #include <mechanisms/MechanismFactory.h>
 #include <mechanisms/base/StateMgr.h>
 #include <mechanisms/StateStruc.h>
-#include <mechanisms/arm/arm.h>
-#include <mechanisms/arm/armState.h>
-#include <mechanisms/arm/armStateMgr.h>
+#include <mechanisms/arm/Arm.h>
+#include <mechanisms/arm/ArmState.h>
+#include <mechanisms/arm/ArmStateMgr.h>
 #include <robotstate/RobotState.h>
 #include <robotstate/RobotStateChanges.h>
 #include <utils/logging/Logger.h>

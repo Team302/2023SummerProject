@@ -29,7 +29,7 @@
 #include <hw/interfaces/IDragonMotorController.h>
 #include <hw/DragonCanCoder.h>
 #include <mechanisms/base/Mech1IndMotor.h>
-#include <mechanisms/arm/arm.h>
+#include <mechanisms/arm/Arm.h>
 #include <robotstate/RobotState.h>
 #include <robotstate/RobotStateChanges.h>
 #include <utils/logging/Logger.h>
