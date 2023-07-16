@@ -99,13 +99,13 @@
 			<xs:sequence>
 				<xs:element minOccurs="0" maxOccurs="1" ref="analogInput" />
 			</xs:sequence>
-			<xs:attribute default="0" name="canId" type="xs:unsignedInt">
+			<xs:attribute default="0" name="canId" type="CAN_ID">
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="pigeon">
 		<xs:complexType>
-			<xs:attribute default="0" name="canId" type="xs:unsignedInt">
+			<xs:attribute default="0" name="canId" type="CAN_ID">
 			</xs:attribute>
 			<xs:attribute default="rio" name="canBusName" type="xs:string" />
 			<xs:attribute default="pigeon1" name="type">
@@ -452,7 +452,7 @@
 	<xs:element name="solenoid">
 		<xs:complexType>
 			<xs:attribute name="usage" type="xs:string" use="required" />
-			<xs:attribute default="0" name="canId" type="xs:unsignedInt">
+			<xs:attribute default="0" name="canId" type="CAN_ID">
 			</xs:attribute>
 			<xs:attribute default="0" name="channel">
 				<xs:simpleType>
@@ -573,7 +573,7 @@
 					</xs:simpleType>
 				</xs:element>
 				<xs:element default="rio" name="canBusName" type="xs:string"/>
-				<xs:element default="0" name="canId" type="xs:unsignedInt"/>
+				<xs:element default="0" name="canId" type="CAN_ID"/>
 				<xs:element name="pdpID" type="xs:string"/>
 				<xs:element default="false" name="inverted" type="xs:boolean"/>
 				<xs:element default="false" name="sensorInverted" type="xs:boolean"/>
@@ -733,7 +733,7 @@
 	</xs:element>
 	<xs:element name="cancoder">
 		<xs:complexType>
-			<xs:attribute default="0" name="canId" type="xs:unsignedInt">
+			<xs:attribute default="0" name="canId" type="CAN_ID">
 			</xs:attribute>
 			<xs:attribute default="rio" name="canBusName" type="xs:string" />
 			<xs:attribute default="0.0" name="offset" type="xs:string" />
@@ -762,7 +762,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute default="0" name="canId" type="xs:unsignedInt">
+			<xs:attribute default="0" name="canId" type="CAN_ID">
 			</xs:attribute>
 			<xs:attribute default="0" name="generalpin">
 				<xs:simpleType>
