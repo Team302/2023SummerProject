@@ -97,11 +97,11 @@ namespace CoreCodeGenerator
                     //    //resultString = resultString.Replace(pair.Item1, replacement);
                     //}
 
-                    //string replacement = "testing $$^mechanismName$$ testing";
-                    string replacement = "$$^mechanismName$$";
-                    string result = replace(replacement, mech, theRobot);
-                    Debug.WriteLine("Result: " + result);
-
+                    foreach((string, string) tuple in theToolConfiguration.mechanismReplacements)
+                    {
+                        string result = replace(tuple.Item2, mech, theRobot);
+                        Debug.WriteLine("Result: " + result);
+                    }
                     resultString = "";
 
                     File.WriteAllText(filePathName, resultString);
@@ -142,44 +142,68 @@ namespace CoreCodeGenerator
         private string replace(string text, object curObject, robot currentRobot)
         {
             string marker = "$$";
-            List<string> resultList = new List<string>() { text }; //.Replace("$$", "") used to replace $$
+            List<string> resultList = new List<string>() {};
+            List<string> replacementList = new List<string>();
 
             //get the number of markers to properly split up the replacement string
             int count = countOccurencesInString(text, marker) + 1;
 
             string[] arr = text.Split(new string[] { marker }, StringSplitOptions.None);
 
-            //need to switch how collections are handled
-            //if a collection is discovered using multiple elements, instead of reiterating through result list,
-            //replace within text then populate result list
-            //recreate text string with the specified values
-            //$$closedLoopControlParams^ALL$$
-            //-> $$closedLoopControlParams^pGain$$
-            //-> $$closedLoopControlParams^iGain$$
-            //...
-
-            //if using a collection, create multiple lines of text with each element of collection
-
-            foreach (string s in arr)
+            foreach(string s in arr)
             {
-                if (s.Contains("^"))
+                if (s.Contains("*"))
                 {
-                    int numberOfReplacements = 0;
-                    List<string> replacements = new List<string>();
-                    List<string> tempStringList = new List<string>();
+                    //remove count marker from string
+                    text = text.Replace(s, "");
 
-                    (numberOfReplacements, replacements) = findReplacements(s, curObject, currentRobot);
-                    
-                    foreach(string str in resultList)
+                    string trimmed = s.Trim('*');
+                    string[] tempArr = trimmed.Split(new string[] { "^" }, StringSplitOptions.None);
+                    int tempArrIndex = tempArr.Length > 1 ? 1 : 0;
+
+                    if (Int32.TryParse(tempArr[tempArrIndex], out count))
                     {
-                        for(int i = 0; i < numberOfReplacements; i++)
+                        for (int i = 0; i < Convert.ToInt32(tempArr[tempArrIndex]); i++)
                         {
-                            //maybe instead of blindly replacing, take index of s in str and replace by index
-                            //also, keep $$ in and use that as your bounds, can replace $$something$$ but not $$somethingandsomething$$
-                            tempStringList.Add(str.Replace("$$" + s + "$$", replacements[i]));
+                            resultList.Add(text.Replace("$$", ""));
                         }
                     }
-                    resultList = tempStringList;
+
+                    object current = curObject;
+
+                    for (int i = 1; i < tempArr.Length; i++)
+                    {
+                        //loop through current until a collection is found, then do as above but with collection sizes
+                        object nextChild = current.GetType().GetProperty(tempArr[i]).GetValue(current);
+                        if (isACollection(nextChild))
+                        {
+                            for (int j = 0; j < (nextChild as IList).Count; j++)
+                            {
+                                resultList.Add(text.Replace("$$", ""));
+                            }
+                        }
+                    }
+                }
+                else if(resultList.Count == 0 && !s.Equals(arr[0]))
+                {
+                    resultList.Add(text.Replace("$$", ""));
+                }
+
+                if(s.Contains("^") && !s.Contains("*"))
+                {
+                    replacementList.Add(s);
+                }
+            }
+
+            for(int i = 0; i < resultList.Count; i++)
+            {
+                for(int j = 0; j < replacementList.Count; j++)
+                {
+                    string s = replacementList[j];
+
+                    string result = findReplacement(s, i, curObject, currentRobot);
+
+                    resultList[i] = resultList[i].Replace(s, result);
                 }
             }
 
@@ -197,129 +221,54 @@ namespace CoreCodeGenerator
 
             return resultString;
         }
-        
-        private (int, List<string>) findReplacements(string str, object curObject, robot currentRobot)
+
+        private string findReplacement(string str, int currentIndex, object curObject, robot currentRobot)
         {
-            int numberOfReplacements = 0;
-            List<string> replacements = new List<string>();
+            string replacement = "";
 
             string[] arr = str.Split(new string[] { "^" }, StringSplitOptions.None);
-
-            string[] excludes = str.Split(new string[] { "-" }, StringSplitOptions.None);
 
             if (arr[0] != "")
             {
                 //not using default parent object (mechanism), need to find new parent
-                findReplacements(str.Remove(0, arr[0].Length), findObject(arr[0], currentRobot), currentRobot); //this must always be currentRobot
-
-                /// Debugging
-                //Debug.WriteLine("arr[0] != \"\"");
+                findReplacement(str.Remove(0, arr[0].Length), currentIndex, findObject(arr[0], currentRobot), currentRobot); //this must always be currentRobot
             }
             else
             {
-                //Debug.WriteLine("arr[0] == \"\"");
-                if (excludes.Length > 1)
+                if (isACollection(curObject))
                 {
-                    for (int i = 1; i < excludes.Length; i++)
+                    //TODO: handle indexing
+                    if((curObject as IList).Count > currentIndex)
                     {
-                        if (arr[1].Contains(excludes[i]) || curObject.GetType().Name.Contains(excludes[i]))
-                        {
-                            goto ifExcluded; //if we want to exclude the current element , skip past replacement code
-                        }
-                    }   
+                        var collection = (curObject as IList)[currentIndex];
+
+                        replacement = findReplacement(str, currentIndex, collection, currentRobot);
+                    }
                 }
-
-                //Debug.WriteLine("Arr[1]: " + arr[1]);
-
-                switch (arr[1])
+                else if (curObject.GetType().GetProperty(arr[1]) != null)
                 {
-                    case "ALL":
-                        { 
-                            if (isACollection(curObject))
-                            {
-                                int num = 0;
-                                foreach (object o in (curObject as IList))
-                                {
-                                    num = 0;
-                                    Type objType = o.GetType();
-                                    PropertyInfo[] propertyInfo = objType.GetProperties();
-                                    foreach(PropertyInfo pi in propertyInfo)
-                                    {
-                                        int tempNum = 0;
-                                        List<string> newReplacements = new List<string>();
-                                        (tempNum, newReplacements) = findReplacements(str.Replace(arr[1], pi.Name), o, currentRobot);
-                                        num += tempNum;
-                                        foreach (string s in newReplacements)
-                                            replacements.Add(s);
-                                    }
-                                }
-                                if(num > numberOfReplacements)
-                                {
-                                    numberOfReplacements = num;
-                                }
-                            }
-                            break;
-                        }
-                    case "VALUE":
-                        {
-                            string value = curObject.GetType().GetProperty(arr[1]).GetValue(curObject).ToString();
-                            replacements.Add(value);
-                            numberOfReplacements++;
-                            break;
-                        }
-
-                    default:
-                        {
-                            if (isACollection(curObject))
-                            {
-                                foreach (object o in (curObject as IList))
-                                {
-                                    int num = 0;
-                                    List<string> newReplacements = new List<string>();
-                                    (num, newReplacements) = findReplacements(str, o, currentRobot);
-                                    numberOfReplacements += num;
-                                    foreach (string s in newReplacements)
-                                        replacements.Add(s);
-                                }
-                            }
-                            else if (curObject.GetType().GetProperty(arr[1]) != null)
-                            {
-                                object nextChild = curObject.GetType().GetProperty(arr[1]).GetValue(curObject);
-                                if (isACollection(nextChild))
-                                {
-                                    int num = 0;
-                                    List<string> newReplacements = new List<string>();
-                                    (num, newReplacements) = findReplacements(str.Replace(arr[1], "").Remove(0, 1), nextChild, currentRobot);
-                                    numberOfReplacements += num;
-                                    foreach(string s in newReplacements)
-                                        replacements.Add(s);
-                                }
-                                else if (arr.Length == 3 && arr[2] == "NAME")
-                                {
-                                    string value = arr[1];
-                                    replacements.Add(value);
-                                    numberOfReplacements++;
-                                }
-                                else
-                                {
-                                    //Debug.WriteLine("Value: " + curObject.GetType().GetProperty(arr[1]).GetValue(curObject));
-                                    string value = curObject.GetType().GetProperty(arr[1]).GetValue(curObject).ToString();
-                                    replacements.Add(value);
-                                    numberOfReplacements++;
-                                }
-                            }
-                            else
-                            {
-                                string value = curObject.GetType().GetProperty(arr[1]).GetValue(curObject).ToString();
-                                replacements.Add(value);
-                                numberOfReplacements++;
-                            }
-                            break;
-                        }
+                    if(arr.Length > 2)
+                    {
+                        object nextChild = curObject.GetType().GetProperty(arr[1]).GetValue(curObject);
+                        replacement = findReplacement(str.Replace(arr[1], "").Remove(0, 1), currentIndex, nextChild, currentRobot);
+                    }
+                    else if (arr.Length == 3 && arr[2] == "NAME")
+                    {
+                        replacement = arr[1];
+                                    
+                    }
+                    else
+                    {
+                        replacement = curObject.GetType().GetProperty(arr[1]).GetValue(curObject).ToString();
+                    }
+                }
+                else
+                {
+                    replacement = curObject.GetType().GetProperty(arr[1]).GetValue(curObject).ToString();
                 }
             }
-            ifExcluded:
-            return (numberOfReplacements, replacements);
+
+            return replacement;
         }
 
         private object findObject(string str, object currentObject)

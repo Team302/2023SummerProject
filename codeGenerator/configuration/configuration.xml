@@ -55,16 +55,22 @@
 	</Replacement>
 	<Replacement>
 		<Item1>$$_READ_TUNABLE_PARAMETERS_$$</Item1>
-		<Item2>$$^closedLoopControlParameters%name^VALUE$$_$$^closedLoopControlParameters%ALL^NAME-Specified-name$$ = m_table.get()->GetNumber("$$^closedLoopControlParameters%name^VALUE$$_$$^closedLoopControlParameters%ALL^NAME-Specified-name$$", $$^closedLoopControlParameters%ALL^VALUE-Specified-Name$$);</Item2>
+		<Item2>
+			$$*^closedLoopControlParameters$$$$^closedLoopControlParameters^name$$_pGain = m_table.get()->GetNumber($$^closedLoopControlParameters^name$$_pGain, $$^closedLoopControlParameters^pGain$$);
+			$$^closedLoopControlParameters^name$$_iGain = m_table.get()->GetNumber($$^closedLoopControlParameters^name$$_iGain, $$^closedLoopControlParameters^iGain$$);
+			$$^closedLoopControlParameters^name$$_dGain = m_table.get()->GetNumber($$^closedLoopControlParameters^name$$_dGain, $$^closedLoopControlParameters^dGain$$);
+			$$^closedLoopControlParameters^name$$_fGain = m_table.get()->GetNumber($$^closedLoopControlParameters^name$$_fGain, $$^closedLoopControlParameters^fGain$$);
+			$$^closedLoopControlParameters^name$$_iZone = m_table.get()->GetNumber($$^closedLoopControlParameters^name$$_iZone, $$^closedLoopControlParameters^iZone$$);</Item2>
 	</Replacement>
 	<Replacement>
 		<Item1>$$_PUSH_TUNABLE_PARAMETERS_$$</Item1>
-		<Item2>$$^closedLoopControlParameters%name^VALUE$$_$$^closedLoopControlParameters%ALL^NAME-Specified-name$$ = m_table.get()->PutNumber("$$^closedLoopControlParameters%name^VALUE$$_$$^closedLoopControlParameters%ALL^NAME-Specified-name$$", $$^closedLoopControlParameters%name^VALUE$$_$$^closedLoopControlParameters%ALL^NAME-Specified-name$$);</Item2>
-	</Replacement>
-	<Replacement>
-		<Item1>$$_TEST_TAG_$$</Item1>
-		<Item2>$$^motor%canId^VALUE$$ testing
-			Indentation and other value $$^mechanismName$$</Item2>
+		<Item2>
+			$$*^closedLoopControlParameters$$$$^closedLoopControlParameters^name$$_pGain = m_table.get()->PutNumber($$^closedLoopControlParameters^name$$_pGain, $$^closedLoopControlParameters^pGain$$);
+			$$^closedLoopControlParameters^name$$_iGain = m_table.get()->PutNumber($$^closedLoopControlParameters^name$$_iGain, $$^closedLoopControlParameters^iGain$$);
+			$$^closedLoopControlParameters^name$$_dGain = m_table.get()->PutNumber($$^closedLoopControlParameters^name$$_dGain, $$^closedLoopControlParameters^dGain$$);
+			$$^closedLoopControlParameters^name$$_fGain = m_table.get()->PutNumber($$^closedLoopControlParameters^name$$_fGain, $$^closedLoopControlParameters^fGain$$);
+			$$^closedLoopControlParameters^name$$_iZone = m_table.get()->PutNumber($$^closedLoopControlParameters^name$$_iZone, $$^closedLoopControlParameters^iZone$$);
+		</Item2>
 	</Replacement>
 </mechanismReplacements>
 
