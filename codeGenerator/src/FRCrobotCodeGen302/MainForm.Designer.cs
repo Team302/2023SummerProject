@@ -388,6 +388,11 @@ namespace FRCrobotCodeGen302
             this.valueNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.valueNumericUpDown.Location = new System.Drawing.Point(231, 190);
             this.valueNumericUpDown.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.valueNumericUpDown.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
             this.valueNumericUpDown.Name = "valueNumericUpDown";
             this.valueNumericUpDown.Size = new System.Drawing.Size(153, 20);
             this.valueNumericUpDown.TabIndex = 3;
