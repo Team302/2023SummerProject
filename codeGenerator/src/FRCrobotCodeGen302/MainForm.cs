@@ -18,6 +18,8 @@ using System.Deployment.Application;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
+using System.Threading;
 
 namespace FRCrobotCodeGen302
 {
@@ -872,6 +874,23 @@ namespace FRCrobotCodeGen302
         private void robotConfigurationFileComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            int mouseX = e.X;
+            int mouseY = e.Y;
+
+            Debug.WriteLine("X: " + mouseX + "Y: " + mouseY);
+
+            Point xButton = new Point(308, 142);
+            if(isButtonClicked(xButton, e.Location)) {
+                Debug.Print("X Button Clicked");
+            }
+        }
+
+        private bool isButtonClicked(Point buttonPoint, Point mousePoint)
+        {
+            return Math.Sqrt(Math.Pow(buttonPoint.X - mousePoint.X, 2) + Math.Pow(buttonPoint.Y - mousePoint.Y, 2)) < 10;
         }
     }
 
