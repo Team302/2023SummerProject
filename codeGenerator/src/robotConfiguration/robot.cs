@@ -228,7 +228,12 @@ namespace Robot
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _canId = 0u;
         
+        /// <summary>
+        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
+        /// <para xml:lang="en">Maximum inclusive value: 60.</para>
+        /// </summary>
         [System.ComponentModel.DefaultValueAttribute(0u)]
+        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "60")]
         [System.Xml.Serialization.XmlAttributeAttribute("canId")]
         public uint canId
         {

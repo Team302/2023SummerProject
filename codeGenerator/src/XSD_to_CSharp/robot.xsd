@@ -82,7 +82,7 @@
   
 	<xs:element name="pdp">
 		<xs:complexType>
-			<xs:attribute default="0" name="canId" type="xs:unsignedInt">
+			<xs:attribute default="0" name="canId" type="CAN_ID">
 			</xs:attribute>
 			<xs:attribute default="CTRE" name="type">
 				<xs:simpleType>
@@ -784,6 +784,13 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
- 
+
+  <xs:simpleType name="CAN_ID">
+    <xs:restriction base="xs:unsignedInt">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="60"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
 </xs:schema>
 

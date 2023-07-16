@@ -15,6 +15,8 @@ using System.Collections.ObjectModel;
 using System.Web;
 using System.Drawing;
 using System.Deployment.Application;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Eventing.Reader;
 
 namespace FRCrobotCodeGen302
 {
@@ -244,7 +246,7 @@ namespace FRCrobotCodeGen302
 
         private void button2_Click(object sender, EventArgs e)
         {
-
+            
             // Construct an instance of the XmlSerializer with the type
             // of object that is being deserialized.
             var mySerializer = new XmlSerializer(typeof(robot));
@@ -472,6 +474,19 @@ namespace FRCrobotCodeGen302
                     }
                     else if (value is uint || value is UInt32)
                     {
+                        RangeAttribute ra = prop.GetCustomAttribute<RangeAttribute>();
+                        if (ra == null)
+                        {
+                            valueNumericUpDown.Minimum = 0;
+                            valueNumericUpDown.Maximum = 5000;
+                        }
+                        else
+                        {
+                            valueNumericUpDown.Minimum = Convert.ToInt32(ra.Minimum);
+                            valueNumericUpDown.Maximum = Convert.ToInt32(ra.Maximum);
+                        }
+
+
                         valueNumericUpDown.DecimalPlaces = 0;
                         valueNumericUpDown.Value = (uint)value;
                         showValueNumericUpDown();
