@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 using System.IO;
 using Robot;
 using StateData;
+using System.ComponentModel.DataAnnotations;
 
 namespace robotConfiguration
 {
@@ -32,9 +33,23 @@ namespace robotConfiguration
 
                     if (theRobot.chassis == null)
                         theRobot.chassis = new chassis();
+
+                    ValidationContext context = new ValidationContext(theRobot.pdp);
+                    IList<ValidationResult> errors = new List<ValidationResult>();
+
+                    addProgress("Validating Robot with ID " + theRobot.robotID);
+                    if (!Validator.TryValidateObject(theRobot.pdp, context, errors, true))
+                    {
+                        addProgress("Error(s) found ");
+                        //todo should the error be "fixed" without user intervention?
+                        foreach (ValidationResult result in errors)
+                            addProgress(result.ErrorMessage);
+                    }
+                    else
+                        addProgress("Validation passed");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 progressCallback(ex.Message);
             }
@@ -49,7 +64,7 @@ namespace robotConfiguration
                 addProgress("Saving robot configuration " + theRobotConfigFullPathFileName);
                 saveRobotConfiguration(theRobotConfigFullPathFileName);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 progressCallback(ex.Message);
             }
@@ -62,7 +77,7 @@ namespace robotConfiguration
             var mySerializer = new XmlSerializer(typeof(robotVariants));
             using (var myFileStream = new FileStream(fullPathName, FileMode.Open))
             {
-                 theRobotVariants = (robotVariants)mySerializer.Deserialize(myFileStream);
+                theRobotVariants = (robotVariants)mySerializer.Deserialize(myFileStream);
             }
 
             foreach (robot theRobot in theRobotVariants.robot)
@@ -93,7 +108,7 @@ namespace robotConfiguration
             var mySerializer = new XmlSerializer(typeof(robotVariants));
             XmlWriter tw = XmlWriter.Create(fullPathName, xmlWriterSettings);
             mySerializer.Serialize(tw, theRobotVariants);
-           
+
             tw.Close();
             foreach (robot theRobot in theRobotVariants.robot)
             {
@@ -138,7 +153,7 @@ namespace robotConfiguration
         protected showMessage progressCallback;
         protected void addProgress(string info)
         {
-            if( progressCallback != null)
+            if (progressCallback != null)
                 progressCallback(info);
         }
         public void setProgressCallback(showMessage callback)
