@@ -90,19 +90,12 @@ namespace CoreCodeGenerator
                     resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
                     resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
                     resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
-                    //foreach((string,string) pair in theToolConfiguration.mechanismReplacements)
-                    //{
-                    //    //string replacement = replace(pair.Item2, mech, theRobot);
-                    //    //Debug.WriteLine(replacement);
-                    //    //resultString = resultString.Replace(pair.Item1, replacement);
-                    //}
 
-                    foreach((string, string) tuple in theToolConfiguration.mechanismReplacements)
+                    foreach(var tuple in theToolConfiguration.mechanismReplacements)
                     {
-                        string result = replace(tuple.Item2, mech, theRobot);
-                        Debug.WriteLine("Result: " + result);
+                        string replacement = replace(tuple.Replacement, mech, theRobot);
+                        resultString = resultString.Replace(tuple.TagToReplace, replacement);
                     }
-                    resultString = "";
 
                     File.WriteAllText(filePathName, resultString);
                     #endregion
