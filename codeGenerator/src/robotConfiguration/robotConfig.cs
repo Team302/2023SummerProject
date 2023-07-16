@@ -13,7 +13,7 @@ namespace robotConfiguration
 {
     public class robotConfig : baseReportingClass
     {
-        public robotVariants theRobotVariants;
+        public robotVariants theRobotVariants = new robotVariants();
         public Dictionary<string, statedata> mechanismControlDefinition;
 
         public void load(string theRobotConfigFullPathFileName)
@@ -32,12 +32,6 @@ namespace robotConfiguration
 
                     if (theRobot.chassis == null)
                         theRobot.chassis = new chassis();
-
-                    mechanismControlDefinition = new Dictionary<string, statedata>();
-                    if (theRobot.mechanism != null)
-                    {
-                        addProgress("Loading mechanism files...");
-                    }
                 }
             }
             catch(Exception ex)
@@ -80,6 +74,7 @@ namespace robotConfiguration
                     mySerializer = new XmlSerializer(typeof(mechanism));
                     string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.mechanismName + ".xml");
 
+                    addProgress("Loading mechanism configuration " + mechanismFullPath);
                     using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
                     {
                         mech = (mechanism)mySerializer.Deserialize(myFileStream);

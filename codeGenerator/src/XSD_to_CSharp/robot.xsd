@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns="http://tempuri.org/robot" elementFormDefault="qualified" targetNamespace="http://tempuri.org/robot" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns="http://team302.org/robot" elementFormDefault="qualified" targetNamespace="http://team302.org/robot" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<xs:element name="robot">
 		<xs:complexType>
 			<xs:sequence>
@@ -52,8 +52,8 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	
-	<xs:element name="roborio">
+
+  <xs:element name="roborio">
 		<xs:complexType>
 			<xs:attribute default="X_FORWARD_Y_LEFT" name="orientation">
 				<xs:simpleType>
@@ -79,6 +79,7 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
+  
 	<xs:element name="pdp">
 		<xs:complexType>
 			<xs:attribute default="0" name="canId" type="xs:unsignedInt">
@@ -783,4 +784,6 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
+ 
 </xs:schema>
+
