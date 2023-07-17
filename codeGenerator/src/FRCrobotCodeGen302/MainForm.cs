@@ -805,11 +805,19 @@ namespace FRCrobotCodeGen302
             int mouseX = e.X;
             int mouseY = e.Y;
 
-            Debug.WriteLine("X: " + mouseX + "Y: " + mouseY);
-
             Point xButton = new Point(308, 142);
-            if(isButtonClicked(xButton, e.Location)) {
-                Debug.Print("X Button Clicked");
+            Point yButton = new Point(327, 126);
+            Point bButton = new Point(342, 143);
+            Point aButton = new Point(325, 160);
+
+            Dictionary<string, Point> buttonMap = new Dictionary<string, Point> { {"xButton", xButton}, { "yButton", yButton }, { "bButton", bButton }, { "aButton", aButton } };
+
+            foreach(KeyValuePair<string, Point> entry in buttonMap)
+            {
+                if (isButtonClicked(entry.Value, e.Location))
+                {
+                    Debug.Print(entry.Key + " Button Clicked");
+                }
             }
         }
 
