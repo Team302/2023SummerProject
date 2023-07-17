@@ -39,11 +39,26 @@ namespace FRCrobotCodeGen302
             valueTextBox.Location = valueNumericUpDown.Location;
 
             this.Text += " Version " + ProductVersion;
+
+            //try to load cached configuration.xml
+            addProgress("Trying to load cached configuration.xml");
+            if (File.Exists(Path.GetTempPath() + "DragonsCodeGeneratorCache.txt"))
+            {
+                string cachedPath = File.ReadAllText(Path.GetTempPath() + "DragonsCodeGeneratorCache.txt");
+                configurationFilePathNameTextBox.Text = cachedPath;
+                loadConfiguration(cachedPath);
+                addProgress("Loaded cached configuration.xml");
+                robotConfigurationFileComboBox_TextChanged(null, null);
+            }
+            else
+            {
+                addProgress("Failed to load cached configuration.xml");
+            }
         }
 
         private void addProgress(string info)
         {
-            progressTextBox.AppendText(info + "\r\n");
+            progressTextBox.AppendText(info + Environment.NewLine);
         }
 
         private string getTreeNodeDisplayName(object parentObject, object obj, string nodeName)
@@ -272,26 +287,14 @@ namespace FRCrobotCodeGen302
                     {
                         configurationFilePathNameTextBox.Text = dlg.FileName;
 
-                        addProgress("Loading the generator configuration file " + configurationFilePathNameTextBox.Text);
-                        loadGeneratorConfig(configurationFilePathNameTextBox.Text);
-                        addProgress("Configuration file loaded.");
+                        loadConfiguration(configurationFilePathNameTextBox.Text);
 
-                        loadRobotConfig = false;
-                        #region Load the Combobox with the robot configuration file list and select the first one
-                        robotConfigurationFileComboBox.Items.Clear();
-                        foreach (string f in generatorConfig.robotConfigurations)
-                        {
-                            string fullfilePath = Path.Combine(Path.GetDirectoryName(configurationFilePathNameTextBox.Text), f);
-                            fullfilePath = Path.GetFullPath(fullfilePath);
-                            robotConfigurationFileComboBox.Items.Add(fullfilePath);
-                        }
-                        if (robotConfigurationFileComboBox.Items.Count > 0)
-                            robotConfigurationFileComboBox.SelectedIndex = 0;
-                        #endregion
+                        //now that generator config has loaded succesfully, save to a temp file to save the desired config for future uses
+                        string tempPath = System.IO.Path.GetTempPath();
+                        string tempFilename = "DragonsCodeGeneratorCache.txt";
 
-                        generatorConfig.rootOutputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(configurationFilePathNameTextBox.Text), generatorConfig.rootOutputFolder));
-                        generatorConfig.robotConfiguration = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(configurationFilePathNameTextBox.Text), robotConfigurationFileComboBox.Text));
-                        loadRobotConfig = true;
+                        File.WriteAllText(Path.Combine(tempPath, tempFilename), configurationFilePathNameTextBox.Text);
+                        addProgress("Wrote cached configuration.xml to: " + Path.Combine(tempPath, tempFilename));
                     }
                 }
             }
@@ -301,6 +304,30 @@ namespace FRCrobotCodeGen302
             }
 
             robotConfigurationFileComboBox_TextChanged(null, null);
+        }
+
+        private void loadConfiguration(string filePathName)
+        {
+            addProgress("Loading the generator configuration file " + filePathName);
+            loadGeneratorConfig(filePathName);
+            addProgress("Configuration file loaded.");
+
+            loadRobotConfig = false;
+            #region Load the Combobox with the robot configuration file list and select the first one
+            robotConfigurationFileComboBox.Items.Clear();
+            foreach (string f in generatorConfig.robotConfigurations)
+            {
+                string fullfilePath = Path.Combine(Path.GetDirectoryName(filePathName), f);
+                fullfilePath = Path.GetFullPath(fullfilePath);
+                robotConfigurationFileComboBox.Items.Add(fullfilePath);
+            }
+            if (robotConfigurationFileComboBox.Items.Count > 0)
+                robotConfigurationFileComboBox.SelectedIndex = 0;
+            #endregion
+
+            generatorConfig.rootOutputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), generatorConfig.rootOutputFolder));
+            generatorConfig.robotConfiguration = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), robotConfigurationFileComboBox.Text));
+            loadRobotConfig = true;
         }
 
         private void robotConfigurationFileComboBox_TextChanged(object sender, EventArgs e)
