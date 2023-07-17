@@ -25,6 +25,7 @@ namespace FRCrobotCodeGen302
         codeGenerator_302Robotics codeGenerator = new codeGenerator_302Robotics();
         bool needsSaving = false;
         bool loadRobotConfig = false;
+        readonly string configurationCacheFile = Path.GetTempPath() + "DragonsCodeGeneratorCache.txt";
 
         public MainForm()
         {
@@ -42,17 +43,23 @@ namespace FRCrobotCodeGen302
 
             //try to load cached configuration.xml
             addProgress("Trying to load cached configuration.xml");
-            if (File.Exists(Path.GetTempPath() + "DragonsCodeGeneratorCache.txt"))
+            try
             {
-                string cachedPath = File.ReadAllText(Path.GetTempPath() + "DragonsCodeGeneratorCache.txt");
-                configurationFilePathNameTextBox.Text = cachedPath;
-                loadConfiguration(cachedPath);
-                addProgress("Loaded cached configuration.xml");
-                robotConfigurationFileComboBox_TextChanged(null, null);
+                if (File.Exists(configurationCacheFile))
+                {
+                    configurationFilePathNameTextBox.Text = File.ReadAllText(configurationCacheFile);
+                    loadConfiguration(configurationFilePathNameTextBox.Text);
+                    addProgress("Loaded cached configuration.xml");
+                    robotConfigurationFileComboBox_TextChanged(null, null);
+                }
+                else
+                {
+                    addProgress("Cached configuration.xml does not exist, robot configuration will not be automatically loaded");
+                }
             }
-            else
+            catch(Exception ex)
             {
-                addProgress("Failed to load cached configuration.xml");
+                addProgress("Issue encountered while loading the cached generator configuration file\r\n" + ex.ToString());
             }
         }
 
@@ -290,11 +297,9 @@ namespace FRCrobotCodeGen302
                         loadConfiguration(configurationFilePathNameTextBox.Text);
 
                         //now that generator config has loaded succesfully, save to a temp file to save the desired config for future uses
-                        string tempPath = System.IO.Path.GetTempPath();
-                        string tempFilename = "DragonsCodeGeneratorCache.txt";
 
-                        File.WriteAllText(Path.Combine(tempPath, tempFilename), configurationFilePathNameTextBox.Text);
-                        addProgress("Wrote cached configuration.xml to: " + Path.Combine(tempPath, tempFilename));
+                        File.WriteAllText(configurationCacheFile, configurationFilePathNameTextBox.Text);
+                        addProgress("Wrote cached configuration.xml to: " + configurationCacheFile);
                     }
                 }
             }
