@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns="http://team302.org/robot" elementFormDefault="qualified" targetNamespace="http://team302.org/robot" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<xs:element name="robot">
-    <xs:complexType>
+		<xs:complexType>
 			<xs:sequence>
 				<xs:element minOccurs="0" maxOccurs="1" ref="pdp" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="pcm" />
@@ -12,14 +12,14 @@
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="camera" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="roborio" />
 			</xs:sequence>
-      <xs:attribute default="1" name="robotID">
-        <xs:simpleType>
-          <xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="1"/>
-            <xs:maxInclusive value="2100"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
+			<xs:attribute default="1" name="robotID">
+				<xs:simpleType>
+					<xs:restriction base="xs:unsignedInt">
+						<xs:minInclusive value="1"/>
+						<xs:maxInclusive value="9999"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
 
@@ -42,7 +42,7 @@
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="cancoder" />
 				<xs:element minOccurs="0" maxOccurs="1" ref="colorsensor" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="closedLoopControlParameters"/>
-				<xs:element name="mechanismName" type="xs:string"/>
+				<xs:element name="name" default="UNKNOWN" type="xs:string" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -50,7 +50,7 @@
 	<xs:element name="closedLoopControlParameters">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="name" type="xs:string"/>
+				<xs:element name="name" default="UNKNOWN" type="xs:string" />
 				<xs:element minOccurs="0" maxOccurs="1" name="pGain" type="xs:double"/>
 				<xs:element minOccurs="0" maxOccurs="1" name="iGain" type="xs:double"/>
 				<xs:element minOccurs="0" maxOccurs="1" name="dGain" type="xs:double"/>
@@ -60,7 +60,7 @@
 		</xs:complexType>
 	</xs:element>
 
-  <xs:element name="roborio">
+	<xs:element name="roborio">
 		<xs:complexType>
 			<xs:attribute default="X_FORWARD_Y_LEFT" name="orientation">
 				<xs:simpleType>
@@ -86,11 +86,11 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="pdp">
 		<xs:complexType>
-      <xs:attribute default="0" name="canId" type="CAN_ID"/>
-      <xs:attribute default="CTRE" name="type">
+			<xs:attribute default="0" name="canId" type="CAN_ID"/>
+			<xs:attribute default="CTRE" name="type">
 				<xs:simpleType>
 					<xs:restriction base="xs:NMTOKEN">
 						<xs:enumeration value="CTRE" />
@@ -100,7 +100,7 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="pcm">
 		<xs:complexType>
 			<xs:sequence>
@@ -110,7 +110,7 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="pigeon">
 		<xs:complexType>
 			<xs:attribute default="0" name="canId" type="CAN_ID"/>
@@ -124,7 +124,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute default="CENTER_OF_ROTATION" name="usage">
+			<xs:attribute default="CENTER_OF_ROTATION" name="name">
 				<xs:simpleType>
 					<xs:restriction base="xs:NMTOKEN">
 						<xs:enumeration value="CENTER_OF_ROTATION" />
@@ -133,10 +133,10 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="pwmultrasonic">
 		<xs:complexType>
-			<xs:attribute default="front" name="usage">
+			<xs:attribute default="front" name="name">
 				<xs:simpleType>
 					<xs:restriction base="xs:NMTOKEN">
 						<xs:enumeration value="front" />
@@ -147,17 +147,17 @@
 			<xs:attribute default="0" name="pwmId">
 				<xs:simpleType>
 					<xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="19"/>
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="19"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="analogultrasonic">
 		<xs:complexType>
-			<xs:attribute default="front" name="usage">
+			<xs:attribute default="front" name="name">
 				<xs:simpleType>
 					<xs:restriction base="xs:NMTOKEN">
 						<xs:enumeration value="front" />
@@ -168,17 +168,17 @@
 			<xs:attribute default="0" name="analogId">
 				<xs:simpleType>
 					<xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="7"/>
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="7"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-	
-  <xs:element name="lidar">
+
+	<xs:element name="lidar">
 		<xs:complexType>
-			<xs:attribute default="front" name="usage">
+			<xs:attribute default="front" name="name">
 				<xs:simpleType>
 					<xs:restriction base="xs:NMTOKEN">
 						<xs:enumeration value="front" />
@@ -190,10 +190,10 @@
 			<xs:attribute default="0" name="triggerpin" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="limelight">
 		<xs:complexType>
-			<xs:attribute default="MAINLIMELIGHT" name="usage">
+			<xs:attribute default="MAINLIMELIGHT" name="name">
 				<xs:simpleType>
 					<xs:restriction base="xs:NMTOKEN">
 						<xs:enumeration value="MAINLIMELIGHT" />
@@ -265,7 +265,7 @@
 			<xs:attribute name="secondcrosshairy" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="camera">
 		<xs:complexType>
 			<xs:attribute default="0" name="id" type="xs:string" />
@@ -297,27 +297,9 @@
 		<xs:complexType>
 			<xs:attribute default="0" name="pwmId">
 				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="0" />
-						<xs:enumeration value="1" />
-						<xs:enumeration value="2" />
-						<xs:enumeration value="3" />
-						<xs:enumeration value="4" />
-						<xs:enumeration value="5" />
-						<xs:enumeration value="6" />
-						<xs:enumeration value="7" />
-						<xs:enumeration value="8" />
-						<xs:enumeration value="9" />
-						<xs:enumeration value="10" />
-						<xs:enumeration value="11" />
-						<xs:enumeration value="12" />
-						<xs:enumeration value="13" />
-						<xs:enumeration value="14" />
-						<xs:enumeration value="15" />
-						<xs:enumeration value="16" />
-						<xs:enumeration value="17" />
-						<xs:enumeration value="18" />
-						<xs:enumeration value="19" />
+					<xs:restriction base="xs:unsignedInt">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="19"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -326,7 +308,7 @@
 	</xs:element>
 	<xs:element name="blinkin">
 		<xs:complexType>
-			<xs:attribute default="front" name="usage">
+			<xs:attribute default="front" name="name">
 				<xs:simpleType>
 					<xs:restriction base="xs:NMTOKEN">
 						<xs:enumeration value="front" />
@@ -338,27 +320,9 @@
 			</xs:attribute>
 			<xs:attribute default="0" name="pwmId">
 				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="0" />
-						<xs:enumeration value="1" />
-						<xs:enumeration value="2" />
-						<xs:enumeration value="3" />
-						<xs:enumeration value="4" />
-						<xs:enumeration value="5" />
-						<xs:enumeration value="6" />
-						<xs:enumeration value="7" />
-						<xs:enumeration value="8" />
-						<xs:enumeration value="9" />
-						<xs:enumeration value="10" />
-						<xs:enumeration value="11" />
-						<xs:enumeration value="12" />
-						<xs:enumeration value="13" />
-						<xs:enumeration value="14" />
-						<xs:enumeration value="15" />
-						<xs:enumeration value="16" />
-						<xs:enumeration value="17" />
-						<xs:enumeration value="18" />
-						<xs:enumeration value="19" />
+					<xs:restriction base="xs:unsignedInt">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="19"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -439,20 +403,14 @@
 	</xs:element>
 	<xs:element name="solenoid">
 		<xs:complexType>
-			<xs:attribute name="usage" type="xs:string" use="required" />
+			<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
 			<xs:attribute default="0" name="canId" type="CAN_ID">
 			</xs:attribute>
 			<xs:attribute default="0" name="channel">
 				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="0" />
-						<xs:enumeration value="1" />
-						<xs:enumeration value="2" />
-						<xs:enumeration value="3" />
-						<xs:enumeration value="4" />
-						<xs:enumeration value="5" />
-						<xs:enumeration value="6" />
-						<xs:enumeration value="7" />
+					<xs:restriction base="xs:unsignedInt">
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="7"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -476,12 +434,12 @@
 	</xs:element>
 	<xs:element name="servo">
 		<xs:complexType>
-			<xs:attribute name="usage" type="xs:string" use="required" />
+			<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
 			<xs:attribute default="0" name="pwmId">
 				<xs:simpleType>
 					<xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="19"/>
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="19"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -569,7 +527,7 @@
 				<xs:element default="false" name="brakeMode" type="xs:boolean"/>
 				<xs:element default="-1" name="motorIDtoFollow" type="xs:int" />
 			</xs:sequence>
-			
+			<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
 			<xs:attribute name="peakCurrentDuration" type="xs:double" />
 			<xs:attribute name="continuousCurrentLimit" type="xs:double" />
 			<xs:attribute name="peakCurrentLimit" type="xs:double" />
@@ -626,7 +584,7 @@
 			<xs:attribute default="0" name="countsPerDegree" type="xs:unsignedInt" />
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="analogInput">
 		<xs:complexType>
 			<xs:attribute default="PRESSURE_GAUGE" name="type">
@@ -639,8 +597,8 @@
 			<xs:attribute default="0" name="analogId">
 				<xs:simpleType>
 					<xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="7"/>
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="7"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -650,15 +608,15 @@
 			<xs:attribute name="outputMax" type="xs:double" use="required" />
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="digitalInput">
 		<xs:complexType>
-			<xs:attribute name="usage" type="xs:string" use="required" />
+			<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
 			<xs:attribute default="0" name="digitalId">
 				<xs:simpleType>
 					<xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="25"/>
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="25"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -673,8 +631,8 @@
 			<xs:attribute default="0.0" name="debouncetime" type="xs:double" />
 		</xs:complexType>
 	</xs:element>
-	
-  <xs:element name="cancoder">
+
+	<xs:element name="cancoder">
 		<xs:complexType>
 			<xs:attribute default="0" name="canId" type="CAN_ID"/>
 			<xs:attribute default="rio" name="canBusName" type="CAN_BUS" />
@@ -689,14 +647,14 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-  
+
 	<xs:element name="talontach">
 		<xs:complexType>
-			<xs:attribute default="0" name="usage">
+			<xs:attribute default="0" name="name">
 				<xs:simpleType>
 					<xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="6"/>            
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="6"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -705,26 +663,26 @@
 			<xs:attribute default="0" name="generalpin">
 				<xs:simpleType>
 					<xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="11"/>
+						<xs:minInclusive value="0"/>
+						<xs:maxInclusive value="11"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
 
-  <xs:simpleType name="CAN_ID">
-    <xs:restriction base="xs:unsignedInt">
-      <xs:minInclusive value="0"/>
-      <xs:maxInclusive value="62"/>
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="CAN_ID">
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="62"/>
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="CAN_BUS">
-    <xs:restriction base="xs:NMTOKEN">
-      <xs:enumeration value="rio" />
-    </xs:restriction>
-  </xs:simpleType>
-  
+	<xs:simpleType name="CAN_BUS">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="rio" />
+		</xs:restriction>
+	</xs:simpleType>
+
 </xs:schema>
 

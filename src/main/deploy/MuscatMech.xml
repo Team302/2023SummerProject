@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <mechanism xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://team302.org/robot">
   <motor
-    name="AMotor">
+    name="ExampleMotor">
     <motorType>TALONSRX</motorType>
     <controller>TALONSRX</controller>
     <canBusName>rio</canBusName>
@@ -15,6 +15,5 @@
     <brakeMode>false</brakeMode>
     <motorIDtoFollow>-1</motorIDtoFollow>
   </motor>
-  <servo />
-  <name>SomeMech</name>
+  <name>MuscatMech</name>
 </mechanism>

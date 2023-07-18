@@ -5,7 +5,7 @@
     <motorType>TALONSRX</motorType>
     <controller>TALONSRX</controller>
     <canBusName>rio</canBusName>
-    <canId>59</canId>
+    <canId>62</canId>
     <pdpID />
     <inverted>false</inverted>
     <sensorInverted>false</sensorInverted>
@@ -16,5 +16,5 @@
     <motorIDtoFollow>-1</motorIDtoFollow>
   </motor>
   <servo />
-  <name>SomeMech</name>
+  <name>SomeN</name>
 </mechanism>

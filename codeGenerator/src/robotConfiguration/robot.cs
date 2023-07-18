@@ -225,10 +225,10 @@ namespace Robot
         
         /// <summary>
         /// <para xml:lang="en">Minimum inclusive value: 1.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 2100.</para>
+        /// <para xml:lang="en">Maximum inclusive value: 9999.</para>
         /// </summary>
         [System.ComponentModel.DefaultValueAttribute(1u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "1", "2100")]
+        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "1", "9999")]
         [System.Xml.Serialization.XmlAttributeAttribute("robotID")]
         public uint robotID
         {
@@ -521,19 +521,19 @@ namespace Robot
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private pigeonusage _usage = Robot.pigeonusage.CENTER_OF_ROTATION;
+        private pigeonname _name = Robot.pigeonname.CENTER_OF_ROTATION;
         
-        [System.ComponentModel.DefaultValueAttribute(Robot.pigeonusage.CENTER_OF_ROTATION)]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public pigeonusage usage
+        [System.ComponentModel.DefaultValueAttribute(Robot.pigeonname.CENTER_OF_ROTATION)]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public pigeonname name
         {
             get
             {
-                return _usage;
+                return _name;
             }
             set
             {
-                _usage = value;
+                _name = value;
             }
         }
     }
@@ -551,8 +551,8 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("pigeonusage", Namespace="http://team302.org/robot", AnonymousType=true)]
-    public enum pigeonusage
+    [System.Xml.Serialization.XmlTypeAttribute("pigeonname", Namespace="http://team302.org/robot", AnonymousType=true)]
+    public enum pigeonname
     {
         
         CENTER_OF_ROTATION,
@@ -568,19 +568,19 @@ namespace Robot
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private limelightusage _usage = Robot.limelightusage.MAINLIMELIGHT;
+        private limelightname _name = Robot.limelightname.MAINLIMELIGHT;
         
-        [System.ComponentModel.DefaultValueAttribute(Robot.limelightusage.MAINLIMELIGHT)]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public limelightusage usage
+        [System.ComponentModel.DefaultValueAttribute(Robot.limelightname.MAINLIMELIGHT)]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public limelightname name
         {
             get
             {
-                return _usage;
+                return _name;
             }
             set
             {
-                _usage = value;
+                _name = value;
             }
         }
         
@@ -734,8 +734,8 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("limelightusage", Namespace="http://team302.org/robot", AnonymousType=true)]
-    public enum limelightusage
+    [System.Xml.Serialization.XmlTypeAttribute("limelightname", Namespace="http://team302.org/robot", AnonymousType=true)]
+    public enum limelightname
     {
         
         MAINLIMELIGHT,
@@ -1224,6 +1224,23 @@ namespace Robot
             }
         }
         
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _name = "UNKNOWN";
+        
+        [System.ComponentModel.DefaultValueAttribute("UNKNOWN")]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
+        
         [System.Xml.Serialization.XmlAttributeAttribute("peakCurrentDuration")]
         public double peakCurrentDuration { get; set; }
         
@@ -1414,9 +1431,22 @@ namespace Robot
     public partial class digitalInput
     {
         
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public string usage { get; set; }
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _name = "UNKNOWN";
+        
+        [System.ComponentModel.DefaultValueAttribute("UNKNOWN")]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _digitalId = 0u;
@@ -2255,9 +2285,22 @@ namespace Robot
             }
         }
         
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _name = "UNKNOWN";
+        
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("mechanismName")]
-        public string mechanismName { get; set; }
+        [System.Xml.Serialization.XmlElementAttribute("name")]
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
@@ -2269,9 +2312,22 @@ namespace Robot
     public partial class solenoid
     {
         
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public string usage { get; set; }
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _name = "UNKNOWN";
+        
+        [System.ComponentModel.DefaultValueAttribute("UNKNOWN")]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _canId = 0u;
@@ -2296,11 +2352,16 @@ namespace Robot
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private solenoidchannel _channel = Robot.solenoidchannel.Item0;
+        private uint _channel = 0u;
         
-        [System.ComponentModel.DefaultValueAttribute(Robot.solenoidchannel.Item0)]
+        /// <summary>
+        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
+        /// <para xml:lang="en">Maximum inclusive value: 7.</para>
+        /// </summary>
+        [System.ComponentModel.DefaultValueAttribute(0u)]
+        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "7")]
         [System.Xml.Serialization.XmlAttributeAttribute("channel")]
-        public solenoidchannel channel
+        public uint channel
         {
             get
             {
@@ -2349,37 +2410,6 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("solenoidchannel", Namespace="http://team302.org/robot", AnonymousType=true)]
-    public enum solenoidchannel
-    {
-        
-        [System.Xml.Serialization.XmlEnumAttribute("0")]
-        Item0,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("1")]
-        Item1,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("2")]
-        Item2,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("3")]
-        Item3,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("4")]
-        Item4,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("5")]
-        Item5,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("6")]
-        Item6,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("7")]
-        Item7,
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
-    [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute("solenoidreversed", Namespace="http://team302.org/robot", AnonymousType=true)]
     public enum solenoidreversed
     {
@@ -2411,9 +2441,22 @@ namespace Robot
     public partial class servo
     {
         
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public string usage { get; set; }
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _name = "UNKNOWN";
+        
+        [System.ComponentModel.DefaultValueAttribute("UNKNOWN")]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _pwmId = 0u;
@@ -2519,9 +2562,22 @@ namespace Robot
     public partial class closedLoopControlParameters
     {
         
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _name = "UNKNOWN";
+        
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("name")]
-        public string name { get; set; }
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
         
         [System.Xml.Serialization.XmlElementAttribute("pGain")]
         public double pGain { get; set; }
@@ -2822,19 +2878,19 @@ namespace Robot
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private pwmultrasonicusage _usage = Robot.pwmultrasonicusage.front;
+        private pwmultrasonicname _name = Robot.pwmultrasonicname.front;
         
-        [System.ComponentModel.DefaultValueAttribute(Robot.pwmultrasonicusage.front)]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public pwmultrasonicusage usage
+        [System.ComponentModel.DefaultValueAttribute(Robot.pwmultrasonicname.front)]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public pwmultrasonicname name
         {
             get
             {
-                return _usage;
+                return _name;
             }
             set
             {
-                _usage = value;
+                _name = value;
             }
         }
         
@@ -2863,8 +2919,8 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("pwmultrasonicusage", Namespace="http://team302.org/robot", AnonymousType=true)]
-    public enum pwmultrasonicusage
+    [System.Xml.Serialization.XmlTypeAttribute("pwmultrasonicname", Namespace="http://team302.org/robot", AnonymousType=true)]
+    public enum pwmultrasonicname
     {
         
         front,
@@ -2882,19 +2938,19 @@ namespace Robot
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private analogultrasonicusage _usage = Robot.analogultrasonicusage.front;
+        private analogultrasonicname _name = Robot.analogultrasonicname.front;
         
-        [System.ComponentModel.DefaultValueAttribute(Robot.analogultrasonicusage.front)]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public analogultrasonicusage usage
+        [System.ComponentModel.DefaultValueAttribute(Robot.analogultrasonicname.front)]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public analogultrasonicname name
         {
             get
             {
-                return _usage;
+                return _name;
             }
             set
             {
-                _usage = value;
+                _name = value;
             }
         }
         
@@ -2923,8 +2979,8 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("analogultrasonicusage", Namespace="http://team302.org/robot", AnonymousType=true)]
-    public enum analogultrasonicusage
+    [System.Xml.Serialization.XmlTypeAttribute("analogultrasonicname", Namespace="http://team302.org/robot", AnonymousType=true)]
+    public enum analogultrasonicname
     {
         
         front,
@@ -2942,19 +2998,19 @@ namespace Robot
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private lidarusage _usage = Robot.lidarusage.front;
+        private lidarname _name = Robot.lidarname.front;
         
-        [System.ComponentModel.DefaultValueAttribute(Robot.lidarusage.front)]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public lidarusage usage
+        [System.ComponentModel.DefaultValueAttribute(Robot.lidarname.front)]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public lidarname name
         {
             get
             {
-                return _usage;
+                return _name;
             }
             set
             {
-                _usage = value;
+                _name = value;
             }
         }
         
@@ -2995,8 +3051,8 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("lidarusage", Namespace="http://team302.org/robot", AnonymousType=true)]
-    public enum lidarusage
+    [System.Xml.Serialization.XmlTypeAttribute("lidarname", Namespace="http://team302.org/robot", AnonymousType=true)]
+    public enum lidarname
     {
         
         front,
@@ -3014,11 +3070,16 @@ namespace Robot
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private ledpwmId _pwmId = Robot.ledpwmId.Item0;
+        private uint _pwmId = 0u;
         
-        [System.ComponentModel.DefaultValueAttribute(Robot.ledpwmId.Item0)]
+        /// <summary>
+        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
+        /// <para xml:lang="en">Maximum inclusive value: 19.</para>
+        /// </summary>
+        [System.ComponentModel.DefaultValueAttribute(0u)]
+        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "19")]
         [System.Xml.Serialization.XmlAttributeAttribute("pwmId")]
-        public ledpwmId pwmId
+        public uint pwmId
         {
             get
             {
@@ -3037,73 +3098,6 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("ledpwmId", Namespace="http://team302.org/robot", AnonymousType=true)]
-    public enum ledpwmId
-    {
-        
-        [System.Xml.Serialization.XmlEnumAttribute("0")]
-        Item0,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("1")]
-        Item1,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("2")]
-        Item2,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("3")]
-        Item3,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("4")]
-        Item4,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("5")]
-        Item5,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("6")]
-        Item6,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("7")]
-        Item7,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("8")]
-        Item8,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("9")]
-        Item9,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("10")]
-        Item10,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("11")]
-        Item11,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("12")]
-        Item12,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("13")]
-        Item13,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("14")]
-        Item14,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("15")]
-        Item15,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("16")]
-        Item16,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("17")]
-        Item17,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("18")]
-        Item18,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("19")]
-        Item19,
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
-    [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute("blinkin", Namespace="http://team302.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -3112,28 +3106,33 @@ namespace Robot
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private blinkinusage _usage = Robot.blinkinusage.front;
+        private blinkinname _name = Robot.blinkinname.front;
         
-        [System.ComponentModel.DefaultValueAttribute(Robot.blinkinusage.front)]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public blinkinusage usage
+        [System.ComponentModel.DefaultValueAttribute(Robot.blinkinname.front)]
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public blinkinname name
         {
             get
             {
-                return _usage;
+                return _name;
             }
             set
             {
-                _usage = value;
+                _name = value;
             }
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private blinkinpwmId _pwmId = Robot.blinkinpwmId.Item0;
+        private uint _pwmId = 0u;
         
-        [System.ComponentModel.DefaultValueAttribute(Robot.blinkinpwmId.Item0)]
+        /// <summary>
+        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
+        /// <para xml:lang="en">Maximum inclusive value: 19.</para>
+        /// </summary>
+        [System.ComponentModel.DefaultValueAttribute(0u)]
+        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "19")]
         [System.Xml.Serialization.XmlAttributeAttribute("pwmId")]
-        public blinkinpwmId pwmId
+        public uint pwmId
         {
             get
             {
@@ -3148,8 +3147,8 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("blinkinusage", Namespace="http://team302.org/robot", AnonymousType=true)]
-    public enum blinkinusage
+    [System.Xml.Serialization.XmlTypeAttribute("blinkinname", Namespace="http://team302.org/robot", AnonymousType=true)]
+    public enum blinkinname
     {
         
         front,
@@ -3163,73 +3162,6 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("blinkinpwmId", Namespace="http://team302.org/robot", AnonymousType=true)]
-    public enum blinkinpwmId
-    {
-        
-        [System.Xml.Serialization.XmlEnumAttribute("0")]
-        Item0,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("1")]
-        Item1,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("2")]
-        Item2,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("3")]
-        Item3,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("4")]
-        Item4,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("5")]
-        Item5,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("6")]
-        Item6,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("7")]
-        Item7,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("8")]
-        Item8,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("9")]
-        Item9,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("10")]
-        Item10,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("11")]
-        Item11,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("12")]
-        Item12,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("13")]
-        Item13,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("14")]
-        Item14,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("15")]
-        Item15,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("16")]
-        Item16,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("17")]
-        Item17,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("18")]
-        Item18,
-        
-        [System.Xml.Serialization.XmlEnumAttribute("19")]
-        Item19,
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
-    [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute("talontach", Namespace="http://team302.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -3238,7 +3170,7 @@ namespace Robot
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _usage = 0u;
+        private uint _name = 0u;
         
         /// <summary>
         /// <para xml:lang="en">Minimum inclusive value: 0.</para>
@@ -3246,16 +3178,16 @@ namespace Robot
         /// </summary>
         [System.ComponentModel.DefaultValueAttribute(0u)]
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "6")]
-        [System.Xml.Serialization.XmlAttributeAttribute("usage")]
-        public uint usage
+        [System.Xml.Serialization.XmlAttributeAttribute("name")]
+        public uint name
         {
             get
             {
-                return _usage;
+                return _name;
             }
             set
             {
-                _usage = value;
+                _name = value;
             }
         }
         

@@ -87,7 +87,7 @@ namespace robotConfiguration
                     mechanism mech = theRobot.mechanism[i];
 
                     mySerializer = new XmlSerializer(typeof(mechanism));
-                    string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.mechanismName + ".xml");
+                    string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
 
                     addProgress("Loading mechanism configuration " + mechanismFullPath);
                     using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
@@ -114,7 +114,7 @@ namespace robotConfiguration
             {
                 foreach (mechanism mech in theRobot.mechanism)
                 {
-                    string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.mechanismName + ".xml");
+                    string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
 
                     mySerializer = new XmlSerializer(typeof(mechanism));
                     tw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings);
