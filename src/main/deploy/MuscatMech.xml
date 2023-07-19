@@ -1,22 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <mechanism xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://team302.org/robot">
   <motor
-    peakCurrentDuration=""
-    continuousCurrentLimit=""
-    peakCurrentLimit=""
-    currentLimiting="false"
-    forwardlimitswitch="false"
-    forwardlimitswitchopen="true"
-    reverselimitswitch="false"
-    reverselimitswitchopen="true"
-    voltageCompensationSaturation="12.0"
-    voltageCompensationEnable="false"
-    countsPerInch="0"
-    countsPerDegree="0">
+    name="ExampleMotor">
     <motorType>TALONSRX</motorType>
     <controller>TALONSRX</controller>
     <canBusName>rio</canBusName>
-    <canId>0</canId>
+    <canId>59</canId>
     <pdpID />
     <inverted>false</inverted>
     <sensorInverted>false</sensorInverted>
@@ -26,5 +15,5 @@
     <brakeMode>false</brakeMode>
     <motorIDtoFollow>-1</motorIDtoFollow>
   </motor>
-  <mechanismName>WitzMech</mechanismName>
+  <name>MuscatMech</name>
 </mechanism>

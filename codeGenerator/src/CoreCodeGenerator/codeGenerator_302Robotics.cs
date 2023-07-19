@@ -75,7 +75,7 @@ namespace CoreCodeGenerator
                     string filePathName;
                     string resultString;
 
-                    string mechanismName = mech.mechanismName;
+                    string mechanismName = mech.name;
 
                     createMechanismFolder(mechanismName);
 
