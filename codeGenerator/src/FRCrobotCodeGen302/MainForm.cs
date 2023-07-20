@@ -918,9 +918,9 @@ namespace FRCrobotCodeGen302
                     }
 
                     Uri uriNewFile = new Uri(dlg.FileName);
-                    Uri uriConfigFilePath = new Uri(Path.GetDirectoryName(configurationFilePathNameTextBox.Text));
+                    Uri uriConfigFilePath = new Uri(configurationFilePathNameTextBox.Text);
                     string realtivePath = uriConfigFilePath.MakeRelativeUri(uriNewFile).ToString();
-                    generatorConfig.robotConfigurations.Add(dlg.FileName);
+                    generatorConfig.robotConfigurations.Add(realtivePath);
                     robotConfigurationFileComboBox.Items.Add(dlg.FileName);
                     robotConfigurationFileComboBox.SelectedIndex = robotConfigurationFileComboBox.Items.Count - 1;
 
