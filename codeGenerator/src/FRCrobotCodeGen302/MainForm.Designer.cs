@@ -57,7 +57,10 @@ namespace FRCrobotCodeGen302
             this.valueComboBox = new System.Windows.Forms.ComboBox();
             this.robotElementCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.tabConfigController = new System.Windows.Forms.TabPage();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.bindingsTable = new System.Windows.Forms.DataGridView();
+            this.ButtonCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FunctionCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.controllerImage = new System.Windows.Forms.PictureBox();
             this.configurationGroupBox.SuspendLayout();
             this.theTabControl.SuspendLayout();
             this.tabMainPage.SuspendLayout();
@@ -69,7 +72,8 @@ namespace FRCrobotCodeGen302
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.valueNumericUpDown)).BeginInit();
             this.tabConfigController.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingsTable)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.controllerImage)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -410,7 +414,8 @@ namespace FRCrobotCodeGen302
             // 
             // tabConfigController
             // 
-            this.tabConfigController.Controls.Add(this.pictureBox1);
+            this.tabConfigController.Controls.Add(this.bindingsTable);
+            this.tabConfigController.Controls.Add(this.controllerImage);
             this.tabConfigController.Location = new System.Drawing.Point(4, 25);
             this.tabConfigController.Name = "tabConfigController";
             this.tabConfigController.Padding = new System.Windows.Forms.Padding(3);
@@ -419,16 +424,47 @@ namespace FRCrobotCodeGen302
             this.tabConfigController.Text = "Controller Bindings";
             this.tabConfigController.UseVisualStyleBackColor = true;
             // 
-            // pictureBox1
+            // bindingsTable
             // 
-            this.pictureBox1.Image = global::FRCrobotCodeGen302.Properties.Resources.controller;
-            this.pictureBox1.Location = new System.Drawing.Point(36, 1);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(694, 357);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseClick);
+            this.bindingsTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.bindingsTable.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.bindingsTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.bindingsTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.ButtonCol,
+            this.FunctionCol});
+            this.bindingsTable.Location = new System.Drawing.Point(0, 0);
+            this.bindingsTable.Name = "bindingsTable";
+            this.bindingsTable.RowHeadersVisible = false;
+            this.bindingsTable.RowHeadersWidth = 51;
+            this.bindingsTable.RowTemplate.Height = 24;
+            this.bindingsTable.Size = new System.Drawing.Size(253, 358);
+            this.bindingsTable.TabIndex = 2;
+            this.bindingsTable.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            // 
+            // ButtonCol
+            // 
+            this.ButtonCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.ButtonCol.HeaderText = "Button";
+            this.ButtonCol.MinimumWidth = 6;
+            this.ButtonCol.Name = "ButtonCol";
+            // 
+            // FunctionCol
+            // 
+            this.FunctionCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.FunctionCol.HeaderText = "Function";
+            this.FunctionCol.MinimumWidth = 6;
+            this.FunctionCol.Name = "FunctionCol";
+            // 
+            // controllerImage
+            // 
+            this.controllerImage.Image = global::FRCrobotCodeGen302.Properties.Resources.controller;
+            this.controllerImage.Location = new System.Drawing.Point(251, 3);
+            this.controllerImage.Name = "controllerImage";
+            this.controllerImage.Size = new System.Drawing.Size(529, 357);
+            this.controllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.controllerImage.TabIndex = 1;
+            this.controllerImage.TabStop = false;
+            this.controllerImage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.controllerImage_MouseClick);
             // 
             // MainForm
             // 
@@ -455,7 +491,8 @@ namespace FRCrobotCodeGen302
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.valueNumericUpDown)).EndInit();
             this.tabConfigController.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingsTable)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.controllerImage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -489,7 +526,10 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.CheckedListBox robotElementCheckedListBox;
         private System.Windows.Forms.Label addRobotElementLabel;
         private System.Windows.Forms.TabPage tabConfigController;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox controllerImage;
+        private System.Windows.Forms.DataGridView bindingsTable;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ButtonCol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn FunctionCol;
     }
 }
 

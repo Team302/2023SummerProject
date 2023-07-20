@@ -23,6 +23,12 @@ using System.Threading;
 
 namespace FRCrobotCodeGen302
 {
+    struct ControllerButton
+    {
+        public string name;
+        public string function;
+    }
+
     public partial class MainForm : Form
     {
         toolConfiguration generatorConfig = new toolConfiguration();
@@ -66,6 +72,9 @@ namespace FRCrobotCodeGen302
             {
                 addProgress("Issue encountered while loading the cached generator configuration file\r\n" + ex.ToString());
             }
+
+            //initialize controller bindings table
+            
         }
 
         private void addProgress(string info)
@@ -629,7 +638,7 @@ namespace FRCrobotCodeGen302
                                 lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
                         }
 
-                        
+
 
                         setNeedsSaving();
                     }
@@ -875,23 +884,65 @@ namespace FRCrobotCodeGen302
         {
 
         }
-        private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
+        private void controllerImage_MouseClick(object sender, MouseEventArgs e)
         {
             int mouseX = e.X;
             int mouseY = e.Y;
 
-            Point xButton = new Point(308, 142);
-            Point yButton = new Point(327, 126);
-            Point bButton = new Point(342, 143);
-            Point aButton = new Point(325, 160);
+            Debug.WriteLine("Clicked at X: " + e.X + " Y: " + e.Y);
 
-            Dictionary<string, Point> buttonMap = new Dictionary<string, Point> { {"xButton", xButton}, { "yButton", yButton }, { "bButton", bButton }, { "aButton", aButton } };
+            //1197, 815
 
-            foreach(KeyValuePair<string, Point> entry in buttonMap)
+            Point x = new Point(0, 0);
+            Point y = new Point(0, 0);
+            Point b = new Point(0, 0);
+            Point a = new Point(260, 160);
+            Point dPadUp = new Point(0, 0);
+            Point dPadDown = new Point(0, 0);
+            Point dPadLeft = new Point(0, 0);
+            Point dPadRight = new Point(0, 0);
+            Point select = new Point(0, 0);
+            Point start = new Point(0, 0);
+            Point leftJoystick = new Point(0, 0);
+            Point rightJoystick = new Point(0, 0);
+
+            Dictionary<string, Point> buttonMap = new Dictionary<string, Point> {
+                {"X Button", x},
+                { "Y Button", y },
+                { "B Button", b },
+                { "A Button", a },
+                { "D-Pad Up", dPadUp },
+                { "D-Pad Down", dPadDown },
+                { "D-Pad Left", dPadLeft },
+                { "D-Pad Right", dPadRight },
+                { "Start", start },
+                { "Select", select},
+                { "Left Joystick", leftJoystick},
+                { "Right Joystick", rightJoystick} };
+
+            bool clickedButton = false;
+
+            bindingsTable.Rows.Clear();
+
+            foreach (KeyValuePair<string, Point> entry in buttonMap)
             {
                 if (isButtonClicked(entry.Value, e.Location))
                 {
+                    
+                    clickedButton = true;
+
+                    //display button in table
+                    bindingsTable.Rows.Add(entry.Key, "Hello World");
+
                     Debug.Print(entry.Key + " Button Clicked");
+                }
+            }
+            if (!clickedButton)
+            {
+                //display all buttons in table
+                foreach (KeyValuePair<string, Point> entry in buttonMap)
+                {
+                    bindingsTable.Rows.Add(entry.Key, "Hello World");
                 }
             }
         }
@@ -899,6 +950,11 @@ namespace FRCrobotCodeGen302
         private bool isButtonClicked(Point buttonPoint, Point mousePoint)
         {
             return Math.Sqrt(Math.Pow(buttonPoint.X - mousePoint.X, 2) + Math.Pow(buttonPoint.Y - mousePoint.Y, 2)) < 10;
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 
