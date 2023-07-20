@@ -27,6 +27,26 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element minOccurs="1" maxOccurs="unbounded" ref="robot" />
+				<xs:element minOccurs="1" maxOccurs="1" ref="controllerBindings" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="controllerBindings">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="controllerBinding" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="controllerBinding">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="controllerId" default="0" type="xs:unsignedInt" />
+				<xs:element name="button" default="NONE" type="xs:string" />
+				<xs:element name="axis" default="NONE" type="xs:string" />
+				<xs:element name="teleopControlFunction" default="NONE" type="xs:string" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

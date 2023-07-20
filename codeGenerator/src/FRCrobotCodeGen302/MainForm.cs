@@ -23,12 +23,6 @@ using System.Threading;
 
 namespace FRCrobotCodeGen302
 {
-    struct ControllerButton
-    {
-        public string name;
-        public string function;
-    }
-
     public partial class MainForm : Form
     {
         toolConfiguration generatorConfig = new toolConfiguration();
@@ -59,7 +53,7 @@ namespace FRCrobotCodeGen302
                 if (File.Exists(configurationCacheFile))
                 {
                     configurationFilePathNameTextBox.Text = File.ReadAllText(configurationCacheFile);
-                    loadConfiguration(configurationFilePathNameTextBox.Text);
+                    loadConfiguration(configurationFilePathNameTextBox.Text); /// TODO: LOAD CONTROLLER BINDINGS
                     addProgress("Loaded cached configuration.xml");
                     robotConfigurationFileComboBox_TextChanged(null, null);
                 }
@@ -73,8 +67,16 @@ namespace FRCrobotCodeGen302
                 addProgress("Issue encountered while loading the cached generator configuration file\r\n" + ex.ToString());
             }
 
+            //set defautl controller to controller 0
+            controllerSelection.SelectedIndex = 0;
+
             //initialize controller bindings table
-            
+            bindingsTable.Rows.Clear();
+            foreach (controllerBinding binding in theRobotConfiguration.theRobotVariants.controllerBindings)
+            {
+                if(binding.controllerId == controllerSelection.SelectedIndex)
+                    bindingsTable.Rows.Add(binding.button, binding.teleopControlFunction);
+            }
         }
 
         private void addProgress(string info)
@@ -893,18 +895,20 @@ namespace FRCrobotCodeGen302
 
             //1197, 815
 
-            Point x = new Point(0, 0);
-            Point y = new Point(0, 0);
-            Point b = new Point(0, 0);
+            Point x = new Point(245, 145);
+            Point y = new Point(260, 125);
             Point a = new Point(260, 160);
-            Point dPadUp = new Point(0, 0);
-            Point dPadDown = new Point(0, 0);
-            Point dPadLeft = new Point(0, 0);
-            Point dPadRight = new Point(0, 0);
-            Point select = new Point(0, 0);
-            Point start = new Point(0, 0);
-            Point leftJoystick = new Point(0, 0);
-            Point rightJoystick = new Point(0, 0);
+            Point b = new Point(275, 145);
+            Point dPadUp = new Point(170, 170);
+            Point dPadDown = new Point(170, 190);
+            Point dPadLeft = new Point(160, 180);
+            Point dPadRight = new Point(180, 180);
+            Point select = new Point(180, 145);
+            Point start = new Point(220, 145);
+            Point leftJoystick = new Point(140, 140);
+            Point rightJoystick = new Point(230, 175);
+
+            //need to add bumpers and triggers
 
             Dictionary<string, Point> buttonMap = new Dictionary<string, Point> {
                 {"X Button", x},
@@ -919,6 +923,8 @@ namespace FRCrobotCodeGen302
                 { "Select", select},
                 { "Left Joystick", leftJoystick},
                 { "Right Joystick", rightJoystick} };
+
+            Debug.WriteLine(e.Location);
 
             bool clickedButton = false;
 
@@ -942,7 +948,7 @@ namespace FRCrobotCodeGen302
                 //display all buttons in table
                 foreach (KeyValuePair<string, Point> entry in buttonMap)
                 {
-                    bindingsTable.Rows.Add(entry.Key, "Hello World");
+                    bindingsTable.Rows.Add(entry.Key, "Controller Id: " + controllerSelection.SelectedIndex);
                 }
             }
         }
@@ -955,6 +961,65 @@ namespace FRCrobotCodeGen302
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void controllerBindingsSave_Click(object sender, EventArgs e)
+        {
+            //clear old bindings for current controller
+            List<controllerBinding> bindingsToRemove = new List<controllerBinding>();
+            foreach(controllerBinding binding in theRobotConfiguration.theRobotVariants.controllerBindings)
+            {
+                if(binding.controllerId == controllerSelection.SelectedIndex)
+                {
+                    bindingsToRemove.Add(binding);
+                }
+            }
+
+            foreach(controllerBinding binding in bindingsToRemove)
+            {
+                theRobotConfiguration.theRobotVariants.controllerBindings.Remove(binding);
+            }
+
+            //for each table, grab the buttons and associated teleop control functions
+            foreach (DataGridViewRow row in bindingsTable.Rows)
+            {
+                controllerBinding temp = new controllerBinding();
+                temp.controllerId = (uint)controllerSelection.SelectedIndex;
+                if(row.Cells[0].Value != null)
+                {
+                    if (row.Cells[0].Value.ToString().Contains("axis"))
+                    {
+                        //find axis index
+                    }
+                    else
+                    {
+                        temp.button = row.Cells[0].Value.ToString();
+                    }
+
+                    temp.teleopControlFunction = row.Cells[1].Value.ToString();
+
+                    theRobotConfiguration.theRobotVariants.controllerBindings.Add(temp);
+                    theRobotConfiguration.save(generatorConfig.robotConfiguration);
+                }
+            }
+        }
+
+        private void controllerSelection_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bindingsTable.Rows.Clear();
+
+            foreach (controllerBinding binding in theRobotConfiguration.theRobotVariants.controllerBindings)
+            {
+                if (binding.controllerId == controllerSelection.SelectedIndex)
+                    bindingsTable.Rows.Add(binding.button, binding.teleopControlFunction);
+            }
+        }
+        private void bindingsTable_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex == bindingsTable.Columns["FunctionCol"].Index && e.RowIndex >= 0)
+            {
+                bindingsTable.BeginEdit(true);
+            }
         }
     }
 

@@ -2865,6 +2865,149 @@ namespace Robot
         public robotVariants()
         {
             this._robot = new System.Collections.ObjectModel.Collection<robot>();
+            this._controllerBindings = new System.Collections.ObjectModel.Collection<controllerBinding>();
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.ObjectModel.Collection<controllerBinding> _controllerBindings;
+        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlArrayAttribute("controllerBindings")]
+        [System.Xml.Serialization.XmlArrayItemAttribute("controllerBinding", Namespace="http://team302.org/robot")]
+        public System.Collections.ObjectModel.Collection<controllerBinding> controllerBindings
+        {
+            get
+            {
+                return _controllerBindings;
+            }
+            private set
+            {
+                _controllerBindings = value;
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute("controllerBindings", Namespace="http://team302.org/robot", AnonymousType=true)]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlRootAttribute("controllerBindings", Namespace="http://team302.org/robot")]
+    public partial class controllerBindings
+    {
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.ObjectModel.Collection<controllerBinding> _controllerBinding;
+        
+        [System.Xml.Serialization.XmlElementAttribute("controllerBinding")]
+        public System.Collections.ObjectModel.Collection<controllerBinding> controllerBinding
+        {
+            get
+            {
+                return _controllerBinding;
+            }
+            private set
+            {
+                _controllerBinding = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the controllerBinding collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool controllerBindingSpecified
+        {
+            get
+            {
+                return (this.controllerBinding.Count != 0);
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Initializes a new instance of the <see cref="controllerBindings" /> class.</para>
+        /// </summary>
+        public controllerBindings()
+        {
+            this._controllerBinding = new System.Collections.ObjectModel.Collection<controllerBinding>();
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute("controllerBinding", Namespace="http://team302.org/robot", AnonymousType=true)]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlRootAttribute("controllerBinding", Namespace="http://team302.org/robot")]
+    public partial class controllerBinding
+    {
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private uint _controllerId = 0u;
+        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("controllerId")]
+        public uint controllerId
+        {
+            get
+            {
+                return _controllerId;
+            }
+            set
+            {
+                _controllerId = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _button = "NONE";
+        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("button")]
+        public string button
+        {
+            get
+            {
+                return _button;
+            }
+            set
+            {
+                _button = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _axis = "NONE";
+        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("axis")]
+        public string axis
+        {
+            get
+            {
+                return _axis;
+            }
+            set
+            {
+                _axis = value;
+            }
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _teleopControlFunction = "NONE";
+        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("teleopControlFunction")]
+        public string teleopControlFunction
+        {
+            get
+            {
+                return _teleopControlFunction;
+            }
+            set
+            {
+                _teleopControlFunction = value;
+            }
         }
     }
     
