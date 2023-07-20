@@ -267,6 +267,19 @@ namespace FRCrobotCodeGen302
                 throw new Exception("Cannot load the generator configuration. " + ex.Message);
             }
         }
+
+        public void saveGeneratorConfig(string configurationFullPathName)
+        {
+            try
+            {
+                generatorConfig.serialize(configurationFullPathName);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Cannot save the generator configuration. " + ex.Message);
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             try
@@ -872,6 +885,52 @@ namespace FRCrobotCodeGen302
         private void robotConfigurationFileComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void createNewRobotVariantsConfigButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (generatorConfig == null)
+                    throw new Exception("Please load a configuration file before creating a new robot variants file");
+
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.AddExtension = true;
+                dlg.DefaultExt = "xml";
+                dlg.Filter = "Robot Variants Files | *.xml";
+
+                if ( !string.IsNullOrEmpty(generatorConfig.robotConfiguration))
+                {
+                    string path = Path.GetDirectoryName(configurationFilePathNameTextBox.Text);
+                    if (Directory.Exists(path))
+                        dlg.InitialDirectory = path;
+                }
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    using (var myFileStream = new FileStream(dlg.FileName, FileMode.Create))
+                    {
+                        robotVariants newRobotVariantsConfig = new robotVariants();
+                        newRobotVariantsConfig.robot.Add(new robot());
+
+                        var mySerializer = new XmlSerializer(typeof(robotVariants));
+                        mySerializer.Serialize(myFileStream, newRobotVariantsConfig);
+                    }
+
+                    Uri uriNewFile = new Uri(dlg.FileName);
+                    Uri uriConfigFilePath = new Uri(Path.GetDirectoryName(configurationFilePathNameTextBox.Text));
+                    string realtivePath = uriConfigFilePath.MakeRelativeUri(uriNewFile).ToString();
+                    generatorConfig.robotConfigurations.Add(dlg.FileName);
+                    robotConfigurationFileComboBox.Items.Add(dlg.FileName);
+                    robotConfigurationFileComboBox.SelectedIndex = robotConfigurationFileComboBox.Items.Count - 1;
+
+                    saveGeneratorConfig(Path.GetDirectoryName(configurationFilePathNameTextBox.Text));
+                }
+            }
+            catch(Exception ex)
+            {
+                addProgress(ex.Message);
+            }
         }
     }
 

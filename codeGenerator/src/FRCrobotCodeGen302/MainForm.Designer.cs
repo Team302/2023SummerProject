@@ -39,6 +39,7 @@ namespace FRCrobotCodeGen302
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.configurationGroupBox = new System.Windows.Forms.GroupBox();
+            this.createNewRobotVariantsConfigButton = new System.Windows.Forms.Button();
             this.robotConfigurationFileComboBox = new System.Windows.Forms.ComboBox();
             this.progressTextBox = new System.Windows.Forms.TextBox();
             this.theTabControl = new System.Windows.Forms.TabControl();
@@ -224,6 +225,7 @@ namespace FRCrobotCodeGen302
             // tabMainPage
             // 
             this.tabMainPage.Controls.Add(this.clearReportButton);
+            this.tabMainPage.Controls.Add(this.createNewRobotVariantsConfigButton);
             this.tabMainPage.Controls.Add(this.button2);
             this.tabMainPage.Controls.Add(this.label1);
             this.tabMainPage.Controls.Add(this.button1);
@@ -251,6 +253,18 @@ namespace FRCrobotCodeGen302
             this.clearReportButton.Text = "Clear report window";
             this.clearReportButton.UseVisualStyleBackColor = true;
             this.clearReportButton.Click += new System.EventHandler(this.clearReportButton_Click);
+            // 
+            // createNewRobotVariantsConfigButton
+            // 
+            this.createNewRobotVariantsConfigButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.createNewRobotVariantsConfigButton.Location = new System.Drawing.Point(150, 263);
+            this.createNewRobotVariantsConfigButton.Margin = new System.Windows.Forms.Padding(2,1,2,1);
+            this.createNewRobotVariantsConfigButton.Name = "createNewRobotVariantsConfigButton";
+            this.createNewRobotVariantsConfigButton.Size = new System.Drawing.Size(220, 32);
+            this.createNewRobotVariantsConfigButton.TabIndex = 3;
+            this.createNewRobotVariantsConfigButton.Text = "Create new robot variants configuration";
+            this.createNewRobotVariantsConfigButton.UseVisualStyleBackColor = true;
+            this.createNewRobotVariantsConfigButton.Click += new System.EventHandler(this.createNewRobotVariantsConfigButton_Click);
             // 
             // tabConfigurationPage
             // 
@@ -440,6 +454,7 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button configurationBrowseButton;
+        private System.Windows.Forms.Button createNewRobotVariantsConfigButton;
         private System.Windows.Forms.TextBox configurationFilePathNameTextBox;
         private System.Windows.Forms.Label outputFolderLabel;
         private System.Windows.Forms.Label configuredOutputFolderLabel;
