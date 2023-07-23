@@ -57,6 +57,8 @@ namespace FRCrobotCodeGen302
             this.valueComboBox = new System.Windows.Forms.ComboBox();
             this.robotElementCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.tabConfigController = new System.Windows.Forms.TabPage();
+            this.rightTriggerButton = new System.Windows.Forms.Button();
+            this.leftTriggerButton = new System.Windows.Forms.Button();
             this.controllerSelection = new System.Windows.Forms.ComboBox();
             this.controllerBindingsSave = new System.Windows.Forms.Button();
             this.bindingsTable = new System.Windows.Forms.DataGridView();
@@ -416,6 +418,8 @@ namespace FRCrobotCodeGen302
             // 
             // tabConfigController
             // 
+            this.tabConfigController.Controls.Add(this.rightTriggerButton);
+            this.tabConfigController.Controls.Add(this.leftTriggerButton);
             this.tabConfigController.Controls.Add(this.controllerSelection);
             this.tabConfigController.Controls.Add(this.controllerBindingsSave);
             this.tabConfigController.Controls.Add(this.bindingsTable);
@@ -427,6 +431,26 @@ namespace FRCrobotCodeGen302
             this.tabConfigController.TabIndex = 2;
             this.tabConfigController.Text = "Controller Bindings";
             this.tabConfigController.UseVisualStyleBackColor = true;
+            // 
+            // rightTriggerButton
+            // 
+            this.rightTriggerButton.Location = new System.Drawing.Point(554, 63);
+            this.rightTriggerButton.Name = "rightTriggerButton";
+            this.rightTriggerButton.Size = new System.Drawing.Size(86, 44);
+            this.rightTriggerButton.TabIndex = 6;
+            this.rightTriggerButton.Text = "Right Trigger";
+            this.rightTriggerButton.UseVisualStyleBackColor = true;
+            this.rightTriggerButton.Click += new System.EventHandler(this.rightTriggerButton_Click);
+            // 
+            // leftTriggerButton
+            // 
+            this.leftTriggerButton.Location = new System.Drawing.Point(397, 63);
+            this.leftTriggerButton.Name = "leftTriggerButton";
+            this.leftTriggerButton.Size = new System.Drawing.Size(82, 44);
+            this.leftTriggerButton.TabIndex = 5;
+            this.leftTriggerButton.Text = "Left Trigger";
+            this.leftTriggerButton.UseVisualStyleBackColor = true;
+            this.leftTriggerButton.Click += new System.EventHandler(this.leftTriggerButton_Click);
             // 
             // controllerSelection
             // 
@@ -446,12 +470,13 @@ namespace FRCrobotCodeGen302
             // 
             // controllerBindingsSave
             // 
+            this.controllerBindingsSave.FlatAppearance.BorderSize = 0;
             this.controllerBindingsSave.Location = new System.Drawing.Point(643, 6);
             this.controllerBindingsSave.Name = "controllerBindingsSave";
             this.controllerBindingsSave.Size = new System.Drawing.Size(129, 23);
             this.controllerBindingsSave.TabIndex = 3;
             this.controllerBindingsSave.Text = "Save Bindings";
-            this.controllerBindingsSave.UseVisualStyleBackColor = true;
+            this.controllerBindingsSave.UseVisualStyleBackColor = false;
             this.controllerBindingsSave.Click += new System.EventHandler(this.controllerBindingsSave_Click);
             // 
             // bindingsTable
@@ -564,6 +589,8 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.ComboBox controllerSelection;
         private System.Windows.Forms.DataGridViewTextBoxColumn ButtonCol;
         private System.Windows.Forms.DataGridViewTextBoxColumn FunctionCol;
+        private System.Windows.Forms.Button leftTriggerButton;
+        private System.Windows.Forms.Button rightTriggerButton;
     }
 }
 

@@ -74,8 +74,8 @@ namespace FRCrobotCodeGen302
             bindingsTable.Rows.Clear();
             foreach (controllerBinding binding in theRobotConfiguration.theRobotVariants.controllerBindings)
             {
-                if(binding.controllerId == controllerSelection.SelectedIndex)
-                    bindingsTable.Rows.Add(binding.button, binding.teleopControlFunction);
+                if (binding.controllerId == controllerSelection.SelectedIndex)
+                    bindingsTable.Rows.Add(binding.binding.ToString(), binding.teleopControlFunction);
             }
         }
 
@@ -907,55 +907,90 @@ namespace FRCrobotCodeGen302
             Point start = new Point(220, 145);
             Point leftJoystick = new Point(140, 140);
             Point rightJoystick = new Point(230, 175);
+            Point leftTrigger = new Point(0, 0);
+            Point rightTrigger = new Point(100, 0);
 
             //need to add bumpers and triggers
 
-            Dictionary<string, Point> buttonMap = new Dictionary<string, Point> {
-                {"X Button", x},
-                { "Y Button", y },
-                { "B Button", b },
-                { "A Button", a },
-                { "D-Pad Up", dPadUp },
-                { "D-Pad Down", dPadDown },
-                { "D-Pad Left", dPadLeft },
-                { "D-Pad Right", dPadRight },
-                { "Start", start },
-                { "Select", select},
-                { "Left Joystick", leftJoystick},
-                { "Right Joystick", rightJoystick} };
-
-            Debug.WriteLine(e.Location);
+            Dictionary<controllerBindingbinding, Point> buttonMap = new Dictionary<controllerBindingbinding, Point> {
+                {controllerBindingbinding.X, x},
+                { controllerBindingbinding.Y, y },
+                { controllerBindingbinding.B, b },
+                { controllerBindingbinding.A, a },
+                { controllerBindingbinding.DPadUp, dPadUp },
+                { controllerBindingbinding.DPadDown, dPadDown },
+                { controllerBindingbinding.DPadLeft, dPadLeft },
+                { controllerBindingbinding.DPadRight, dPadRight },
+                { controllerBindingbinding.Start, start },
+                { controllerBindingbinding.Select, select},
+                { controllerBindingbinding.LeftJoystickPress, leftJoystick},
+                { controllerBindingbinding.LeftJoystickX, leftJoystick},
+                { controllerBindingbinding.LeftJoystickY, leftJoystick},
+                { controllerBindingbinding.RightJoystickPress, rightJoystick},
+                { controllerBindingbinding.RightJoystickX, rightJoystick},
+                { controllerBindingbinding.RightJoystickY, rightJoystick},
+                { controllerBindingbinding.LeftTriggerPress, leftTrigger},
+                { controllerBindingbinding.LeftTriggerAxis, leftTrigger},
+                { controllerBindingbinding.RightTriggerPress, rightTrigger},
+                { controllerBindingbinding.RightTriggerAxis, rightTrigger}};
 
             bool clickedButton = false;
 
             bindingsTable.Rows.Clear();
 
-            foreach (KeyValuePair<string, Point> entry in buttonMap)
+            foreach (KeyValuePair<controllerBindingbinding, Point> entry in buttonMap)
             {
-                if (isButtonClicked(entry.Value, e.Location))
+                if (isButtonClicked(entry.Value, e.Location, entry.Key.ToString().Contains("Joystick") ? 20 : 10))
                 {
-                    
                     clickedButton = true;
 
                     //display button in table
-                    bindingsTable.Rows.Add(entry.Key, "Hello World");
+                    bool foundEntry = false;
+                    foreach (Robot.controllerBinding searchedBinding in theRobotConfiguration.theRobotVariants.controllerBindings)
+                        if (searchedBinding.binding == entry.Key && searchedBinding.controllerId == controllerSelection.SelectedIndex)
+                        {
+                            foundEntry = true;
+                            bindingsTable.Rows.Add(entry.Key.ToString(), searchedBinding.teleopControlFunction);
+                        }
 
-                    Debug.Print(entry.Key + " Button Clicked");
+                    if (!foundEntry)
+                    {
+                        bindingsTable.Rows.Add(entry.Key.ToString(), "NO VALUE");
+                    }
                 }
             }
             if (!clickedButton)
             {
                 //display all buttons in table
-                foreach (KeyValuePair<string, Point> entry in buttonMap)
+                foreach (controllerBindingbinding binding in Enum.GetValues(typeof(controllerBindingbinding)))
                 {
-                    bindingsTable.Rows.Add(entry.Key, "Controller Id: " + controllerSelection.SelectedIndex);
+                    Robot.controllerBinding tempBinding = new Robot.controllerBinding();
+
+                    bool foundBinding = false;
+
+                    foreach (Robot.controllerBinding searchedBinding in theRobotConfiguration.theRobotVariants.controllerBindings)
+                    {
+                        if (searchedBinding.binding == binding)
+                        {
+                            if (searchedBinding.controllerId == controllerSelection.SelectedIndex)
+                            {
+                                foundBinding = true;
+                                tempBinding = searchedBinding;
+                            }
+                        }
+                    }
+
+                    if (tempBinding.binding != controllerBindingbinding.NONE)
+                        bindingsTable.Rows.Add(binding.ToString(), tempBinding.teleopControlFunction);
+                    if (!foundBinding && binding != controllerBindingbinding.NONE)
+                        bindingsTable.Rows.Add(binding.ToString(), "NO VALUE");
                 }
             }
         }
 
-        private bool isButtonClicked(Point buttonPoint, Point mousePoint)
+        private bool isButtonClicked(Point buttonPoint, Point mousePoint, int radius)
         {
-            return Math.Sqrt(Math.Pow(buttonPoint.X - mousePoint.X, 2) + Math.Pow(buttonPoint.Y - mousePoint.Y, 2)) < 10;
+            return Math.Sqrt(Math.Pow(buttonPoint.X - mousePoint.X, 2) + Math.Pow(buttonPoint.Y - mousePoint.Y, 2)) < radius;
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -967,15 +1002,15 @@ namespace FRCrobotCodeGen302
         {
             //clear old bindings for current controller
             List<controllerBinding> bindingsToRemove = new List<controllerBinding>();
-            foreach(controllerBinding binding in theRobotConfiguration.theRobotVariants.controllerBindings)
+            foreach (controllerBinding binding in theRobotConfiguration.theRobotVariants.controllerBindings)
             {
-                if(binding.controllerId == controllerSelection.SelectedIndex)
+                if (binding.controllerId == controllerSelection.SelectedIndex)
                 {
                     bindingsToRemove.Add(binding);
                 }
             }
 
-            foreach(controllerBinding binding in bindingsToRemove)
+            foreach (controllerBinding binding in bindingsToRemove)
             {
                 theRobotConfiguration.theRobotVariants.controllerBindings.Remove(binding);
             }
@@ -985,16 +1020,10 @@ namespace FRCrobotCodeGen302
             {
                 controllerBinding temp = new controllerBinding();
                 temp.controllerId = (uint)controllerSelection.SelectedIndex;
-                if(row.Cells[0].Value != null)
+                if (row.Cells[0].Value != null)
                 {
-                    if (row.Cells[0].Value.ToString().Contains("axis"))
-                    {
-                        //find axis index
-                    }
-                    else
-                    {
-                        temp.button = row.Cells[0].Value.ToString();
-                    }
+                    if (Robot.controllerBindingbinding.TryParse(row.Cells[0].Value.ToString(), out Robot.controllerBindingbinding result))
+                        temp.binding = result;
 
                     temp.teleopControlFunction = row.Cells[1].Value.ToString();
 
@@ -1008,10 +1037,29 @@ namespace FRCrobotCodeGen302
         {
             bindingsTable.Rows.Clear();
 
-            foreach (controllerBinding binding in theRobotConfiguration.theRobotVariants.controllerBindings)
+            //display all buttons in table
+            foreach (controllerBindingbinding binding in Enum.GetValues(typeof(controllerBindingbinding)))
             {
-                if (binding.controllerId == controllerSelection.SelectedIndex)
-                    bindingsTable.Rows.Add(binding.button, binding.teleopControlFunction);
+                Robot.controllerBinding tempBinding = new Robot.controllerBinding();
+
+                bool foundBinding = false;
+
+                foreach (Robot.controllerBinding searchedBinding in theRobotConfiguration.theRobotVariants.controllerBindings)
+                {
+                    if (searchedBinding.binding == binding)
+                    {
+                        if (searchedBinding.controllerId == controllerSelection.SelectedIndex)
+                        {
+                            foundBinding = true;
+                            tempBinding = searchedBinding;
+                        }
+                    }
+                }
+
+                if (tempBinding.binding != controllerBindingbinding.NONE)
+                    bindingsTable.Rows.Add(binding.ToString(), tempBinding.teleopControlFunction);
+                if (!foundBinding && binding != controllerBindingbinding.NONE)
+                    bindingsTable.Rows.Add(binding.ToString(), "NO VALUE");
             }
         }
         private void bindingsTable_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -1020,6 +1068,15 @@ namespace FRCrobotCodeGen302
             {
                 bindingsTable.BeginEdit(true);
             }
+        }
+
+        private void leftTriggerButton_Click(object sender, EventArgs e)
+        {
+            controllerImage_MouseClick(null, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+        }
+        private void rightTriggerButton_Click(object sender, EventArgs e)
+        {
+            controllerImage_MouseClick(null, new MouseEventArgs(MouseButtons.Left, 1, 100, 0, 0));
         }
     }
 

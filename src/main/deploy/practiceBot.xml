@@ -54,149 +54,115 @@
     </mechanism>
   </robot>
   <controllerBindings>
-    <controllerBinding>
+    <controllerBinding
+      binding="A">
       <controllerId>0</controllerId>
-      <button>X Button</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>A button</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="X">
       <controllerId>0</controllerId>
-      <button>Y Button</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="Y">
       <controllerId>0</controllerId>
-      <button>B Button</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="B">
       <controllerId>0</controllerId>
-      <button>A Button</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="DPadUp">
       <controllerId>0</controllerId>
-      <button>D-Pad Up</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>Up</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="DPadDown">
       <controllerId>0</controllerId>
-      <button>D-Pad Down</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="DPadLeft">
       <controllerId>0</controllerId>
-      <button>D-Pad Left</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="DPadRight">
       <controllerId>0</controllerId>
-      <button>D-Pad Right</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="Start">
       <controllerId>0</controllerId>
-      <button>Start</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="Select">
       <controllerId>0</controllerId>
-      <button>Select</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="LeftBumper">
       <controllerId>0</controllerId>
-      <button>Left Joystick</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
+    <controllerBinding
+      binding="RightBumper">
       <controllerId>0</controllerId>
-      <button>Right Joystick</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 0</teleopControlFunction>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>X Button</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="LeftTriggerPress">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>Y Button</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="LeftTriggerAxis">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>B Button</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="RightTriggerPress">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>A Button</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="RightTriggerAxis">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>D-Pad Up</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="LeftJoystickPress">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>D-Pad Down</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="LeftJoystickX">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>D-Pad Left</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="LeftJoystickY">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>D-Pad Right</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="RightJoystickPress">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>Start</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="RightJoystickX">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>Select</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
-    </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>Left Joystick</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
-    </controllerBinding>
-    <controllerBinding>
-      <controllerId>1</controllerId>
-      <button>Right Joystick</button>
-      <axis>NONE</axis>
-      <teleopControlFunction>Controller Id: 1</teleopControlFunction>
+    <controllerBinding
+      binding="RightJoystickY">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
   </controllerBindings>
 </robotVariants>

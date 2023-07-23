@@ -44,11 +44,39 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="controllerId" default="0" type="xs:unsignedInt" />
-				<xs:element name="button" default="NONE" type="xs:string" />
-				<xs:element name="axis" default="NONE" type="xs:string" />
 				<xs:element name="teleopControlFunction" default="NONE" type="xs:string" />
 			</xs:sequence>
+			<xs:attribute name="binding" default="NONE">
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="NONE" />
+						<xs:enumeration value="A" />
+						<xs:enumeration value="X" />
+						<xs:enumeration value="Y" />
+						<xs:enumeration value="B" />
+						<xs:enumeration value="DPadUp" />
+						<xs:enumeration value="DPadDown" />
+						<xs:enumeration value="DPadLeft" />
+						<xs:enumeration value="DPadRight" />
+						<xs:enumeration value="Start" />
+						<xs:enumeration value="Select" />
+						<xs:enumeration value="LeftBumper" />
+						<xs:enumeration value="RightBumper" />
+						<xs:enumeration value="LeftTriggerPress" />
+						<xs:enumeration value="LeftTriggerAxis" />
+						<xs:enumeration value="RightTriggerPress" />
+						<xs:enumeration value="RightTriggerAxis" />
+						<xs:enumeration value="LeftJoystickPress" />
+						<xs:enumeration value="LeftJoystickX" />
+						<xs:enumeration value="LeftJoystickY" />
+						<xs:enumeration value="RightJoystickPress" />
+						<xs:enumeration value="RightJoystickX" />
+						<xs:enumeration value="RightJoystickY" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
 		</xs:complexType>
+		
 	</xs:element>
 
 	<xs:element name="mechanism">

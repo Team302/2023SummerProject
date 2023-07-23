@@ -2960,40 +2960,6 @@ namespace Robot
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private string _button = "NONE";
-        
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("button")]
-        public string button
-        {
-            get
-            {
-                return _button;
-            }
-            set
-            {
-                _button = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private string _axis = "NONE";
-        
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("axis")]
-        public string axis
-        {
-            get
-            {
-                return _axis;
-            }
-            set
-            {
-                _axis = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _teleopControlFunction = "NONE";
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
@@ -3009,6 +2975,76 @@ namespace Robot
                 _teleopControlFunction = value;
             }
         }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private controllerBindingbinding _binding = Robot.controllerBindingbinding.NONE;
+        
+        [System.ComponentModel.DefaultValueAttribute(Robot.controllerBindingbinding.NONE)]
+        [System.Xml.Serialization.XmlAttributeAttribute("binding")]
+        public controllerBindingbinding binding
+        {
+            get
+            {
+                return _binding;
+            }
+            set
+            {
+                _binding = value;
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute("controllerBindingbinding", Namespace="http://team302.org/robot", AnonymousType=true)]
+    public enum controllerBindingbinding
+    {
+        
+        NONE,
+        
+        A,
+        
+        X,
+        
+        Y,
+        
+        B,
+        
+        DPadUp,
+        
+        DPadDown,
+        
+        DPadLeft,
+        
+        DPadRight,
+        
+        Start,
+        
+        Select,
+        
+        LeftBumper,
+        
+        RightBumper,
+        
+        LeftTriggerPress,
+        
+        LeftTriggerAxis,
+        
+        RightTriggerPress,
+        
+        RightTriggerAxis,
+        
+        LeftJoystickPress,
+        
+        LeftJoystickX,
+        
+        LeftJoystickY,
+        
+        RightJoystickPress,
+        
+        RightJoystickX,
+        
+        RightJoystickY,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
