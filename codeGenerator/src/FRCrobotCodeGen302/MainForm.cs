@@ -72,6 +72,11 @@ namespace FRCrobotCodeGen302
 
             //initialize controller bindings table
             bindingsTable.Rows.Clear();
+            displayToControllerBindingsTable();
+        }
+
+        private void displayToControllerBindingsTable()
+        {
             //display all buttons in table
             foreach (controllerBindingbinding binding in Enum.GetValues(typeof(controllerBindingbinding)))
             {
@@ -83,7 +88,7 @@ namespace FRCrobotCodeGen302
                         foundEntry = true;
                         bindingsTable.Rows.Add(binding.ToString(), entry.teleopControlFunction);
                     }
-                    
+
                 }
 
                 if (!foundEntry && binding != controllerBindingbinding.NONE)
@@ -975,30 +980,7 @@ namespace FRCrobotCodeGen302
             }
             if (!clickedButton)
             {
-                //display all buttons in table
-                foreach (controllerBindingbinding binding in Enum.GetValues(typeof(controllerBindingbinding)))
-                {
-                    Robot.controllerBinding tempBinding = new Robot.controllerBinding();
-
-                    bool foundBinding = false;
-
-                    foreach (Robot.controllerBinding searchedBinding in theRobotConfiguration.theRobotVariants.controllerBindings)
-                    {
-                        if (searchedBinding.binding == binding)
-                        {
-                            if (searchedBinding.controllerId == controllerSelection.SelectedIndex)
-                            {
-                                foundBinding = true;
-                                tempBinding = searchedBinding;
-                            }
-                        }
-                    }
-
-                    if (tempBinding.binding != controllerBindingbinding.NONE)
-                        bindingsTable.Rows.Add(binding.ToString(), tempBinding.teleopControlFunction);
-                    if (!foundBinding && binding != controllerBindingbinding.NONE)
-                        bindingsTable.Rows.Add(binding.ToString(), "NO VALUE");
-                }
+                displayToControllerBindingsTable();
             }
         }
 
@@ -1051,30 +1033,7 @@ namespace FRCrobotCodeGen302
         {
             bindingsTable.Rows.Clear();
 
-            //display all buttons in table
-            foreach (controllerBindingbinding binding in Enum.GetValues(typeof(controllerBindingbinding)))
-            {
-                Robot.controllerBinding tempBinding = new Robot.controllerBinding();
-
-                bool foundBinding = false;
-
-                foreach (Robot.controllerBinding searchedBinding in theRobotConfiguration.theRobotVariants.controllerBindings)
-                {
-                    if (searchedBinding.binding == binding)
-                    {
-                        if (searchedBinding.controllerId == controllerSelection.SelectedIndex)
-                        {
-                            foundBinding = true;
-                            tempBinding = searchedBinding;
-                        }
-                    }
-                }
-
-                if (tempBinding.binding != controllerBindingbinding.NONE)
-                    bindingsTable.Rows.Add(binding.ToString(), tempBinding.teleopControlFunction);
-                if (!foundBinding && binding != controllerBindingbinding.NONE)
-                    bindingsTable.Rows.Add(binding.ToString(), "NO VALUE");
-            }
+            displayToControllerBindingsTable();
         }
         private void bindingsTable_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
