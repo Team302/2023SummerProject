@@ -28,8 +28,6 @@ public:
     enum FUNCTION
     {
         UNKNOWN_FUNCTION,
-        A_button,
-Up,
-
+        $$FUNCTIONS_HERE$$
     };
 };

@@ -60,6 +60,40 @@ namespace CoreCodeGenerator
             }
 
             generateMechanismFiles();
+            generateTeleopControlFiles();
+        }
+
+        private void generateTeleopControlFiles()
+        {
+            addProgress("Writing TeleopControl files...");
+            #region Write TeleopControlFunctions
+            addProgress("Writing TeleopControlFunctions...");
+            string teleopControlFunctionsContents = loadTemplate(theToolConfiguration.teleopControlFunctionsTemplatePath);
+            string newFunctions = "";
+
+            for (int i = 0; i < theRobotConfiguration.theRobotVariants.controllerBindings.Count; i++)
+            {
+                if(theRobotConfiguration.theRobotVariants.controllerBindings[i].teleopControlFunction != "NO VALUE")
+                {
+                    newFunctions += cleanTeleopControlFunction(theRobotConfiguration.theRobotVariants.controllerBindings[i].teleopControlFunction + (i == (theRobotConfiguration.theRobotVariants.controllerBindings.Count - 1) ? "" : "," + Environment.NewLine));
+                }
+                
+            }
+            teleopControlFunctionsContents = teleopControlFunctionsContents.Replace("$$FUNCTIONS_HERE$$", newFunctions);
+
+            File.WriteAllText(getTeleopControlOutputPath("TeleopControlFunctions.h"), teleopControlFunctionsContents);
+            addProgress("Finished writing TeleopControlFunctions...");
+            #endregion
+            #region Write TeleopControlMap
+
+            #endregion
+        }
+
+        private string cleanTeleopControlFunction(string teleopControlFunction)
+        {
+            string resultString = teleopControlFunction;
+            resultString = resultString.Replace(" ", "_");
+            return resultString;
         }
 
         private void generateMechanismFiles()
@@ -182,6 +216,11 @@ namespace CoreCodeGenerator
         private string getMechanismOutputPath(string mechanismName)
         {
             return Path.Combine(theToolConfiguration.rootOutputFolder, "mechanisms", mechanismName);
+        }
+
+        private string getTeleopControlOutputPath(string teleopControl)
+        {
+            return Path.Combine(theToolConfiguration.rootOutputFolder, "teleopControl", teleopControl);
         }
     }
 }

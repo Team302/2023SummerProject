@@ -46,6 +46,8 @@
 
 <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
 <templateMechanismHPath>..\templates\MECHANISM_NAME.h</templateMechanismHPath>
+<teleopControlMapTemplatePath>..\templates\TeleopControlMapTemplate.h</teleopControlMapTemplatePath>
+<teleopControlFunctionsTemplatePath>..\templates\TeleopControlFunctionsTemplate.h</teleopControlFunctionsTemplatePath>
 	
 
 

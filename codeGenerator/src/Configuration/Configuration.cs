@@ -21,6 +21,8 @@ namespace Configuration
 
         public string templateMechanismCppPath = "";
         public string templateMechanismHPath = "";
+        public string teleopControlTemplatePath = "";
+        public string teleopControlFunctionsTemplatePath = "";
 
         public string CopyrightNotice = "";
         public string GenerationNotice = "";
