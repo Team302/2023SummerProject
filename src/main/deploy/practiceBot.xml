@@ -55,52 +55,72 @@
   </robot>
   <controllerBindings>
     <controllerBinding
-      binding="A">
-      <controllerId>0</controllerId>
-      <teleopControlFunction>A button</teleopControlFunction>
-    </controllerBinding>
-    <controllerBinding
-      binding="X">
+      binding="AButton">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="Y">
+      binding="XButton">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="B">
+      binding="YButton">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>Y_button_func</teleopControlFunction>
+    </controllerBinding>
+    <controllerBinding
+      binding="BButton">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="DPadUp">
-      <controllerId>0</controllerId>
-      <teleopControlFunction>Up</teleopControlFunction>
-    </controllerBinding>
-    <controllerBinding
-      binding="DPadDown">
+      binding="DPadPOV0">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="DPadLeft">
+      binding="DPadPOV45">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="DPadRight">
+      binding="DPadPOV90">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="Start">
+      binding="DPadPOV135">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="Select">
+      binding="DPadPOV180">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
+    </controllerBinding>
+    <controllerBinding
+      binding="DPadPOV225">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
+    </controllerBinding>
+    <controllerBinding
+      binding="DPadPOV270">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
+    </controllerBinding>
+    <controllerBinding
+      binding="DPadPOV315">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
+    </controllerBinding>
+    <controllerBinding
+      binding="StartButton">
+      <controllerId>0</controllerId>
+      <teleopControlFunction>NO VALUE</teleopControlFunction>
+    </controllerBinding>
+    <controllerBinding
+      binding="SelectButton">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
@@ -115,22 +135,22 @@
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="LeftTriggerPress">
+      binding="LeftTriggerPressed">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="LeftTriggerAxis">
+      binding="LeftTrigger">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="RightTriggerPress">
+      binding="RightTriggerPressed">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
-      binding="RightTriggerAxis">
+      binding="RightTrigger">
       <controllerId>0</controllerId>
       <teleopControlFunction>NO VALUE</teleopControlFunction>
     </controllerBinding>
@@ -157,7 +177,7 @@
     <controllerBinding
       binding="RightJoystickX">
       <controllerId>0</controllerId>
-      <teleopControlFunction>NO VALUE</teleopControlFunction>
+      <teleopControlFunction>Rstickaxis_func</teleopControlFunction>
     </controllerBinding>
     <controllerBinding
       binding="RightJoystickY">

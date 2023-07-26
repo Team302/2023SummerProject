@@ -72,10 +72,24 @@ namespace FRCrobotCodeGen302
 
             //initialize controller bindings table
             bindingsTable.Rows.Clear();
-            foreach (controllerBinding binding in theRobotConfiguration.theRobotVariants.controllerBindings)
+            //display all buttons in table
+            foreach (controllerBindingbinding binding in Enum.GetValues(typeof(controllerBindingbinding)))
             {
-                if (binding.controllerId == controllerSelection.SelectedIndex)
-                    bindingsTable.Rows.Add(binding.binding.ToString(), binding.teleopControlFunction);
+                bool foundEntry = false;
+                foreach (controllerBinding entry in theRobotConfiguration.theRobotVariants.controllerBindings)
+                {
+                    if (entry.controllerId == controllerSelection.SelectedIndex && binding == entry.binding)
+                    {
+                        foundEntry = true;
+                        bindingsTable.Rows.Add(binding.ToString(), entry.teleopControlFunction);
+                    }
+                    
+                }
+
+                if (!foundEntry && binding != controllerBindingbinding.NONE)
+                {
+                    bindingsTable.Rows.Add(binding.ToString(), "NO VALUE");
+                }
             }
         }
 
@@ -913,26 +927,26 @@ namespace FRCrobotCodeGen302
             //need to add bumpers and triggers
 
             Dictionary<controllerBindingbinding, Point> buttonMap = new Dictionary<controllerBindingbinding, Point> {
-                {controllerBindingbinding.X, x},
-                { controllerBindingbinding.Y, y },
-                { controllerBindingbinding.B, b },
-                { controllerBindingbinding.A, a },
-                { controllerBindingbinding.DPadUp, dPadUp },
-                { controllerBindingbinding.DPadDown, dPadDown },
-                { controllerBindingbinding.DPadLeft, dPadLeft },
-                { controllerBindingbinding.DPadRight, dPadRight },
-                { controllerBindingbinding.Start, start },
-                { controllerBindingbinding.Select, select},
+                {controllerBindingbinding.XButton, x},
+                { controllerBindingbinding.YButton, y },
+                { controllerBindingbinding.BButton, b },
+                { controllerBindingbinding.AButton, a },
+                { controllerBindingbinding.DPadPOV0, dPadUp },
+                { controllerBindingbinding.DPadPOV180, dPadDown },
+                { controllerBindingbinding.DPadPOV270, dPadLeft },
+                { controllerBindingbinding.DPadPOV90, dPadRight }, //haven't included 45 deg pressed yet
+                { controllerBindingbinding.StartButton, start },
+                { controllerBindingbinding.SelectButton, select},
                 { controllerBindingbinding.LeftJoystickPress, leftJoystick},
                 { controllerBindingbinding.LeftJoystickX, leftJoystick},
                 { controllerBindingbinding.LeftJoystickY, leftJoystick},
                 { controllerBindingbinding.RightJoystickPress, rightJoystick},
                 { controllerBindingbinding.RightJoystickX, rightJoystick},
                 { controllerBindingbinding.RightJoystickY, rightJoystick},
-                { controllerBindingbinding.LeftTriggerPress, leftTrigger},
-                { controllerBindingbinding.LeftTriggerAxis, leftTrigger},
-                { controllerBindingbinding.RightTriggerPress, rightTrigger},
-                { controllerBindingbinding.RightTriggerAxis, rightTrigger}};
+                { controllerBindingbinding.LeftTriggerPressed, leftTrigger},
+                { controllerBindingbinding.LeftTrigger, leftTrigger},
+                { controllerBindingbinding.RightTriggerPressed, rightTrigger},
+                { controllerBindingbinding.RightTrigger, rightTrigger}};
 
             bool clickedButton = false;
 

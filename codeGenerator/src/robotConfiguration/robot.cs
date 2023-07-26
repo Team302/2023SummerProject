@@ -3002,37 +3002,45 @@ namespace Robot
         
         NONE,
         
-        A,
+        AButton,
         
-        X,
+        XButton,
         
-        Y,
+        YButton,
         
-        B,
+        BButton,
         
-        DPadUp,
+        DPadPOV0,
         
-        DPadDown,
+        DPadPOV45,
         
-        DPadLeft,
+        DPadPOV90,
         
-        DPadRight,
+        DPadPOV135,
         
-        Start,
+        DPadPOV180,
         
-        Select,
+        DPadPOV225,
+        
+        DPadPOV270,
+        
+        DPadPOV315,
+        
+        StartButton,
+        
+        SelectButton,
         
         LeftBumper,
         
         RightBumper,
         
-        LeftTriggerPress,
+        LeftTriggerPressed,
         
-        LeftTriggerAxis,
+        LeftTrigger,
         
-        RightTriggerPress,
+        RightTriggerPressed,
         
-        RightTriggerAxis,
+        RightTrigger,
         
         LeftJoystickPress,
         

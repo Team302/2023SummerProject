@@ -23,6 +23,7 @@ namespace Configuration
         public string templateMechanismHPath = "";
         public string teleopControlTemplatePath = "";
         public string teleopControlFunctionsTemplatePath = "";
+        public string teleopControlMapTemplatePath = "";
 
         public string CopyrightNotice = "";
         public string GenerationNotice = "";

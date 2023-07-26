@@ -67,7 +67,7 @@ namespace CoreCodeGenerator
         {
             addProgress("Writing TeleopControl files...");
             #region Write TeleopControlFunctions
-            addProgress("Writing TeleopControlFunctions...");
+            addProgress("Writing TeleopControlFunctions.h...");
             string teleopControlFunctionsContents = loadTemplate(theToolConfiguration.teleopControlFunctionsTemplatePath);
             string newFunctions = "";
 
@@ -75,17 +75,63 @@ namespace CoreCodeGenerator
             {
                 if(theRobotConfiguration.theRobotVariants.controllerBindings[i].teleopControlFunction != "NO VALUE")
                 {
-                    newFunctions += cleanTeleopControlFunction(theRobotConfiguration.theRobotVariants.controllerBindings[i].teleopControlFunction + (i == (theRobotConfiguration.theRobotVariants.controllerBindings.Count - 1) ? "" : "," + Environment.NewLine));
+                    newFunctions += cleanTeleopControlFunction(theRobotConfiguration.theRobotVariants.controllerBindings[i].teleopControlFunction + 
+                        (i == (theRobotConfiguration.theRobotVariants.controllerBindings.Count - 1) ? "" : "," + Environment.NewLine));
                 }
                 
             }
             teleopControlFunctionsContents = teleopControlFunctionsContents.Replace("$$FUNCTIONS_HERE$$", newFunctions);
 
             File.WriteAllText(getTeleopControlOutputPath("TeleopControlFunctions.h"), teleopControlFunctionsContents);
-            addProgress("Finished writing TeleopControlFunctions...");
+            addProgress("Finished writing TeleopControlFunctions.h...");
             #endregion
             #region Write TeleopControlMap
+            addProgress("Writing TeleopControlMap.h...");
+            string teleopControlMapContents = loadTemplate(theToolConfiguration.teleopControlMapTemplatePath);
+            string newBindingBeginning = "{TeleopControlFunctions::";
+            string newButtonBindings = "";
+            string newAxisBindings = "";
 
+            for (int i = 0; i < theRobotConfiguration.theRobotVariants.controllerBindings.Count; i++)
+            {
+                if (theRobotConfiguration.theRobotVariants.controllerBindings[i].teleopControlFunction != "NO VALUE")
+                {
+                    string controller = "";
+                    switch(theRobotConfiguration.theRobotVariants.controllerBindings[i].controllerId)
+                    {
+                        case 0:
+                            controller = "driver";
+                            break;
+                        case 1:
+                            controller = "copilot";
+                            break;
+                        default:
+                            controller = "extra" + (theRobotConfiguration.theRobotVariants.controllerBindings[i].controllerId - 2);
+                            break;
+                    }
+
+                    string newBindingsString = newBindingBeginning +
+                        theRobotConfiguration.theRobotVariants.controllerBindings[i].teleopControlFunction +
+                        "," +
+                        controller +
+                        theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString() +
+                        "}" +
+                        (i == (theRobotConfiguration.theRobotVariants.controllerBindings.Count - 1) ? "" : "," + Environment.NewLine);
+
+                    if (theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString().Contains("Button") ||
+                        theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString().Contains("DPad") ||
+                        theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString().Contains("Bumper") ||
+                        theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString().Contains("Pressed"))
+                        newButtonBindings += newBindingsString;
+                    else
+                        newAxisBindings += newBindingsString;
+                }
+            }
+            teleopControlMapContents = teleopControlMapContents.Replace("$$BUTTON_BINDINGS_HERE$$", newButtonBindings);
+            teleopControlMapContents = teleopControlMapContents.Replace("$$AXIS_BINDINGS_HERE$$", newAxisBindings);
+
+            File.WriteAllText(getTeleopControlOutputPath("TeleopControlMap.h"), teleopControlMapContents);
+            addProgress("Finished writing TeleopControlFunctions...");
             #endregion
         }
 
