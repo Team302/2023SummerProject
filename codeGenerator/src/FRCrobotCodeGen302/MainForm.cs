@@ -910,10 +910,6 @@ namespace FRCrobotCodeGen302
             int mouseX = e.X;
             int mouseY = e.Y;
 
-            Debug.WriteLine("Clicked at X: " + e.X + " Y: " + e.Y);
-
-            //1197, 815
-
             Point x = new Point(245, 145);
             Point y = new Point(260, 125);
             Point a = new Point(260, 160);
