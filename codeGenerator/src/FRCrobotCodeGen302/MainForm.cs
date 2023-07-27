@@ -989,11 +989,6 @@ namespace FRCrobotCodeGen302
             return Math.Sqrt(Math.Pow(buttonPoint.X - mousePoint.X, 2) + Math.Pow(buttonPoint.Y - mousePoint.Y, 2)) < radius;
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
         private void controllerBindingsSave_Click(object sender, EventArgs e)
         {
             //clear old bindings for current controller
