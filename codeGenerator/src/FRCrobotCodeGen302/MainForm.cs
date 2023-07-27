@@ -1042,6 +1042,15 @@ namespace FRCrobotCodeGen302
         {
             controllerImage_MouseClick(null, new MouseEventArgs(MouseButtons.Left, 1, 100, 0, 0));
         }
+
+        private void bindingsTable_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            //if(e.ColumnIndex == bindingsTable.Columns["FunctionCol"].Index)
+            //{
+            //    int selectedController = controllerSelection.SelectedIndex;
+
+            //}
+        }
     }
 
     class leafNodeTag

@@ -497,6 +497,7 @@ namespace FRCrobotCodeGen302
             this.bindingsTable.Size = new System.Drawing.Size(253, 358);
             this.bindingsTable.TabIndex = 2;
             this.bindingsTable.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.bindingsTable_CellMouseDoubleClick);
+            this.bindingsTable.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.bindingsTable_CellValueChanged);
             // 
             // ButtonCol
             // 
