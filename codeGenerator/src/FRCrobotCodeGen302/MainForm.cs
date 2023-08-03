@@ -1045,11 +1045,7 @@ namespace FRCrobotCodeGen302
 
         private void bindingsTable_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            //if(e.ColumnIndex == bindingsTable.Columns["FunctionCol"].Index)
-            //{
-            //    int selectedController = controllerSelection.SelectedIndex;
-
-            //}
+            needsSaving = true;
         }
     }
 
