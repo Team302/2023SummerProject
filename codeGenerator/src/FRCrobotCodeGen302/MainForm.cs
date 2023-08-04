@@ -839,12 +839,24 @@ namespace FRCrobotCodeGen302
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            ShowNeedsSavingPrompt(e);
+        }
+        private void ShowNeedsSavingPrompt(FormClosingEventArgs e)
+        {
             if (needsSaving)
             {
                 DialogResult dlgRes = MessageBox.Show("Do you want to save changes?", "302 Code Generator", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (dlgRes == DialogResult.Yes)
                 {
-                    saveConfigBbutton_Click(null, null);
+                    if(theTabControl.SelectedTab.Name == "tabConfigController")
+                        controllerBindingsSave_Click(null, null);
+                    else
+                        saveConfigBbutton_Click(null, null);
+                    clearNeedsSaving();
+                }
+                else if(dlgRes == DialogResult.No)
+                {
+                    //later maybe revert back to last saved?
                     clearNeedsSaving();
                 }
                 else if (dlgRes == DialogResult.Cancel)
@@ -907,6 +919,10 @@ namespace FRCrobotCodeGen302
         }
         private void controllerImage_MouseClick(object sender, MouseEventArgs e)
         {
+            bindingsTable.EndEdit();
+
+            ShowNeedsSavingPrompt(null);
+
             int mouseX = e.X;
             int mouseY = e.Y;
 
@@ -991,7 +1007,9 @@ namespace FRCrobotCodeGen302
             List<controllerBinding> bindingsToRemove = new List<controllerBinding>();
             foreach (controllerBinding binding in theRobotConfiguration.theRobotVariants.controllerBindings)
             {
-                if (binding.controllerId == controllerSelection.SelectedIndex)
+                
+                if (binding.controllerId == controllerSelection.SelectedIndex &&
+                    bindingsTable.Rows.Cast<DataGridViewRow>().Any(row => row.Cells[0].Value.ToString() == binding.binding.ToString()))
                 {
                     bindingsToRemove.Add(binding);
                 }
