@@ -57,6 +57,7 @@ namespace FRCrobotCodeGen302
             this.valueComboBox = new System.Windows.Forms.ComboBox();
             this.robotElementCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.tabConfigController = new System.Windows.Forms.TabPage();
+            this.buttonModeComboBox = new System.Windows.Forms.ComboBox();
             this.rightTriggerButton = new System.Windows.Forms.Button();
             this.leftTriggerButton = new System.Windows.Forms.Button();
             this.controllerSelection = new System.Windows.Forms.ComboBox();
@@ -65,6 +66,10 @@ namespace FRCrobotCodeGen302
             this.ButtonCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FunctionCol = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.controllerImage = new System.Windows.Forms.PictureBox();
+            this.axisProfileComboBox = new System.Windows.Forms.ComboBox();
+            this.axisDirectionComboBox = new System.Windows.Forms.ComboBox();
+            this.axisScaleUpDown = new System.Windows.Forms.NumericUpDown();
+            this.axisDeadbandComboBox = new System.Windows.Forms.ComboBox();
             this.configurationGroupBox.SuspendLayout();
             this.theTabControl.SuspendLayout();
             this.tabMainPage.SuspendLayout();
@@ -78,6 +83,7 @@ namespace FRCrobotCodeGen302
             this.tabConfigController.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingsTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.controllerImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axisScaleUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -418,6 +424,11 @@ namespace FRCrobotCodeGen302
             // 
             // tabConfigController
             // 
+            this.tabConfigController.Controls.Add(this.axisDeadbandComboBox);
+            this.tabConfigController.Controls.Add(this.axisScaleUpDown);
+            this.tabConfigController.Controls.Add(this.axisDirectionComboBox);
+            this.tabConfigController.Controls.Add(this.axisProfileComboBox);
+            this.tabConfigController.Controls.Add(this.buttonModeComboBox);
             this.tabConfigController.Controls.Add(this.rightTriggerButton);
             this.tabConfigController.Controls.Add(this.leftTriggerButton);
             this.tabConfigController.Controls.Add(this.controllerSelection);
@@ -432,9 +443,22 @@ namespace FRCrobotCodeGen302
             this.tabConfigController.Text = "Controller Bindings";
             this.tabConfigController.UseVisualStyleBackColor = true;
             // 
+            // buttonModeComboBox
+            // 
+            this.buttonModeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.buttonModeComboBox.FormattingEnabled = true;
+            this.buttonModeComboBox.Items.AddRange(new object[] {
+            "Standard (Hold)",
+            "Toggle"});
+            this.buttonModeComboBox.Location = new System.Drawing.Point(413, 130);
+            this.buttonModeComboBox.Name = "buttonModeComboBox";
+            this.buttonModeComboBox.Size = new System.Drawing.Size(156, 24);
+            this.buttonModeComboBox.TabIndex = 7;
+            this.buttonModeComboBox.Visible = false;
+            // 
             // rightTriggerButton
             // 
-            this.rightTriggerButton.Location = new System.Drawing.Point(554, 63);
+            this.rightTriggerButton.Location = new System.Drawing.Point(296, 143);
             this.rightTriggerButton.Name = "rightTriggerButton";
             this.rightTriggerButton.Size = new System.Drawing.Size(86, 44);
             this.rightTriggerButton.TabIndex = 6;
@@ -444,7 +468,7 @@ namespace FRCrobotCodeGen302
             // 
             // leftTriggerButton
             // 
-            this.leftTriggerButton.Location = new System.Drawing.Point(397, 63);
+            this.leftTriggerButton.Location = new System.Drawing.Point(8, 143);
             this.leftTriggerButton.Name = "leftTriggerButton";
             this.leftTriggerButton.Size = new System.Drawing.Size(82, 44);
             this.leftTriggerButton.TabIndex = 5;
@@ -494,7 +518,7 @@ namespace FRCrobotCodeGen302
             this.bindingsTable.RowHeadersVisible = false;
             this.bindingsTable.RowHeadersWidth = 51;
             this.bindingsTable.RowTemplate.Height = 24;
-            this.bindingsTable.Size = new System.Drawing.Size(253, 358);
+            this.bindingsTable.Size = new System.Drawing.Size(391, 137);
             this.bindingsTable.TabIndex = 2;
             this.bindingsTable.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.bindingsTable_CellMouseDoubleClick);
             this.bindingsTable.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.bindingsTable_CellValueChanged);
@@ -516,13 +540,79 @@ namespace FRCrobotCodeGen302
             // controllerImage
             // 
             this.controllerImage.Image = global::FRCrobotCodeGen302.Properties.Resources.controller;
-            this.controllerImage.Location = new System.Drawing.Point(251, 3);
+            this.controllerImage.Location = new System.Drawing.Point(-4, 47);
             this.controllerImage.Name = "controllerImage";
-            this.controllerImage.Size = new System.Drawing.Size(529, 357);
+            this.controllerImage.Size = new System.Drawing.Size(395, 361);
             this.controllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.controllerImage.TabIndex = 1;
             this.controllerImage.TabStop = false;
             this.controllerImage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.controllerImage_MouseClick);
+            // 
+            // axisProfileComboBox
+            // 
+            this.axisProfileComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.axisProfileComboBox.FormattingEnabled = true;
+            this.axisProfileComboBox.Items.AddRange(new object[] {
+            "Linear",
+            "Squared",
+            "Cubed",
+            "Piecewise Linear"});
+            this.axisProfileComboBox.Location = new System.Drawing.Point(597, 129);
+            this.axisProfileComboBox.Name = "axisProfileComboBox";
+            this.axisProfileComboBox.Size = new System.Drawing.Size(121, 24);
+            this.axisProfileComboBox.TabIndex = 8;
+            this.axisProfileComboBox.Visible = false;
+            // 
+            // axisDirectionComboBox
+            // 
+            this.axisDirectionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.axisDirectionComboBox.FormattingEnabled = true;
+            this.axisDirectionComboBox.Items.AddRange(new object[] {
+            "Synced",
+            "Reversed"});
+            this.axisDirectionComboBox.Location = new System.Drawing.Point(597, 162);
+            this.axisDirectionComboBox.Name = "axisDirectionComboBox";
+            this.axisDirectionComboBox.Size = new System.Drawing.Size(121, 24);
+            this.axisDirectionComboBox.TabIndex = 9;
+            this.axisDirectionComboBox.Visible = false;
+            // 
+            // axisScaleUpDown
+            // 
+            this.axisScaleUpDown.DecimalPlaces = 2;
+            this.axisScaleUpDown.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            131072});
+            this.axisScaleUpDown.Location = new System.Drawing.Point(597, 203);
+            this.axisScaleUpDown.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.axisScaleUpDown.Name = "axisScaleUpDown";
+            this.axisScaleUpDown.Size = new System.Drawing.Size(120, 22);
+            this.axisScaleUpDown.TabIndex = 10;
+            this.axisScaleUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.axisScaleUpDown.Visible = false;
+            // 
+            // axisDeadbandComboBox
+            // 
+            this.axisDeadbandComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.axisDeadbandComboBox.FormattingEnabled = true;
+            this.axisDeadbandComboBox.Items.AddRange(new object[] {
+            "None",
+            "Standard Deadband",
+            "Scaled Deadband"});
+            this.axisDeadbandComboBox.Location = new System.Drawing.Point(597, 232);
+            this.axisDeadbandComboBox.Name = "axisDeadbandComboBox";
+            this.axisDeadbandComboBox.Size = new System.Drawing.Size(121, 24);
+            this.axisDeadbandComboBox.TabIndex = 11;
+            this.axisDeadbandComboBox.Visible = false;
             // 
             // MainForm
             // 
@@ -551,6 +641,7 @@ namespace FRCrobotCodeGen302
             this.tabConfigController.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bindingsTable)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.controllerImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axisScaleUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -592,6 +683,11 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.DataGridViewTextBoxColumn FunctionCol;
         private System.Windows.Forms.Button leftTriggerButton;
         private System.Windows.Forms.Button rightTriggerButton;
+        private System.Windows.Forms.ComboBox buttonModeComboBox;
+        private System.Windows.Forms.ComboBox axisProfileComboBox;
+        private System.Windows.Forms.NumericUpDown axisScaleUpDown;
+        private System.Windows.Forms.ComboBox axisDirectionComboBox;
+        private System.Windows.Forms.ComboBox axisDeadbandComboBox;
     }
 }
 
