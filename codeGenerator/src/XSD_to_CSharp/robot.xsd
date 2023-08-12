@@ -8,7 +8,7 @@
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="pigeon" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="limelight" />
 				<xs:element ref="chassis" />
-				<xs:element minOccurs="0" maxOccurs="unbounded" ref="mechanism" />
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="mechanismInstance" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="camera" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="roborio" />
 			</xs:sequence>
@@ -27,11 +27,22 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element minOccurs="1" maxOccurs="unbounded" ref="robot" />
-			</xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="mechanism" />
+      </xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="mechanism">
+  <xs:element name="mechanismInstance">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="name" default="mechanismInstanceName" type="xs:string" />
+        <xs:element ref="mechanism" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="mechanism">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="motor" />
@@ -50,13 +61,13 @@
 	<xs:element name="closedLoopControlParameters">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="name" default="UNKNOWN" type="xs:string" />
-				<xs:element minOccurs="0" maxOccurs="1" name="pGain" type="xs:double"/>
-				<xs:element minOccurs="0" maxOccurs="1" name="iGain" type="xs:double"/>
-				<xs:element minOccurs="0" maxOccurs="1" name="dGain" type="xs:double"/>
-				<xs:element minOccurs="0" maxOccurs="1" name="fGain" type="xs:double"/>
-				<xs:element minOccurs="0" maxOccurs="1" name="iZone" type="xs:double"/>
-			</xs:sequence>
+        <xs:element name="name" default="UNKNOWN" type="xs:string" />
+        <xs:element name="pGain" type="doubleParameter"/>
+        <xs:element name="iGain" type="doubleParameter"/>
+        <xs:element name="dGain" type="doubleParameter"/>
+				<xs:element name="fGain" type="doubleParameter"/>
+        <xs:element name="iZone" type="doubleParameter"/>
+      </xs:sequence>
 		</xs:complexType>
 	</xs:element>
 
@@ -684,5 +695,20 @@
 		</xs:restriction>
 	</xs:simpleType>
 
+  <xs:complexType name="doubleParameter">
+      <xs:attribute default="0" name="value" type="xs:double"/>
+  </xs:complexType>
+  
+  <xs:complexType name="doubleRestrictedParameter">
+    <xs:attribute default="0" name="value">
+      <xs:simpleType>
+        <xs:restriction base="xs:double">
+          <xs:maxInclusive value="2.0"/>
+          <xs:minInclusive value="-2.5"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    
+  </xs:complexType>  
 </xs:schema>
 

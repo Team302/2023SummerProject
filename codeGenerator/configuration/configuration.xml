@@ -4,6 +4,7 @@
   <robotConfiguration>C:\FRC\2023SummerProject\codeGenerator\configuration\2023SummerRobots.xml</robotConfiguration>
   <robotConfigurations>
     <string>2023SummerRobots.xml</string>
+    <string>2023SummerRobots.xml</string>
   </robotConfigurations>
   <treeviewParentNameExtensions>
     <string>name</string>
@@ -13,6 +14,10 @@
     <string>stateIdentifier</string>
     <string>identifier</string>
   </treeviewParentNameExtensions>
+  <parameterTypes>
+    <string>Robot.doubleParameter</string>
+    <string>Robot.doubleRestrictedParameter</string>
+  </parameterTypes>
   <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
   <templateMechanismHPath>..\templates\MECHANISM_NAME.h</templateMechanismHPath>
   <CopyrightNotice>
