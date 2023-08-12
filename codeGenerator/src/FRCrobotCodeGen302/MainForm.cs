@@ -19,6 +19,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Linq;
 
 namespace FRCrobotCodeGen302
 {
@@ -102,7 +103,7 @@ namespace FRCrobotCodeGen302
                         }
                     }
                 }
-                else if(isAParameterType(objType.FullName))
+                else if (isAParameterType(objType.FullName))
                 {
                     object value = null;
                     value = properties[0].GetValue(obj);
@@ -462,6 +463,10 @@ namespace FRCrobotCodeGen302
                     if (ic.Count == 0)
                         types.Add(new robotElementType(propertyInfo.PropertyType));
                 }
+                else if (propertyInfo.PropertyType == typeof(mechanismInstance))
+                {
+                    types.Add(new robotElementType(propertyInfo.PropertyType));
+                }
             }
             return types;
         }
@@ -521,7 +526,11 @@ namespace FRCrobotCodeGen302
                     robotElementCheckedListBox.Items.Clear();
                     foreach (robotElementType t in theCurrentElementPossibilities)
                     {
-                        Type elementType = ((robotElementType)t).t.GetGenericArguments().Single();
+                        Type elementType;
+                        if (isACollection(t.t))
+                            elementType = t.t.GetGenericArguments().Single();
+                        else
+                            elementType = t.t;
 
                         // Add the defined mechanisms as choices to add to a robot variant
                         if (elementType.Equals((new mechanismInstance()).GetType()))
@@ -738,7 +747,7 @@ namespace FRCrobotCodeGen302
                             prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                             if (null != prop && prop.CanWrite)
                             {
-                                
+
                                 if (prop.PropertyType.Name == "UInt")
                                     prop.SetValue(lnt.obj, (uint)valueNumericUpDown.Value);
                                 else if (prop.PropertyType.Name == "Double")
@@ -757,7 +766,7 @@ namespace FRCrobotCodeGen302
                                     prop.SetValue(lastSelectedValueNode.Parent.Tag, (double)valueNumericUpDown.Value);
                             }
                         }
-                        
+
 
                         lastSelectedValueNode.Text = getTreeNodeDisplayName(valueNumericUpDown.Value.ToString(), lnt.name);
 
@@ -800,7 +809,7 @@ namespace FRCrobotCodeGen302
                 foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems)
                 {
                     Type elementType;
-                    
+
                     // first create a new element instance
                     if (robotElementObj is mechanism)
                         elementType = ((mechanism)robotElementObj).GetType();
@@ -815,10 +824,10 @@ namespace FRCrobotCodeGen302
                     if (robotElementObj is mechanism)
                     {
                         obj = Activator.CreateInstance((new mechanismInstance()).GetType());
-                        
+
                         name = "mechanismInstance";
                         pi = lastSelectedValueNode.Tag.GetType().GetProperty(name);
-                        ((mechanismInstance)obj).mechanism = (mechanism)robotElementObj;
+                        ((mechanismInstance)obj).mechanism = robotConfig.DeepClone((mechanism)robotElementObj);
                     }
                     else
                     {
@@ -838,30 +847,11 @@ namespace FRCrobotCodeGen302
                     tn = AddNode(lastSelectedValueNode, theCollectionObj, name);
                     tn.EnsureVisible();
                     tn.Expand();
-                    
+
 
                     mechanism theMechanism;
                     if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
-                    {
-                        List<mechanismInstance> updatedMechanismInstances = new List<mechanismInstance>();
-                        foreach(robot r in theRobotConfiguration.theRobotVariants.robot)
-                        {
-                            foreach(mechanismInstance mi in r.mechanismInstance)
-                            {
-                               if(mi.mechanism.name == theMechanism.name)
-                                {
-                                    mechanism m = robotConfig.DeepClone(theMechanism);
-
-                                    theRobotConfiguration.MergeMechanismParametersIntoStructure(m, mi.mechanism);
-
-                                    ((TreeNode)mi.mechanism.theTreeNode).Remove();
-
-                                    mi.mechanism = m;
-                                    mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name);
-                                }
-                            }
-                        }
-                    }
+                        updateMechInstancesFromMechTemplate(theMechanism);
                 }
 
                 if (tn != null)
@@ -872,31 +862,73 @@ namespace FRCrobotCodeGen302
 
             else if (lastSelectedArrayNode != null)
             {
-                // first create a new instance
-                Type elementType = lastSelectedArrayNode.Tag.GetType().GetGenericArguments().Single();
-                object obj = Activator.CreateInstance(elementType);
+                if (lastSelectedArrayNode.Text == "mechanismInstances")
+                {
+                    TreeNode tn = null;
+                    foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems) // there should only be mechanisms in the checkedItems list 
+                    {
+                        // first create a new element instance
+                        if (robotElementObj is mechanism)
+                        {
+                            Type elementType = ((mechanism)robotElementObj).GetType();
 
-                // then add it to the collection
-                lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
-                int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+                            object obj = Activator.CreateInstance((new mechanismInstance()).GetType());
+                            ((mechanismInstance)obj).mechanism = robotConfig.DeepClone((mechanism)robotElementObj);
 
-                AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+                            // then add it to the collection
+                            lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
+                            int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+
+                            AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+                        }
+                    }
+                }
+                else
+                {
+                    // first create a new instance
+                    Type elementType = lastSelectedArrayNode.Tag.GetType().GetGenericArguments().Single();
+                    object obj = Activator.CreateInstance(elementType);
+
+                    // then add it to the collection
+                    lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
+                    int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+
+                    AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+                }
 
                 setNeedsSaving();
 
                 mechanism theMechanism;
                 if (isPartOfAMechanismTemplate(lastSelectedArrayNode, out theMechanism))
+                    updateMechInstancesFromMechTemplate(theMechanism);
+            }
+        }
+
+        void updateMechInstancesFromMechTemplate(mechanism theMechanism)
+        {
+            foreach (robot r in theRobotConfiguration.theRobotVariants.robot)
+            {
+                foreach (mechanismInstance mi in r.mechanismInstance)
                 {
+                    if (mi.mechanism.name == theMechanism.name)
+                    {
+                        mechanism m = robotConfig.DeepClone(theMechanism);
+
+                        theRobotConfiguration.MergeMechanismParametersIntoStructure(m, mi.mechanism);
+
+                        ((TreeNode)mi.mechanism.theTreeNode).Remove();
+
+                        mi.mechanism = m;
+                        mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name);
+                    }
                 }
             }
         }
 
 
-
         bool isPartOfAMechanismTemplate(TreeNode tn, out mechanism theTemplateMechanism)
         {
-            string mechTemplateIdentifier = ".mechanisms.Robot Variant";
-            List<object> lineage = new List<object>(); 
+            List<object> lineage = new List<object>();
 
             if (tn != null)
             {
@@ -906,8 +938,8 @@ namespace FRCrobotCodeGen302
                     tn = tn.Parent;
                     lineage.Add(tn.Tag);
                 }
-                
-                if(lineage.Count >= 3)
+
+                if (lineage.Count >= 3)
                 {
                     if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
                         (isACollection(lineage[lineage.Count - 2])) &&
