@@ -1070,6 +1070,11 @@ namespace FRCrobotCodeGen302
 
                         if (theObjectToDelete != null)
                         {
+                            bool updateMechanismInstances = false;
+                            mechanism theMechanism;
+                            if (isPartOfAMechanismTemplate(tn, out theMechanism))
+                                updateMechanismInstances = true;
+
                             parent.Tag.GetType().GetMethod("Remove").Invoke(parent.Tag, new object[] { theObjectToDelete });
                             tn.Remove();
                             setNeedsSaving();
@@ -1078,6 +1083,10 @@ namespace FRCrobotCodeGen302
                             {
                                 parent.Remove();
                             }
+
+                            if (updateMechanismInstances == true)
+                                updateMechInstancesFromMechTemplate(theMechanism);
+
                         }
                     }
                 }
