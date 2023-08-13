@@ -525,14 +525,15 @@ namespace FRCrobotCodeGen302
             lastSelectedArrayNode = null;
             lastSelectedValueNode = null;
 
-            deleteTreeElementButton.Enabled = isDeletable(e.Node);
+            bool isInaMechanismInstance = isPartOfAMechanismInstance(e.Node);
+            deleteTreeElementButton.Enabled = isDeletable(e.Node) && !isInaMechanismInstance;
 
             if (e.Node.Tag != null)
             {
                 bool visible_And_or_Enabled = false;
 
                 theCurrentElementPossibilities = getEmptyPossibleCollectionSubTypes(e.Node.Tag);
-                if (theCurrentElementPossibilities.Count > 0)
+                if ((theCurrentElementPossibilities.Count > 0) && (!isPartOfAMechanismInstance(e.Node)) )
                 {
                     visible_And_or_Enabled = true;
 
@@ -564,12 +565,11 @@ namespace FRCrobotCodeGen302
                 addRobotElementLabel.Visible = visible_And_or_Enabled;
                 addTreeElementButton.Enabled = visible_And_or_Enabled;
 
-                bool isInaMechanismInstance = isPartOfAMechanismInstance(e.Node);
 
                 if (isACollection(e.Node.Tag))
                 {
                     lastSelectedArrayNode = e.Node;
-                    addTreeElementButton.Enabled = true;
+                    addTreeElementButton.Enabled = !isInaMechanismInstance;
                 }
                 /*
                 else if ((e.Node.Parent!=null) && (e.Node.Parent.Tag is robot))
@@ -1011,7 +1011,7 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                if (lineage.Count >= 7)
+                if (lineage.Count >= 5)
                 {
                     if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
                         (isACollection(lineage[lineage.Count - 2])) &&
