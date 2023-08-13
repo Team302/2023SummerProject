@@ -551,6 +551,8 @@ namespace FRCrobotCodeGen302
                 addRobotElementLabel.Visible = visible_And_or_Enabled;
                 addTreeElementButton.Enabled = visible_And_or_Enabled;
 
+                bool isInaMechanismInstance = isPartOfAMechanismInstance(e.Node);
+
                 if (isACollection(e.Node.Tag))
                 {
                     lastSelectedArrayNode = e.Node;
@@ -569,6 +571,7 @@ namespace FRCrobotCodeGen302
 
                     object value = null;
                     PropertyInfo prop = null;
+                    bool allowEdit = false;
                     if (isAParameterType(lnt.type.FullName))
                     {
                         prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
@@ -576,6 +579,7 @@ namespace FRCrobotCodeGen302
                         {
                             value = prop.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
                         }
+                        allowEdit = isInaMechanismInstance;
                     }
                     else
                     {
@@ -584,76 +588,81 @@ namespace FRCrobotCodeGen302
                         {
                             value = prop.GetValue(lastSelectedValueNode.Parent.Tag);
                         }
+
+                        allowEdit = !isInaMechanismInstance;
                     }
 
-                    enableCallback = false;
-                    if (lnt.type.IsEnum)
+                    if (allowEdit)
                     {
-                        showValueComboBox();
-                        valueComboBox.Items.Clear();
-
-                        string[] enumList = Enum.GetNames(lnt.type);
-                        foreach (string en in enumList)
-                            valueComboBox.Items.Add(en);
-
-                        valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
-                    }
-                    else if (value is uint || value is UInt32)
-                    {
-                        RangeAttribute ra = prop.GetCustomAttribute<RangeAttribute>();
-                        if (ra == null)
+                        enableCallback = false;
+                        if (lnt.type.IsEnum)
                         {
-                            valueNumericUpDown.Minimum = 0;
-                            valueNumericUpDown.Maximum = 5000;
+                            showValueComboBox();
+                            valueComboBox.Items.Clear();
+
+                            string[] enumList = Enum.GetNames(lnt.type);
+                            foreach (string en in enumList)
+                                valueComboBox.Items.Add(en);
+
+                            valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
+                        }
+                        else if (value is uint || value is UInt32)
+                        {
+                            RangeAttribute ra = prop.GetCustomAttribute<RangeAttribute>();
+                            if (ra == null)
+                            {
+                                valueNumericUpDown.Minimum = 0;
+                                valueNumericUpDown.Maximum = 5000;
+                            }
+                            else
+                            {
+                                valueNumericUpDown.Minimum = Convert.ToInt32(ra.Minimum);
+                                valueNumericUpDown.Maximum = Convert.ToInt32(ra.Maximum);
+                            }
+
+
+                            valueNumericUpDown.DecimalPlaces = 0;
+                            valueNumericUpDown.Value = (uint)value;
+                            showValueNumericUpDown();
+                        }
+                        else if (value is double)
+                        {
+                            RangeAttribute ra = prop.GetCustomAttribute<RangeAttribute>();
+                            if (ra == null)
+                            {
+                                valueNumericUpDown.Minimum = Decimal.MinValue;
+                                valueNumericUpDown.Maximum = Decimal.MaxValue;
+                            }
+                            else
+                            {
+                                valueNumericUpDown.Minimum = Convert.ToDecimal(ra.Minimum);
+                                valueNumericUpDown.Maximum = Convert.ToDecimal(ra.Maximum);
+                            }
+
+                            valueNumericUpDown.DecimalPlaces = 5;
+                            valueNumericUpDown.Value = Convert.ToDecimal(value);
+                            showValueNumericUpDown();
+                        }
+                        else if (lastSelectedValueNode.Text == "controlFile")
+                        {
+                            showValueComboBox();
+                            valueComboBox.Items.Clear();
+
+                            string stateDataFilesPath = Path.Combine(Path.GetDirectoryName(generatorConfig.robotConfiguration), "states");
+
+                            string[] files = Directory.GetFiles(stateDataFilesPath, "*.xml");
+                            foreach (string f in files)
+                                valueComboBox.Items.Add(Path.GetFileName(f));
+
+                            valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
                         }
                         else
                         {
-                            valueNumericUpDown.Minimum = Convert.ToInt32(ra.Minimum);
-                            valueNumericUpDown.Maximum = Convert.ToInt32(ra.Maximum);
+                            showValueTextBox();
+                            valueTextBox.Text = value.ToString();
                         }
-
-
-                        valueNumericUpDown.DecimalPlaces = 0;
-                        valueNumericUpDown.Value = (uint)value;
-                        showValueNumericUpDown();
+                        enableCallback = true;
                     }
-                    else if (value is double)
-                    {
-                        RangeAttribute ra = prop.GetCustomAttribute<RangeAttribute>();
-                        if (ra == null)
-                        {
-                            valueNumericUpDown.Minimum = Decimal.MinValue;
-                            valueNumericUpDown.Maximum = Decimal.MaxValue;
-                        }
-                        else
-                        {
-                            valueNumericUpDown.Minimum = Convert.ToDecimal(ra.Minimum);
-                            valueNumericUpDown.Maximum = Convert.ToDecimal(ra.Maximum);
-                        }
-
-                        valueNumericUpDown.DecimalPlaces = 5;
-                        valueNumericUpDown.Value = Convert.ToDecimal(value);
-                        showValueNumericUpDown();
-                    }
-                    else if (lastSelectedValueNode.Text == "controlFile")
-                    {
-                        showValueComboBox();
-                        valueComboBox.Items.Clear();
-
-                        string stateDataFilesPath = Path.Combine(Path.GetDirectoryName(generatorConfig.robotConfiguration), "states");
-
-                        string[] files = Directory.GetFiles(stateDataFilesPath, "*.xml");
-                        foreach (string f in files)
-                            valueComboBox.Items.Add(Path.GetFileName(f));
-
-                        valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
-                    }
-                    else
-                    {
-                        showValueTextBox();
-                        valueTextBox.Text = value.ToString();
-                    }
-                    enableCallback = true;
                 }
                 else
                 {
@@ -974,6 +983,35 @@ namespace FRCrobotCodeGen302
             theTemplateMechanism = null;
             return false;
         }
+
+        bool isPartOfAMechanismInstance(TreeNode tn)
+        {
+            List<object> lineage = new List<object>();
+
+            if (tn != null)
+            {
+                lineage.Add(tn.Tag);
+                while (tn.Parent != null)
+                {
+                    tn = tn.Parent;
+                    lineage.Add(tn.Tag);
+                }
+
+                if (lineage.Count >= 7)
+                {
+                    if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
+                        (isACollection(lineage[lineage.Count - 2])) &&
+                        (lineage[lineage.Count - 5].GetType().FullName == "Robot.mechanismInstance"))
+                    {
+                        return true;
+                    }
+                }
+
+            }
+
+            return false;
+        }
+
         private bool isACollection(object obj)
         {
             return isACollection(obj.GetType());
