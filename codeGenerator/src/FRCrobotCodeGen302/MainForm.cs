@@ -66,6 +66,8 @@ namespace FRCrobotCodeGen302
             {
                 addProgress("Issue encountered while loading the cached generator configuration file\r\n" + ex.ToString());
             }
+
+            robotTreeView.ImageList = treeViewIcons;
         }
 
         private void addProgress(string info)
@@ -258,6 +260,17 @@ namespace FRCrobotCodeGen302
                         // this means that this is a leaf node
                         leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj);
                         tn.Tag = lnt;
+
+                        int imageIndex = 1;
+                        if (isAParameterType(objType.FullName))
+                            imageIndex = 2;
+                        else if(isPartOfAMechanismInstance(tn))
+                            imageIndex = 0;
+
+                        tn.ImageIndex = imageIndex;
+                        tn.SelectedImageIndex = imageIndex;
+
+
                     }
                 }
             }
@@ -589,7 +602,8 @@ namespace FRCrobotCodeGen302
                             value = prop.GetValue(lastSelectedValueNode.Parent.Tag);
                         }
 
-                        allowEdit = true;
+
+                        allowEdit = !isInaMechanismInstance;
                     }
 
                     if (allowEdit)
@@ -690,7 +704,7 @@ namespace FRCrobotCodeGen302
                             else
                             {
                                 prop.SetValue(lastSelectedValueNode.Parent.Tag, Enum.Parse(lnt.type, valueComboBox.Text));
-                              //  lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(null, lastSelectedValueNode.Parent.Tag, lastSelectedValueNode.Parent.Tag.GetType().Name);
+                                //  lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(null, lastSelectedValueNode.Parent.Tag, lastSelectedValueNode.Parent.Tag.GetType().Name);
                             }
 
                             lastSelectedValueNode.Text = getTreeNodeDisplayName(valueComboBox.Text, lnt.name);
@@ -743,7 +757,7 @@ namespace FRCrobotCodeGen302
 
 
                         mechanism theMechanism;
-                       if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                        if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
                             updateMechInstancesFromMechTemplate(theMechanism);
 
                         setNeedsSaving();
