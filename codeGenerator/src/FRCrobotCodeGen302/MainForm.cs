@@ -681,8 +681,20 @@ namespace FRCrobotCodeGen302
                             else
                             {
                                 prop.SetValue(lastSelectedValueNode.Parent.Tag, Enum.Parse(lnt.type, valueComboBox.Text));
-                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(null, lastSelectedValueNode.Parent.Tag, lastSelectedValueNode.Parent.Tag.GetType().Name);
+                              //  lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(null, lastSelectedValueNode.Parent.Tag, lastSelectedValueNode.Parent.Tag.GetType().Name);
                             }
+
+                            lastSelectedValueNode.Text = getTreeNodeDisplayName(valueComboBox.Text, lnt.name);
+
+                            if (lastSelectedValueNode.Parent != null)
+                            {
+                                if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
+                                    lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+                            }
+
+                            mechanism theMechanism;
+                            if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                                updateMechInstancesFromMechTemplate(theMechanism);
 
                             setNeedsSaving();
                         }
@@ -721,6 +733,9 @@ namespace FRCrobotCodeGen302
                         }
 
 
+                        mechanism theMechanism;
+                       if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                            updateMechInstancesFromMechTemplate(theMechanism);
 
                         setNeedsSaving();
                     }
@@ -775,6 +790,10 @@ namespace FRCrobotCodeGen302
                             if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
                                 lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
                         }
+
+                        mechanism theMechanism;
+                        if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                            updateMechInstancesFromMechTemplate(theMechanism);
 
                         setNeedsSaving();
                     }
