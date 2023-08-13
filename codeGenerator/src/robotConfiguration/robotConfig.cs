@@ -32,11 +32,7 @@ namespace robotConfiguration
 
                 foreach (robot theRobot in theRobotVariants.robot)
                 {
-                    if (theRobot.pdp == null)
-                        theRobot.pdp = new pdp();
-
-                    if (theRobot.chassis == null)
-                        theRobot.chassis = new chassis();
+                    theRobot.initialize();
 
                     ValidationContext context = new ValidationContext(theRobot.pdp);
                     IList<ValidationResult> errors = new List<ValidationResult>();

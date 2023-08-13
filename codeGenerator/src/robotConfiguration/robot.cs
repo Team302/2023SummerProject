@@ -125,7 +125,8 @@ namespace Robot
         /// </summary>
         public robot()
         {
-            this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
+            initialize();
+this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
             this._pigeon = new System.Collections.ObjectModel.Collection<pigeon>();
             this._limelight = new System.Collections.ObjectModel.Collection<limelight>();
             this._mechanismInstance = new System.Collections.ObjectModel.Collection<mechanismInstance>();
@@ -2671,32 +2672,21 @@ namespace Robot
         [System.Xml.Serialization.XmlElementAttribute("pGain")]
         public doubleParameter pGain { get; set; }
         
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("iGain")]
         public doubleParameter iGain { get; set; }
         
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("dGain")]
-        public double dGain { get; set; }
+        public doubleParameter dGain { get; set; }
         
-        /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the dGain property is specified.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool dGainSpecified { get; set; }
-        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("fGain")]
-        public double fGain { get; set; }
+        public doubleParameter fGain { get; set; }
         
-        /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the fGain property is specified.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool fGainSpecified { get; set; }
-        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("iZone")]
         public doubleParameter iZone { get; set; }
-        
-        [System.Xml.Serialization.XmlElementAttribute("davidZone")]
-        public doubleRestrictedParameter davidZone { get; set; }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]

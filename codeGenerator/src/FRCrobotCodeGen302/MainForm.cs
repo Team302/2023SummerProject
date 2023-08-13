@@ -857,7 +857,7 @@ namespace FRCrobotCodeGen302
                         elementType = ((mechanism)robotElementObj).GetType();
                     else
                         elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
-
+                
                     object obj;
 
                     // then find the collection of type robotElementObj.t within lastSelectedValueNode
@@ -879,16 +879,16 @@ namespace FRCrobotCodeGen302
                         name = ((robotElementType)robotElementObj).ToString();
                         pi = lastSelectedValueNode.Tag.GetType().GetProperty(name);
                     }
-                    object theCollectionObj = pi.GetValue(lastSelectedValueNode.Tag, null);
+                        object theCollectionObj = pi.GetValue(lastSelectedValueNode.Tag, null);
 
 
-                    // then add it to the collection
-                    theCollectionObj.GetType().GetMethod("Add").Invoke(theCollectionObj, new object[] { obj });
-                    int count = (int)theCollectionObj.GetType().GetProperty("Count").GetValue(theCollectionObj);
+                        // then add it to the collection
+                        theCollectionObj.GetType().GetMethod("Add").Invoke(theCollectionObj, new object[] { obj });
+                        int count = (int)theCollectionObj.GetType().GetProperty("Count").GetValue(theCollectionObj);
 
-                    tn = AddNode(lastSelectedValueNode, theCollectionObj, name);
-                    tn.EnsureVisible();
-                    tn.Expand();
+                        tn = AddNode(lastSelectedValueNode, theCollectionObj, name);
+                        tn.EnsureVisible();
+                        tn.Expand();
 
 
                     mechanism theMechanism;
