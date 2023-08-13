@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <toolConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <rootOutputFolder>C:\FRC\2023SummerProject\src\main\cpp</rootOutputFolder>
-  <robotConfiguration>C:\FRC\2023SummerProject\codeGenerator\configuration\2023SummerRobots_.xml</robotConfiguration>
+  <rootOutputFolder>..\..\src\main\cpp</rootOutputFolder>
+  <robotConfiguration>2025SummerRobots.xml</robotConfiguration>
   <robotConfigurations>
     <string>2023SummerRobots.xml</string>
-    <string>2023SummerRobots.xml</string>
-    <string>2023SummerRobots_.xml</string>
+    <string>2024SummerRobots.xml</string>
+    <string>2025SummerRobots.xml</string>
   </robotConfigurations>
   <treeviewParentNameExtensions>
     <string>name</string>
