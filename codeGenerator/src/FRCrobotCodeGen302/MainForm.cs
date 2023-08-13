@@ -589,7 +589,7 @@ namespace FRCrobotCodeGen302
                             value = prop.GetValue(lastSelectedValueNode.Parent.Tag);
                         }
 
-                        allowEdit = !isInaMechanismInstance;
+                        allowEdit = true;
                     }
 
                     if (allowEdit)
