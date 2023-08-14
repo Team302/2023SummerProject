@@ -25,6 +25,63 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute("doubleParameter", Namespace="http://team302.org/robot")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class doubleParameter
+    {
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private double _value = 0D;
+        
+        [System.ComponentModel.DefaultValueAttribute(0D)]
+        [System.Xml.Serialization.XmlAttributeAttribute("value")]
+        public double value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute("doubleRestrictedParameter", Namespace="http://team302.org/robot")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class doubleRestrictedParameter
+    {
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private double _value = 0D;
+        
+        /// <summary>
+        /// <para xml:lang="en">Maximum inclusive value: 2.0.</para>
+        /// <para xml:lang="en">Minimum inclusive value: -2.5.</para>
+        /// </summary>
+        [System.ComponentModel.DefaultValueAttribute(0D)]
+        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(double), "-2.5", "2.0")]
+        [System.Xml.Serialization.XmlAttributeAttribute("value")]
+        public double value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
+    [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute("robot", Namespace="http://team302.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -68,10 +125,11 @@ namespace Robot
         /// </summary>
         public robot()
         {
-            this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
+            initialize();
+this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
             this._pigeon = new System.Collections.ObjectModel.Collection<pigeon>();
             this._limelight = new System.Collections.ObjectModel.Collection<limelight>();
-            this._mechanism = new System.Collections.ObjectModel.Collection<mechanism>();
+            this._mechanismInstance = new System.Collections.ObjectModel.Collection<mechanismInstance>();
             this._camera = new System.Collections.ObjectModel.Collection<camera>();
             this._roborio = new System.Collections.ObjectModel.Collection<roborio>();
         }
@@ -137,30 +195,30 @@ namespace Robot
         public chassis chassis { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<mechanism> _mechanism;
+        private System.Collections.ObjectModel.Collection<mechanismInstance> _mechanismInstance;
         
-        [System.Xml.Serialization.XmlElementAttribute("mechanism")]
-        public System.Collections.ObjectModel.Collection<mechanism> mechanism
+        [System.Xml.Serialization.XmlElementAttribute("mechanismInstance")]
+        public System.Collections.ObjectModel.Collection<mechanismInstance> mechanismInstance
         {
             get
             {
-                return _mechanism;
+                return _mechanismInstance;
             }
             private set
             {
-                _mechanism = value;
+                _mechanismInstance = value;
             }
         }
         
         /// <summary>
-        /// <para xml:lang="en">Gets a value indicating whether the mechanism collection is empty.</para>
+        /// <para xml:lang="en">Gets a value indicating whether the mechanismInstance collection is empty.</para>
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool mechanismSpecified
+        public bool mechanismInstanceSpecified
         {
             get
             {
-                return (this.mechanism.Count != 0);
+                return (this.mechanismInstance.Count != 0);
             }
         }
         
@@ -2065,6 +2123,37 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute("mechanismInstance", Namespace="http://team302.org/robot", AnonymousType=true)]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlRootAttribute("mechanismInstance", Namespace="http://team302.org/robot")]
+    public partial class mechanismInstance
+    {
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private string _name = "mechanismInstanceName";
+        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("name")]
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
+        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("mechanism")]
+        public mechanism mechanism { get; set; }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
+    [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute("mechanism", Namespace="http://team302.org/robot", AnonymousType=true)]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2579,50 +2668,25 @@ namespace Robot
             }
         }
         
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("pGain")]
-        public double pGain { get; set; }
+        public doubleParameter pGain { get; set; }
         
-        /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the pGain property is specified.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool pGainSpecified { get; set; }
-        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("iGain")]
-        public double iGain { get; set; }
+        public doubleParameter iGain { get; set; }
         
-        /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the iGain property is specified.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool iGainSpecified { get; set; }
-        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("dGain")]
-        public double dGain { get; set; }
+        public doubleParameter dGain { get; set; }
         
-        /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the dGain property is specified.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool dGainSpecified { get; set; }
-        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("fGain")]
-        public double fGain { get; set; }
+        public doubleParameter fGain { get; set; }
         
-        /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the fGain property is specified.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool fGainSpecified { get; set; }
-        
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("iZone")]
-        public double iZone { get; set; }
-        
-        /// <summary>
-        /// <para xml:lang="en">Gets or sets a value indicating whether the iZone property is specified.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool iZoneSpecified { get; set; }
+        public doubleParameter iZone { get; set; }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
@@ -2865,6 +2929,35 @@ namespace Robot
         public robotVariants()
         {
             this._robot = new System.Collections.ObjectModel.Collection<robot>();
+            this._mechanism = new System.Collections.ObjectModel.Collection<mechanism>();
+        }
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.ObjectModel.Collection<mechanism> _mechanism;
+        
+        [System.Xml.Serialization.XmlElementAttribute("mechanism")]
+        public System.Collections.ObjectModel.Collection<mechanism> mechanism
+        {
+            get
+            {
+                return _mechanism;
+            }
+            private set
+            {
+                _mechanism = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the mechanism collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool mechanismSpecified
+        {
+            get
+            {
+                return (this.mechanism.Count != 0);
+            }
         }
     }
     

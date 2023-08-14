@@ -9,6 +9,9 @@ using System.IO;
 using Robot;
 using StateData;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Collections;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace robotConfiguration
 {
@@ -16,6 +19,7 @@ namespace robotConfiguration
     {
         public robotVariants theRobotVariants = new robotVariants();
         public Dictionary<string, statedata> mechanismControlDefinition;
+        public List<string> parameterTypes = new List<string>();
 
         public void load(string theRobotConfigFullPathFileName)
         {
@@ -28,11 +32,7 @@ namespace robotConfiguration
 
                 foreach (robot theRobot in theRobotVariants.robot)
                 {
-                    if (theRobot.pdp == null)
-                        theRobot.pdp = new pdp();
-
-                    if (theRobot.chassis == null)
-                        theRobot.chassis = new chassis();
+                    theRobot.initialize();
 
                     ValidationContext context = new ValidationContext(theRobot.pdp);
                     IList<ValidationResult> errors = new List<ValidationResult>();
@@ -80,23 +80,183 @@ namespace robotConfiguration
                 theRobotVariants = (robotVariants)mySerializer.Deserialize(myFileStream);
             }
 
+            for (int m = 0; m < theRobotVariants.mechanism.Count; m++)
+            {
+                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), theRobotVariants.mechanism[m].name + ".xml");
+
+                addProgress("Loading mechanism configuration " + mechanismFullPath);
+                mySerializer = new XmlSerializer(typeof(mechanism));
+                using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
+                {
+                    theRobotVariants.mechanism[m] = (mechanism)mySerializer.Deserialize(myFileStream);
+                }
+            }
+
             foreach (robot theRobot in theRobotVariants.robot)
             {
-                for (int i = 0; i < theRobot.mechanism.Count; i++)
+                foreach (mechanismInstance mi in theRobot.mechanismInstance)
                 {
-                    mechanism mech = theRobot.mechanism[i];
+                    string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mi.mechanism.name + ".xml");
 
+                    //addProgress("Loading mechanism configuration " + mechanismFullPath);
                     mySerializer = new XmlSerializer(typeof(mechanism));
-                    string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
-
-                    addProgress("Loading mechanism configuration " + mechanismFullPath);
                     using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
                     {
-                        mech = (mechanism)mySerializer.Deserialize(myFileStream);
+                        mechanism m = (mechanism)mySerializer.Deserialize(myFileStream);
+
+                        MergeMechanismParametersIntoStructure(m, mi.mechanism);
                     }
                 }
             }
+
+            //foreach (robot theRobot in theRobotVariants.robot)
+            //{
+            //    for (int i = 0; i < theRobot.mechanismInstance.Count; i++)
+            //    {
+            //        mechanism mech = theRobot.mechanismInstance[i].mechanism;
+
+            //        mySerializer = new XmlSerializer(typeof(mechanism));
+            //        string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
+
+            //        addProgress("Loading mechanism configuration " + mechanismFullPath);
+            //        using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
+            //        {
+            //            mech = (mechanism)mySerializer.Deserialize(myFileStream);
+            //        }
+            //    }
+            //}
             return theRobotVariants;
+        }
+
+        private bool isACollection(object obj)
+        {
+            return isACollection(obj.GetType());
+        }
+
+        private bool isACollection(Type t)
+        {
+            return ((t.Name == "Collection`1") && (t.Namespace == "System.Collections.ObjectModel"));
+        }
+
+        bool isAParameterType(string typeName)
+        {
+            return parameterTypes.Contains(typeName);
+        }
+
+
+
+        /// <summary>
+        /// Merges the structure and default values from structureSource to parametersSource
+        /// </summary>
+        /// <param name="structureSource"></param>
+        /// <param name="parametersSource"></param>
+        public void MergeMechanismParametersIntoStructure(object structureSource, object parametersSource)
+        {
+            if ((structureSource != null) && (parametersSource != null))
+            {
+                if (isACollection(structureSource))
+                {
+                    ICollection ics = structureSource as IList;
+                    ICollection icp = parametersSource as IList;
+                    foreach (var v in ics)
+                    {
+                        PropertyInfo[] propertyInfos = v.GetType().GetProperties();
+                        PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "name");
+                        if (pi != null)
+                        {
+                            string structureName = pi.GetValue(v).ToString(); ;
+
+                            foreach (var vParam in icp)
+                            {
+                                string s = pi.GetValue(vParam).ToString();
+                                if ((s != null) && (s == structureName))
+                                {
+                                    MergeMechanismParametersIntoStructure(v, vParam);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Type objType = structureSource.GetType();
+
+                    PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                    if(isAParameterType(objType.FullName))
+                    {
+                        PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
+                        if (pi != null)
+                        {
+                            pi.SetValue(structureSource, pi.GetValue(parametersSource));
+                        }
+                    }
+                    else if(objType.FullName == "System.String")
+                    {
+
+                    }
+                    else
+                    {
+                        foreach (PropertyInfo pi in propertyInfos)
+                        {
+                            object theStructureObj = pi.GetValue(structureSource);
+                            object theParametersObj = pi.GetValue(parametersSource);
+
+                            if ((theStructureObj != null) && (theParametersObj != null) )
+                            {
+                                MergeMechanismParametersIntoStructure(theStructureObj, theParametersObj);
+                            }
+                        }
+                    }
+
+                    //if (!isAParameterType(objType.FullName) && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
+                    //{
+                    //    // add its children
+                    //    string previousName = "";
+                    //    foreach (PropertyInfo pi in propertyInfos)
+                    //    {
+                    //        object theObj = pi.GetValue(obj);
+
+                    //        //strings have to have some extra handling
+                    //        if (pi.PropertyType.FullName == "System.String")
+                    //        {
+                    //            if (theObj == null)
+                    //            {
+                    //                theObj = "";
+                    //                pi.SetValue(obj, "");
+                    //            }
+                    //        }
+
+                    //        if (theObj != null)
+                    //        {
+                    //            if (pi.Name != previousName + "Specified")
+                    //            {
+                    //                AddNode(tn, theObj, pi.Name);
+                    //                previousName = pi.Name;
+                    //            }
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    // this means that this is a leaf node
+                    //    leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj);
+                    //    tn.Tag = lnt;
+                    //}
+                }
+            }
+        }
+
+        public static mechanism DeepClone(mechanism obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (mechanism)formatter.Deserialize(ms);
+            }
         }
 
         void saveRobotConfiguration(string fullPathName)
@@ -105,23 +265,45 @@ namespace robotConfiguration
             xmlWriterSettings.NewLineOnAttributes = true;
             xmlWriterSettings.Indent = true;
 
-            var mySerializer = new XmlSerializer(typeof(robotVariants));
+
+            foreach (mechanism mech in theRobotVariants.mechanism)
+            {
+                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
+
+                var mechSerializer = new XmlSerializer(typeof(mechanism));
+                XmlWriter mechtw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings);
+                mechSerializer.Serialize(mechtw, mech);
+
+                mechtw.Close();
+            }
+
+            // after saving the mechanisms into separate files, clear the list of mechanisms, except for the name
+            // so that the mechanism xml is blank in the robot config file...will not lead to conflicts when  multiple people change
+            // different mechanisms. Restore the list after saving to xml
+            List<mechanism> tempList = new List<mechanism>();
+            foreach (mechanism mech in theRobotVariants.mechanism)
+                tempList.Add(mech);
+
+            theRobotVariants.mechanism.Clear();
+
+            foreach (mechanism mech in tempList)
+            {
+                mechanism temp = new mechanism();
+                temp.name = mech.name;
+                theRobotVariants.mechanism.Add(temp);
+            }
+
+            var robotSerializer = new XmlSerializer(typeof(robotVariants));
             XmlWriter tw = XmlWriter.Create(fullPathName, xmlWriterSettings);
-            mySerializer.Serialize(tw, theRobotVariants);
+            robotSerializer.Serialize(tw, theRobotVariants);
 
             tw.Close();
-            foreach (robot theRobot in theRobotVariants.robot)
+
+            theRobotVariants.mechanism.Clear();
+
+            foreach (mechanism mech in tempList)
             {
-                foreach (mechanism mech in theRobot.mechanism)
-                {
-                    string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
-
-                    mySerializer = new XmlSerializer(typeof(mechanism));
-                    tw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings);
-                    mySerializer.Serialize(tw, mech);
-
-                    tw.Close();
-                }
+                theRobotVariants.mechanism.Add(mech);
             }
         }
 
