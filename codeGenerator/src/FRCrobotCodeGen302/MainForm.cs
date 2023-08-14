@@ -1027,7 +1027,7 @@ namespace FRCrobotCodeGen302
                 temp.controllerId = (uint)controllerSelection.SelectedIndex;
                 if (row.Cells[0].Value != null)
                 {
-                    if (Robot.controllerBindingbinding.TryParse(row.Cells[0].Value.ToString(), out Robot.controllerBindingbinding result))
+                    if (controllerBindingbinding.TryParse(row.Cells[0].Value.ToString(), out controllerBindingbinding result))
                         temp.binding = result;
 
                     temp.teleopControlFunction = row.Cells[1].Value.ToString();
@@ -1064,6 +1064,26 @@ namespace FRCrobotCodeGen302
         private void bindingsTable_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             needsSaving = true;
+        }
+
+        private void bindingsTable_SelectionChanged(object sender, EventArgs e)
+        {
+            //check if row is a button or an axis, then display appropriate modifer selections
+            if (codeGenerator_302Robotics.controllerBindingIsButton(bindingsTable.SelectedRows[0].Cells[0].Value.ToString()))
+            {
+                //just show button mode
+                buttonModeComboBox.Show();
+            }
+            else
+            {
+                //need to hide button mode, then show all other modifiers in its place
+                buttonModeComboBox.Hide();
+
+                axisProfileComboBox.Show();
+                axisDirectionComboBox.Show();
+                axisScaleUpDown.Show();
+                axisDeadbandComboBox.Show();
+            }
         }
     }
 

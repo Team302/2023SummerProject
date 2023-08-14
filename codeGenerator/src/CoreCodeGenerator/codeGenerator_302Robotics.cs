@@ -118,10 +118,7 @@ namespace CoreCodeGenerator
                         "}" +
                         (i == (theRobotConfiguration.theRobotVariants.controllerBindings.Count - 1) ? "" : "," + Environment.NewLine);
 
-                    if (theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString().Contains("Button") ||
-                        theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString().Contains("DPad") ||
-                        theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString().Contains("Bumper") ||
-                        theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString().Contains("Pressed"))
+                    if (controllerBindingIsButton(theRobotConfiguration.theRobotVariants.controllerBindings[i].binding.ToString()))
                         newButtonBindings += newBindingsString;
                     else
                         newAxisBindings += newBindingsString;
@@ -131,8 +128,13 @@ namespace CoreCodeGenerator
             teleopControlMapContents = teleopControlMapContents.Replace("$$AXIS_BINDINGS_HERE$$", newAxisBindings);
 
             File.WriteAllText(getTeleopControlOutputPath("TeleopControlMap.h"), teleopControlMapContents);
-            addProgress("Finished writing TeleopControlFunctions...");
+            addProgress("Finished writing TeleopControlFunctions");
             #endregion
+        }
+
+        public static bool controllerBindingIsButton(string bindingStr)
+        {
+            return bindingStr.Contains("Button") || bindingStr.Contains("DPad") || bindingStr.Contains("Bumper") || bindingStr.Contains("Pressed");
         }
 
         private string cleanTeleopControlFunction(string teleopControlFunction)
