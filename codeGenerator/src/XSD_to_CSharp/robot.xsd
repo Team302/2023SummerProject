@@ -7,7 +7,6 @@
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="pcm" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="pigeon" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="limelight" />
-				<xs:element ref="chassis" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="mechanismInstance" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="camera" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="roborio" />
@@ -53,6 +52,7 @@
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="cancoder" />
 				<xs:element minOccurs="0" maxOccurs="1" ref="colorsensor" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="closedLoopControlParameters"/>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="chassis" />
 				<xs:element name="name" default="UNKNOWN" type="xs:string" />
 			</xs:sequence>
 		</xs:complexType>

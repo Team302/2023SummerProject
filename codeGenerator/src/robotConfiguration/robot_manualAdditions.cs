@@ -51,8 +51,8 @@ namespace Robot
             if (pdp == null)
                 pdp = new pdp(); ;
 
-            if (chassis == null)
-                chassis = new chassis();
+            //if (chassis == null)
+            //    chassis = new chassis();
         }
     }
 }
