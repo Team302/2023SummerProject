@@ -955,6 +955,7 @@ namespace Robot
             this._analogInput = new System.Collections.ObjectModel.Collection<analogInput>();
             this._digitalInput = new System.Collections.ObjectModel.Collection<digitalInput>();
             this._cancoder = new System.Collections.ObjectModel.Collection<cancoder>();
+            this._colorsensor = new System.Collections.ObjectModel.Collection<colorsensor>();
             this._closedLoopControlParameters = new System.Collections.ObjectModel.Collection<closedLoopControlParameters>();
             this._chassis = new System.Collections.ObjectModel.Collection<chassis>();
         }
@@ -1099,8 +1100,33 @@ namespace Robot
             }
         }
         
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private System.Collections.ObjectModel.Collection<colorsensor> _colorsensor;
+        
         [System.Xml.Serialization.XmlElementAttribute("colorsensor")]
-        public colorsensor colorsensor { get; set; }
+        public System.Collections.ObjectModel.Collection<colorsensor> colorsensor
+        {
+            get
+            {
+                return _colorsensor;
+            }
+            private set
+            {
+                _colorsensor = value;
+            }
+        }
+        
+        /// <summary>
+        /// <para xml:lang="en">Gets a value indicating whether the colorsensor collection is empty.</para>
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool colorsensorSpecified
+        {
+            get
+            {
+                return (this.colorsensor.Count != 0);
+            }
+        }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private System.Collections.ObjectModel.Collection<closedLoopControlParameters> _closedLoopControlParameters;

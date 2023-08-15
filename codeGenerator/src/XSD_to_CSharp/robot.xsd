@@ -50,7 +50,7 @@
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="analogInput" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="digitalInput" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="cancoder" />
-				<xs:element minOccurs="0" maxOccurs="1" ref="colorsensor" />
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="colorsensor" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="closedLoopControlParameters"/>
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="chassis" />
 				<xs:element name="name" default="UNKNOWN" type="xs:string" />
