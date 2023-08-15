@@ -981,12 +981,13 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                int indexOfMechanism = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanism").FirstOrDefault());
+                //this finds the index of the collection of mechanisms
+                int indexOfMechanisms = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanism").FirstOrDefault());
 
-                if (indexOfMechanism >=1)
+                if (indexOfMechanisms >=1)
                 {
-
-                    theTemplateMechanism = (mechanism)lineage[indexOfMechanism - 1];
+                    //substract 1 from index to get the currently selected mechanism
+                    theTemplateMechanism = (mechanism)lineage[indexOfMechanisms - 1];
                     return true;
                 }
             }
@@ -1008,16 +1009,8 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                if (lineage.Count >= 5)
-                {
-                    if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
-                        (isACollection(lineage[lineage.Count - 2])) &&
-                        (lineage[lineage.Count - 5].GetType().FullName == "Robot.mechanismInstance"))
-                    {
-                        return true;
-                    }
-                }
-
+                //returns if any node is found with type mechanismInstance
+                return lineage.Any(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanismInstance");
             }
 
             return false;
