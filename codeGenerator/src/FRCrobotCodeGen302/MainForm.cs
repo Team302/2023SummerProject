@@ -981,17 +981,14 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                if (lineage.Count >= 3)
-                {
-                    if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
-                        (isACollection(lineage[lineage.Count - 2])) &&
-                        (lineage[lineage.Count - 2].GetType().GetGenericArguments().Single().FullName == "Robot.mechanism"))
-                    {
-                        theTemplateMechanism = (mechanism)lineage[lineage.Count - 3];
-                        return true;
-                    }
-                }
+                int indexOfMechanism = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanism").FirstOrDefault());
 
+                if (indexOfMechanism >=1)
+                {
+
+                    theTemplateMechanism = (mechanism)lineage[indexOfMechanism - 1];
+                    return true;
+                }
             }
 
             theTemplateMechanism = null;
