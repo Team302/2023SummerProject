@@ -264,7 +264,7 @@ namespace FRCrobotCodeGen302
                         int imageIndex = 1;
                         if (isAParameterType(objType.FullName))
                             imageIndex = 2;
-                        else if(isPartOfAMechanismInstance(tn))
+                        else if(isPartOfAMechanismInaMechInstance(tn))
                             imageIndex = 0;
 
                         tn.ImageIndex = imageIndex;
@@ -525,7 +525,7 @@ namespace FRCrobotCodeGen302
             lastSelectedArrayNode = null;
             lastSelectedValueNode = null;
 
-            bool isInaMechanismInstance = isPartOfAMechanismInstance(e.Node);
+            bool isInaMechanismInstance = isPartOfAMechanismInaMechInstance(e.Node);
             deleteTreeElementButton.Enabled = isDeletable(e.Node) && !isInaMechanismInstance;
 
             if (e.Node.Tag != null)
@@ -533,7 +533,7 @@ namespace FRCrobotCodeGen302
                 bool visible_And_or_Enabled = false;
 
                 theCurrentElementPossibilities = getEmptyPossibleCollectionSubTypes(e.Node.Tag);
-                if ((theCurrentElementPossibilities.Count > 0) && (!isPartOfAMechanismInstance(e.Node)) )
+                if ((theCurrentElementPossibilities.Count > 0) && (!isPartOfAMechanismInaMechInstance(e.Node)) )
                 {
                     visible_And_or_Enabled = true;
 
@@ -996,7 +996,7 @@ namespace FRCrobotCodeGen302
             return false;
         }
 
-        bool isPartOfAMechanismInstance(TreeNode tn)
+        bool isPartOfAMechanismInaMechInstance(TreeNode tn)
         {
             List<object> lineage = new List<object>();
 
