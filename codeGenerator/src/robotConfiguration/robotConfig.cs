@@ -98,7 +98,7 @@ namespace robotConfiguration
             string[] files = Directory.GetFiles(Path.GetDirectoryName(fullPathName), "*.xml");
             foreach (string file in files)
             {
-                if (theRobotVariants.mechanism.Where(p => p.name == Path.GetFileName(file).Replace(".xml", "")).Count() > 0)
+                if (theRobotVariants.mechanism.Any(p => p.name == Path.GetFileName(file).Replace(".xml", "")))
                 {
                     //if we have previously loaded the mechanism, don't load it again
                     continue;
