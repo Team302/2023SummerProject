@@ -78,7 +78,6 @@ namespace robotConfiguration
             using (var myFileStream = new FileStream(fullPathName, FileMode.Open))
             {
                 theRobotVariants = (robotVariants)mySerializer.Deserialize(myFileStream);
-                myFileStream.Close();
             }
 
             for (int m = 0; m < theRobotVariants.mechanism.Count; m++)
@@ -90,7 +89,6 @@ namespace robotConfiguration
                 using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
                 {
                     theRobotVariants.mechanism[m] = (mechanism)mySerializer.Deserialize(myFileStream);
-                    myFileStream.Close();
                 }
             }
 
@@ -125,7 +123,6 @@ namespace robotConfiguration
 
                             theRobotVariants.mechanism.Add(tempMech);
                         }
-                        myFileStream.Close();
                     }
                 }
             }
@@ -168,7 +165,6 @@ namespace robotConfiguration
             using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
             {
                 mechanism m = (mechanism)mySerializer.Deserialize(myFileStream);
-                myFileStream.Close();
                 return m;                
             }
         }
