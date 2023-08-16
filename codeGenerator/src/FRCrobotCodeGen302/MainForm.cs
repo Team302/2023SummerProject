@@ -1009,8 +1009,9 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                //returns if any node is found with type mechanismInstance
-                return lineage.Any(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanismInstance");
+                //returns if any node, except first, is found with type mechanismInstance
+                //if last node is of type mechanismInstance, this means we have selected the mechanismInstance group and want to show other mechanisms
+                return lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanismInstance")) >0;
             }
 
             return false;
