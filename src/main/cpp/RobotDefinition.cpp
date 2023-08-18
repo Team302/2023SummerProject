@@ -13,17 +13,21 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-/*
 // Team 302 Includes
 #include <RobotDefinition.h>
 
-RobotDefinition::RobotDefinition(std::vector<std::any> mechs, std::vector<std::any> other) : m_mechs(mechs),
-                                                                                             m_other(other)
+/*RobotDefinition::RobotDefinition(std::vector<std::any> mechs, std::vector<std::any> other) : m_mechs(mechs),
+                                                                                             m_other(other)*/
+RobotDefinition::RobotDefinition(std::vector<std::pair<RobotDefinitions::Component, std::string>> mechs, std::vector<std::pair<RobotDefinitions::Component, std::string>> sensors) : m_mechs(mechs),
+                                                                                                                                                                                     m_sensors(sensors)
 {
-}
+    for (std::pair<RobotDefinitions::Component, std::string> : mechs)
+    {
+        m_componentMap.emplace(mechs.first, mechs.second);
+    }
 
-void RobotDefinition::CreateRobot()
-{
-
+    for (std::pair<RobotDefinitions::Component, std::string> : sensors)
+    {
+        m_componentMap.emplace(sensors.first, sensors.second);
+    }
 }
-*/

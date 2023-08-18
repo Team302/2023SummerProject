@@ -12,21 +12,35 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
-/*
+
 #pragma once
 
 // C++ Includes
-#include <any>
+#include <string>
 #include <vector>
+#include <any>
+#include <map>
+
+// Team 302 Includes
+#include <RobotDefinitions.h>
 
 class RobotDefinition
 {
 public:
-    RobotDefinition(std::vector<Mechanism> mechs, std::vector<Sensor> sensors);
-    void CreateRobot(); // Later may want to change return type to return error code?
+    /// strings will be used instead of mechanism and sensor parents classes until those are created
+    // RobotDefinition(std::vector<Mechanism> mechs, std::vector<Sensor> sensors);
+    RobotDefinition(std::vector<std::pair<RobotDefinitions::Component, std::string>> mechs, std::vector<std::pair<RobotDefinitions::Component, std::string>> sensors);
+    ~RobotDefinition() = default;
+
+    /// @brief Get a component (mechanism, sensor, solenoid, etc.) from a robot definition
+    /// @param component Which component to get from a definition
+    /// @return Returns the specfied component
+    std::any GetComponent(RobotDefinitions::Component component) { return m_componentMap[component]; };
 
 private:
-    std::vector<Mechanism> m_mechs;
-    std::vector<Sensor> m_sensors;
+    // std::vector<Mechanism> m_mechs;
+    std::vector<std::string> m_mechs;
+    // std::vector<Sensor> m_sensors;
+    std::vector<std::string> m_sensors;
+    std::map<RobotDefinitions::Component, std::any> m_componentMap;
 };
-* /

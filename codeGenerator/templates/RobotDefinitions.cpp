@@ -5,16 +5,7 @@ $$_GEN_NOTICE_$$
 #include <RobotDefinitions.h>
 
 /*
-    Logic for team number:
-    We use a compiler argument to determine team number at build/deploy time
-    If this argument isn't found, we will use default of comp bot
-*/
-#ifndef ROBOT_VARIANT
-#define ROBOT_VARIANT 302
-#endif
-
-/*
-    Here's what this should look like once generated:
+    Here's what this should look like once generated: (teamNumber is passed in from BuildDetailsReader where GetRobotDefinition is called)
 
     switch(teamNumber){
         case $$_ROBOT_ID_$$:
@@ -25,7 +16,7 @@ $$_GEN_NOTICE_$$
             return Get302Defition();  //this could return comp bot or simulation bot
     }
 */
-static RobotDefinition *RobotDefinitions::GetRobotDefinition(){
+static RobotDefinition *RobotDefinitions::GetRobotDefinition(int teamNumber){
     $$_ROBOT_DEFINITION_CREATION_$$}
 
 /*
@@ -34,17 +25,17 @@ static RobotDefinition *RobotDefinitions::GetRobotDefinition(){
 
     RobotDefinition* Get302Definition()
     {
-        std::vector<Mechanism> mechs = new std::vector<Mechanism>();
-        std::vector<Sensor> sensors = new std::vector<Sensor>();
+        std::vector<std::pair<Component, Mechanism>> mechs = new std::vector<Mechanism>();
+        std::vector<std::pair<Component, Sensor>> sensors = new std::vector<Sensor>();
 
         Mechanism intake = IntakeBuilder::GetBuilder()->CreateNewIntake(args); //or however the builders will be called to create mechs
-        mechs.emplace_back(intake);
+        mechs.emplace_back(std::make_pair(Component::Intake, intake));
 
         Mechanism shooter = ShooterBuilder::GetBuilder()->CreateNewShooter(args);
-        mechs.emplace_back(shooter);
+        mechs.emplace_back(std::make_pair(Component::Shooter, shooter));
 
-        Sensor bannerSensor = new DigitalSensor(port);
-        sensors.emplace_back(bannerSensor);
+        Sensor intakeSensor = new BannerSensor(port);
+        sensors.emplace_back(std::make_pair(Component::IntakeSensor, intakeSensor));
 
         return new RobotDefinition(mechs, sensors);
     }

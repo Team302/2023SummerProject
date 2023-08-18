@@ -11,18 +11,27 @@ $$_GEN_NOTICE_$$
 #include <RobotDefinition.h>
 
 /*
-    Robot variants will be tied to team number
-    For instance, RobotVariants::CompBot = 302 would be one entry in enum
+    This enum will hold everything that can be in a robot (mechanisms, sensors, etc.)
+    Once generated it may look like this:
+
+    enum Components
+    {
+        Intake,
+        Shooter,
+        IntakeSensor,
+        PDH,
+        SomeSolenoid
+    }
 */
-enum RobotVariants
+enum Components
 {
-    $$_ROBOT_VARIANTS_$$
+    $$_COMPONENTS_ENUM_$$
 }
 
 class RobotDefinitions
 {
 public:
-    static RobotDefintion *GetRobotDefinition(); // may not even need this argument, can find team number in this class as well
+    static RobotDefinition *GetRobotDefinition(int teamNumber); // may not even need this argument, can find team number in this class as well
 
 private:
     /*
@@ -30,7 +39,7 @@ private:
         For example:
         RobotDefintion *Get302Definition();
         RobotDefintion *Get3Definition();
-        etc...
+        etc...f
     */
     $$_ROBOT_VARIANT_CREATION_$$
 };
