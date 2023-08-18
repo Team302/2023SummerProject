@@ -29,18 +29,14 @@ class RobotDefinition
 public:
     /// strings will be used instead of mechanism and sensor parents classes until those are created
     // RobotDefinition(std::vector<Mechanism> mechs, std::vector<Sensor> sensors);
-    RobotDefinition(std::vector<std::pair<RobotDefinitions::Component, std::string>> mechs, std::vector<std::pair<RobotDefinitions::Component, std::string>> sensors);
+    RobotDefinition(std::vector<std::pair<RobotDefinitions::Components, std::string>> components);
     ~RobotDefinition() = default;
 
     /// @brief Get a component (mechanism, sensor, solenoid, etc.) from a robot definition
     /// @param component Which component to get from a definition
     /// @return Returns the specfied component
-    std::any GetComponent(RobotDefinitions::Component component) { return m_componentMap[component]; };
+    std::any GetComponent(RobotDefinitions::Components component) { return m_componentMap[component]; };
 
 private:
-    // std::vector<Mechanism> m_mechs;
-    std::vector<std::string> m_mechs;
-    // std::vector<Sensor> m_sensors;
-    std::vector<std::string> m_sensors;
-    std::map<RobotDefinitions::Component, std::any> m_componentMap;
+    std::map<RobotDefinitions::Components, std::any> m_componentMap;
 };

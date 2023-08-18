@@ -226,9 +226,10 @@ namespace CoreCodeGenerator
 
             foreach (mechanism mech in theRobotConfiguration.theRobotVariants.mechanism)
             {
-                //this conditional makes sure the functions are on a new line after the first function
-                string includeString = "#include <" + getIncludePath(mech.name) + "/" + mech.name + ".h>";
-                replacement += (replacement != "" ? "\n" : "") + includeString;
+                /// NOTE: We probably don't need to include mechanism and builder because builder should already have the mechanism included
+                //string mechIncludeString = "#include <" + getIncludePath(mech.name) + "/" + mech.name + ".h>";
+                string builderIncludeString = "#include <" + getIncludePath(mech.name) + "/" + mech.name + "Builder.h>";
+                replacement += (replacement != "" ? "\n" : "") + builderIncludeString;
             }
 
             contents = contents.Replace("$$_INCLUDES_$$", replacement);
@@ -253,10 +254,10 @@ namespace CoreCodeGenerator
             //this is where the fucntions will be created to return a new robot definition
             #region Robot Definition Functions
             replacement = "";
-            string vectorCreation = "\r\n\tstd::vector<std::pair<Components, Mechanism>> mechs = new std::vector<Mechanism>();\r\n\tstd::vector<std::pair<Components, Sensor>> sensors = new std::vector<Sensor>();";
+            string vectorCreation = "\r\n\tstd::vector<std::pair<RobotDefinitions::Components, std::any>> components = new std::vector<std::pair<RobotDefinitions::Components, std::any>>();";
             string functionHeaderTemplate = "RobotDefinition* Get#Definition()\r\n{";
-            string functionFooter = "\r\n\r\n\treturn new RobotDefinition(mechs, sensors);\n}";
-            string mechanismTemplate = "\r\n\r\n\tMechanism MECH = TYPEBuilder::GetBuilder()->CreateNewTYPE(args);\r\n\tmechs.emplace_back(std::make_pair(Components::TYPE, MECH));";
+            string functionFooter = "\r\n\r\n\treturn new RobotDefinition(components);\n}";
+            string mechanismTemplate = "\r\n\r\n\tMechanism *MECH = TYPEBuilder::GetBuilder()->CreateNewTYPE(args);\r\n\tmechs.emplace_back(std::make_pair(RobotDefinitions::Components::TYPE, MECH));";
 
             foreach (robot bot in theRobotConfiguration.theRobotVariants.robot)
             {

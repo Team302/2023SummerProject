@@ -10,7 +10,12 @@ $$_GEN_NOTICE_$$
 // Team 302 Includes
 #include <RobotDefinition.h>
 
-/*
+class RobotDefinitions
+{
+public:
+    static RobotDefinition *GetRobotDefinition(int teamNumber);
+
+    /*
     This enum will hold everything that can be in a robot (mechanisms, sensors, etc.)
     Once generated it may look like this:
 
@@ -23,15 +28,10 @@ $$_GEN_NOTICE_$$
         SomeSolenoid
     }
 */
-enum Components
-{
-    $$_COMPONENTS_ENUM_$$
-};
-
-class RobotDefinitions
-{
-public:
-    static RobotDefinition *GetRobotDefinition(int teamNumber);
+    enum Components
+    {
+        $$_COMPONENTS_ENUM_$$
+    };
 
 private:
     /*

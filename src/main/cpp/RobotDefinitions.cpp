@@ -20,18 +20,20 @@
 // the code is regenerated, unless the changes are delimited by:
 //==============================================================
 
+// C++ Includes
+#include <any>
+
 // Team 302 Includes
 #include <RobotDefinitions.h>
 
 /*
-    Will need to include all mechanism and sensor h files
-    Will also need to include their builders
+    Will need to include all mechanism and sensor builder files
 */
-#include <mechanisms/superIntake/superIntake.h>
-#include <mechanisms/regularIntake/regularIntake.h>
-#include <mechanisms/Turret/Turret.h>
-#include <mechanisms/activeIntake/activeIntake.h>
-#include <mechanisms/passiveIntake/passiveIntake.h>
+#include <mechanisms/superIntake/superIntakeBuilder.h>
+#include <mechanisms/regularIntake/regularIntakeBuilder.h>
+#include <mechanisms/Turret/TurretBuilder.h>
+#include <mechanisms/activeIntake/activeIntakeBuilder.h>
+#include <mechanisms/passiveIntake/passiveIntakeBuilder.h>
 
 /*
     Here's what this should look like once generated: (teamNumber is passed in from BuildDetailsReader where GetRobotDefinition is called)
@@ -64,28 +66,29 @@ static RobotDefinition *RobotDefinitions::GetRobotDefinition(int teamNumber)
 
     RobotDefinition* Get302Definition()
     {
-        std::vector<std::pair<Component, Mechanism>> mechs = new std::vector<Mechanism>();
-        std::vector<std::pair<Component, Sensor>> sensors = new std::vector<Sensor>();
+        /// NOTE switching to be one vector with type std::any for now, later on may go back to separate vectors if needed
+        //std::vector<std::pair<Component, Mechanism>> mechs = new std::vector<Mechanism>();
+        //std::vector<std::pair<Component, Sensor>> sensors = new std::vector<Sensor>();
+        std::vector<std::pair<Component, std::any>> components = new std::vector<std::pair<Component, std::any>>();
 
-        Mechanism intake = IntakeBuilder::GetBuilder()->CreateNewIntake(args); //or however the builders will be called to create mechs
-        mechs.emplace_back(std::make_pair(Component::Intake, intake));
+        Mechanism *intake = IntakeBuilder::GetBuilder()->CreateNewIntake(args); //or however the builders will be called to create mechs
+        components.emplace_back(std::make_pair(Component::Intake, intake));
 
-        Mechanism shooter = ShooterBuilder::GetBuilder()->CreateNewShooter(args);
-        mechs.emplace_back(std::make_pair(Component::Shooter, shooter));
+        Mechanism *shooter = ShooterBuilder::GetBuilder()->CreateNewShooter(args);
+        components.emplace_back(std::make_pair(Component::Shooter, shooter));
 
-        Sensor intakeSensor = new BannerSensor(port);
-        sensors.emplace_back(std::make_pair(Component::IntakeSensor, intakeSensor));
+        Sensor *intakeSensor = new BannerSensor(port);
+        components.emplace_back(std::make_pair(Component::IntakeSensor, intakeSensor));
 
-        return new RobotDefinition(mechs, sensors);
+        return new RobotDefinition(components);
     }
 */
 RobotDefinition *Get1Definition()
 {
-    std::vector<std::pair<Components, Mechanism>> mechs = new std::vector<Mechanism>();
-    std::vector<std::pair<Components, Sensor>> sensors = new std::vector<Sensor>();
+    std::vector<std::pair<RobotDefinitions::Components, std::any>> components = new std::vector<std::pair<RobotDefinitions::Components, std::any>>();
 
     Mechanism frontTurret = TurretBuilder::GetBuilder()->CreateNewTurret(args);
-    mechs.emplace_back(std::make_pair(Components::Turret, frontTurret));
+    mechs.emplace_back(std::make_pair(RobotDefinitions::Components::Turret, frontTurret));
 
-    return new RobotDefinition(mechs, sensors);
+    return new RobotDefinition(components);
 }

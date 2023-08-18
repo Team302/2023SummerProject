@@ -1,6 +1,9 @@
 $$_COPYRIGHT_$$
 $$_GEN_NOTICE_$$
 
+// C++ Includes
+#include <any>
+
 // Team 302 Includes
 #include <RobotDefinitions.h>
 
@@ -31,19 +34,21 @@ static RobotDefinition *RobotDefinitions::GetRobotDefinition(int teamNumber){
 
     RobotDefinition* Get302Definition()
     {
-        std::vector<std::pair<Component, Mechanism>> mechs = new std::vector<Mechanism>();
-        std::vector<std::pair<Component, Sensor>> sensors = new std::vector<Sensor>();
+        /// NOTE switching to be one vector with type std::any for now, later on may go back to separate vectors if needed
+        //std::vector<std::pair<RobotDefinitions::Components, Mechanism>> mechs = new std::vector<Mechanism>();
+        //std::vector<std::pair<RobotDefinitions::Components, Sensor>> sensors = new std::vector<Sensor>();
+        std::vector<std::pair<RobotDefinitions::Components, std::any>> components = new std::vector<std::pair<RobotDefinitions::Components, std::any>>();
 
         Mechanism intake = IntakeBuilder::GetBuilder()->CreateNewIntake(args); //or however the builders will be called to create mechs
-        mechs.emplace_back(std::make_pair(Component::Intake, intake));
+        components.emplace_back(std::make_pair(RobotDefinitions::Components::Intake, intake));
 
         Mechanism shooter = ShooterBuilder::GetBuilder()->CreateNewShooter(args);
-        mechs.emplace_back(std::make_pair(Component::Shooter, shooter));
+        components.emplace_back(std::make_pair(RobotDefinitions::Components::Shooter, shooter));
 
         Sensor intakeSensor = new BannerSensor(port);
-        sensors.emplace_back(std::make_pair(Component::IntakeSensor, intakeSensor));
+        components.emplace_back(std::make_pair(RobotDefinitions::Components::IntakeSensor, intakeSensor));
 
-        return new RobotDefinition(mechs, sensors);
+        return new RobotDefinition(components);
     }
 */
 $$_ROBOT_VARIANT_CREATION_FUNCTIONS_$$

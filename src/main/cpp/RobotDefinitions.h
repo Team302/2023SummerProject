@@ -32,7 +32,12 @@
 // Team 302 Includes
 #include <RobotDefinition.h>
 
-/*
+class RobotDefinitions
+{
+public:
+    static RobotDefinition *GetRobotDefinition(int teamNumber);
+
+    /*
     This enum will hold everything that can be in a robot (mechanisms, sensors, etc.)
     Once generated it may look like this:
 
@@ -45,19 +50,14 @@
         SomeSolenoid
     }
 */
-enum Components
-{
-    superIntake,
+    enum Components
+    {
+        superIntake,
 	regularIntake,
 	Turret,
 	activeIntake,
 	passiveIntake
-};
-
-class RobotDefinitions
-{
-public:
-    static RobotDefinition *GetRobotDefinition(int teamNumber);
+    };
 
 private:
     /*

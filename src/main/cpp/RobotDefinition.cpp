@@ -18,16 +18,10 @@
 
 /*RobotDefinition::RobotDefinition(std::vector<std::any> mechs, std::vector<std::any> other) : m_mechs(mechs),
                                                                                              m_other(other)*/
-RobotDefinition::RobotDefinition(std::vector<std::pair<RobotDefinitions::Component, std::string>> mechs, std::vector<std::pair<RobotDefinitions::Component, std::string>> sensors) : m_mechs(mechs),
-                                                                                                                                                                                     m_sensors(sensors)
+RobotDefinition::RobotDefinition(std::vector<std::pair<RobotDefinitions::Components, std::string>> components)
 {
-    for (std::pair<RobotDefinitions::Component, std::string> : mechs)
+    for (std::pair<RobotDefinitions::Components, std::string> component : components)
     {
-        m_componentMap.emplace(mechs.first, mechs.second);
-    }
-
-    for (std::pair<RobotDefinitions::Component, std::string> : sensors)
-    {
-        m_componentMap.emplace(sensors.first, sensors.second);
+        m_componentMap.emplace(component.first, component.second);
     }
 }
