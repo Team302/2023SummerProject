@@ -34,6 +34,8 @@
 
 /// DEBUGGING
 #include <hw/factories/PigeonFactory.h>
+#include <iostream>
+#include <utils/BuildDetailsReader.h>
 
 /* How to check robot variant
 #if ROBOT_VARIANT == 2024
@@ -42,6 +44,10 @@
 #warning UNKNOWN
 #endif
 */
+
+#ifndef ROBOT_VARIANT
+#define ROBOT_VARIANT 302
+#endif
 
 using namespace std;
 
@@ -73,6 +79,13 @@ void Robot::RobotInit()
     {
         m_holonomic = new HolonomicDrive();
     }
+
+    // std::cout << ROBOT_VARIANT << std::endl;
+
+    BuildDetailsReader *reader = new BuildDetailsReader();
+    // system("dir");
+
+    std::cout << "BuildDetails: " << (std::string)reader->ReadBuildDetails();
 
     m_cyclePrims = new CyclePrimitives();
     m_previewer = new AutonPreviewer(m_cyclePrims); // TODO:: Move to DriveTeamFeedback

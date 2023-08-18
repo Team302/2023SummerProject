@@ -39,6 +39,7 @@ def deployArtifact = deploy.targets.roborio.artifacts.frcCpp
 
 // Set this to true to enable desktop support.
 def includeDesktopSupport = false
+def includeDesktopSupport = true
 
 // Set to true to run simulation in debug mode
 wpi.cpp.debugSimulation = false
@@ -120,9 +121,7 @@ tasks.build.doLast() {
         def date = new Date().format('yyyyMMddHHmmss')
         def formattedDate = new Date().format('HH:mm:ss MM/dd/yyyy')
 
-        //check that src/main/utilities exists, if it doesnt, create the directory
         //if this directory does not exist, build fails
-        def path = projectDir.toString() + "/src/main/utilities"
         def filename = "BuildDetails.txt"
 
         File dir = new File(path)
@@ -160,8 +159,6 @@ model {
                 targetPlatform wpi.platforms.desktop
             }
             binaries.all {
-                def robotVariant = "ROBOT_VARIANT=" + project.frc.getTeamOrDefault(302)
-                cppCompiler.args('-D'+robotVariant)
             }            
 
             sources.cpp {
