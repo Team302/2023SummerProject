@@ -31,6 +31,8 @@ class DragonField;
 class AutonPreviewer;
 class RobotState;
 class SomeMech;
+class BuildDetailsReader;
+class RobotDefinition;
 
 class Robot : public frc::TimedRobot
 {
@@ -64,4 +66,7 @@ private:
     AutonPreviewer *m_previewer;
     RobotState *m_robotState;
     SomeMech *m_someMech;
+    BuildDetailsReader *m_detailsReader;
+    BuildDetails m_details;
+    RobotDefinition *m_robot;
 };

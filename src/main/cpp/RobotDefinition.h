@@ -32,6 +32,7 @@ public:
     RobotDefinition(std::vector<std::pair<RobotDefinitions::Components, std::string>> components);
     ~RobotDefinition() = default;
 
+    /// NOTE: May create a component class to use instead of std::any
     /// @brief Get a component (mechanism, sensor, solenoid, etc.) from a robot definition
     /// @param component Which component to get from a definition
     /// @return Returns the specfied component
