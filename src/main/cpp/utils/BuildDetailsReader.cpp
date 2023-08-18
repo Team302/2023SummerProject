@@ -32,6 +32,7 @@ BuildDetails BuildDetailsReader::ReadBuildDetails()
 
     // open the file in the deploy folder when the code is running
     // std::ifstream buildDetailsFile(frc::filesystem::GetDeployDirectory() + "BuildDetails.txt");
+    /// for testing only, when on robot use other line for ifstream
     std::ifstream buildDetailsFile("BuildDetails.txt");
     std::string line;
     std::string wholeFile = "";
