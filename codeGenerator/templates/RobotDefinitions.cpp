@@ -5,6 +5,12 @@ $$_GEN_NOTICE_$$
 #include <RobotDefinitions.h>
 
 /*
+    Will need to include all mechanism and sensor h files
+    Will also need to include their builders
+*/
+$$_INCLUDES_$$
+
+/*
     Here's what this should look like once generated: (teamNumber is passed in from BuildDetailsReader where GetRobotDefinition is called)
 
     switch(teamNumber){
@@ -17,7 +23,7 @@ $$_GEN_NOTICE_$$
     }
 */
 static RobotDefinition *RobotDefinitions::GetRobotDefinition(int teamNumber){
-    $$_ROBOT_DEFINITION_CREATION_$$}
+    $$_ROBOT_DEFINITION_SWITCH_$$}
 
 /*
     This is where all of the functions in the switch statement will be created
@@ -40,4 +46,4 @@ static RobotDefinition *RobotDefinitions::GetRobotDefinition(int teamNumber){
         return new RobotDefinition(mechs, sensors);
     }
 */
-$$_ROBOT_VARIANT_CREATION__FUNCTIONS_$$
+$$_ROBOT_VARIANT_CREATION_FUNCTIONS_$$

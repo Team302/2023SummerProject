@@ -60,6 +60,7 @@ namespace CoreCodeGenerator
             }
 
             generateMechanismFiles();
+            generateRobotDefinitionFiles();
         }
 
         private void generateMechanismFiles()
@@ -162,6 +163,125 @@ namespace CoreCodeGenerator
             }
         }
 
+        private void generateRobotDefinitionFiles()
+        {
+            #region H File
+            addProgress("Writing robot definition files...");
+            string contents = loadTemplate(theToolConfiguration.templateRobotDefinitionsHPath);
+            string filePathName = getRobotDefinitionFilePath(Path.GetFileName(theToolConfiguration.templateRobotDefinitionsHPath));
+
+            addProgress("Writing RobotDefinitions.h...");
+
+            #region Notices
+            contents = contents.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+            contents = contents.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+            #endregion
+
+            #region Robot Variant Functions
+            //# is robot id
+            string functionTemplate = "void Get#Definition();";
+            string replacement = "";
+
+            foreach(robot bot in theRobotConfiguration.theRobotVariants.robot)
+            {
+                //this conditional makes sure the functions are on a new line after the first function
+                replacement += replacement != "" ? "\n" : "" + functionTemplate.Replace("#", bot.robotID.ToString());
+            }
+
+            contents = contents.Replace("$$_ROBOT_VARIANT_CREATION_$$", replacement);
+            #endregion
+
+            #region Components Enum
+            replacement = "";
+            
+            foreach(mechanism mech in theRobotConfiguration.theRobotVariants.mechanism)
+            {
+                //this conditional makes sure the functions are on a new line after the first function
+                replacement += (replacement != "" ? "\n\t" : "") + mech.name + ",";
+            }
+
+            replacement = replacement.TrimEnd(',');
+
+            contents = contents.Replace("$$_COMPONENTS_ENUM_$$", replacement);
+            #endregion
+
+            //write to RobotDefinitions.h
+            File.WriteAllText(filePathName, contents);
+            addProgress("Finished writing RobotDefinitions.h...");
+            #endregion
+
+            #region Cpp File
+            contents = loadTemplate(theToolConfiguration.templateRobotDefinitionsCppPath);
+            filePathName = getRobotDefinitionFilePath(Path.GetFileName(theToolConfiguration.templateRobotDefinitionsCppPath));
+
+            addProgress("Writing RobotDefinitions.cpp...");
+
+            #region Notices
+            contents = contents.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+            contents = contents.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+            #endregion
+
+            #region Includes
+            replacement = "";
+
+            foreach (mechanism mech in theRobotConfiguration.theRobotVariants.mechanism)
+            {
+                //this conditional makes sure the functions are on a new line after the first function
+                string includeString = "#include <" + getIncludePath(mech.name) + "/" + mech.name + ".h>";
+                replacement += (replacement != "" ? "\n" : "") + includeString;
+            }
+
+            contents = contents.Replace("$$_INCLUDES_$$", replacement);
+            #endregion
+
+            #region Robot Defintion Switch Statement
+            replacement = "switch(teamNumber)\n\t{";
+            string replacementEnd = "\n\t\tdefault:\r\n\t\t\treturn Get302Defition();\r\n\t\t\tbreak;\n\t}\n";
+
+            //# is robot id
+            string caseTemplate = "\t\tcase #:\r\n\t\t\treturn Get#Definition();\n\t\t\tbreak;";
+
+            foreach (robot bot in theRobotConfiguration.theRobotVariants.robot)
+            {
+                //this conditional makes sure the functions are on a new line after the first function
+                replacement += (replacement != "" ? "\n" : "") + caseTemplate.Replace("#", bot.robotID.ToString());
+            }
+
+            contents = contents.Replace("$$_ROBOT_DEFINITION_SWITCH_$$", replacement + replacementEnd);
+            #endregion
+
+            //this is where the fucntions will be created to return a new robot definition
+            #region Robot Definition Functions
+            replacement = "";
+            string vectorCreation = "\r\n\tstd::vector<std::pair<Component, Mechanism>> mechs = new std::vector<Mechanism>();\r\n\tstd::vector<std::pair<Component, Sensor>> sensors = new std::vector<Sensor>();";
+            string functionHeaderTemplate = "RobotDefinition* Get#Definition()\r\n{";
+            string functionFooter = "\r\n\r\n\treturn new RobotDefinition(mechs, sensors);\n}";
+            string mechanismTemplate = "\r\n\r\n\tMechanism MECH = MECHBuilder::GetBuilder()->CreateNewMECH(args);\r\n\tmechs.emplace_back(std::make_pair(Component::MECH, MECH));";
+
+            foreach (robot bot in theRobotConfiguration.theRobotVariants.robot)
+            {
+                replacement += (replacement != "" ? "\n\n" : "") + functionHeaderTemplate.Replace("#", bot.robotID.ToString());
+                replacement += vectorCreation;
+
+                foreach(mechanismInstance mechInstance in bot.mechanismInstance)
+                {
+                    replacement += mechanismTemplate.Replace("MECH", mechInstance.name);
+                }
+
+                //end with function footer
+                replacement += functionFooter;
+                ///TODO: Add sensors, pdh, pcm, etc.
+            }
+
+            contents = contents.Replace("$$_ROBOT_VARIANT_CREATION_FUNCTIONS_$$", replacement);
+            #endregion
+
+            //write to RobotDefinitions.cpp
+            File.WriteAllText(filePathName, contents);
+            addProgress("Finished writing RobotDefinitions.cpp...");
+            #endregion
+        }
+
         private string getIncludePath(string mechanismName)
         {
             return getMechanismOutputPath(mechanismName).Replace(theToolConfiguration.rootOutputFolder, "").Replace(@"\", "/").TrimStart('/');
@@ -184,6 +304,18 @@ namespace CoreCodeGenerator
         private string getMechanismOutputPath(string mechanismName)
         {
             return Path.Combine(theToolConfiguration.rootOutputFolder, "mechanisms", mechanismName);
+        }
+
+        private string getRobotDefinitionFilePath(string filename)
+        {
+            //later we may add a folder for individual RobotDefinition files if we move away from creating them as functions
+            return Path.Combine(getRobotDefinitionOutputPath(), filename);
+        }
+
+        private string getRobotDefinitionOutputPath()
+        {
+            //later we may add a folder for individual RobotDefinition files if we move away from creating them as functions
+            return theToolConfiguration.rootOutputFolder;
         }
     }
 }

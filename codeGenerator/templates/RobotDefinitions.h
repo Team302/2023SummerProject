@@ -26,12 +26,12 @@ $$_GEN_NOTICE_$$
 enum Components
 {
     $$_COMPONENTS_ENUM_$$
-}
+};
 
 class RobotDefinitions
 {
 public:
-    static RobotDefinition *GetRobotDefinition(int teamNumber); // may not even need this argument, can find team number in this class as well
+    static RobotDefinition *GetRobotDefinition(int teamNumber);
 
 private:
     /*
