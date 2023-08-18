@@ -253,10 +253,10 @@ namespace CoreCodeGenerator
             //this is where the fucntions will be created to return a new robot definition
             #region Robot Definition Functions
             replacement = "";
-            string vectorCreation = "\r\n\tstd::vector<std::pair<Component, Mechanism>> mechs = new std::vector<Mechanism>();\r\n\tstd::vector<std::pair<Component, Sensor>> sensors = new std::vector<Sensor>();";
+            string vectorCreation = "\r\n\tstd::vector<std::pair<Components, Mechanism>> mechs = new std::vector<Mechanism>();\r\n\tstd::vector<std::pair<Components, Sensor>> sensors = new std::vector<Sensor>();";
             string functionHeaderTemplate = "RobotDefinition* Get#Definition()\r\n{";
             string functionFooter = "\r\n\r\n\treturn new RobotDefinition(mechs, sensors);\n}";
-            string mechanismTemplate = "\r\n\r\n\tMechanism MECH = MECHBuilder::GetBuilder()->CreateNewMECH(args);\r\n\tmechs.emplace_back(std::make_pair(Component::MECH, MECH));";
+            string mechanismTemplate = "\r\n\r\n\tMechanism MECH = TYPEBuilder::GetBuilder()->CreateNewTYPE(args);\r\n\tmechs.emplace_back(std::make_pair(Components::TYPE, MECH));";
 
             foreach (robot bot in theRobotConfiguration.theRobotVariants.robot)
             {
@@ -265,7 +265,7 @@ namespace CoreCodeGenerator
 
                 foreach(mechanismInstance mechInstance in bot.mechanismInstance)
                 {
-                    replacement += mechanismTemplate.Replace("MECH", mechInstance.name);
+                    replacement += mechanismTemplate.Replace("MECH", mechInstance.name).Replace("TYPE", mechInstance.mechanism.name);
                 }
 
                 //end with function footer
