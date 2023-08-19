@@ -69,98 +69,191 @@ namespace CoreCodeGenerator
             List<string> mechMainFiles = new List<string>();
             List<string> mechStateFiles = new List<string>();
             List<string> mechStateMgrFiles = new List<string>();
-            foreach (robot theRobot in theRobotConfiguration.theRobotVariants.robot)
+
+            foreach(mechanism mech in theRobotConfiguration.theRobotVariants.mechanism)
             {
-                /*
-                foreach (mechanism mech in theRobot.mechanism)
+                string filePathName;
+                string resultString;
+
+                string mechanismName = mech.name;
+
+                createMechanismFolder(mechanismName);
+
+                #region Generate Cpp File
+                resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
+                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
+
+                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+                resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
+                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+                #region Tunable Parameters
+                string allParameterReading = "";
+                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
                 {
-                    string filePathName;
-                    string resultString;
+                    Type objType = cLCParams.GetType();
 
-                    string mechanismName = mech.name;
+                    PropertyInfo[] propertyInfos = objType.GetProperties();
 
-                    createMechanismFolder(mechanismName);
-
-                    #region Generate Cpp File
-                    resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
-                    filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
-
-                    resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                    resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                    resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
-                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                    #region Tunable Parameters
-                    string allParameterReading = "";
-                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+                    foreach (PropertyInfo pi in propertyInfos)
                     {
-                        Type objType = cLCParams.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        foreach (PropertyInfo pi in propertyInfos)
-                        {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                            if (!skip)
-                                allParameterReading += string.Format("{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", {2});{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
-                        }
-
+                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                        if (!skip)
+                            allParameterReading += (allParameterReading != "" ? "\n\t" : "") + string.Format("m_{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", m_{0}_{1});", cLCParams.name, pi.Name);
                     }
-                    resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
 
-                    string allParameterWriting = "";
-                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                    {
-                        Type objType = cLCParams.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        foreach (PropertyInfo pi in propertyInfos)
-                        {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                            if (!skip)
-                                allParameterWriting += string.Format("{0}_{1} = m_table.get()->PutNumber(\"{0}_{1}\", {0}_{1});{2}", cLCParams.name, pi.Name, Environment.NewLine);
-                        }
-
-                    }
-                    resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
-
-                    #endregion
-
-                    File.WriteAllText(filePathName, resultString);
-                    #endregion
-
-                    #region Generate H File
-                    resultString = loadTemplate(theToolConfiguration.templateMechanismHPath);
-                    filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
-
-                    resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                    resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                    //closed loop parameters
-                    string allParameters = "";
-                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                    {
-                        Type objType = cLCParams.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        foreach (PropertyInfo pi in propertyInfos)
-                        {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                            if (!skip)
-                                allParameters += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
-                        }
-
-                    }
-                    resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
-
-                    File.WriteAllText(filePathName, resultString);
-                    #endregion
                 }
-                */
+                resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
+
+                string allParameterWriting = "";
+                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+                {
+                    Type objType = cLCParams.GetType();
+
+                    PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                    foreach (PropertyInfo pi in propertyInfos)
+                    {
+                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                        if (!skip)
+                            allParameterWriting += (allParameterWriting != "" ? "\n\t" : "") + string.Format("m_table.get()->PutNumber(\"{0}_{1}\", m_{0}_{1});", cLCParams.name, pi.Name);
+                    }
+
+                }
+                resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
+
+                #endregion
+
+                #region Member Variable Initialization
+                string replacement = "";
+
+                ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then add them here
+                foreach (motor m in mech.motor)
+                {
+                    replacement += (replacement != "" ? "\n\t" : "") + "m_" + m.name + " = " + m.name + ";";
+                }
+
+                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+                {
+                    Type objType = cLCParams.GetType();
+
+                    PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                    foreach (PropertyInfo pi in propertyInfos)
+                    {
+                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                        if (!skip)
+                            replacement += (replacement != "" ? "\n\t" : "") + string.Format("m_{0}_{1} = {0}_{1};", cLCParams.name, pi.Name, Environment.NewLine);
+                    }
+                }
+
+                resultString = resultString.Replace("$$_MEMBER_VARIABLE_INITIALIZATION_$$", replacement);
+                #endregion
+
+                #region Constructor Args
+                replacement = getMechanismConstructorArgs(mech);
+
+                resultString = resultString.Replace("$$_CONSTRUCTOR_ARGS_$$", replacement);
+                #endregion
+
+                File.WriteAllText(filePathName, resultString);
+
+                #endregion
+
+                #region Generate H File
+                resultString = loadTemplate(theToolConfiguration.templateMechanismHPath);
+                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
+
+                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+                #region Closed Loop Control Paramters
+                string allParameters = "";
+                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+                {
+                    Type objType = cLCParams.GetType();
+
+                    PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                    foreach (PropertyInfo pi in propertyInfos)
+                    {
+                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                        if (!skip)
+                            allParameters += (allParameters!= "" ? "\n\t" : "") + string.Format("double m_{0}_{1};", cLCParams.name, pi.Name);
+                    }
+
+                }
+                resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
+                #endregion
+
+                #region Constructor
+
+                replacement = getMechanismConstructorArgs(mech);
+                
+                resultString = resultString.Replace("$$_CONSTRUCTOR_ARGS_$$", replacement);
+                #endregion
+
+                #region Component Member Variables
+                ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then add them to these variable declarations
+                // for now, just cycle through all the motors until a final mechbuilder design is reached
+                replacement = "";
+                foreach (motor m in mech.motor)
+                {
+                    ///NOTE: may need a switch statement for different values of m.controller if the enum doesn't match the class names in the code
+                    replacement += (replacement != "" ? ", " : "") + m.controller.ToString() + " *m_" + m.name + ";";
+                }
+                resultString = resultString.Replace("$$_COMPONENTS_$$", replacement);
+
+                #endregion
+
+                #region Includes
+                replacement = "";
+
+                ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then include all of them
+                foreach (motor m in mech.motor)
+                {
+                    replacement += (replacement != "" ? "\n" : "") + "#include <hw/" + m.controller.ToString() + ".h>";
+                }
+
+                resultString = resultString.Replace("$$_INCLUDES_$$", replacement);
+                #endregion
+
+                File.WriteAllText(filePathName, resultString);
+                #endregion
             }
+        }
+
+        private string getMechanismConstructorArgs(mechanism mech)
+        {
+            string args = "";
+            ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then add them to constructor
+            ///this requires going to project tab, adding reference to System.Windows.Forms and then adding the using line at the top
+            ///foreach(TreeNode in (mech.theTreeNode as TreeNode).Nodes)
+
+            // for now, just cycle through all the motors until a final mechbuilder design is reached
+            foreach (motor m in mech.motor)
+            {
+                ///NOTE: may need a switch statement for different values of m.controller if the enum doesn't match the class names in the code
+                args += (args != "" ? ", " : "") + m.controller.ToString() + " " + m.name;
+            }
+
+            foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+            {
+                Type objType = cLCParams.GetType();
+
+                PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                foreach (PropertyInfo pi in propertyInfos)
+                {
+                    bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                    if (!skip)
+                        args += (args != "" ? ", " : "") + string.Format("double {0}_{1}", cLCParams.name, pi.Name, Environment.NewLine);
+                }
+            }
+
+            return args;
         }
 
         private void generateRobotDefinitionFiles()
