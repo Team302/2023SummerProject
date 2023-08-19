@@ -79,6 +79,8 @@ namespace CoreCodeGenerator
 
                 createMechanismFolder(mechanismName);
 
+                #region Generate Mechanism Base Class
+
                 #region Generate Cpp File
                 resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
                 filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
@@ -221,6 +223,25 @@ namespace CoreCodeGenerator
                 #endregion
 
                 File.WriteAllText(filePathName, resultString);
+                #endregion
+
+                #endregion
+
+                #region Generate Mechanism Builder
+
+                #region Generate Cpp File
+                resultString = loadTemplate(theToolConfiguration.templateMechBuilderCppPath);
+                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderCppPath);
+
+                File.WriteAllText(filePathName, resultString);
+                #endregion
+
+                #region Generate H File
+                resultString = loadTemplate(theToolConfiguration.templateMechBuilderHPath);
+                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderHPath);
+
+                File.WriteAllText(filePathName, resultString);
+                #endregion
                 #endregion
             }
         }
@@ -390,7 +411,7 @@ namespace CoreCodeGenerator
         {
             string filename = Path.GetFileName(templateFilePath);
 
-            filename = filename.Replace("MECHANISM_NAME", mechanismName);
+            filename = filename.Replace("MECH", mechanismName);
 
             return Path.Combine(getMechanismOutputPath(mechanismName), filename);
         }

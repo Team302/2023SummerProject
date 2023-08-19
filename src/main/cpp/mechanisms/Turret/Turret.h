@@ -32,7 +32,7 @@
 #include <networktables/NetworkTable.h>
 
 // Team 302 Includes
-#include <hw/TALONSRX>
+#include <hw/TALONSRX.h>
 
 class Turret
 {
