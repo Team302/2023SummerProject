@@ -76,229 +76,246 @@ namespace CoreCodeGenerator
 
             foreach (mechanism mech in theRobotConfiguration.theRobotVariants.mechanism)
             {
-                string filePathName;
-                string resultString;
+                createMechanismFolder(mech.name);
 
-                string mechanismName = mech.name;
-
-                createMechanismFolder(mechanismName);
-
-                #region Generate Mechanism Base Class
-
-                #region Generate Cpp File
-                resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
-                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
-
-                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
-                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                #region Tunable Parameters
-                string allParameterReading = "";
-                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                {
-                    Type objType = cLCParams.GetType();
-
-                    PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                    foreach (PropertyInfo pi in propertyInfos)
-                    {
-                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                        if (!skip)
-                            allParameterReading += (allParameterReading != "" ? "\n\t" : "") + string.Format("m_{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", m_{0}_{1});", cLCParams.name, pi.Name);
-                    }
-
-                }
-                resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
-
-                string allParameterWriting = "";
-                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                {
-                    Type objType = cLCParams.GetType();
-
-                    PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                    foreach (PropertyInfo pi in propertyInfos)
-                    {
-                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                        if (!skip)
-                            allParameterWriting += (allParameterWriting != "" ? "\n\t" : "") + string.Format("m_table.get()->PutNumber(\"{0}_{1}\", m_{0}_{1});", cLCParams.name, pi.Name);
-                    }
-
-                }
-                resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
-
-                #endregion
-
-                #region Member Variable Initialization
-                string replacement = "";
-
-                ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then add them here
-                foreach (motor m in mech.motor)
-                {
-                    replacement += (replacement != "" ? "\n\t" : "") + "m_" + m.name + " = " + m.name + ";";
-                }
-
-                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                {
-                    Type objType = cLCParams.GetType();
-
-                    PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                    foreach (PropertyInfo pi in propertyInfos)
-                    {
-                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                        if (!skip)
-                            replacement += (replacement != "" ? "\n\t" : "") + string.Format("m_{0}_{1} = {0}_{1};", cLCParams.name, pi.Name, Environment.NewLine);
-                    }
-                }
-
-                resultString = resultString.Replace("$$_MEMBER_VARIABLE_INITIALIZATION_$$", replacement);
-                #endregion
-
-                #region Constructor Args
-                replacement = getMechanismConstructorArgs(mech);
-
-                resultString = resultString.Replace("$$_CONSTRUCTOR_ARGS_$$", replacement);
-                #endregion
-
-                File.WriteAllText(filePathName, resultString);
-
-                #endregion
-
-                #region Generate H File
-                resultString = loadTemplate(theToolConfiguration.templateMechanismHPath);
-                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
-
-                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                #region Closed Loop Control Paramters
-                string allParameters = "";
-                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                {
-                    Type objType = cLCParams.GetType();
-
-                    PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                    foreach (PropertyInfo pi in propertyInfos)
-                    {
-                        bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
-                        if (!skip)
-                            allParameters += (allParameters!= "" ? "\n\t" : "") + string.Format("double m_{0}_{1};", cLCParams.name, pi.Name);
-                    }
-
-                }
-                resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
-                #endregion
-
-                #region Constructor
-
-                replacement = getMechanismConstructorArgs(mech);
-                
-                resultString = resultString.Replace("$$_CONSTRUCTOR_ARGS_$$", replacement);
-                #endregion
-
-                #region Component Member Variables
-                ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then add them to these variable declarations
-                // for now, just cycle through all the motors until a final mechbuilder design is reached
-                replacement = "";
-                foreach (motor m in mech.motor)
-                {
-                    string motorType = ConvertMotorType(textInfo, m);
-
-                    replacement += (replacement != "" ? ", " : "") + "Dragon" + motorType + " *m_" + m.name + ";";
-                }
-                resultString = resultString.Replace("$$_COMPONENTS_$$", replacement);
-
-                #endregion
-
-                #region Includes
-                replacement = "";
-
-                ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then include all of them
-                foreach (motor m in mech.motor)
-                {
-                    string motorType = ConvertMotorType(textInfo, m);
-
-                    replacement += (replacement != "" ? "\n" : "") + "#include <hw/Dragon" + motorType + ".h>";
-                }
-
-                resultString = resultString.Replace("$$_INCLUDES_$$", replacement);
-                #endregion
-
-                File.WriteAllText(filePathName, resultString);
-                #endregion
-
-                #endregion
-
-                #region Generate Mechanism Builder
-
-                #region Generate Cpp File
-                resultString = loadTemplate(theToolConfiguration.templateMechBuilderCppPath);
-                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderCppPath);
-
-                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
-                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                //no-op for now
-                //this replacement will be for the arguments of a mechanism builder, if there are any
-                resultString = resultString.Replace("$$_DEFAULT_ARGS_$$", "");
-
-                #region Create New Mechanism
-
-                //no-op for now
-                //this replacement will be for the arguments of the function to create a new mechanism
-                //from my understanding, this is any value that isn't considered a default
-                resultString = resultString.Replace("$$_MECHANISM_ARGS_$$", "");
-
-                //no-op for now
-                //this replacement is the combination of the mechanism args from above, and the default arguments already held in the H file
-                //NOTE: not entirely sure how to mix the default and non-default values just yet, may want to create a $$_MECHANISM_STRUCTURE_$$Args struct that contains every parameter
-                //then this struct could have it's individual parameters set from the default and non-default variables
-                resultString = resultString.Replace("$$_NEW_MECHANISM_ARGS_$$", "");
-
-                #endregion
-
-                File.WriteAllText(filePathName, resultString);
-                #endregion
-
-                #region Generate H File
-                resultString = loadTemplate(theToolConfiguration.templateMechBuilderHPath);
-                filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderHPath);
-
-                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
-                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                //no-op for now
-                //this will be for the arguments of a mechanism builder constructor, if there are any
-                resultString = resultString.Replace("$$_CONSTRUCTOR_ARGS_$$", "");
-
-                #region Default Values
-                //no-op for now
-                //this replacement will contain everything that is default for a mechanism, and will later be combined with instance-specific values when a new mechanism is made
-                //these values may be things like gear rations, motor names, etc.
-                resultString = resultString.Replace("$$_DEFAULT_VALUES_$$", "");
-
-                #endregion
-
-                #region Create New Mechanism
-                //no-op for now
-                //this replacement contains all of the arguments for the CreateNewMECH_TYPE function that are instance-specific
-                resultString = resultString.Replace("$$_MECHANISM_ARGS_$$", "");
-                #endregion
-
-                File.WriteAllText(filePathName, resultString);
-                #endregion
-
-                #endregion
+                generateMechanismBaseClasses(mech);
+                generateMechanismBuilder(mech);
+                generateMechanismStateFiles(mech);
             }
+        }
+
+        private void generateMechanismStateFiles(mechanism mech)
+        {
+            string mechanismName = mech.name;
+
+            #region Generate State Manager Cpp File
+            string resultString = loadTemplate(theToolConfiguration.templateMechBuilderCppPath);
+            string filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderCppPath);
+
+            #endregion
+        }
+
+        private void generateMechanismBuilder(mechanism mech)
+        {
+            string mechanismName = mech.name;
+
+            #region Generate Cpp File
+            string resultString = loadTemplate(theToolConfiguration.templateMechBuilderCppPath);
+            string filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderCppPath);
+            resultString = replaceNotices(resultString);
+            resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
+            resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+            //no-op for now
+            //this replacement will be for the arguments of a mechanism builder, if there are any
+            resultString = resultString.Replace("$$_DEFAULT_ARGS_$$", "");
+
+            #region Create New Mechanism
+
+            //no-op for now
+            //this replacement will be for the arguments of the function to create a new mechanism
+            //from my understanding, this is any value that isn't considered a default
+            resultString = resultString.Replace("$$_MECHANISM_ARGS_$$", "");
+
+            //no-op for now
+            //this replacement is the combination of the mechanism args from above, and the default arguments already held in the H file
+            //NOTE: not entirely sure how to mix the default and non-default values just yet, may want to create a $$_MECHANISM_STRUCTURE_$$Args struct that contains every parameter
+            //then this struct could have it's individual parameters set from the default and non-default variables
+            resultString = resultString.Replace("$$_NEW_MECHANISM_ARGS_$$", "");
+
+            #endregion
+
+            File.WriteAllText(filePathName, resultString);
+            #endregion
+
+            #region Generate H File
+            resultString = loadTemplate(theToolConfiguration.templateMechBuilderHPath);
+            filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderHPath);
+
+            resultString = replaceNotices(resultString);
+            resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
+            resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+            //no-op for now
+            //this will be for the arguments of a mechanism builder constructor, if there are any
+            resultString = resultString.Replace("$$_CONSTRUCTOR_ARGS_$$", "");
+
+            #region Default Values
+            //no-op for now
+            //this replacement will contain everything that is default for a mechanism, and will later be combined with instance-specific values when a new mechanism is made
+            //these values may be things like gear rations, motor names, etc.
+            resultString = resultString.Replace("$$_DEFAULT_VALUES_$$", "");
+
+            #endregion
+
+            #region Create New Mechanism
+            //no-op for now
+            //this replacement contains all of the arguments for the CreateNewMECH_TYPE function that are instance-specific
+            resultString = resultString.Replace("$$_MECHANISM_ARGS_$$", "");
+            #endregion
+
+            File.WriteAllText(filePathName, resultString);
+            #endregion
+        }
+
+        private string replaceNotices(string resultString)
+        {
+            resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+            resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+            return resultString;
+        }
+
+        private void generateMechanismBaseClasses(mechanism mech)
+        {
+            //text info for formatting strings
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+
+            string mechanismName = mech.name;
+
+            #region Generate Cpp File
+            string resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
+            string filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
+
+            resultString = replaceNotices(resultString);
+            resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
+            resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+            #region Tunable Parameters
+            string allParameterReading = "";
+            foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+            {
+                Type objType = cLCParams.GetType();
+
+                PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                foreach (PropertyInfo pi in propertyInfos)
+                {
+                    bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                    if (!skip)
+                        allParameterReading += (allParameterReading != "" ? "\n\t" : "") + string.Format("m_{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", m_{0}_{1});", cLCParams.name, pi.Name);
+                }
+
+            }
+            resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
+
+            string allParameterWriting = "";
+            foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+            {
+                Type objType = cLCParams.GetType();
+
+                PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                foreach (PropertyInfo pi in propertyInfos)
+                {
+                    bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                    if (!skip)
+                        allParameterWriting += (allParameterWriting != "" ? "\n\t" : "") + string.Format("m_table.get()->PutNumber(\"{0}_{1}\", m_{0}_{1});", cLCParams.name, pi.Name);
+                }
+
+            }
+            resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
+
+            #endregion
+
+            #region Member Variable Initialization
+            string replacement = "";
+
+            ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then add them here
+            foreach (motor m in mech.motor)
+            {
+                replacement += (replacement != "" ? "\n\t" : "") + "m_" + m.name + " = " + m.name + ";";
+            }
+
+            foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+            {
+                Type objType = cLCParams.GetType();
+
+                PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                foreach (PropertyInfo pi in propertyInfos)
+                {
+                    bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                    if (!skip)
+                        replacement += (replacement != "" ? "\n\t" : "") + string.Format("m_{0}_{1} = {0}_{1};", cLCParams.name, pi.Name, Environment.NewLine);
+                }
+            }
+
+            resultString = resultString.Replace("$$_MEMBER_VARIABLE_INITIALIZATION_$$", replacement);
+            #endregion
+
+            #region Constructor Args
+            replacement = getMechanismConstructorArgs(mech);
+
+            resultString = resultString.Replace("$$_CONSTRUCTOR_ARGS_$$", replacement);
+            #endregion
+
+            File.WriteAllText(filePathName, resultString);
+
+            #endregion
+
+            #region Generate H File
+            resultString = loadTemplate(theToolConfiguration.templateMechanismHPath);
+            filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
+
+            resultString = replaceNotices(resultString);
+            resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+            #region Closed Loop Control Paramters
+            string allParameters = "";
+            foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
+            {
+                Type objType = cLCParams.GetType();
+
+                PropertyInfo[] propertyInfos = objType.GetProperties();
+
+                foreach (PropertyInfo pi in propertyInfos)
+                {
+                    bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                    if (!skip)
+                        allParameters += (allParameters != "" ? "\n\t" : "") + string.Format("double m_{0}_{1};", cLCParams.name, pi.Name);
+                }
+
+            }
+            resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
+            #endregion
+
+            #region Constructor
+
+            replacement = getMechanismConstructorArgs(mech);
+
+            resultString = resultString.Replace("$$_CONSTRUCTOR_ARGS_$$", replacement);
+            #endregion
+
+            #region Component Member Variables
+            ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then add them to these variable declarations
+            // for now, just cycle through all the motors until a final mechbuilder design is reached
+            replacement = "";
+            foreach (motor m in mech.motor)
+            {
+                string motorType = ConvertMotorType(textInfo, m);
+
+                replacement += (replacement != "" ? ", " : "") + "Dragon" + motorType + " *m_" + m.name + ";";
+            }
+            resultString = resultString.Replace("$$_COMPONENTS_$$", replacement);
+
+            #endregion
+
+            #region Includes
+            replacement = "";
+
+            ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then include all of them
+            foreach (motor m in mech.motor)
+            {
+                string motorType = ConvertMotorType(textInfo, m);
+
+                replacement += (replacement != "" ? "\n" : "") + "#include <hw/Dragon" + motorType + ".h>";
+            }
+
+            resultString = resultString.Replace("$$_INCLUDES_$$", replacement);
+            #endregion
+
+            File.WriteAllText(filePathName, resultString);
+            #endregion
         }
 
         private static string ConvertMotorType(TextInfo textInfo, motor m)
@@ -363,8 +380,7 @@ namespace CoreCodeGenerator
             addProgress("Writing RobotDefinitions.h...");
 
             #region Notices
-            contents = contents.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-            contents = contents.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+            contents = replaceNotices(contents);
             #endregion
 
             #region Robot Variant Functions
@@ -407,8 +423,7 @@ namespace CoreCodeGenerator
             addProgress("Writing RobotDefinitions.cpp...");
 
             #region Notices
-            contents = contents.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-            contents = contents.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+            contents = replaceNotices(contents);
             #endregion
 
             #region Includes
