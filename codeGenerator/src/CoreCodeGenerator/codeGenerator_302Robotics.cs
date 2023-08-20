@@ -14,6 +14,7 @@ using StateData;
 using System.Collections;
 using System.Reflection;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace CoreCodeGenerator
 {
@@ -70,7 +71,10 @@ namespace CoreCodeGenerator
             List<string> mechStateFiles = new List<string>();
             List<string> mechStateMgrFiles = new List<string>();
 
-            foreach(mechanism mech in theRobotConfiguration.theRobotVariants.mechanism)
+            //text info for formatting strings
+            TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+
+            foreach (mechanism mech in theRobotConfiguration.theRobotVariants.mechanism)
             {
                 string filePathName;
                 string resultString;
@@ -203,8 +207,9 @@ namespace CoreCodeGenerator
                 replacement = "";
                 foreach (motor m in mech.motor)
                 {
-                    ///NOTE: may need a switch statement for different values of m.controller if the enum doesn't match the class names in the code
-                    replacement += (replacement != "" ? ", " : "") + m.controller.ToString() + " *m_" + m.name + ";";
+                    string motorType = ConvertMotorType(textInfo, m);
+
+                    replacement += (replacement != "" ? ", " : "") + "Dragon" + motorType + " *m_" + m.name + ";";
                 }
                 resultString = resultString.Replace("$$_COMPONENTS_$$", replacement);
 
@@ -216,7 +221,9 @@ namespace CoreCodeGenerator
                 ///NOTE: May want to switch to using (mech.theTreeNode as TreeNode).Nodes to find all children and then include all of them
                 foreach (motor m in mech.motor)
                 {
-                    replacement += (replacement != "" ? "\n" : "") + "#include <hw/" + m.controller.ToString() + ".h>";
+                    string motorType = ConvertMotorType(textInfo, m);
+
+                    replacement += (replacement != "" ? "\n" : "") + "#include <hw/Dragon" + motorType + ".h>";
                 }
 
                 resultString = resultString.Replace("$$_INCLUDES_$$", replacement);
@@ -233,6 +240,30 @@ namespace CoreCodeGenerator
                 resultString = loadTemplate(theToolConfiguration.templateMechBuilderCppPath);
                 filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderCppPath);
 
+                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+                resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
+                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+                //no-op for now
+                //this replacement will be for the arguments of a mechanism builder, if there are any
+                resultString = resultString.Replace("$$_DEFAULT_ARGS_$$", "");
+
+                #region Create New Mechanism
+
+                //no-op for now
+                //this replacement will be for the arguments of the function to create a new mechanism
+                //from my understanding, this is any value that isn't considered a default
+                resultString = resultString.Replace("$$_MECHANISM_ARGS_$$", "");
+
+                //no-op for now
+                //this replacement is the combination of the mechanism args from above, and the default arguments already held in the H file
+                //NOTE: not entirely sure how to mix the default and non-default values just yet, may want to create a $$_MECHANISM_STRUCTURE_$$Args struct that contains every parameter
+                //then this struct could have it's individual parameters set from the default and non-default variables
+                resultString = resultString.Replace("$$_NEW_MECHANISM_ARGS_$$", "");
+
+                #endregion
+
                 File.WriteAllText(filePathName, resultString);
                 #endregion
 
@@ -240,10 +271,51 @@ namespace CoreCodeGenerator
                 resultString = loadTemplate(theToolConfiguration.templateMechBuilderHPath);
                 filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderHPath);
 
+                resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
+                resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
+                resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
+                resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
+
+                //no-op for now
+                //this will be for the arguments of a mechanism builder constructor, if there are any
+                resultString = resultString.Replace("$$_CONSTRUCTOR_ARGS_$$", "");
+
+                #region Default Values
+                //no-op for now
+                //this replacement will contain everything that is default for a mechanism, and will later be combined with instance-specific values when a new mechanism is made
+                //these values may be things like gear rations, motor names, etc.
+                resultString = resultString.Replace("$$_DEFAULT_VALUES_$$", "");
+
+                #endregion
+
+                #region Create New Mechanism
+                //no-op for now
+                //this replacement contains all of the arguments for the CreateNewMECH_TYPE function that are instance-specific
+                resultString = resultString.Replace("$$_MECHANISM_ARGS_$$", "");
+                #endregion
+
                 File.WriteAllText(filePathName, resultString);
                 #endregion
+
                 #endregion
             }
+        }
+
+        private static string ConvertMotorType(TextInfo textInfo, motor m)
+        {
+            string motorType = m.motorType.ToString();
+            string[] arr = motorType.Split(new char[] { '_' });
+            arr[0] = textInfo.ToLower(arr[0]);
+            arr[0] = textInfo.ToTitleCase(arr[0]);
+
+            motorType = "";
+
+            foreach (string s in arr)
+            {
+                motorType += s;
+            }
+
+            return motorType;
         }
 
         private string getMechanismConstructorArgs(mechanism mech)
@@ -256,8 +328,12 @@ namespace CoreCodeGenerator
             // for now, just cycle through all the motors until a final mechbuilder design is reached
             foreach (motor m in mech.motor)
             {
-                ///NOTE: may need a switch statement for different values of m.controller if the enum doesn't match the class names in the code
-                args += (args != "" ? ", " : "") + m.controller.ToString() + " " + m.name;
+                //text info for formatting strings
+                TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+
+                string motorType = ConvertMotorType(textInfo, m);
+
+                args += (args != "" ? ", " : "") + "Dragon" + motorType + " *" + m.name;
             }
 
             foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)

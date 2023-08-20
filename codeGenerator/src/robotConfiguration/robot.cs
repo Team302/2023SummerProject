@@ -125,8 +125,7 @@ namespace Robot
         /// </summary>
         public robot()
         {
-            initialize();
-this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
+            this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
             this._pigeon = new System.Collections.ObjectModel.Collection<pigeon>();
             this._limelight = new System.Collections.ObjectModel.Collection<limelight>();
             this._mechanismInstance = new System.Collections.ObjectModel.Collection<mechanismInstance>();
@@ -1087,7 +1086,7 @@ this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private motormotorType _motorType = Robot.motormotorType.TALONSRX;
+        private motormotorType _motorType = Robot.motormotorType.TALON_SRX;
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("motorType")]
@@ -1582,7 +1581,7 @@ this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
     public enum motormotorType
     {
         
-        TALONSRX,
+        TALON_SRX,
         
         FALCON,
         

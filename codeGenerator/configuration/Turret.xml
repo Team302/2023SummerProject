@@ -2,7 +2,7 @@
 <mechanism xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://team302.org/robot">
   <motor
     name="zAxis">
-    <motorType>TALONSRX</motorType>
+    <motorType>TALON_SRX</motorType>
     <controller>TALONSRX</controller>
     <canBusName>rio</canBusName>
     <canId>0</canId>

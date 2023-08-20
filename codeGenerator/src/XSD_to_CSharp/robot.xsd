@@ -474,10 +474,10 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="digitalInput" />
-				<xs:element default="TALONSRX" name="motorType">
+				<xs:element default="TALON_SRX" name="motorType">
 					<xs:simpleType>
 						<xs:restriction base="xs:NMTOKEN">
-							<xs:enumeration value="TALONSRX" />
+							<xs:enumeration value="TALON_SRX" />
 							<xs:enumeration value="FALCON" />
 							<xs:enumeration value="BRUSHLESS_SPARK_MAX" />
 							<xs:enumeration value="BRUSHED_SPARK_MAX" />

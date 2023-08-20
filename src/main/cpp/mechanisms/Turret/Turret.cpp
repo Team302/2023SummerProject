@@ -28,7 +28,7 @@
 
 #include <mechanisms/Turret/Turret.h>
 
-Turret::Turret(TALONSRX zAxis, double mainPID_pGain, double mainPID_iGain, double mainPID_dGain, double mainPID_fGain, double mainPID_iZone)
+Turret::Turret(DragonTalonSRX *zAxis, double mainPID_pGain, double mainPID_iGain, double mainPID_dGain, double mainPID_fGain, double mainPID_iZone)
 {
     m_zAxis = zAxis;
 	m_mainPID_pGain = mainPID_pGain;

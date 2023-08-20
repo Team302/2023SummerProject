@@ -32,12 +32,12 @@
 #include <networktables/NetworkTable.h>
 
 // Team 302 Includes
-#include <hw/TALONSRX.h>
+#include <hw/DragonTalonSRX.h>
 
 class Turret
 {
 public:
-    Turret(TALONSRX zAxis, double mainPID_pGain, double mainPID_iGain, double mainPID_dGain, double mainPID_fGain, double mainPID_iZone);
+    Turret(DragonTalonSRX *zAxis, double mainPID_pGain, double mainPID_iGain, double mainPID_dGain, double mainPID_fGain, double mainPID_iZone);
     void Initialize();
     void Cyclic();
 
@@ -46,7 +46,7 @@ private:
     void ReadTuningParamsFromNT();
     void PushTuningParamsToNT();
 
-    TALONSRX *m_zAxis;
+    DragonTalonSRX *m_zAxis;
 
     double m_mainPID_pGain;
 	double m_mainPID_iGain;

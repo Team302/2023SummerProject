@@ -17,7 +17,7 @@
       <mechanism>
         <motor
           name="zAxis">
-          <motorType>TALONSRX</motorType>
+          <motorType>TALON_SRX</motorType>
           <controller>TALONSRX</controller>
           <canBusName>rio</canBusName>
           <canId>0</canId>
