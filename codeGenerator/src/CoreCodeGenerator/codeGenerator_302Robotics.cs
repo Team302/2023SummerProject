@@ -89,8 +89,22 @@ namespace CoreCodeGenerator
             string mechanismName = mech.name;
 
             #region Generate State Manager Cpp File
-            string resultString = loadTemplate(theToolConfiguration.templateMechBuilderCppPath);
-            string filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderCppPath);
+            string file = theToolConfiguration.getTemplateCppPath(theToolConfiguration.templateMechStateMgrPath).Replace("MECH", mechanismName);
+
+            string resultString = loadTemplate(file);
+            string filePathName = getMechanismFullFilePathName(mechanismName, file);
+
+            resultString = replaceNotices(resultString);
+
+            #endregion
+
+            #region Generate State Manager H File
+            file = theToolConfiguration.getTemplateHPath(theToolConfiguration.templateMechStateMgrPath).Replace("MECH", mechanismName);
+
+            resultString = loadTemplate(file);
+            filePathName = getMechanismFullFilePathName(mechanismName, file);
+
+            resultString = replaceNotices(resultString);
 
             #endregion
         }
@@ -100,8 +114,8 @@ namespace CoreCodeGenerator
             string mechanismName = mech.name;
 
             #region Generate Cpp File
-            string resultString = loadTemplate(theToolConfiguration.templateMechBuilderCppPath);
-            string filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderCppPath);
+            string resultString = loadTemplate(theToolConfiguration.getTemplateCppPath(theToolConfiguration.templateMechBuilderPath));
+            string filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.getTemplateCppPath(theToolConfiguration.templateMechBuilderPath));
             resultString = replaceNotices(resultString);
             resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
             resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
@@ -129,8 +143,8 @@ namespace CoreCodeGenerator
             #endregion
 
             #region Generate H File
-            resultString = loadTemplate(theToolConfiguration.templateMechBuilderHPath);
-            filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechBuilderHPath);
+            resultString = loadTemplate(theToolConfiguration.getTemplateHPath(theToolConfiguration.templateMechBuilderPath));
+            filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.getTemplateHPath(theToolConfiguration.templateMechBuilderPath));
 
             resultString = replaceNotices(resultString);
             resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
@@ -173,8 +187,8 @@ namespace CoreCodeGenerator
             string mechanismName = mech.name;
 
             #region Generate Cpp File
-            string resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
-            string filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
+            string resultString = loadTemplate(theToolConfiguration.getTemplateCppPath(theToolConfiguration.templateMechanismPath));
+            string filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.getTemplateCppPath(theToolConfiguration.templateMechanismPath));
 
             resultString = replaceNotices(resultString);
             resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
@@ -254,8 +268,8 @@ namespace CoreCodeGenerator
             #endregion
 
             #region Generate H File
-            resultString = loadTemplate(theToolConfiguration.templateMechanismHPath);
-            filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
+            resultString = loadTemplate(theToolConfiguration.getTemplateHPath(theToolConfiguration.templateMechanismPath));
+            filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.getTemplateHPath(theToolConfiguration.templateMechanismPath));
 
             resultString = replaceNotices(resultString);
             resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
@@ -374,8 +388,8 @@ namespace CoreCodeGenerator
         {
             #region H File
             addProgress("Writing robot definition files...");
-            string contents = loadTemplate(theToolConfiguration.templateRobotDefinitionsHPath);
-            string filePathName = getRobotDefinitionFilePath(Path.GetFileName(theToolConfiguration.templateRobotDefinitionsHPath));
+            string contents = loadTemplate(theToolConfiguration.getTemplateHPath(theToolConfiguration.templateRobotDefinitionsPath));
+            string filePathName = getRobotDefinitionFilePath(Path.GetFileName(theToolConfiguration.getTemplateHPath(theToolConfiguration.templateRobotDefinitionsPath)));
 
             addProgress("Writing RobotDefinitions.h...");
 
@@ -417,8 +431,8 @@ namespace CoreCodeGenerator
             #endregion
 
             #region Cpp File
-            contents = loadTemplate(theToolConfiguration.templateRobotDefinitionsCppPath);
-            filePathName = getRobotDefinitionFilePath(Path.GetFileName(theToolConfiguration.templateRobotDefinitionsCppPath));
+            contents = loadTemplate(theToolConfiguration.getTemplateCppPath(theToolConfiguration.templateRobotDefinitionsPath));
+            filePathName = getRobotDefinitionFilePath(Path.GetFileName(theToolConfiguration.getTemplateCppPath(theToolConfiguration.templateRobotDefinitionsPath)));
 
             addProgress("Writing RobotDefinitions.cpp...");
 

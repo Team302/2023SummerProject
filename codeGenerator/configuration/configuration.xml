@@ -20,13 +20,10 @@
     <string>Robot.doubleParameter</string>
     <string>Robot.doubleRestrictedParameter</string>
   </parameterTypes>
-  <templateMechanismCppPath>..\templates\MECH.cpp</templateMechanismCppPath>
-  <templateMechanismHPath>..\templates\MECH.h</templateMechanismHPath>
-  <templateRobotDefinitionsCppPath>..\templates\RobotDefinitions.cpp</templateRobotDefinitionsCppPath>
-  <templateRobotDefinitionsHPath>..\templates\RobotDefinitions.h</templateRobotDefinitionsHPath>
-	<templateRobotDefinitionsHPath>..\templates\RobotDefinitions.h</templateRobotDefinitionsHPath>
-	<templateMechBuilderCppPath>..\templates\MECHBuilder.cpp</templateMechBuilderCppPath>
-	<templateMechBuilderHPath>..\templates\MECHBuilder.h</templateMechBuilderHPath>
+  <templateMechanismCppPath>..\templates\MECH</templateMechanismCppPath>
+  <templateRobotDefinitionsCppPath>..\templates\RobotDefinitions</templateRobotDefinitionsCppPath>
+  <templateMechBuilderCppPath>..\templates\MECHBuilder</templateMechBuilderCppPath>
+  <templateMechBuilderCppPath>..\templates\MECHStateMgr</templateMechBuilderCppPath>
   <CopyrightNotice>
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302

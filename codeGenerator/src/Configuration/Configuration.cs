@@ -20,12 +20,10 @@ namespace Configuration
         public List<string> treeviewParentNameExtensions = new List<string>();
         public List<string> parameterTypes = new List<string>();
 
-        public string templateMechanismCppPath = "";
-        public string templateMechanismHPath = "";
-        public string templateRobotDefinitionsCppPath = "";
-        public string templateRobotDefinitionsHPath = "";
-        public string templateMechBuilderCppPath = "";
-        public string templateMechBuilderHPath = "";
+        public string templateMechanismPath = "";
+        public string templateRobotDefinitionsPath = "";
+        public string templateMechBuilderPath = "";
+        public string templateMechStateMgrPath = "";
 
 
         public string CopyrightNotice = "";
@@ -34,6 +32,17 @@ namespace Configuration
         public void loadDummyData()
         {
         }
+
+        public string getTemplateCppPath(string template)
+        {
+            return template + ".cpp";
+        }
+
+        public string getTemplateHPath(string template)
+        {
+            return template + ".h";
+        }
+
         public override string ToString()
         {
             return "";
