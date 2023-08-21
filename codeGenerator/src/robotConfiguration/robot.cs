@@ -1056,7 +1056,8 @@ this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
         /// </summary>
         public motor()
         {
-            this._digitalInput = new System.Collections.ObjectModel.Collection<digitalInput>();
+            initialize();
+this._digitalInput = new System.Collections.ObjectModel.Collection<digitalInput>();
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
