@@ -981,17 +981,15 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                if (lineage.Count >= 3)
-                {
-                    if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
-                        (isACollection(lineage[lineage.Count - 2])) &&
-                        (lineage[lineage.Count - 2].GetType().GetGenericArguments().Single().FullName == "Robot.mechanism"))
-                    {
-                        theTemplateMechanism = (mechanism)lineage[lineage.Count - 3];
-                        return true;
-                    }
-                }
+                //this finds the index of the collection of mechanisms
+                int indexOfMechanisms = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanism").FirstOrDefault());
 
+                if (indexOfMechanisms >=1)
+                {
+                    //substract 1 from index to get the currently selected mechanism
+                    theTemplateMechanism = (mechanism)lineage[indexOfMechanisms - 1];
+                    return true;
+                }
             }
 
             theTemplateMechanism = null;
@@ -1011,17 +1009,9 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                if (lineage.Count >= 6)
-                {
-                    if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
-                        (isACollection(lineage[lineage.Count - 2])) &&
-                        (lineage[lineage.Count - 5].GetType().FullName == "Robot.mechanismInstance") &&
-                        (lineage[lineage.Count - 6].GetType().FullName == "Robot.mechanism"))
-                    {
-                        return true;
-                    }
-                }
-
+                //returns if any node, except first, is found with type mechanismInstance
+                //if last node is of type mechanismInstance, this means we have selected the mechanismInstance group and want to show other mechanisms
+                return lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanismInstance")) >0;
             }
 
             return false;
