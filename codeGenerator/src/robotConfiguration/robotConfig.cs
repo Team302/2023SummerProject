@@ -19,6 +19,7 @@ namespace robotConfiguration
     {
         public robotVariants theRobotVariants = new robotVariants();
         public Dictionary<string, statedata> mechanismControlDefinition;
+        public List<string> tunableParameterTypes = new List<string>();
         public List<string> parameterTypes = new List<string>();
 
         public void load(string theRobotConfigFullPathFileName)
@@ -138,11 +139,14 @@ namespace robotConfiguration
             return ((t.Name == "Collection`1") && (t.Namespace == "System.Collections.ObjectModel"));
         }
 
+        bool isATunableParameterType(string typeName)
+        {
+            return tunableParameterTypes.Contains(typeName);
+        }
         bool isAParameterType(string typeName)
         {
             return parameterTypes.Contains(typeName);
         }
-
 
 
         /// <summary>
@@ -183,7 +187,15 @@ namespace robotConfiguration
 
                     PropertyInfo[] propertyInfos = objType.GetProperties();
 
-                    if(isAParameterType(objType.FullName))
+                    if(isATunableParameterType(objType.FullName))
+                    {
+                        PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
+                        if (pi != null)
+                        {
+                            pi.SetValue(structureSource, pi.GetValue(parametersSource));
+                        }
+                    }
+                    else if (isAParameterType(objType.FullName))
                     {
                         PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
                         if (pi != null)
