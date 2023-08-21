@@ -17,11 +17,11 @@
     <string>robotID</string>
   </treeviewParentNameExtensions>
   <parameterTypes>
-    <string>Robot.doubleParameter</string>
-    <string>Robot.doubleRestrictedParameter</string>
+    <string>Robot.CAN_ID</string>
   </parameterTypes>
   <tunableParameterTypes>
-    <string>Robot.CAN_ID</string>
+    <string>Robot.doubleParameter</string>
+    <string>Robot.doubleRestrictedParameter</string>
   </tunableParameterTypes>
   <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
   <templateMechanismHPath>..\templates\MECHANISM_NAME.h</templateMechanismHPath>
