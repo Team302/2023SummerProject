@@ -134,6 +134,10 @@ namespace FRCrobotCodeGen302
                             {
                                 nodeName += "ID: " + propertyInfo.GetValue(obj).ToString() + ", ";
                             }
+                            else if(propertyInfo.Name == "canId")
+                            {
+                                nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value.ToString() + ", ";
+                            }
                             else
                             {
                                 if (propertyInfo.GetValue(obj) != null)
@@ -157,7 +161,7 @@ namespace FRCrobotCodeGen302
                     nodeName = "Robot #" + tempBot.robotID;
                 }
 
-                nodeName = getTreeNodeDisplayName(nodeValueString, nodeName);
+                nodeName = getTreeNodeDisplayName(nodeValueString, nodeName); 
             }
 
             return nodeName;
