@@ -1006,7 +1006,7 @@ namespace FRCrobotCodeGen302
                 }
 
                 //this finds the index of the collection of mechanisms
-                int indexOfMechanisms = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanism").FirstOrDefault());
+                int indexOfMechanisms = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().SingleOrDefault().FullName == "Robot.mechanism").FirstOrDefault());
 
                 if (indexOfMechanisms >=1)
                 {
