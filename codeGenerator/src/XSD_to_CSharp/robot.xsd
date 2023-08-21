@@ -100,9 +100,6 @@
 
   <xs:element name="pdp">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="canId" type="CAN_ID"/>
-      </xs:sequence>
       <xs:attribute default="CTRE" name="type">
         <xs:simpleType>
           <xs:restriction base="xs:NMTOKEN">

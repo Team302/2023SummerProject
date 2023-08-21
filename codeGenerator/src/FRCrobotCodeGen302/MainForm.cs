@@ -134,6 +134,11 @@ namespace FRCrobotCodeGen302
                             {
                                 nodeName += "ID: " + propertyInfo.GetValue(obj).ToString() + ", ";
                             }
+                            else if(propertyInfo.Name == "canId")
+                            {
+                                if ((propertyInfo.GetValue(obj) as Robot.CAN_ID)!= null)
+                                    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value.ToString() + ", ";
+                            }
                             else
                             {
                                 if (propertyInfo.GetValue(obj) != null)
@@ -157,7 +162,7 @@ namespace FRCrobotCodeGen302
                     nodeName = "Robot #" + tempBot.robotID;
                 }
 
-                nodeName = getTreeNodeDisplayName(nodeValueString, nodeName);
+                nodeName = getTreeNodeDisplayName(nodeValueString, nodeName); 
             }
 
             return nodeName;
@@ -1002,7 +1007,7 @@ namespace FRCrobotCodeGen302
                 }
 
                 //this finds the index of the collection of mechanisms
-                int indexOfMechanisms = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanism").FirstOrDefault());
+                int indexOfMechanisms = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().SingleOrDefault().FullName == "Robot.mechanism").FirstOrDefault());
 
                 if (indexOfMechanisms >=1)
                 {
