@@ -136,7 +136,8 @@ namespace FRCrobotCodeGen302
                             }
                             else if(propertyInfo.Name == "canId")
                             {
-                                nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value.ToString() + ", ";
+                                if ((propertyInfo.GetValue(obj) as Robot.CAN_ID)!= null)
+                                    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value.ToString() + ", ";
                             }
                             else
                             {
