@@ -32,6 +32,11 @@ namespace FRCrobotCodeGen302
         bool loadRobotConfig = false;
         readonly string configurationCacheFile = Path.GetTempPath() + "DragonsCodeGeneratorCache.txt";
 
+        const int treeIconIndex_lockedPadlock = 0;
+        const int treeIconIndex_unlockedPadlock = 1;
+        const int treeIconIndex_gear = 2;
+        const int treeIconIndex_wrench = 3;
+
         public MainForm()
         {
             InitializeComponent();
@@ -105,6 +110,12 @@ namespace FRCrobotCodeGen302
                         }
                     }
                 }
+                else if (isATunableParameterType(objType.FullName))
+                {
+                    object value = null;
+                    value = properties[0].GetValue(obj);
+                    nodeValueString = value.ToString();
+                }
                 else if (isAParameterType(objType.FullName))
                 {
                     object value = null;
@@ -119,7 +130,7 @@ namespace FRCrobotCodeGen302
                         PropertyInfo propertyInfo = properties.ToList().Find(p => p.Name == s);
                         if (propertyInfo != null)
                         {
-                            if (propertyInfo.Name == "canId" || propertyInfo.Name == "pwmId")
+                            if (propertyInfo.Name == "pwmId")
                             {
                                 nodeName += "ID: " + propertyInfo.GetValue(obj).ToString() + ", ";
                             }
@@ -227,7 +238,7 @@ namespace FRCrobotCodeGen302
                         ((mechanism)obj).theTreeNode = tn;
                     }
 
-                    if (!isAParameterType(objType.FullName) && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
+                    if (!isATunableParameterType(objType.FullName) && !isAParameterType(objType.FullName) && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
                     {
                         // add its children
                         string previousName = "";
@@ -261,11 +272,13 @@ namespace FRCrobotCodeGen302
                         leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj);
                         tn.Tag = lnt;
 
-                        int imageIndex = 1;
+                        int imageIndex = treeIconIndex_unlockedPadlock;
                         if (isAParameterType(objType.FullName))
-                            imageIndex = 2;
+                            imageIndex = treeIconIndex_gear; 
+                        else if (isATunableParameterType(objType.FullName))
+                            imageIndex = treeIconIndex_wrench;
                         else if(isPartOfAMechanismInaMechInstance(tn))
-                            imageIndex = 0;
+                            imageIndex = treeIconIndex_lockedPadlock;
 
                         tn.ImageIndex = imageIndex;
                         tn.SelectedImageIndex = imageIndex;
@@ -290,6 +303,11 @@ namespace FRCrobotCodeGen302
         {
 
 
+        }
+
+        bool isATunableParameterType(string typeName)
+        {
+            return generatorConfig.tunableParameterTypes.Contains(typeName);
         }
 
         bool isAParameterType(string typeName)
@@ -421,6 +439,7 @@ namespace FRCrobotCodeGen302
                     try
                     {
                         theRobotConfiguration.parameterTypes = generatorConfig.parameterTypes;
+                        theRobotConfiguration.tunableParameterTypes = generatorConfig.tunableParameterTypes;
                         theRobotConfiguration.load(generatorConfig.robotConfiguration);
                     }
                     catch (Exception ex)
@@ -585,7 +604,7 @@ namespace FRCrobotCodeGen302
                     object value = null;
                     PropertyInfo prop = null;
                     bool allowEdit = false;
-                    if (isAParameterType(lnt.type.FullName))
+                    if (isATunableParameterType(lnt.type.FullName) || isAParameterType(lnt.type.FullName)) 
                     {
                         prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                         if (null != prop)
@@ -780,14 +799,15 @@ namespace FRCrobotCodeGen302
                         leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
 
                         PropertyInfo prop;
-                        if (isAParameterType(lnt.type.FullName))
+                        if (isATunableParameterType(lnt.type.FullName) || isAParameterType(lnt.type.FullName))
                         {
                             prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                             if (null != prop && prop.CanWrite)
                             {
-
                                 if (prop.PropertyType.Name == "UInt")
                                     prop.SetValue(lnt.obj, (uint)valueNumericUpDown.Value);
+                                else if (prop.PropertyType.Name == "UInt32")
+                                    prop.SetValue(lnt.obj, (UInt32)valueNumericUpDown.Value);
                                 else if (prop.PropertyType.Name == "Double")
                                     prop.SetValue(lnt.obj, (double)valueNumericUpDown.Value);
                             }

@@ -422,14 +422,16 @@ namespace FRCrobotCodeGen302
             this.robotElementCheckedListBox.Size = new System.Drawing.Size(382, 139);
             this.robotElementCheckedListBox.TabIndex = 7;
             this.robotElementCheckedListBox.Visible = false;
-            //             // 
+
+            // 
             // treeViewIcons
             // 
             this.treeViewIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("treeViewIcons.ImageStream")));
             this.treeViewIcons.TransparentColor = System.Drawing.Color.Transparent;
             this.treeViewIcons.Images.SetKeyName(0, "lock.ico");
             this.treeViewIcons.Images.SetKeyName(1, "lock-unlock.ico");
-            this.treeViewIcons.Images.SetKeyName(2, "wrench.ico");
+            this.treeViewIcons.Images.SetKeyName(2, "gear.ico");
+            this.treeViewIcons.Images.SetKeyName(3, "wrench.ico");
             // 
             // MainForm
             // 
