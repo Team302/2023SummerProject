@@ -156,8 +156,8 @@ namespace Robot
         /// </summary>
         public robot()
         {
+            initialize();
 this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
-            this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
             this._pigeon = new System.Collections.ObjectModel.Collection<pigeon>();
             this._limelight = new System.Collections.ObjectModel.Collection<limelight>();
             this._mechanismInstance = new System.Collections.ObjectModel.Collection<mechanismInstance>();
@@ -340,10 +340,6 @@ this._pcm = new System.Collections.ObjectModel.Collection<pcm>();
     [System.Xml.Serialization.XmlRootAttribute("pdp", Namespace="http://team302.org/robot")]
     public partial class pdp
     {
-        
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [System.Xml.Serialization.XmlElementAttribute("canId")]
-        public CAN_ID canId { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private pdptype _type = Robot.pdptype.CTRE;
