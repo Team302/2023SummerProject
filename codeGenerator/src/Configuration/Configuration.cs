@@ -18,6 +18,7 @@ namespace Configuration
         public string robotConfiguration = "";
         public List<string> robotConfigurations = new List<string>();
         public List<string> treeviewParentNameExtensions = new List<string>();
+        public List<string> tunableParameterTypes = new List<string>();
         public List<string> parameterTypes = new List<string>();
 
         public string templateMechanismPath = "";

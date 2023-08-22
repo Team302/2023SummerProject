@@ -32,6 +32,11 @@ namespace FRCrobotCodeGen302
         bool loadRobotConfig = false;
         readonly string configurationCacheFile = Path.GetTempPath() + "DragonsCodeGeneratorCache.txt";
 
+        const int treeIconIndex_lockedPadlock = 0;
+        const int treeIconIndex_unlockedPadlock = 1;
+        const int treeIconIndex_gear = 2;
+        const int treeIconIndex_wrench = 3;
+
         public MainForm()
         {
             InitializeComponent();
@@ -105,6 +110,12 @@ namespace FRCrobotCodeGen302
                         }
                     }
                 }
+                else if (isATunableParameterType(objType.FullName))
+                {
+                    object value = null;
+                    value = properties[0].GetValue(obj);
+                    nodeValueString = value.ToString();
+                }
                 else if (isAParameterType(objType.FullName))
                 {
                     object value = null;
@@ -119,9 +130,14 @@ namespace FRCrobotCodeGen302
                         PropertyInfo propertyInfo = properties.ToList().Find(p => p.Name == s);
                         if (propertyInfo != null)
                         {
-                            if (propertyInfo.Name == "canId" || propertyInfo.Name == "pwmId")
+                            if (propertyInfo.Name == "pwmId")
                             {
                                 nodeName += "ID: " + propertyInfo.GetValue(obj).ToString() + ", ";
+                            }
+                            else if(propertyInfo.Name == "canId")
+                            {
+                                if ((propertyInfo.GetValue(obj) as Robot.CAN_ID)!= null)
+                                    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value.ToString() + ", ";
                             }
                             else
                             {
@@ -146,7 +162,7 @@ namespace FRCrobotCodeGen302
                     nodeName = "Robot #" + tempBot.robotID;
                 }
 
-                nodeName = getTreeNodeDisplayName(nodeValueString, nodeName);
+                nodeName = getTreeNodeDisplayName(nodeValueString, nodeName); 
             }
 
             return nodeName;
@@ -227,7 +243,7 @@ namespace FRCrobotCodeGen302
                         ((mechanism)obj).theTreeNode = tn;
                     }
 
-                    if (!isAParameterType(objType.FullName) && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
+                    if (!isATunableParameterType(objType.FullName) && !isAParameterType(objType.FullName) && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
                     {
                         // add its children
                         string previousName = "";
@@ -261,11 +277,13 @@ namespace FRCrobotCodeGen302
                         leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj);
                         tn.Tag = lnt;
 
-                        int imageIndex = 1;
+                        int imageIndex = treeIconIndex_unlockedPadlock;
                         if (isAParameterType(objType.FullName))
-                            imageIndex = 2;
+                            imageIndex = treeIconIndex_gear; 
+                        else if (isATunableParameterType(objType.FullName))
+                            imageIndex = treeIconIndex_wrench;
                         else if(isPartOfAMechanismInaMechInstance(tn))
-                            imageIndex = 0;
+                            imageIndex = treeIconIndex_lockedPadlock;
 
                         tn.ImageIndex = imageIndex;
                         tn.SelectedImageIndex = imageIndex;
@@ -290,6 +308,11 @@ namespace FRCrobotCodeGen302
         {
 
 
+        }
+
+        bool isATunableParameterType(string typeName)
+        {
+            return generatorConfig.tunableParameterTypes.Contains(typeName);
         }
 
         bool isAParameterType(string typeName)
@@ -421,6 +444,7 @@ namespace FRCrobotCodeGen302
                     try
                     {
                         theRobotConfiguration.parameterTypes = generatorConfig.parameterTypes;
+                        theRobotConfiguration.tunableParameterTypes = generatorConfig.tunableParameterTypes;
                         theRobotConfiguration.load(generatorConfig.robotConfiguration);
                     }
                     catch (Exception ex)
@@ -585,7 +609,7 @@ namespace FRCrobotCodeGen302
                     object value = null;
                     PropertyInfo prop = null;
                     bool allowEdit = false;
-                    if (isAParameterType(lnt.type.FullName))
+                    if (isATunableParameterType(lnt.type.FullName) || isAParameterType(lnt.type.FullName)) 
                     {
                         prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                         if (null != prop)
@@ -780,14 +804,15 @@ namespace FRCrobotCodeGen302
                         leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
 
                         PropertyInfo prop;
-                        if (isAParameterType(lnt.type.FullName))
+                        if (isATunableParameterType(lnt.type.FullName) || isAParameterType(lnt.type.FullName))
                         {
                             prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                             if (null != prop && prop.CanWrite)
                             {
-
                                 if (prop.PropertyType.Name == "UInt")
                                     prop.SetValue(lnt.obj, (uint)valueNumericUpDown.Value);
+                                else if (prop.PropertyType.Name == "UInt32")
+                                    prop.SetValue(lnt.obj, (UInt32)valueNumericUpDown.Value);
                                 else if (prop.PropertyType.Name == "Double")
                                     prop.SetValue(lnt.obj, (double)valueNumericUpDown.Value);
                             }
@@ -981,17 +1006,15 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                if (lineage.Count >= 3)
-                {
-                    if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
-                        (isACollection(lineage[lineage.Count - 2])) &&
-                        (lineage[lineage.Count - 2].GetType().GetGenericArguments().Single().FullName == "Robot.mechanism"))
-                    {
-                        theTemplateMechanism = (mechanism)lineage[lineage.Count - 3];
-                        return true;
-                    }
-                }
+                //this finds the index of the collection of mechanisms
+                int indexOfMechanisms = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().SingleOrDefault().FullName == "Robot.mechanism").FirstOrDefault());
 
+                if (indexOfMechanisms >=1)
+                {
+                    //substract 1 from index to get the currently selected mechanism
+                    theTemplateMechanism = (mechanism)lineage[indexOfMechanisms - 1];
+                    return true;
+                }
             }
 
             theTemplateMechanism = null;
@@ -1011,17 +1034,9 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                if (lineage.Count >= 6)
-                {
-                    if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
-                        (isACollection(lineage[lineage.Count - 2])) &&
-                        (lineage[lineage.Count - 5].GetType().FullName == "Robot.mechanismInstance") &&
-                        (lineage[lineage.Count - 6].GetType().FullName == "Robot.mechanism"))
-                    {
-                        return true;
-                    }
-                }
-
+                //returns if any node, except first, is found with type mechanismInstance
+                //if last node is of type mechanismInstance, this means we have selected the mechanismInstance group and want to show other mechanisms
+                return lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanismInstance")) >0;
             }
 
             return false;

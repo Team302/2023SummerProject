@@ -16,6 +16,37 @@ namespace Robot
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
     [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute("CAN_ID", Namespace="http://team302.org/robot")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CAN_ID
+    {
+        
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        private uint _value = 0u;
+        
+        /// <summary>
+        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
+        /// <para xml:lang="en">Maximum inclusive value: 62.</para>
+        /// </summary>
+        [System.ComponentModel.DefaultValueAttribute(0u)]
+        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "62")]
+        [System.Xml.Serialization.XmlAttributeAttribute("value")]
+        public uint value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
+    [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute("CAN_BUS", Namespace="http://team302.org/robot")]
     public enum CAN_BUS
     {
@@ -310,28 +341,6 @@ namespace Robot
     {
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _canId = 0u;
-        
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 62.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "62")]
-        [System.Xml.Serialization.XmlAttributeAttribute("canId")]
-        public uint canId
-        {
-            get
-            {
-                return _canId;
-            }
-            set
-            {
-                _canId = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
         private pdptype _type = Robot.pdptype.CTRE;
         
         [System.ComponentModel.DefaultValueAttribute(Robot.pdptype.CTRE)]
@@ -372,27 +381,9 @@ namespace Robot
         [System.Xml.Serialization.XmlElementAttribute("analogInput")]
         public analogInput analogInput { get; set; }
         
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _canId = 0u;
-        
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 62.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "62")]
-        [System.Xml.Serialization.XmlAttributeAttribute("canId")]
-        public uint canId
-        {
-            get
-            {
-                return _canId;
-            }
-            set
-            {
-                _canId = value;
-            }
-        }
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("canId")]
+        public CAN_ID canId { get; set; }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("XmlSchemaClassGenerator", "2.0.732.0")]
@@ -504,27 +495,9 @@ namespace Robot
     public partial class pigeon
     {
         
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _canId = 0u;
-        
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 62.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "62")]
-        [System.Xml.Serialization.XmlAttributeAttribute("canId")]
-        public uint canId
-        {
-            get
-            {
-                return _canId;
-            }
-            set
-            {
-                _canId = value;
-            }
-        }
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("canId")]
+        public CAN_ID canId { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private CAN_BUS _canBusName = Robot.CAN_BUS.rio;
@@ -1082,7 +1055,8 @@ namespace Robot
         /// </summary>
         public motor()
         {
-            this._digitalInput = new System.Collections.ObjectModel.Collection<digitalInput>();
+            initialize();
+this._digitalInput = new System.Collections.ObjectModel.Collection<digitalInput>();
         }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -1136,27 +1110,9 @@ namespace Robot
             }
         }
         
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _canId = 0u;
-        
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 62.</para>
-        /// </summary>
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "62")]
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("canId")]
-        public uint canId
-        {
-            get
-            {
-                return _canId;
-            }
-            set
-            {
-                _canId = value;
-            }
-        }
+        public CAN_ID canId { get; set; }
         
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [System.Xml.Serialization.XmlElementAttribute("pdpID")]
@@ -1974,27 +1930,9 @@ namespace Robot
     public partial class cancoder
     {
         
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _canId = 0u;
-        
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 62.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "62")]
-        [System.Xml.Serialization.XmlAttributeAttribute("canId")]
-        public uint canId
-        {
-            get
-            {
-                return _canId;
-            }
-            set
-            {
-                _canId = value;
-            }
-        }
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("canId")]
+        public CAN_ID canId { get; set; }
         
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private CAN_BUS _canBusName = Robot.CAN_BUS.rio;
@@ -2400,6 +2338,10 @@ namespace Robot
     public partial class solenoid
     {
         
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("canId")]
+        public CAN_ID canId { get; set; }
+        
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private string _name = "UNKNOWN";
         
@@ -2414,28 +2356,6 @@ namespace Robot
             set
             {
                 _name = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _canId = 0u;
-        
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 62.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "62")]
-        [System.Xml.Serialization.XmlAttributeAttribute("canId")]
-        public uint canId
-        {
-            get
-            {
-                return _canId;
-            }
-            set
-            {
-                _canId = value;
             }
         }
         
@@ -3261,6 +3181,10 @@ namespace Robot
     public partial class talontach
     {
         
+        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
+        [System.Xml.Serialization.XmlElementAttribute("canId")]
+        public CAN_ID canId { get; set; }
+        
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         private uint _name = 0u;
         
@@ -3280,28 +3204,6 @@ namespace Robot
             set
             {
                 _name = value;
-            }
-        }
-        
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _canId = 0u;
-        
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 62.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "62")]
-        [System.Xml.Serialization.XmlAttributeAttribute("canId")]
-        public uint canId
-        {
-            get
-            {
-                return _canId;
-            }
-            set
-            {
-                _canId = value;
             }
         }
         
