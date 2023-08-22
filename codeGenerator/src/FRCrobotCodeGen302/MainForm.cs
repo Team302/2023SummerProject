@@ -494,22 +494,23 @@ namespace FRCrobotCodeGen302
         {
             List<robotElementType> types = new List<robotElementType>();
 
-            if (!isACollection(obj))
+
+            PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
+            foreach (PropertyInfo propertyInfo in propertyInfos)
             {
-                PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
-                foreach (PropertyInfo propertyInfo in propertyInfos)
+                if (isACollection(propertyInfo.PropertyType))
                 {
-                    if (isACollection(propertyInfo.PropertyType))
-                    {
-                        ICollection ic = propertyInfo.GetValue(obj) as ICollection;
-                        if (ic.Count == 0)
-                            types.Add(new robotElementType(propertyInfo.PropertyType));
-                    }
-                    else if (propertyInfo.PropertyType == typeof(mechanismInstance))
-                    {
+                    ICollection ic = propertyInfo.GetValue(obj) as ICollection;
+                    if (ic.Count == 0)
                         types.Add(new robotElementType(propertyInfo.PropertyType));
-                    }
-                    else if ((!propertyInfo.Name.EndsWith("Specified")) && (!propertyInfo.PropertyType.FullName.StartsWith("System.")))
+                }
+                else if (propertyInfo.PropertyType == typeof(mechanismInstance))
+                {
+                    types.Add(new robotElementType(propertyInfo.PropertyType));
+                }
+                else if ((!propertyInfo.Name.EndsWith("Specified")) && (!propertyInfo.PropertyType.FullName.StartsWith("System.")))
+                {
+                    if (!isACollection(obj))
                     {
                         if (propertyInfo.GetValue(obj, null) == null)
                             types.Add(new robotElementType(propertyInfo.PropertyType));
@@ -890,10 +891,10 @@ namespace FRCrobotCodeGen302
                     Type elementType;
 
                     // first create a new element instance
-                    if (isACollection(((robotElementType)robotElementObj).t))
+                    if (isACollection(robotElementObj))
                         elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
                     else
-                        elementType = ((robotElementType)robotElementObj).t;
+                        elementType = robotElementObj.GetType();
 
                     object obj;
 
