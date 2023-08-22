@@ -203,644 +203,323 @@
     </xs:complexType>
   </xs:element>
 
-	<xs:element name="camera">
-		<xs:complexType>
-			<xs:attribute default="0" name="id" type="xs:string" />
-			<xs:attribute default="KMJPEG" name="format">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="KMJPEG" />
-						<xs:enumeration value="KYUYV" />
-						<xs:enumeration value="KRGB565" />
-						<xs:enumeration value="KBGR" />
-						<xs:enumeration value="KGRAY" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="640" name="width" type="xs:string" />
-			<xs:attribute default="480" name="height" type="xs:string" />
-			<xs:attribute default="30" name="fps" type="xs:string" />
-			<xs:attribute default="false" name="thread">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="true" />
-						<xs:enumeration value="false" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="led">
-		<xs:complexType>
-			<xs:attribute default="0" name="pwmId">
-				<xs:simpleType>
-					<xs:restriction base="xs:unsignedInt">
-						<xs:minInclusive value="0"/>
-						<xs:maxInclusive value="19"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="number" type="xs:string" use="required" />
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="blinkin">
-		<xs:complexType>
-			<xs:attribute default="front" name="name">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="front" />
-						<xs:enumeration value="back" />
-						<xs:enumeration value="top" />
-						<xs:enumeration value="bottom" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="0" name="pwmId">
-				<xs:simpleType>
-					<xs:restriction base="xs:unsignedInt">
-						<xs:minInclusive value="0"/>
-						<xs:maxInclusive value="19"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="chassis">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element minOccurs="0" maxOccurs="unbounded" ref="motor" />
-				<xs:element minOccurs="0" maxOccurs="unbounded" ref="swervemodule" />
-			</xs:sequence>
-			<xs:attribute default="TANK" name="type">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="TANK" />
-						<xs:enumeration value="MECANUM" />
-						<xs:enumeration value="SWERVE" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="wheelDiameter" type="xs:string" use="required" />
-			<xs:attribute name="wheelBase" type="xs:string" use="required" />
-			<xs:attribute name="track" type="xs:string" use="required" />
-			<xs:attribute default="ETHER" name="wheelSpeedCalcOption">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="WPI" />
-						<xs:enumeration value="ETHER" />
-						<xs:enumeration value="2910" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="EULERCHASSIS" name="poseEstimationOption">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="WPI" />
-						<xs:enumeration value="EULERCHASSIS" />
-						<xs:enumeration value="EULERWHEEL" />
-						<xs:enumeration value="POSECHASSIS" />
-						<xs:enumeration value="POSEWHEEL" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute name="maxVelocity" type="xs:string" use="required" />
-			<xs:attribute name="maxAngularVelocity" type="xs:string" use="required" />
-			<xs:attribute name="maxAcceleration" type="xs:string" use="required" />
-			<xs:attribute name="maxAngularAcceleration" type="xs:string" use="required" />
-			<xs:attribute name="networkTable" type="xs:string" />
-			<xs:attribute name="controlFile" type="xs:string" />
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="swervemodule">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element minOccurs="0" maxOccurs="unbounded" ref="motor" />
-				<xs:element minOccurs="0" maxOccurs="1" ref="cancoder" />
-			</xs:sequence>
-			<xs:attribute default="LEFT_FRONT" name="type">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="LEFT_FRONT" />
-						<xs:enumeration value="RIGHT_FRONT" />
-						<xs:enumeration value="LEFT_BACK" />
-						<xs:enumeration value="RIGHT_BACK" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="0.0" name="turn_p" type="xs:string" />
-			<xs:attribute default="0.0" name="turn_i" type="xs:string" />
-			<xs:attribute default="0.0" name="turn_d" type="xs:string" />
-			<xs:attribute default="0.0" name="turn_f" type="xs:string" />
-			<xs:attribute default="0.0" name="turn_nominal_val" type="xs:string" />
-			<xs:attribute default="1.0" name="turn_peak_val" type="xs:string" />
-			<xs:attribute default="0.0" name="turn_max_acc" type="xs:string" />
-			<xs:attribute default="0.0" name="turn_cruise_vel" type="xs:string" />
-			<xs:attribute default="1.0" name="countsOnTurnEncoderPerDegreesOnAngleSensor" type="xs:string" />
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="solenoid">
-		<xs:complexType>
-			<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
-			<xs:attribute default="0" name="canId" type="CAN_ID">
-			</xs:attribute>
-			<xs:attribute default="0" name="channel">
-				<xs:simpleType>
-					<xs:restriction base="xs:unsignedInt">
-						<xs:minInclusive value="0"/>
-						<xs:maxInclusive value="7"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="false" name="reversed">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="true" />
-						<xs:enumeration value="false" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="REVPH" name="type">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="CTREPCM" />
-						<xs:enumeration value="REVPH" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="servo">
-		<xs:complexType>
-			<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
-			<xs:attribute default="0" name="pwmId">
-				<xs:simpleType>
-					<xs:restriction base="xs:unsignedInt">
-						<xs:minInclusive value="0"/>
-						<xs:maxInclusive value="19"/>
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="0.0" name="minAngle" type="xs:string" />
-			<xs:attribute default="360.0" name="maxAngle" type="xs:string" />
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="colorsensor">
-		<xs:complexType>
-			<xs:attribute default="kOnboard" name="port">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="kOnboard" />
-						<xs:enumeration value="kMXP" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="motor">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element minOccurs="0" maxOccurs="unbounded" ref="digitalInput" />
-				<xs:element default="TALON_SRX" name="motorType">
-					<xs:simpleType>
-						<xs:restriction base="xs:NMTOKEN">
-							<xs:enumeration value="TALON_SRX" />
-							<xs:enumeration value="FALCON" />
-							<xs:enumeration value="BRUSHLESS_SPARK_MAX" />
-							<xs:enumeration value="BRUSHED_SPARK_MAX" />
-							<xs:enumeration value="FALCON500" />
-							<xs:enumeration value="NEOMOTOR" />
-							<xs:enumeration value="NEO500MOTOR" />
-							<xs:enumeration value="CIMMOTOR" />
-							<xs:enumeration value="MINICIMMOTOR" />
-							<xs:enumeration value="BAGMOTOR" />
-							<xs:enumeration value="PRO775" />
-							<xs:enumeration value="ANDYMARK9015" />
-							<xs:enumeration value="ANDYMARKNEVEREST" />
-							<xs:enumeration value="ANDYMARKRS775125" />
-							<xs:enumeration value="ANDYMARKREDLINEA" />
-							<xs:enumeration value="REVROBOTICSHDHEXMOTOR" />
-							<xs:enumeration value="BANEBOTSRS77518V" />
-							<xs:enumeration value="BANEBOTSRS550" />
-							<xs:enumeration value="MODERNROBOTICS12VDCMOTOR" />
-							<xs:enumeration value="JOHNSONELECTRICALGEARMOTOR" />
-							<xs:enumeration value="TETRIXMAXTORQUENADOMOTOR" />
-						</xs:restriction>
-					</xs:simpleType>
-				</xs:element>
-				<xs:element default="TALONSRX" name="controller">
-					<xs:simpleType>
-						<xs:restriction base="xs:NMTOKEN">
-							<xs:enumeration value="TALONSRX" />
-							<xs:enumeration value="FALCON" />
-							<xs:enumeration value="BRUSHLESS_SPARK_MAX" />
-							<xs:enumeration value="BRUSHED_SPARK_MAX" />
-						</xs:restriction>
-					</xs:simpleType>
-				</xs:element>
-				<xs:element default="rio" name="canBusName" type="CAN_BUS"/>
-				<xs:element default="0" name="canId" type="CAN_ID"/>
-				<xs:element name="pdpID" type="xs:string"/>
-				<xs:element default="false" name="inverted" type="xs:boolean"/>
-				<xs:element default="false" name="sensorInverted" type="xs:boolean"/>
-				<xs:element default="NONE" name="feedbackDevice">
-					<xs:simpleType>
-						<xs:restriction base="xs:NMTOKEN">
-							<xs:enumeration value="NONE" />
-							<xs:enumeration value="INTERNAL" />
-							<xs:enumeration value="QUADENCODER" />
-							<xs:enumeration value="ANALOG" />
-							<xs:enumeration value="TACHOMETER" />
-							<xs:enumeration value="PULSEWIDTHENCODERPOSITION" />
-							<xs:enumeration value="SENSORSUM" />
-							<xs:enumeration value="SENSORDIFFERENCE" />
-							<xs:enumeration value="REMOTESENSOR0" />
-							<xs:enumeration value="REMOTESENSOR1" />
-							<xs:enumeration value="SOFTWAREEMULATEDSENSOR" />
-						</xs:restriction>
-					</xs:simpleType>
-				</xs:element>
-				<xs:element default="0" name="countsPerRev" type="xs:string" />
-				<xs:element default="1" name="gearRatio" type="xs:string" />
-				<xs:element default="false" name="brakeMode" type="xs:boolean"/>
-				<xs:element default="-1" name="motorIDtoFollow" type="xs:int" />
-			</xs:sequence>
-			<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
-			<xs:attribute name="peakCurrentDuration" type="xs:double" />
-			<xs:attribute name="continuousCurrentLimit" type="xs:double" />
-			<xs:attribute name="peakCurrentLimit" type="xs:double" />
-			<xs:attribute default="false" name="currentLimiting">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="true" />
-						<xs:enumeration value="false" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="false" name="forwardlimitswitch">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="true" />
-						<xs:enumeration value="false" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="true" name="forwardlimitswitchopen">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="true" />
-						<xs:enumeration value="false" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="false" name="reverselimitswitch">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="true" />
-						<xs:enumeration value="false" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="true" name="reverselimitswitchopen">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="true" />
-						<xs:enumeration value="false" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="12.0" name="voltageCompensationSaturation" type="xs:double" />
-			<xs:attribute default="false" name="voltageCompensationEnable">
-				<xs:simpleType>
-					<xs:restriction base="xs:NMTOKEN">
-						<xs:enumeration value="true" />
-						<xs:enumeration value="false" />
-					</xs:restriction>
-				</xs:simpleType>
-			</xs:attribute>
-			<xs:attribute default="0" name="countsPerInch" type="xs:unsignedInt" />
-			<xs:attribute default="0" name="countsPerDegree" type="xs:unsignedInt" />
-		</xs:complexType>
-	</xs:element>
-
   <xs:element name="camera">
-    <xs:complexType>
-      <xs:attribute default="0" name="id" type="xs:string" />
-      <xs:attribute default="KMJPEG" name="format">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="KMJPEG" />
-            <xs:enumeration value="KYUYV" />
-            <xs:enumeration value="KRGB565" />
-            <xs:enumeration value="KBGR" />
-            <xs:enumeration value="KGRAY" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="640" name="width" type="xs:string" />
-      <xs:attribute default="480" name="height" type="xs:string" />
-      <xs:attribute default="30" name="fps" type="xs:string" />
-      <xs:attribute default="false" name="thread">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-    </xs:complexType>
+	<xs:complexType>
+		<xs:attribute default="0" name="id" type="xs:string" />
+		<xs:attribute default="KMJPEG" name="format">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="KMJPEG" />
+					<xs:enumeration value="KYUYV" />
+					<xs:enumeration value="KRGB565" />
+					<xs:enumeration value="KBGR" />
+					<xs:enumeration value="KGRAY" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="640" name="width" type="xs:string" />
+		<xs:attribute default="480" name="height" type="xs:string" />
+		<xs:attribute default="30" name="fps" type="xs:string" />
+		<xs:attribute default="false" name="thread">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true" />
+					<xs:enumeration value="false" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
   </xs:element>
   <xs:element name="led">
-    <xs:complexType>
-      <xs:attribute default="0" name="pwmId">
-        <xs:simpleType>
-          <xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="19"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="number" type="xs:string" use="required" />
-    </xs:complexType>
+	<xs:complexType>
+		<xs:attribute default="0" name="pwmId">
+			<xs:simpleType>
+				<xs:restriction base="xs:unsignedInt">
+					<xs:minInclusive value="0"/>
+					<xs:maxInclusive value="19"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="number" type="xs:string" use="required" />
+	</xs:complexType>
   </xs:element>
   <xs:element name="blinkin">
-    <xs:complexType>
-      <xs:attribute default="front" name="name">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="front" />
-            <xs:enumeration value="back" />
-            <xs:enumeration value="top" />
-            <xs:enumeration value="bottom" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="0" name="pwmId">
-        <xs:simpleType>
-          <xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="19"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-    </xs:complexType>
+	<xs:complexType>
+		<xs:attribute default="front" name="name">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="front" />
+					<xs:enumeration value="back" />
+					<xs:enumeration value="top" />
+					<xs:enumeration value="bottom" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="0" name="pwmId">
+			<xs:simpleType>
+				<xs:restriction base="xs:unsignedInt">
+					<xs:minInclusive value="0"/>
+					<xs:maxInclusive value="19"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
   </xs:element>
   <xs:element name="chassis">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="motor" />
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="swervemodule" />
-      </xs:sequence>
-      <xs:attribute default="TANK" name="type">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="TANK" />
-            <xs:enumeration value="MECANUM" />
-            <xs:enumeration value="SWERVE" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="wheelDiameter" type="xs:string" use="required" />
-      <xs:attribute name="wheelBase" type="xs:string" use="required" />
-      <xs:attribute name="track" type="xs:string" use="required" />
-      <xs:attribute default="ETHER" name="wheelSpeedCalcOption">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="WPI" />
-            <xs:enumeration value="ETHER" />
-            <xs:enumeration value="2910" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="EULERCHASSIS" name="poseEstimationOption">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="WPI" />
-            <xs:enumeration value="EULERCHASSIS" />
-            <xs:enumeration value="EULERWHEEL" />
-            <xs:enumeration value="POSECHASSIS" />
-            <xs:enumeration value="POSEWHEEL" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute name="maxVelocity" type="xs:string" use="required" />
-      <xs:attribute name="maxAngularVelocity" type="xs:string" use="required" />
-      <xs:attribute name="maxAcceleration" type="xs:string" use="required" />
-      <xs:attribute name="maxAngularAcceleration" type="xs:string" use="required" />
-      <xs:attribute name="networkTable" type="xs:string" />
-      <xs:attribute name="controlFile" type="xs:string" />
-    </xs:complexType>
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element minOccurs="0" maxOccurs="unbounded" ref="motor" />
+			<xs:element minOccurs="0" maxOccurs="unbounded" ref="swervemodule" />
+		</xs:sequence>
+		<xs:attribute default="TANK" name="type">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="TANK" />
+					<xs:enumeration value="MECANUM" />
+					<xs:enumeration value="SWERVE" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="wheelDiameter" type="xs:string" use="required" />
+		<xs:attribute name="wheelBase" type="xs:string" use="required" />
+		<xs:attribute name="track" type="xs:string" use="required" />
+		<xs:attribute default="ETHER" name="wheelSpeedCalcOption">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="WPI" />
+					<xs:enumeration value="ETHER" />
+					<xs:enumeration value="2910" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="EULERCHASSIS" name="poseEstimationOption">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="WPI" />
+					<xs:enumeration value="EULERCHASSIS" />
+					<xs:enumeration value="EULERWHEEL" />
+					<xs:enumeration value="POSECHASSIS" />
+					<xs:enumeration value="POSEWHEEL" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="maxVelocity" type="xs:string" use="required" />
+		<xs:attribute name="maxAngularVelocity" type="xs:string" use="required" />
+		<xs:attribute name="maxAcceleration" type="xs:string" use="required" />
+		<xs:attribute name="maxAngularAcceleration" type="xs:string" use="required" />
+		<xs:attribute name="networkTable" type="xs:string" />
+		<xs:attribute name="controlFile" type="xs:string" />
+	</xs:complexType>
   </xs:element>
   <xs:element name="swervemodule">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="motor" />
-        <xs:element minOccurs="0" maxOccurs="1" ref="cancoder" />
-      </xs:sequence>
-      <xs:attribute default="LEFT_FRONT" name="type">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="LEFT_FRONT" />
-            <xs:enumeration value="RIGHT_FRONT" />
-            <xs:enumeration value="LEFT_BACK" />
-            <xs:enumeration value="RIGHT_BACK" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="0.0" name="turn_p" type="xs:string" />
-      <xs:attribute default="0.0" name="turn_i" type="xs:string" />
-      <xs:attribute default="0.0" name="turn_d" type="xs:string" />
-      <xs:attribute default="0.0" name="turn_f" type="xs:string" />
-      <xs:attribute default="0.0" name="turn_nominal_val" type="xs:string" />
-      <xs:attribute default="1.0" name="turn_peak_val" type="xs:string" />
-      <xs:attribute default="0.0" name="turn_max_acc" type="xs:string" />
-      <xs:attribute default="0.0" name="turn_cruise_vel" type="xs:string" />
-      <xs:attribute default="1.0" name="countsOnTurnEncoderPerDegreesOnAngleSensor" type="xs:string" />
-    </xs:complexType>
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element minOccurs="0" maxOccurs="unbounded" ref="motor" />
+			<xs:element minOccurs="0" maxOccurs="1" ref="cancoder" />
+		</xs:sequence>
+		<xs:attribute default="LEFT_FRONT" name="type">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="LEFT_FRONT" />
+					<xs:enumeration value="RIGHT_FRONT" />
+					<xs:enumeration value="LEFT_BACK" />
+					<xs:enumeration value="RIGHT_BACK" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="0.0" name="turn_p" type="xs:string" />
+		<xs:attribute default="0.0" name="turn_i" type="xs:string" />
+		<xs:attribute default="0.0" name="turn_d" type="xs:string" />
+		<xs:attribute default="0.0" name="turn_f" type="xs:string" />
+		<xs:attribute default="0.0" name="turn_nominal_val" type="xs:string" />
+		<xs:attribute default="1.0" name="turn_peak_val" type="xs:string" />
+		<xs:attribute default="0.0" name="turn_max_acc" type="xs:string" />
+		<xs:attribute default="0.0" name="turn_cruise_vel" type="xs:string" />
+		<xs:attribute default="1.0" name="countsOnTurnEncoderPerDegreesOnAngleSensor" type="xs:string" />
+	</xs:complexType>
   </xs:element>
   <xs:element name="solenoid">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="canId" type="CAN_ID"/>
-      </xs:sequence>
-      <xs:attribute name="name" default="UNKNOWN" type="xs:string" />
-
-      <xs:attribute default="0" name="channel">
-        <xs:simpleType>
-          <xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="7"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="false" name="reversed">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="REVPH" name="type">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="CTREPCM" />
-            <xs:enumeration value="REVPH" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-    </xs:complexType>
+	<xs:complexType>
+		<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
+		<xs:attribute default="0" name="canId" type="CAN_ID">
+		</xs:attribute>
+		<xs:attribute default="0" name="channel">
+			<xs:simpleType>
+				<xs:restriction base="xs:unsignedInt">
+					<xs:minInclusive value="0"/>
+					<xs:maxInclusive value="7"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="false" name="reversed">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true" />
+					<xs:enumeration value="false" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="REVPH" name="type">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="CTREPCM" />
+					<xs:enumeration value="REVPH" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
   </xs:element>
   <xs:element name="servo">
-    <xs:complexType>
-      <xs:attribute name="name" default="UNKNOWN" type="xs:string" />
-      <xs:attribute default="0" name="pwmId">
-        <xs:simpleType>
-          <xs:restriction base="xs:unsignedInt">
-            <xs:minInclusive value="0"/>
-            <xs:maxInclusive value="19"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="0.0" name="minAngle" type="xs:string" />
-      <xs:attribute default="360.0" name="maxAngle" type="xs:string" />
-    </xs:complexType>
+	<xs:complexType>
+		<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
+		<xs:attribute default="0" name="pwmId">
+			<xs:simpleType>
+				<xs:restriction base="xs:unsignedInt">
+					<xs:minInclusive value="0"/>
+					<xs:maxInclusive value="19"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="0.0" name="minAngle" type="xs:string" />
+		<xs:attribute default="360.0" name="maxAngle" type="xs:string" />
+	</xs:complexType>
   </xs:element>
   <xs:element name="colorsensor">
-    <xs:complexType>
-      <xs:attribute default="kOnboard" name="port">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="kOnboard" />
-            <xs:enumeration value="kMXP" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-    </xs:complexType>
+	<xs:complexType>
+		<xs:attribute default="kOnboard" name="port">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="kOnboard" />
+					<xs:enumeration value="kMXP" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
   </xs:element>
   <xs:element name="motor">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="digitalInput" />
-        <xs:element default="TALONSRX" name="motorType">
-          <xs:simpleType>
-            <xs:restriction base="xs:NMTOKEN">
-              <xs:enumeration value="TALONSRX" />
-              <xs:enumeration value="FALCON" />
-              <xs:enumeration value="BRUSHLESS_SPARK_MAX" />
-              <xs:enumeration value="BRUSHED_SPARK_MAX" />
-              <xs:enumeration value="FALCON500" />
-              <xs:enumeration value="NEOMOTOR" />
-              <xs:enumeration value="NEO500MOTOR" />
-              <xs:enumeration value="CIMMOTOR" />
-              <xs:enumeration value="MINICIMMOTOR" />
-              <xs:enumeration value="BAGMOTOR" />
-              <xs:enumeration value="PRO775" />
-              <xs:enumeration value="ANDYMARK9015" />
-              <xs:enumeration value="ANDYMARKNEVEREST" />
-              <xs:enumeration value="ANDYMARKRS775125" />
-              <xs:enumeration value="ANDYMARKREDLINEA" />
-              <xs:enumeration value="REVROBOTICSHDHEXMOTOR" />
-              <xs:enumeration value="BANEBOTSRS77518V" />
-              <xs:enumeration value="BANEBOTSRS550" />
-              <xs:enumeration value="MODERNROBOTICS12VDCMOTOR" />
-              <xs:enumeration value="JOHNSONELECTRICALGEARMOTOR" />
-              <xs:enumeration value="TETRIXMAXTORQUENADOMOTOR" />
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:element>
-        <xs:element default="TALONSRX" name="controller">
-          <xs:simpleType>
-            <xs:restriction base="xs:NMTOKEN">
-              <xs:enumeration value="TALONSRX" />
-              <xs:enumeration value="FALCON" />
-              <xs:enumeration value="BRUSHLESS_SPARK_MAX" />
-              <xs:enumeration value="BRUSHED_SPARK_MAX" />
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:element>
-        <xs:element default="rio" name="canBusName" type="CAN_BUS"/>
-        <xs:element name="canId" type="CAN_ID"/>
-        <xs:element name="pdpID" type="xs:string"/>
-        <xs:element default="false" name="inverted" type="xs:boolean"/>
-        <xs:element default="false" name="sensorInverted" type="xs:boolean"/>
-        <xs:element default="NONE" name="feedbackDevice">
-          <xs:simpleType>
-            <xs:restriction base="xs:NMTOKEN">
-              <xs:enumeration value="NONE" />
-              <xs:enumeration value="INTERNAL" />
-              <xs:enumeration value="QUADENCODER" />
-              <xs:enumeration value="ANALOG" />
-              <xs:enumeration value="TACHOMETER" />
-              <xs:enumeration value="PULSEWIDTHENCODERPOSITION" />
-              <xs:enumeration value="SENSORSUM" />
-              <xs:enumeration value="SENSORDIFFERENCE" />
-              <xs:enumeration value="REMOTESENSOR0" />
-              <xs:enumeration value="REMOTESENSOR1" />
-              <xs:enumeration value="SOFTWAREEMULATEDSENSOR" />
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:element>
-        <xs:element default="0" name="countsPerRev" type="xs:string" />
-        <xs:element default="1" name="gearRatio" type="xs:string" />
-        <xs:element default="false" name="brakeMode" type="xs:boolean"/>
-        <xs:element default="-1" name="motorIDtoFollow" type="xs:int" />
-      </xs:sequence>
-      <xs:attribute name="name" default="UNKNOWN" type="xs:string" />
-      <xs:attribute name="peakCurrentDuration" type="xs:double" />
-      <xs:attribute name="continuousCurrentLimit" type="xs:double" />
-      <xs:attribute name="peakCurrentLimit" type="xs:double" />
-      <xs:attribute default="false" name="currentLimiting">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="false" name="forwardlimitswitch">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="true" name="forwardlimitswitchopen">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="false" name="reverselimitswitch">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="true" name="reverselimitswitchopen">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="12.0" name="voltageCompensationSaturation" type="xs:double" />
-      <xs:attribute default="false" name="voltageCompensationEnable">
-        <xs:simpleType>
-          <xs:restriction base="xs:NMTOKEN">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:attribute>
-      <xs:attribute default="0" name="countsPerInch" type="xs:unsignedInt" />
-      <xs:attribute default="0" name="countsPerDegree" type="xs:unsignedInt" />
-    </xs:complexType>
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element minOccurs="0" maxOccurs="unbounded" ref="digitalInput" />
+			<xs:element default="TALON_SRX" name="motorType">
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="TALON_SRX" />
+						<xs:enumeration value="FALCON" />
+						<xs:enumeration value="BRUSHLESS_SPARK_MAX" />
+						<xs:enumeration value="BRUSHED_SPARK_MAX" />
+						<xs:enumeration value="FALCON500" />
+						<xs:enumeration value="NEOMOTOR" />
+						<xs:enumeration value="NEO500MOTOR" />
+						<xs:enumeration value="CIMMOTOR" />
+						<xs:enumeration value="MINICIMMOTOR" />
+						<xs:enumeration value="BAGMOTOR" />
+						<xs:enumeration value="PRO775" />
+						<xs:enumeration value="ANDYMARK9015" />
+						<xs:enumeration value="ANDYMARKNEVEREST" />
+						<xs:enumeration value="ANDYMARKRS775125" />
+						<xs:enumeration value="ANDYMARKREDLINEA" />
+						<xs:enumeration value="REVROBOTICSHDHEXMOTOR" />
+						<xs:enumeration value="BANEBOTSRS77518V" />
+						<xs:enumeration value="BANEBOTSRS550" />
+						<xs:enumeration value="MODERNROBOTICS12VDCMOTOR" />
+						<xs:enumeration value="JOHNSONELECTRICALGEARMOTOR" />
+						<xs:enumeration value="TETRIXMAXTORQUENADOMOTOR" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element default="TALONSRX" name="controller">
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="TALONSRX" />
+						<xs:enumeration value="FALCON" />
+						<xs:enumeration value="BRUSHLESS_SPARK_MAX" />
+						<xs:enumeration value="BRUSHED_SPARK_MAX" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element default="rio" name="canBusName" type="CAN_BUS"/>
+			<xs:element default="0" name="canId" type="CAN_ID"/>
+			<xs:element name="pdpID" type="xs:string"/>
+			<xs:element default="false" name="inverted" type="xs:boolean"/>
+			<xs:element default="false" name="sensorInverted" type="xs:boolean"/>
+			<xs:element default="NONE" name="feedbackDevice">
+				<xs:simpleType>
+					<xs:restriction base="xs:NMTOKEN">
+						<xs:enumeration value="NONE" />
+						<xs:enumeration value="INTERNAL" />
+						<xs:enumeration value="QUADENCODER" />
+						<xs:enumeration value="ANALOG" />
+						<xs:enumeration value="TACHOMETER" />
+						<xs:enumeration value="PULSEWIDTHENCODERPOSITION" />
+						<xs:enumeration value="SENSORSUM" />
+						<xs:enumeration value="SENSORDIFFERENCE" />
+						<xs:enumeration value="REMOTESENSOR0" />
+						<xs:enumeration value="REMOTESENSOR1" />
+						<xs:enumeration value="SOFTWAREEMULATEDSENSOR" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element default="0" name="countsPerRev" type="xs:string" />
+			<xs:element default="1" name="gearRatio" type="xs:string" />
+			<xs:element default="false" name="brakeMode" type="xs:boolean"/>
+			<xs:element default="-1" name="motorIDtoFollow" type="xs:int" />
+		</xs:sequence>
+		<xs:attribute name="name" default="UNKNOWN" type="xs:string" />
+		<xs:attribute name="peakCurrentDuration" type="xs:double" />
+		<xs:attribute name="continuousCurrentLimit" type="xs:double" />
+		<xs:attribute name="peakCurrentLimit" type="xs:double" />
+		<xs:attribute default="false" name="currentLimiting">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true" />
+					<xs:enumeration value="false" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="false" name="forwardlimitswitch">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true" />
+					<xs:enumeration value="false" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="true" name="forwardlimitswitchopen">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true" />
+					<xs:enumeration value="false" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="false" name="reverselimitswitch">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true" />
+					<xs:enumeration value="false" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="true" name="reverselimitswitchopen">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true" />
+					<xs:enumeration value="false" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="12.0" name="voltageCompensationSaturation" type="xs:double" />
+		<xs:attribute default="false" name="voltageCompensationEnable">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<xs:enumeration value="true" />
+					<xs:enumeration value="false" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute default="0" name="countsPerInch" type="xs:unsignedInt" />
+		<xs:attribute default="0" name="countsPerDegree" type="xs:unsignedInt" />
+	</xs:complexType>
   </xs:element>
 
   <xs:element name="analogInput">
