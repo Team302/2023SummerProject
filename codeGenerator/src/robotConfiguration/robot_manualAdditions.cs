@@ -29,18 +29,15 @@ namespace Robot
     {
         public closedLoopControlParameters()
         {
-            PropertyInfo[] propertyInfos = this.GetType().GetProperties();
+            utilities.initializeNullProperties(this);
+        }
+    }
 
-            for (int i = 0; i < propertyInfos.Length; i++)
-            {
-                PropertyInfo pi = propertyInfos[i];
-                object theObj = pi.GetValue(this);
-                if (theObj == null)
-                {
-                    theObj = Activator.CreateInstance(pi.PropertyType);
-                    pi.SetValue(this, theObj);
-                }
-            }
+    public partial class motor
+    {
+        public void initialize()
+        {
+            utilities.initializeNullProperties(this);
         }
     }
 
@@ -48,11 +45,68 @@ namespace Robot
     {
         public void initialize()
         {
-            if (pdp == null)
-                pdp = new pdp(); ;
+            utilities.initializeNullProperties(this);
+        }
+    }
 
-            if (chassis == null)
-                chassis = new chassis();
+    partial class pcm
+    {
+        public pcm()
+        {
+            utilities.initializeNullProperties(this);
+        }
+    }
+
+    partial class pigeon
+    {
+        public pigeon()
+        {
+            utilities.initializeNullProperties(this);
+        }
+    }
+    partial class cancoder
+    {
+        public cancoder()
+        {
+            utilities.initializeNullProperties(this);
+        }
+    }
+
+    partial class solenoid
+    {
+        public solenoid()
+        {
+            utilities.initializeNullProperties(this);
+        }
+    }
+
+    partial class talontach
+    {
+        public talontach()
+        {
+            utilities.initializeNullProperties(this);
+        }
+    }
+
+    static class utilities
+    {
+        public static void initializeNullProperties(object obj)
+        {
+            PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
+
+            for (int i = 0; i < propertyInfos.Length; i++)
+            {
+                PropertyInfo pi = propertyInfos[i];
+                if (pi.PropertyType != typeof(System.String))
+                {
+                    object theObj = pi.GetValue(obj);
+                    if (theObj == null)
+                    {
+                        theObj = Activator.CreateInstance(pi.PropertyType);
+                        pi.SetValue(obj, theObj);
+                    }
+                }
+            }
         }
     }
 }

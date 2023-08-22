@@ -13,3 +13,4 @@ echo on
 call %ClassGenerator% --output=%OUTPUT_RELATIVE_DIR% --pascal- -v %ROBOT_SCHEMA%
 
 call replaceTextInFile.exe -r %OUTPUT_RELATIVE_DIR%\%ROBOT_CSHARP% "public\s+robot\(\)\s*{\s*" "$$COPY$$initialize();"
+call replaceTextInFile.exe -r %OUTPUT_RELATIVE_DIR%\%ROBOT_CSHARP% "public\s+motor\(\)\s*{\s*" "$$COPY$$initialize();"
