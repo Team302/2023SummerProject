@@ -89,22 +89,26 @@ namespace CoreCodeGenerator
             string mechanismName = mech.name;
 
             #region Generate State Manager Cpp File
-            string file = theToolConfiguration.getTemplateCppPath(theToolConfiguration.templateMechStateMgrPath).Replace("MECH", mechanismName);
+            string file = theToolConfiguration.getTemplateCppPath(theToolConfiguration.templateMechStateMgrPath);
 
             string resultString = loadTemplate(file);
             string filePathName = getMechanismFullFilePathName(mechanismName, file);
 
             resultString = replaceNotices(resultString);
 
+            File.WriteAllText(filePathName, resultString);
+
             #endregion
 
             #region Generate State Manager H File
-            file = theToolConfiguration.getTemplateHPath(theToolConfiguration.templateMechStateMgrPath).Replace("MECH", mechanismName);
+            file = theToolConfiguration.getTemplateHPath(theToolConfiguration.templateMechStateMgrPath);
 
             resultString = loadTemplate(file);
             filePathName = getMechanismFullFilePathName(mechanismName, file);
 
             resultString = replaceNotices(resultString);
+
+            File.WriteAllText(filePathName, resultString);
 
             #endregion
         }
