@@ -22,11 +22,11 @@
   <tunableParameterTypes>
     <string>Robot.doubleParameter</string>
     <string>Robot.doubleRestrictedParameter</string>
-  </parameterTypes>
-  <templateMechanismCppPath>..\templates\MECH</templateMechanismCppPath>
-  <templateRobotDefinitionsCppPath>..\templates\RobotDefinitions</templateRobotDefinitionsCppPath>
-  <templateMechBuilderCppPath>..\templates\MECHBuilder</templateMechBuilderCppPath>
-  <templateMechBuilderCppPath>..\templates\MECHStateMgr</templateMechBuilderCppPath>
+  </tunableParameterTypes>
+  <templateMechanismPath>..\templates\MECH</templateMechanismPath>
+  <templateRobotDefinitionsPath>..\templates\RobotDefinitions</templateRobotDefinitionsPath>
+  <templateMechBuilderPath>..\templates\MECHBuilder</templateMechBuilderPath>
+  <templateMechBuilderPath>..\templates\MECHStateMgr</templateMechBuilderPath>
   <CopyrightNotice>
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
