@@ -996,6 +996,7 @@ namespace FRCrobotCodeGen302
         bool isPartOfAMechanismTemplate(TreeNode tn, out mechanism theTemplateMechanism)
         {
             List<object> lineage = new List<object>();
+            string fullPath = tn.FullPath;
 
             if (tn != null)
             {
@@ -1006,14 +1007,16 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                //this finds the index of the collection of mechanisms
-                int indexOfMechanisms = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().SingleOrDefault().FullName == "Robot.mechanism").FirstOrDefault());
+                //this finds the index of the "closest" parent mechanism
+                int indexOfMechanism = lineage.IndexOf(lineage.Where(x => x.GetType() == typeof(mechanism)).FirstOrDefault());
 
-                if (indexOfMechanisms >=1)
+                if(indexOfMechanism != -1)
                 {
-                    //substract 1 from index to get the currently selected mechanism
-                    theTemplateMechanism = (mechanism)lineage[indexOfMechanisms - 1];
-                    return true;
+                    theTemplateMechanism = (mechanism)lineage[indexOfMechanism];
+
+                    //checks if the selected node is underneath the mechanisms collection.
+                    //uses "EndsWith" function to make sure that the mechanisms collection is not considered part of a template
+                    return fullPath.Contains("mechanisms") && !fullPath.EndsWith("mechanisms"); //this may be able to just return true, we should know that we are a child of a mechanism if index isn't -1
                 }
             }
 
@@ -1025,6 +1028,8 @@ namespace FRCrobotCodeGen302
         {
             List<object> lineage = new List<object>();
 
+            string fullPath = tn.FullPath;
+
             if (tn != null)
             {
                 lineage.Add(tn.Tag);
@@ -1034,9 +1039,10 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                //returns if any node, except first, is found with type mechanismInstance
-                //if last node is of type mechanismInstance, this means we have selected the mechanismInstance group and want to show other mechanisms
-                return lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanismInstance")) >0;
+                //returns if mechanismInstances is part of the full path of a node
+                //uses "EndsWith" function to make sure that the mechanismInstances collection is not considered part of an instance
+                //that causes an issue where only one mechanismInstance can be added to a robot
+                return fullPath.Contains("mechanismInstances") && !fullPath.EndsWith("mechanismInstances");
             }
 
             return false;
