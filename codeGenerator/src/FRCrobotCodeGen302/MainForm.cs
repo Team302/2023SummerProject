@@ -134,9 +134,9 @@ namespace FRCrobotCodeGen302
                             {
                                 nodeName += "ID: " + propertyInfo.GetValue(obj).ToString() + ", ";
                             }
-                            else if(propertyInfo.Name == "canId")
+                            else if (propertyInfo.Name == "canId")
                             {
-                                if ((propertyInfo.GetValue(obj) as Robot.CAN_ID)!= null)
+                                if ((propertyInfo.GetValue(obj) as Robot.CAN_ID) != null)
                                     nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value.ToString() + ", ";
                             }
                             else
@@ -156,13 +156,16 @@ namespace FRCrobotCodeGen302
                     nodeName = nodeName.Trim();
                 }
 
+                if (String.IsNullOrEmpty(nodeName))
+                    nodeName = objType.Name;
+
                 if (objType == typeof(robot))
                 {
                     robot tempBot = (robot)obj;
                     nodeName = "Robot #" + tempBot.robotID;
                 }
 
-                nodeName = getTreeNodeDisplayName(nodeValueString, nodeName); 
+                nodeName = getTreeNodeDisplayName(nodeValueString, nodeName);
             }
 
             return nodeName;
@@ -279,10 +282,10 @@ namespace FRCrobotCodeGen302
 
                         int imageIndex = treeIconIndex_unlockedPadlock;
                         if (isAParameterType(objType.FullName))
-                            imageIndex = treeIconIndex_gear; 
+                            imageIndex = treeIconIndex_gear;
                         else if (isATunableParameterType(objType.FullName))
                             imageIndex = treeIconIndex_wrench;
-                        else if(isPartOfAMechanismInaMechInstance(tn))
+                        else if (isPartOfAMechanismInaMechInstance(tn))
                             imageIndex = treeIconIndex_lockedPadlock;
 
                         tn.ImageIndex = imageIndex;
@@ -491,6 +494,7 @@ namespace FRCrobotCodeGen302
         {
             List<robotElementType> types = new List<robotElementType>();
 
+
             PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
             foreach (PropertyInfo propertyInfo in propertyInfos)
             {
@@ -503,6 +507,14 @@ namespace FRCrobotCodeGen302
                 else if (propertyInfo.PropertyType == typeof(mechanismInstance))
                 {
                     types.Add(new robotElementType(propertyInfo.PropertyType));
+                }
+                else if ((!propertyInfo.Name.EndsWith("Specified")) && (!propertyInfo.PropertyType.FullName.StartsWith("System.")))
+                {
+                    if (!isACollection(obj))
+                    {
+                        if (propertyInfo.GetValue(obj, null) == null)
+                            types.Add(new robotElementType(propertyInfo.PropertyType));
+                    }
                 }
             }
             return types;
@@ -557,7 +569,7 @@ namespace FRCrobotCodeGen302
                 bool visible_And_or_Enabled = false;
 
                 theCurrentElementPossibilities = getEmptyPossibleCollectionSubTypes(e.Node.Tag);
-                if ((theCurrentElementPossibilities.Count > 0) && (!isPartOfAMechanismInaMechInstance(e.Node)) )
+                if ((theCurrentElementPossibilities.Count > 0) && (!isPartOfAMechanismInaMechInstance(e.Node)))
                 {
                     visible_And_or_Enabled = true;
 
@@ -609,7 +621,7 @@ namespace FRCrobotCodeGen302
                     object value = null;
                     PropertyInfo prop = null;
                     bool allowEdit = false;
-                    if (isATunableParameterType(lnt.type.FullName) || isAParameterType(lnt.type.FullName)) 
+                    if (isATunableParameterType(lnt.type.FullName) || isAParameterType(lnt.type.FullName))
                     {
                         prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                         if (null != prop)
@@ -872,48 +884,85 @@ namespace FRCrobotCodeGen302
         {
             if (lastSelectedValueNode != null)
             {
+                TreeNode mechanismInstancesNode = null;
                 TreeNode tn = null;
                 foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems)
                 {
+                    tn = null;
                     Type elementType;
 
                     // first create a new element instance
-                    if (robotElementObj is mechanism)
-                        elementType = ((mechanism)robotElementObj).GetType();
-                    else
+                    if (isACollection(robotElementObj))
                         elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
-                
+                    else
+                        elementType = robotElementObj.GetType();
+
                     object obj;
 
                     // then find the collection of type robotElementObj.t within lastSelectedValueNode
                     PropertyInfo pi;
                     string name;
+                    bool addToCollection = true;
                     if (robotElementObj is mechanism)
                     {
                         obj = Activator.CreateInstance((new mechanismInstance()).GetType());
 
                         name = "mechanismInstance";
-                        pi = lastSelectedValueNode.Tag.GetType().GetProperty(name);
                         ((mechanismInstance)obj).mechanism = robotConfig.DeepClone((mechanism)robotElementObj);
                     }
-                    else
+                    else if (isACollection(((robotElementType)robotElementObj).t))
                     {
                         elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
                         obj = Activator.CreateInstance(elementType);
 
                         name = ((robotElementType)robotElementObj).ToString();
-                        pi = lastSelectedValueNode.Tag.GetType().GetProperty(name);
                     }
-                        object theCollectionObj = pi.GetValue(lastSelectedValueNode.Tag, null);
+                    else
+                    {
+                        addToCollection = false;
+                        obj = Activator.CreateInstance(((robotElementType)robotElementObj).t);
+                        name = ((robotElementType)robotElementObj).ToString();
+                    }
 
+                    pi = lastSelectedValueNode.Tag.GetType().GetProperty(name);
 
+                    object theObj = pi.GetValue(lastSelectedValueNode.Tag, null);
+
+                    if (addToCollection)
+                    {
                         // then add it to the collection
-                        theCollectionObj.GetType().GetMethod("Add").Invoke(theCollectionObj, new object[] { obj });
-                        int count = (int)theCollectionObj.GetType().GetProperty("Count").GetValue(theCollectionObj);
+                        theObj.GetType().GetMethod("Add").Invoke(theObj, new object[] { obj });
+                        int count = (int)theObj.GetType().GetProperty("Count").GetValue(theObj);
+                        if (robotElementObj is mechanism)
+                        {
+                            if (mechanismInstancesNode == null)
+                            {
+                        tn = AddNode(lastSelectedValueNode, theObj, name);
+                                mechanismInstancesNode = tn;
+                            }
+                            else
+                                tn = AddNode(mechanismInstancesNode, obj, name + (count - 1));
+                        }
+                        else
+                        {
+                            tn = AddNode(lastSelectedValueNode, theObj, name );
+                        }
+                    }
+                    else
+                    {
+                        // it is not part of a collection, set the value only if it is null
+                        if (theObj == null)
+                        {
+                            pi.SetValue(lastSelectedValueNode.Tag, obj);
+                            tn = AddNode(lastSelectedValueNode, obj, name);
+                        }
+                    }
 
-                        tn = AddNode(lastSelectedValueNode, theCollectionObj, name);
+                    if (tn != null)
+                    {
                         tn.EnsureVisible();
                         tn.Expand();
+                    }
 
 
                     mechanism theMechanism;
@@ -996,6 +1045,7 @@ namespace FRCrobotCodeGen302
         bool isPartOfAMechanismTemplate(TreeNode tn, out mechanism theTemplateMechanism)
         {
             List<object> lineage = new List<object>();
+            string fullPath = tn.FullPath;
 
             if (tn != null)
             {
@@ -1006,14 +1056,16 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                //this finds the index of the collection of mechanisms
-                int indexOfMechanisms = lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().SingleOrDefault().FullName == "Robot.mechanism").FirstOrDefault());
+                //this finds the index of the "closest" parent mechanism
+                int indexOfMechanism = lineage.IndexOf(lineage.Where(x => x.GetType() == typeof(mechanism)).FirstOrDefault());
 
-                if (indexOfMechanisms >=1)
+                if(indexOfMechanism != -1)
                 {
-                    //substract 1 from index to get the currently selected mechanism
-                    theTemplateMechanism = (mechanism)lineage[indexOfMechanisms - 1];
-                    return true;
+                    theTemplateMechanism = (mechanism)lineage[indexOfMechanism];
+
+                    //checks if the selected node is underneath the mechanisms collection.
+                    //uses "EndsWith" function to make sure that the mechanisms collection is not considered part of a template
+                    return fullPath.Contains("mechanisms") && !fullPath.EndsWith("mechanisms"); //this may be able to just return true, we should know that we are a child of a mechanism if index isn't -1
                 }
             }
 
@@ -1025,6 +1077,8 @@ namespace FRCrobotCodeGen302
         {
             List<object> lineage = new List<object>();
 
+            string fullPath = tn.FullPath;
+
             if (tn != null)
             {
                 lineage.Add(tn.Tag);
@@ -1034,9 +1088,10 @@ namespace FRCrobotCodeGen302
                     lineage.Add(tn.Tag);
                 }
 
-                //returns if any node, except first, is found with type mechanismInstance
-                //if last node is of type mechanismInstance, this means we have selected the mechanismInstance group and want to show other mechanisms
-                return lineage.IndexOf(lineage.Where(x => x.GetType().GetGenericArguments().SingleOrDefault() != null && x.GetType().GetGenericArguments().Single().FullName == "Robot.mechanismInstance")) >0;
+                //returns if mechanismInstances is part of the full path of a node
+                //uses "EndsWith" function to make sure that the mechanismInstances collection is not considered part of an instance
+                //that causes an issue where only one mechanismInstance can be added to a robot
+                return fullPath.Contains("mechanismInstances") && !fullPath.EndsWith("mechanismInstances");
             }
 
             return false;
