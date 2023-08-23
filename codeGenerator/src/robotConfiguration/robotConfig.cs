@@ -109,14 +109,14 @@ namespace robotConfiguration
 
                     mechanism tempMech;
 
-                    using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
-                    {
-                        tempMech = mySerializer.Deserialize(myFileStream) as mechanism;
-                    }
-
                     //ignore configuration files
                     if (!tempFile.Contains("robotVariants") && !tempFile.Contains("toolConfiguration"))
                     {
+                        using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
+                        {
+                            tempMech = mySerializer.Deserialize(myFileStream) as mechanism;
+                        }
+
                         //if we have two versions of a mechanism with the same name, append a number to the end of the newest one
                         int numberOfSameNamedMechs = theRobotVariants.mechanism.Where(p => p.name == tempMech.name).Count();
                         if (numberOfSameNamedMechs > 0)
