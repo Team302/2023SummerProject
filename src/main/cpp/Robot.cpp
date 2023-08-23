@@ -28,20 +28,15 @@
 #include <utils/logging/LoggerData.h>
 #include <utils/logging/LoggerEnums.h>
 #include <utils/WaypointXmlParser.h>
+#include <utils/BuildDetailsReader.h>
+#include <RobotDefinition.h>
 
 #include <AdjustableItemMgr.h>
 #include <mechanisms/SomeMech/SomeMech.h>
 
 /// DEBUGGING
 #include <hw/factories/PigeonFactory.h>
-
-/* How to check robot variant
-#if ROBOT_VARIANT == 2024
-#warning COMP BOT
-#else
-#warning UNKNOWN
-#endif
-*/
+#include <iostream>
 
 using namespace std;
 
@@ -49,6 +44,23 @@ void Robot::RobotInit()
 {
     Logger::GetLogger()->PutLoggingSelectionsOnDashboard();
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("arrived"));
+
+    // Read build details for team number, branch, and more
+    m_detailsReader = new BuildDetailsReader();
+    m_details = m_detailsReader->ReadBuildDetails();
+
+    m_robot = RobotDefinitions::GetRobotDefinition(m_details.teamNumber);
+
+    /*
+        Example code after getting robot definition
+
+        m_intake = (Intake)m_robot->GetComponent(RobotDefinitions::Components::Intake);
+        m_intake->Initialize();
+
+        m_turret = (Turret)m_robot->GetComponent(RobotDefinitions::Components::Turret);
+        m_turret->Initialize();
+
+    */
 
     m_controller = nullptr;
 

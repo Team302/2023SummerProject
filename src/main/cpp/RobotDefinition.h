@@ -1,4 +1,3 @@
-
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -16,57 +15,29 @@
 
 #pragma once
 
-#include <frc/TimedRobot.h>
-#include <DragonVision/DragonVision.h>
+// C++ Includes
+#include <string>
+#include <vector>
+#include <any>
+#include <map>
 
-class ArcadeDrive;
-class CyclePrimitives;
-class DragonLimelight;
-class HolonomicDrive;
-class SwerveChassis;
-class TeleopControl;
-class AdjustableItemMgr;
-class FMSData;
-class DragonField;
-class AutonPreviewer;
-class RobotState;
-class SomeMech;
-class BuildDetailsReader;
-class RobotDefinition;
+// Team 302 Includes
+#include <RobotDefinitions.h>
 
-class Robot : public frc::TimedRobot
+class RobotDefinition
 {
 public:
-    Robot() = default;
-    ~Robot() = default;
+    /// strings will be used instead of mechanism and sensor parents classes until those are created
+    // RobotDefinition(std::vector<Mechanism> mechs, std::vector<Sensor> sensors);
+    RobotDefinition(std::vector<std::pair<RobotDefinitions::Components, std::string>> components);
+    ~RobotDefinition() = default;
 
-    void RobotInit() override;
-    void RobotPeriodic() override;
-    void AutonomousInit() override;
-    void AutonomousPeriodic() override;
-    void TeleopInit() override;
-    void TeleopPeriodic() override;
-    void DisabledInit() override;
-    void DisabledPeriodic() override;
-    void TestInit() override;
-    void TestPeriodic() override;
+    /// NOTE: May create a component class to use instead of std::any
+    /// @brief Get a component (mechanism, sensor, solenoid, etc.) from a robot definition
+    /// @param component Which component to get from a definition
+    /// @return Returns the specfied component
+    std::any GetComponent(RobotDefinitions::Components component) { return m_componentMap[component]; };
 
 private:
-    TeleopControl *m_controller;
-    SwerveChassis *m_chassis;
-    CyclePrimitives *m_cyclePrims;
-    HolonomicDrive *m_holonomic;
-    ArcadeDrive *m_arcade;
-
-    DragonLimelight *m_dragonLimeLight;
-
-    AdjustableItemMgr *m_tuner;
-    FMSData *m_fmsData;
-    DragonField *m_field;
-    AutonPreviewer *m_previewer;
-    RobotState *m_robotState;
-    SomeMech *m_someMech;
-    BuildDetailsReader *m_detailsReader;
-    BuildDetails m_details;
-    RobotDefinition *m_robot;
+    std::map<RobotDefinitions::Components, std::any> m_componentMap;
 };
