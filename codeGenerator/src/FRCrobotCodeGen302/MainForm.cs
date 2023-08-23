@@ -884,6 +884,7 @@ namespace FRCrobotCodeGen302
         {
             if (lastSelectedValueNode != null)
             {
+                TreeNode mechanismInstancesNode = null;
                 TreeNode tn = null;
                 foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems)
                 {
@@ -932,7 +933,20 @@ namespace FRCrobotCodeGen302
                         // then add it to the collection
                         theObj.GetType().GetMethod("Add").Invoke(theObj, new object[] { obj });
                         int count = (int)theObj.GetType().GetProperty("Count").GetValue(theObj);
+                        if (robotElementObj is mechanism)
+                        {
+                            if (mechanismInstancesNode == null)
+                            {
                         tn = AddNode(lastSelectedValueNode, theObj, name);
+                                mechanismInstancesNode = tn;
+                            }
+                            else
+                                tn = AddNode(mechanismInstancesNode, obj, name + (count - 1));
+                        }
+                        else
+                        {
+                            tn = AddNode(lastSelectedValueNode, theObj, name );
+                        }
                     }
                     else
                     {
