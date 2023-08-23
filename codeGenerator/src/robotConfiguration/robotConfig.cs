@@ -96,7 +96,7 @@ namespace robotConfiguration
             string[] files = Directory.GetFiles(Path.GetDirectoryName(fullPathName), "*.xml");
             foreach (string file in files)
             {
-                if (theRobotVariants.mechanism.Any(p => p.name == Path.GetFileName(file).Replace(".xml", "")))
+                if (theRobotVariants.mechanism.Any(p => p.name == Path.GetFileNameWithoutExtension(file)))
                 {
                     //if we have previously loaded the mechanism, don't load it again
                     continue;
@@ -107,22 +107,24 @@ namespace robotConfiguration
 
                     string tempFile = File.ReadAllText(mechanismFullPath);
 
-                    using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
+                    mechanism tempMech;
+
+                    //ignore configuration files
+                    if (!tempFile.Contains("robotVariants") && !tempFile.Contains("toolConfiguration"))
                     {
-                        //ignore configuration files
-                        if(!tempFile.Contains("robotVariants") && !tempFile.Contains("toolConfiguration"))
+                        using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
                         {
-                            mechanism tempMech = mySerializer.Deserialize(myFileStream) as mechanism;
-
-                            //if we have two versions of a mechanism with the same name, append a nubmer to the end of the newest one
-                            int numberOfSameNamedMechs = theRobotVariants.mechanism.Where(p => p.name == tempMech.name).Count();
-                            if (numberOfSameNamedMechs > 0)
-                            {
-                                tempMech.name += numberOfSameNamedMechs;
-                            }
-
-                            theRobotVariants.mechanism.Add(tempMech);
+                            tempMech = mySerializer.Deserialize(myFileStream) as mechanism;
                         }
+
+                        //if we have two versions of a mechanism with the same name, append a number to the end of the newest one
+                        int numberOfSameNamedMechs = theRobotVariants.mechanism.Where(p => p.name == tempMech.name).Count();
+                        if (numberOfSameNamedMechs > 0)
+                        {
+                            tempMech.name += numberOfSameNamedMechs;
+                        }
+
+                        theRobotVariants.mechanism.Add(tempMech);
                     }
                 }
             }
