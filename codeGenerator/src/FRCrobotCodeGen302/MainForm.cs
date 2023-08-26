@@ -40,6 +40,19 @@ namespace FRCrobotCodeGen302
         public MainForm()
         {
             InitializeComponent();
+
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+            {
+                if (args[1] == "enableAutomation")
+                {
+                    selectNodeButton.Enabled = true;
+                    selectNodeButton.Visible = true;
+                    nodePathSelectorTextBox.Enabled = true;
+                    nodePathSelectorTextBox.Visible = true;
+                }
+            }
+
             codeGenerator.setProgressCallback(addProgress);
             theRobotConfiguration.setProgressCallback(addProgress);
             clearNeedsSaving();
@@ -937,7 +950,7 @@ namespace FRCrobotCodeGen302
                         {
                             if (mechanismInstancesNode == null)
                             {
-                        tn = AddNode(lastSelectedValueNode, theObj, name);
+                                tn = AddNode(lastSelectedValueNode, theObj, name);
                                 mechanismInstancesNode = tn;
                             }
                             else
@@ -945,7 +958,7 @@ namespace FRCrobotCodeGen302
                         }
                         else
                         {
-                            tn = AddNode(lastSelectedValueNode, theObj, name );
+                            tn = AddNode(lastSelectedValueNode, theObj, name);
                         }
                     }
                     else
@@ -1059,7 +1072,7 @@ namespace FRCrobotCodeGen302
                 //this finds the index of the "closest" parent mechanism
                 int indexOfMechanism = lineage.IndexOf(lineage.Where(x => x.GetType() == typeof(mechanism)).FirstOrDefault());
 
-                if(indexOfMechanism != -1)
+                if (indexOfMechanism != -1)
                 {
                     theTemplateMechanism = (mechanism)lineage[indexOfMechanism];
 
@@ -1285,6 +1298,60 @@ namespace FRCrobotCodeGen302
                 addProgress(ex.Message);
             }
         }
+
+        private TreeNode getNode(string fullPath)
+        {
+            TreeNode node = null;
+            List<string> splitPath = fullPath.Split('/').ToList();
+            int currentIndex = 0;
+
+            foreach (TreeNode tn in robotTreeView.Nodes)
+            {
+                if (tn.Text == splitPath[currentIndex])
+                {
+                    node = selectNode(splitPath, tn, ++currentIndex);
+                    break;
+                }
+            }
+
+            return node;
+        }
+
+        private TreeNode selectNode(List<string> splitPath, TreeNode currentNode, int currentIndex)
+        {
+            TreeNode node = null;
+
+            foreach (TreeNode tn in currentNode.Nodes)
+            {
+                string name = tn.Text;
+                if (tn.Nodes.Count == 0)
+                    name = ((leafNodeTag)tn.Tag).name;
+
+                if (name == splitPath[currentIndex])
+                {
+                    if (currentIndex == splitPath.Count - 1)
+                        node = tn;
+                    else
+                        node = selectNode(splitPath, tn, ++currentIndex);
+                    break;
+                }
+            }
+
+            return node;
+        }
+
+        private void selectNodeButton_Click(object sender, EventArgs e)
+        {
+            string nodePath = nodePathSelectorTextBox.Text;
+            TreeNode n = getNode(nodePath);
+
+            if (n != null)
+            {
+                robotTreeView.SelectedNode = n;
+                n.EnsureVisible();
+            }
+        }
+
     }
 
     class leafNodeTag

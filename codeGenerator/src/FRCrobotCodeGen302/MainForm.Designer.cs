@@ -59,6 +59,8 @@ namespace FRCrobotCodeGen302
             this.valueComboBox = new System.Windows.Forms.ComboBox();
             this.robotElementCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.treeViewIcons = new System.Windows.Forms.ImageList(this.components);
+            this.selectNodeButton = new System.Windows.Forms.Button();
+            this.nodePathSelectorTextBox = new System.Windows.Forms.TextBox();
             this.configurationGroupBox.SuspendLayout();
             this.theTabControl.SuspendLayout();
             this.tabMainPage.SuspendLayout();
@@ -313,6 +315,8 @@ namespace FRCrobotCodeGen302
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.selectNodeButton);
+            this.panel1.Controls.Add(this.nodePathSelectorTextBox);
             this.panel1.Controls.Add(this.addRobotElementLabel);
             this.panel1.Controls.Add(this.deleteTreeElementButton);
             this.panel1.Controls.Add(this.addTreeElementButton);
@@ -433,6 +437,31 @@ namespace FRCrobotCodeGen302
             this.treeViewIcons.Images.SetKeyName(2, "gear.ico");
             this.treeViewIcons.Images.SetKeyName(3, "wrench.ico");
             // 
+            // selectNodeButton
+            // 
+            this.selectNodeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.selectNodeButton.Location = new System.Drawing.Point(302, 164);
+            this.selectNodeButton.Name = "selectNodeButton";
+            this.selectNodeButton.Size = new System.Drawing.Size(82, 26);
+            this.selectNodeButton.TabIndex = 10;
+            this.selectNodeButton.Text = "Select Node";
+            this.selectNodeButton.UseVisualStyleBackColor = true;
+            this.selectNodeButton.Enabled = false;
+            this.selectNodeButton.Visible= false;
+            this.selectNodeButton.Click += new System.EventHandler(this.selectNodeButton_Click);
+            // 
+            // nodePathSelectorTextBox
+            // 
+            this.nodePathSelectorTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nodePathSelectorTextBox.Location = new System.Drawing.Point(3, 167);
+            this.nodePathSelectorTextBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.nodePathSelectorTextBox.Name = "nodePathSelectorTextBox";
+            this.nodePathSelectorTextBox.Size = new System.Drawing.Size(300, 26);
+            this.nodePathSelectorTextBox.TabIndex = 9;
+            this.nodePathSelectorTextBox.Enabled = false;
+            this.nodePathSelectorTextBox.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -491,6 +520,8 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.CheckedListBox robotElementCheckedListBox;
         private System.Windows.Forms.Label addRobotElementLabel;
         private System.Windows.Forms.ImageList treeViewIcons;
+        private System.Windows.Forms.Button selectNodeButton;
+        private System.Windows.Forms.TextBox nodePathSelectorTextBox;
     }
 }
 
