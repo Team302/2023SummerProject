@@ -168,6 +168,7 @@ bin/
 #Visual Studio code generator ignores
 codeGenerator/src/*/*/Debug
 codeGenerator/src/.vs
+codeGenerator/src/packages
 
 # Simulation GUI and other tools window save file
 *-window.json
