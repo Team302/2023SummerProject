@@ -1,0 +1,137 @@
+[
+{
+"acceleration": -4.0,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 1.95,
+"y": 2.75
+}
+},
+"time": 0.0,
+"velocity": -0.0
+},
+{
+"acceleration": -4.0,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 2.072613103425964,
+"y": 2.75
+}
+},
+"time": 0.24760159876903448,
+"velocity": -0.9904063950761379
+},
+{
+"acceleration": -4.0,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 2.1846076935757965,
+"y": 2.75
+}
+},
+"time": 0.3424964916431967,
+"velocity": -1.3699859665727867
+},
+{
+"acceleration": -4.000000000000003,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 2.2840778834512188,
+"y": 2.75
+}
+},
+"time": 0.4087039781132665,
+"velocity": -1.634815912453066
+},
+{
+"acceleration": 3.9999999999999756,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 2.3756522557623385,
+"y": 2.75
+}
+},
+"time": 0.46133082260040814,
+"velocity": -1.8453232904016328
+},
+{
+"acceleration": 3.9999999999999964,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 2.4672266280734583,
+"y": 2.75
+}
+},
+"time": 0.5139576670875498,
+"velocity": -1.6348159124530675
+},
+{
+"acceleration": 4.000000000000001,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 2.5666968179488805,
+"y": 2.75
+}
+},
+"time": 0.5801651535576196,
+"velocity": -1.3699859665727887
+},
+{
+"acceleration": 4.0,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 2.6786914080987136,
+"y": 2.75
+}
+},
+"time": 0.675060046431782,
+"velocity": -0.9904063950761388
+},
+{
+"acceleration": 4.0,
+"curvature": -0.0,
+"pose": {
+"rotation": {
+"radians": 3.141592653589793
+},
+"translation": {
+"x": 2.8013045115246777,
+"y": 2.75
+}
+},
+"time": 0.9226616452008167,
+"velocity": -0.0
+}
+]
