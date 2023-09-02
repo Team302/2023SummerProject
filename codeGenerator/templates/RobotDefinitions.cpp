@@ -25,7 +25,7 @@ $$_INCLUDES_$$
             return Get302Defition();  //this could return comp bot or simulation bot
     }
 */
-static RobotDefinition *RobotDefinitions::GetRobotDefinition(int teamNumber){
+RobotDefinition *RobotDefinitions::GetRobotDefinition(int teamNumber){
     $$_ROBOT_DEFINITION_SWITCH_$$}
 
 /*
