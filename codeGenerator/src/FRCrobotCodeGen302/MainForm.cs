@@ -21,6 +21,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace FRCrobotCodeGen302
 {
@@ -29,6 +30,7 @@ namespace FRCrobotCodeGen302
         toolConfiguration generatorConfig = new toolConfiguration();
         robotConfig theRobotConfiguration = new robotConfig();
         codeGenerator_302Robotics codeGenerator = new codeGenerator_302Robotics();
+        NTViewer viewer;
         bool needsSaving = false;
         bool loadRobotConfig = false;
         readonly string configurationCacheFile = Path.GetTempPath() + "DragonsCodeGeneratorCache.txt";
@@ -51,6 +53,8 @@ namespace FRCrobotCodeGen302
             valueTextBox.Location = valueNumericUpDown.Location;
 
             this.Text += " Version " + ProductVersion;
+
+            viewer = new NTViewer(ntTreeview);
 
             //try to load cached configuration.xml
             addProgress("Trying to load cached configuration.xml");
@@ -1291,9 +1295,14 @@ namespace FRCrobotCodeGen302
         {
             if (theTabControl.SelectedIndex == theTabControl.TabPages.IndexOfKey("tabNetworkTables"))
             {
-                NTViewer viewer = new NTViewer(ntTreeview);
+                
                 viewer.ConnectToNetworkTables();
             }
+        }
+
+        private void ntTreeFilterInput_TextChanged(object sender, EventArgs e)
+        {
+            viewer.FilterTree(ntTreeFilterInput.Text);
         }
     }
 

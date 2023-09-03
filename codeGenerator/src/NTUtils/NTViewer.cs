@@ -7,6 +7,7 @@ using NetworkTables;
 using NetworkTables.Tables;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace NTUtils
 {
@@ -14,6 +15,7 @@ namespace NTUtils
     {
         NetworkTable table;
         TreeView tree;
+        Collection<TreeNode> treeNodes = new Collection<TreeNode>();
         bool hasAttachedListener = false;
         bool hasConnected = false;
 
@@ -87,11 +89,31 @@ namespace NTUtils
                     newNode.Nodes.Add(key);
                 }
 
+                treeNodes.Add(newNode);
+
                 tree.BeginInvoke(new Action(() =>
                 {
                     tree.Nodes.Add(newNode);
-
                 }));
+            }
+        }
+
+        public void FilterTree(string text)
+        {
+            foreach(TreeNode node in treeNodes)
+            {
+                if (node != null)
+                {
+                    if (!node.Text.ToLower().Contains(text.ToLower()))
+                    {
+                        tree.Nodes.Remove(node);
+                    }
+                    else 
+                    {
+                        if (!tree.Nodes.Contains(node))
+                            tree.Nodes.Add(node);
+                    }
+                }
             }
         }
     }

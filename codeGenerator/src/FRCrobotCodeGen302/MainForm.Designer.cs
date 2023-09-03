@@ -61,6 +61,9 @@ namespace FRCrobotCodeGen302
             this.tabNetworkTables = new System.Windows.Forms.TabPage();
             this.ntTreeview = new System.Windows.Forms.TreeView();
             this.treeViewIcons = new System.Windows.Forms.ImageList(this.components);
+            this.enableTuningButton = new System.Windows.Forms.Button();
+            this.ntTreeFilterInput = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.configurationGroupBox.SuspendLayout();
             this.theTabControl.SuspendLayout();
             this.tabMainPage.SuspendLayout();
@@ -430,6 +433,9 @@ namespace FRCrobotCodeGen302
             // 
             // tabNetworkTables
             // 
+            this.tabNetworkTables.Controls.Add(this.label3);
+            this.tabNetworkTables.Controls.Add(this.ntTreeFilterInput);
+            this.tabNetworkTables.Controls.Add(this.enableTuningButton);
             this.tabNetworkTables.Controls.Add(this.ntTreeview);
             this.tabNetworkTables.Location = new System.Drawing.Point(4, 22);
             this.tabNetworkTables.Name = "tabNetworkTables";
@@ -443,7 +449,7 @@ namespace FRCrobotCodeGen302
             // 
             this.ntTreeview.Location = new System.Drawing.Point(0, 0);
             this.ntTreeview.Name = "ntTreeview";
-            this.ntTreeview.Size = new System.Drawing.Size(243, 295);
+            this.ntTreeview.Size = new System.Drawing.Size(243, 259);
             this.ntTreeview.TabIndex = 0;
             // 
             // treeViewIcons
@@ -454,6 +460,32 @@ namespace FRCrobotCodeGen302
             this.treeViewIcons.Images.SetKeyName(1, "lock-unlock.ico");
             this.treeViewIcons.Images.SetKeyName(2, "gear.ico");
             this.treeViewIcons.Images.SetKeyName(3, "wrench.ico");
+            // 
+            // enableTuningButton
+            // 
+            this.enableTuningButton.Location = new System.Drawing.Point(249, 6);
+            this.enableTuningButton.Name = "enableTuningButton";
+            this.enableTuningButton.Size = new System.Drawing.Size(100, 23);
+            this.enableTuningButton.TabIndex = 3;
+            this.enableTuningButton.Text = "Enable Tuning";
+            this.enableTuningButton.UseVisualStyleBackColor = true;
+            // 
+            // ntTreeFilterInput
+            // 
+            this.ntTreeFilterInput.Location = new System.Drawing.Point(74, 265);
+            this.ntTreeFilterInput.Name = "ntTreeFilterInput";
+            this.ntTreeFilterInput.Size = new System.Drawing.Size(100, 20);
+            this.ntTreeFilterInput.TabIndex = 4;
+            this.ntTreeFilterInput.TextChanged += new System.EventHandler(this.ntTreeFilterInput_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(8, 268);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(60, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Filter tables";
             // 
             // MainForm
             // 
@@ -480,6 +512,7 @@ namespace FRCrobotCodeGen302
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.valueNumericUpDown)).EndInit();
             this.tabNetworkTables.ResumeLayout(false);
+            this.tabNetworkTables.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -516,6 +549,9 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.ImageList treeViewIcons;
         private System.Windows.Forms.TabPage tabNetworkTables;
         private System.Windows.Forms.TreeView ntTreeview;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox ntTreeFilterInput;
+        private System.Windows.Forms.Button enableTuningButton;
     }
 }
 
