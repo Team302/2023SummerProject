@@ -26,11 +26,11 @@ namespace NTUtils
         {
             tree = ntTree;
 
-            onSubTableCreation = (table, key, value, flags) =>
+            onSubTableCreation = (table, key, value, flag) =>
             {
                 tree.BeginInvoke(new Action(() =>
                 {
-                    if(flags == NotifyFlags.NotifyNew)
+                    if(flag == NotifyFlags.NotifyNew)
                     {
                         string tableName = ((NetworkTable)table).ToString();
                         Debug.WriteLine("Table Name: " + tableName);
@@ -38,21 +38,43 @@ namespace NTUtils
                 }));
             };
 
-            onTableChange = (table, key, value, flags) =>
+            onTableChange = (table, key, value, flag) =>
             {
-                Debug.WriteLine("Table with change: " + table);
-                Debug.WriteLine("Key with change: " + key);
-                Debug.WriteLine("New value: " + value);
-                Debug.WriteLine("Flags: " + flags);
+                switch(flag)
+                {
+                    case NotifyFlags.NotifyNew:
+                        AddToTree(table, key, value);
+                        break;
+                    case NotifyFlags.NotifyUpdate:
+                        UpdateNodeInTree(table, key, value);
+                        break;
+                    default:
+                        //No-op for delete at the moment
+                        break;
+                }
             };
         }
-        
+
+        private string GetTreePath(string tableName, string key)
+        {
+            return "";
+        }
+
+        private void UpdateNodeInTree(ITable table, string key, Value value)
+        {
+            
+        }
+
+        private void AddToTree(ITable table, string key, Value value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ConnectToNetworkTables()
         {
             NetworkTable.SetClientMode();
             NetworkTable.SetIPAddress("localhost"); //may have to change this to team number later?
             NetworkTable.SetPort(57231);
-            //NetworkTable.SetTeam(2023);
             NetworkTable.Initialize();
 
             Action<IRemote, ConnectionInfo, bool> onConnect = (iRemote, connectInfo, b) =>
@@ -86,7 +108,7 @@ namespace NTUtils
                 TreeNode newNode = new TreeNode(subtable);
                 foreach(string key in subNT.GetKeys())
                 {
-                    newNode.Nodes.Add(key);
+                    newNode.Nodes.Add(key + "(" + GetNTValueAsString(subNT, key) + ")");
                 }
 
                 treeNodes.Add(newNode);
@@ -96,6 +118,32 @@ namespace NTUtils
                     tree.Nodes.Add(newNode);
                 }));
             }
+        }
+
+        private string GetNTValueAsString(NetworkTable subNT, string key)
+        {
+            foreach(string testKey in subNT.GetKeys()) 
+            {
+                if(testKey == key)
+                {
+                    switch(subNT.GetValue(key, Value.MakeString("NO VALUE")).Type)
+                    {
+                        case NtType.Boolean:
+                            return subNT.GetBoolean(key, false).ToString();
+                            break;
+                        case NtType.String:
+                            return subNT.GetString(key, "NO VALUE");
+                            break;
+                        case NtType.Double:
+                            return subNT.GetNumber(key, -1.302).ToString();
+                            break;
+                        default:
+                            return "UNKNOWN TYPE";
+                            break;
+                    }
+                }
+            }
+            return "UNKNOWN";
         }
 
         public void FilterTree(string text)
