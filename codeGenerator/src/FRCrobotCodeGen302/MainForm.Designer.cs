@@ -58,6 +58,8 @@ namespace FRCrobotCodeGen302
             this.valueNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.valueComboBox = new System.Windows.Forms.ComboBox();
             this.robotElementCheckedListBox = new System.Windows.Forms.CheckedListBox();
+            this.tabNetworkTables = new System.Windows.Forms.TabPage();
+            this.ntTreeview = new System.Windows.Forms.TreeView();
             this.treeViewIcons = new System.Windows.Forms.ImageList(this.components);
             this.configurationGroupBox.SuspendLayout();
             this.theTabControl.SuspendLayout();
@@ -69,6 +71,7 @@ namespace FRCrobotCodeGen302
             this.splitContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.valueNumericUpDown)).BeginInit();
+            this.tabNetworkTables.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -99,7 +102,7 @@ namespace FRCrobotCodeGen302
             // 
             this.configurationBrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.configurationBrowseButton.Location = new System.Drawing.Point(525, 9);
-            this.configurationBrowseButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.configurationBrowseButton.Margin = new System.Windows.Forms.Padding(5);
             this.configurationBrowseButton.Name = "configurationBrowseButton";
             this.configurationBrowseButton.Size = new System.Drawing.Size(57, 23);
             this.configurationBrowseButton.TabIndex = 3;
@@ -109,7 +112,7 @@ namespace FRCrobotCodeGen302
             // 
             // configurationFilePathNameTextBox
             // 
-            this.configurationFilePathNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.configurationFilePathNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.configurationFilePathNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.configurationFilePathNameTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -133,7 +136,7 @@ namespace FRCrobotCodeGen302
             // 
             // configuredOutputFolderLabel
             // 
-            this.configuredOutputFolderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.configuredOutputFolderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.configuredOutputFolderLabel.BackColor = System.Drawing.SystemColors.Control;
             this.configuredOutputFolderLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -168,7 +171,7 @@ namespace FRCrobotCodeGen302
             // 
             // configurationGroupBox
             // 
-            this.configurationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.configurationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.configurationGroupBox.Controls.Add(this.robotConfigurationFileComboBox);
             this.configurationGroupBox.Controls.Add(this.configuredOutputFolderLabel);
@@ -186,7 +189,7 @@ namespace FRCrobotCodeGen302
             // 
             // robotConfigurationFileComboBox
             // 
-            this.robotConfigurationFileComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.robotConfigurationFileComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.robotConfigurationFileComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.robotConfigurationFileComboBox.FormattingEnabled = true;
@@ -198,12 +201,24 @@ namespace FRCrobotCodeGen302
             this.robotConfigurationFileComboBox.SelectedIndexChanged += new System.EventHandler(this.robotConfigurationFileComboBox_SelectedIndexChanged);
             this.robotConfigurationFileComboBox.TextChanged += new System.EventHandler(this.robotConfigurationFileComboBox_TextChanged);
             // 
+            // createNewRobotVariantsConfigButton
+            // 
+            this.createNewRobotVariantsConfigButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.createNewRobotVariantsConfigButton.Location = new System.Drawing.Point(150, 263);
+            this.createNewRobotVariantsConfigButton.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.createNewRobotVariantsConfigButton.Name = "createNewRobotVariantsConfigButton";
+            this.createNewRobotVariantsConfigButton.Size = new System.Drawing.Size(220, 32);
+            this.createNewRobotVariantsConfigButton.TabIndex = 3;
+            this.createNewRobotVariantsConfigButton.Text = "Create new robot variants configuration";
+            this.createNewRobotVariantsConfigButton.UseVisualStyleBackColor = true;
+            this.createNewRobotVariantsConfigButton.Click += new System.EventHandler(this.createNewRobotVariantsConfigButton_Click);
+            // 
             // progressTextBox
             // 
-            this.progressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.progressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressTextBox.Location = new System.Drawing.Point(7, 125);
+            this.progressTextBox.Location = new System.Drawing.Point(-4, 115);
             this.progressTextBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.progressTextBox.Multiline = true;
             this.progressTextBox.Name = "progressTextBox";
@@ -216,6 +231,7 @@ namespace FRCrobotCodeGen302
             // 
             this.theTabControl.Controls.Add(this.tabMainPage);
             this.theTabControl.Controls.Add(this.tabConfigurationPage);
+            this.theTabControl.Controls.Add(this.tabNetworkTables);
             this.theTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.theTabControl.Location = new System.Drawing.Point(0, 0);
             this.theTabControl.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
@@ -223,6 +239,7 @@ namespace FRCrobotCodeGen302
             this.theTabControl.SelectedIndex = 0;
             this.theTabControl.Size = new System.Drawing.Size(591, 321);
             this.theTabControl.TabIndex = 10;
+            this.theTabControl.SelectedIndexChanged += new System.EventHandler(this.theTabControl_SelectedIndexChanged);
             // 
             // tabMainPage
             // 
@@ -255,18 +272,6 @@ namespace FRCrobotCodeGen302
             this.clearReportButton.Text = "Clear report window";
             this.clearReportButton.UseVisualStyleBackColor = true;
             this.clearReportButton.Click += new System.EventHandler(this.clearReportButton_Click);
-            // 
-            // createNewRobotVariantsConfigButton
-            // 
-            this.createNewRobotVariantsConfigButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.createNewRobotVariantsConfigButton.Location = new System.Drawing.Point(150, 263);
-            this.createNewRobotVariantsConfigButton.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.createNewRobotVariantsConfigButton.Name = "createNewRobotVariantsConfigButton";
-            this.createNewRobotVariantsConfigButton.Size = new System.Drawing.Size(220, 32);
-            this.createNewRobotVariantsConfigButton.TabIndex = 3;
-            this.createNewRobotVariantsConfigButton.Text = "Create new robot variants configuration";
-            this.createNewRobotVariantsConfigButton.UseVisualStyleBackColor = true;
-            this.createNewRobotVariantsConfigButton.Click += new System.EventHandler(this.createNewRobotVariantsConfigButton_Click);
             // 
             // tabConfigurationPage
             // 
@@ -412,17 +417,34 @@ namespace FRCrobotCodeGen302
             // 
             // robotElementCheckedListBox
             // 
-            this.robotElementCheckedListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
+            this.robotElementCheckedListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.robotElementCheckedListBox.FormattingEnabled = true;
             this.robotElementCheckedListBox.Location = new System.Drawing.Point(2, 24);
-            this.robotElementCheckedListBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.robotElementCheckedListBox.Margin = new System.Windows.Forms.Padding(2);
             this.robotElementCheckedListBox.Name = "robotElementCheckedListBox";
             this.robotElementCheckedListBox.Size = new System.Drawing.Size(382, 139);
             this.robotElementCheckedListBox.TabIndex = 7;
             this.robotElementCheckedListBox.Visible = false;
-
+            // 
+            // tabNetworkTables
+            // 
+            this.tabNetworkTables.Controls.Add(this.ntTreeview);
+            this.tabNetworkTables.Location = new System.Drawing.Point(4, 22);
+            this.tabNetworkTables.Name = "tabNetworkTables";
+            this.tabNetworkTables.Padding = new System.Windows.Forms.Padding(3);
+            this.tabNetworkTables.Size = new System.Drawing.Size(583, 295);
+            this.tabNetworkTables.TabIndex = 2;
+            this.tabNetworkTables.Text = "Network Tables";
+            this.tabNetworkTables.UseVisualStyleBackColor = true;
+            // 
+            // ntTreeview
+            // 
+            this.ntTreeview.Location = new System.Drawing.Point(0, 0);
+            this.ntTreeview.Name = "ntTreeview";
+            this.ntTreeview.Size = new System.Drawing.Size(243, 295);
+            this.ntTreeview.TabIndex = 0;
             // 
             // treeViewIcons
             // 
@@ -457,6 +479,7 @@ namespace FRCrobotCodeGen302
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.valueNumericUpDown)).EndInit();
+            this.tabNetworkTables.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -491,6 +514,8 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.CheckedListBox robotElementCheckedListBox;
         private System.Windows.Forms.Label addRobotElementLabel;
         private System.Windows.Forms.ImageList treeViewIcons;
+        private System.Windows.Forms.TabPage tabNetworkTables;
+        private System.Windows.Forms.TreeView ntTreeview;
     }
 }
 

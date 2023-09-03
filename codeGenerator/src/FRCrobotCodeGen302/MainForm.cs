@@ -364,8 +364,6 @@ namespace FRCrobotCodeGen302
             {
                 MessageBox.Show("Something went wrong. See below. \r\n\r\n" + ex.Message, "Code generator error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            NTUtils.NTViewer.ConnectToNetworkTables();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -1286,6 +1284,15 @@ namespace FRCrobotCodeGen302
             catch (Exception ex)
             {
                 addProgress(ex.Message);
+            }
+        }
+
+        private void theTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (theTabControl.SelectedIndex == theTabControl.TabPages.IndexOfKey("tabNetworkTables"))
+            {
+                NTViewer viewer = new NTViewer(ntTreeview);
+                viewer.ConnectToNetworkTables();
             }
         }
     }
