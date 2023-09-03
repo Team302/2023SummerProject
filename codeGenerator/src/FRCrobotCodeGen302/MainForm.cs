@@ -1,6 +1,7 @@
 ﻿using Configuration;
 using CoreCodeGenerator;
 using robotConfiguration;
+using NTUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -363,6 +364,8 @@ namespace FRCrobotCodeGen302
             {
                 MessageBox.Show("Something went wrong. See below. \r\n\r\n" + ex.Message, "Code generator error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            NTUtils.NTViewer.ConnectToNetworkTables();
         }
 
         private void button2_Click(object sender, EventArgs e)
