@@ -20,7 +20,7 @@
 
 #include <hw/factories/DragonServoFactory.h>
 #include <hw/DragonServo.h>
-#include <hw/usages/ServoUsage.h>
+#include <configs/usages/ServoUsage.h>
 
 #include "utils/logging/Logger.h"
 

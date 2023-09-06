@@ -20,7 +20,7 @@
 #include <string>
 
 // Team 302 includes
-#include <hw/usages/DigitalInputUsage.h>
+#include "configs/usages/DigitalInputUsage.h"
 
 #include "units/time.h"
 // Forward declares

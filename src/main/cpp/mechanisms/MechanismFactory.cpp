@@ -26,7 +26,7 @@
 #include "hw/DragonDigitalInput.h"
 #include <hw/DragonServo.h>
 #include "hw/DragonSolenoid.h"
-#include "hw/usages/MotorControllerUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
 #include "hw/interfaces/IDragonMotorController.h"
 #include <hw/usages/AnalogInputMap.h>
 #include <hw/usages/DigitalInputMap.h>

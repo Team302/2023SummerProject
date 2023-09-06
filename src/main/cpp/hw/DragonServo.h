@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "units/angle.h"
-#include <hw/usages/ServoUsage.h>
+#include <configs/usages/ServoUsage.h>
 
 #include <frc/Servo.h>
 

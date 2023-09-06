@@ -25,7 +25,7 @@
 #include <frc/motorcontrol/MotorController.h>
 
 // Team 302 includes
-#include "hw/usages/MotorControllerUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
 #include <mechanisms/controllers/ControlModes.h>
 #include "mechanisms/controllers/ControlData.h"
 

@@ -31,7 +31,7 @@
 #include "hw/interfaces/IDragonMotorController.h"
 #include <hw/DragonTalonSRX.h>
 #include <hw/factories/PDPFactory.h>
-#include "hw/usages/MotorControllerUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
 #include <hw/DistanceAngleCalcStruc.h>
 #include <utils/ConversionUtils.h>
 #include "utils/logging/Logger.h"

@@ -25,7 +25,7 @@
 #include <hw/DistanceAngleCalcStruc.h>
 #include <hw/interfaces/IDragonControlToVendorControlAdapter.h>
 #include "hw/interfaces/IDragonMotorController.h"
-#include "hw/usages/MotorControllerUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
 #include <mechanisms/controllers/ControlModes.h>
 
 // Third Party Includes

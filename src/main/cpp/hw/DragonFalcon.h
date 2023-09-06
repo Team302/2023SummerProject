@@ -26,7 +26,7 @@
 // Team 302 includes
 #include <hw/DistanceAngleCalcStruc.h>
 #include "hw/interfaces/IDragonMotorController.h"
-#include "hw/usages/MotorControllerUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>

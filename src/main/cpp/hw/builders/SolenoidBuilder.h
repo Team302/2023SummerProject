@@ -19,7 +19,7 @@
 #include <string>
 
 #include "frc/PneumaticsModuleType.h"
-#include "hw/usages/SolenoidUsage.h"
+#include "configs/usages/SolenoidUsage.h"
 #include "hw/DragonSolenoid.h"
 
 class SolenoidBuilder

@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <hw/usages/DigitalInputUsage.h>
+#include "configs/usages/DigitalInputUsage.h"
 #include "units/time.h"
 namespace frc
 {

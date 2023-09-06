@@ -22,7 +22,7 @@
 #include "units/angle.h"
 
 // Team 302 includes
-#include <hw/usages/ServoUsage.h>
+#include <configs/usages/ServoUsage.h>
 
 class DragonServo;
 

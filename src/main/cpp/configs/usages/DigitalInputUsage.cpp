@@ -29,40 +29,41 @@
 // FRC includes
 
 // Team 302 includes
-#include <hw/usages/ServoUsage.h>
+#include "configs/usages/DigitalInputUsage.h"
 #include "utils/logging/Logger.h"
 
 // Third Party Includes
 
 using namespace std;
 
-ServoUsage *ServoUsage::m_instance = nullptr;
-ServoUsage *ServoUsage::GetInstance()
+DigitalInputUsage *DigitalInputUsage::m_instance = nullptr;
+DigitalInputUsage *DigitalInputUsage::GetInstance()
 {
 	if (m_instance == nullptr)
 	{
-		m_instance = new ServoUsage();
+		m_instance = new DigitalInputUsage();
 	}
 	return m_instance;
 }
 
-ServoUsage::ServoUsage()
+DigitalInputUsage::DigitalInputUsage()
 {
+	m_usageMap["GAME_PIECE_PRESENT_SENSOR"] = DIGITAL_INPUT_USAGE::GAME_PIECE_PRESENT_SENSOR;
 }
 
-ServoUsage::~ServoUsage()
+DigitalInputUsage::~DigitalInputUsage()
 {
 	m_usageMap.clear();
 }
 
-ServoUsage::SERVO_USAGE ServoUsage::GetUsage(
-	const string usageString)
+DigitalInputUsage::DIGITAL_INPUT_USAGE DigitalInputUsage::GetUsage(
+	string usageString)
 {
 	auto it = m_usageMap.find(usageString);
 	if (it != m_usageMap.end())
 	{
 		return it->second;
 	}
-	Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("ServoUsage::GetUsage"), string("unknown usage"), usageString);
-	return ServoUsage::SERVO_USAGE::UNKNOWN_SERVO_USAGE;
+	Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("DigitalInputUsage::GetUsage"), string("unknown usage"), usageString);
+	return DigitalInputUsage::DIGITAL_INPUT_USAGE::UNKNOWN_DIGITAL_INPUT_USAGE;
 }

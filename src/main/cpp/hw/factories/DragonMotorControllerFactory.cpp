@@ -3,7 +3,7 @@
 #include <string>
 
 #include <hw/factories/DragonMotorControllerFactory.h>
-#include "hw/usages/MotorControllerUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
 #include <hw/DistanceAngleCalcStruc.h>
 #include <hw/DragonTalonSRX.h>
 #include <hw/DragonFalcon.h>

@@ -21,7 +21,7 @@
 
 #include "units/time.h"
 #include "hw/DragonDigitalInput.h"
-#include <hw/usages/DigitalInputUsage.h>
+#include <configs/usages/DigitalInputUsage.h>
 #include "utils/logging/Logger.h"
 
 using namespace frc;

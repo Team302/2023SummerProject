@@ -27,7 +27,7 @@
 #include "units/velocity.h"
 
 // Team 302 includes
-#include "hw/usages/MotorControllerUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
 #include "mechanisms/base/BaseMech.h"
 #include "mechanisms/base/BaseMechMotor.h"
 #include "mechanisms/base/BaseMechSolenoid.h"

@@ -19,7 +19,7 @@
 
 #include <frc/Solenoid.h>
 #include "hw/DragonSolenoid.h"
-#include <hw/usages/SolenoidUsage.h>
+#include <configs/usages/SolenoidUsage.h>
 #include "utils/logging/Logger.h"
 #include <frc/Compressor.h>
 

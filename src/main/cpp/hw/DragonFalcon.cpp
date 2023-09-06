@@ -31,7 +31,7 @@
 #include <hw/DragonFalcon.h>
 #include <hw/factories/PDPFactory.h>
 #include <hw/factories/DragonControlToCTREAdapterFactory.h>
-#include "hw/usages/MotorControllerUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
 #include "utils/logging/Logger.h"
 #include <utils/ConversionUtils.h>
 #include <hw/ctreadapters/DragonControlToCTREAdapter.h>

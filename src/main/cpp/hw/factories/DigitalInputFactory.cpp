@@ -22,7 +22,7 @@
 // Team 302 includes
 #include "hw/DragonDigitalInput.h"
 #include <hw/factories/DigitalInputFactory.h>
-#include <hw/usages/DigitalInputUsage.h>
+#include "configs/usages/DigitalInputUsage.h"
 
 // Third Party Includes
 #include "units/time.h"

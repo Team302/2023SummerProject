@@ -29,7 +29,7 @@
 // FRC includes
 
 // Team 302 includes
-#include <hw/usages/SolenoidUsage.h>
+#include "configs/usages/SolenoidUsage.h"
 #include "utils/logging/Logger.h"
 
 // Third Party Includes
