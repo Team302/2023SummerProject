@@ -61,6 +61,8 @@ MotorControllerUsage::MotorControllerUsage()
 	m_usageMap["Extender"] = MOTOR_CONTROLLER_USAGE::Extender;
 	m_usageMap["INTAKE1"] = MOTOR_CONTROLLER_USAGE::INTAKE1;
 	m_usageMap["INTAKE2"] = MOTOR_CONTROLLER_USAGE::INTAKE2;
+	m_usageMap["EXAMPLE_MOTOR1"] = MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR1;
+	m_usageMap["EXAMPLE_MOTOR2"] = MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR2;
 }
 
 MotorControllerUsage::~MotorControllerUsage()

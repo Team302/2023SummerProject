@@ -13,3 +13,63 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
+
+#include "hw/builders/FalconBuilder.h"
+
+using ctre::phoenix::motorcontrol::FeedbackDevice;
+using ctre::phoenix::motorcontrol::RemoteFeedbackDevice;
+using ctre::phoenixpro::signals::FeedbackSensorSourceValue;
+using ctre::phoenixpro::signals::InvertedValue;
+using ctre::phoenixpro::signals::NeutralModeValue;
+using std::string;
+
+void FalconBuilder::SetNetworkTableName(string networkTableName)
+{
+}
+void FalconBuilder::SetUsage(std::string usage)
+{
+}
+void FalconBuilder::SetIDs(int canID, int PDPID)
+{
+}
+void FalconBuilder::SetIDs(int canID, int PDPID, int followID)
+{
+}
+void FalconBuilder::SetMotorConfigs(InvertedValue inverted,
+                                    NeutralModeValue mode,
+                                    double deadbandPercent,
+                                    double peakMin,
+                                    double peakMax)
+{
+}
+
+void FalconBuilder::SetCurrentLimits(bool enableStatorCurrentLimit,
+                                     units::current::ampere_t statorCurrentLimit,
+                                     bool enableSupplyCurrentLimit,
+                                     units::current::ampere_t supplyCurrentLimit,
+                                     units::current::ampere_t supplyCurrentThreshold,
+                                     units::time::second_t supplyTimeThreshold)
+{
+}
+
+void FalconBuilder::SetVoltageConfigs(units::voltage::volt_t peakForwardVoltage,
+                                      units::voltage::volt_t peakReverseVoltage,
+                                      units::time::second_t supplyVoltageTime)
+{
+}
+
+void FalconBuilder::SetTorqueConfigs(units::current::ampere_t peakForwardTorqueCurrent,
+                                     units::current::ampere_t peakReverseTorqueCurrent,
+                                     units::current::ampere_t torqueNeutralDeadband)
+{
+}
+
+void FalconBuilder::SetFeedbackConfigs(units::angle::turn_t feedbackRotorOffset,
+                                       FeedbackSensorSourceValue feedbackSensor,
+                                       int remoteSensorID)
+{
+}
+
+void FalconBuilder::ResetToDefaults()
+{
+}

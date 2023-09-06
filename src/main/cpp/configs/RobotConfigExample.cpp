@@ -15,9 +15,12 @@
 //====================================================================================================================================================
 
 #include "configs/RobotConfigExample.h"
+#include "hw/builders/FalconBuilder.h"
 
 void RobotConfigExample::DefineMotors()
 {
+    FalconBuilder bldr;
+    // TODO:  specify motor info in bluilder and commit to create the motors.
 }
 
 void RobotConfigExample::DefineSolenoids()
@@ -26,6 +29,7 @@ void RobotConfigExample::DefineSolenoids()
 
 void RobotConfigExample::DefineMechanisms()
 {
+    // TODO:  utilize the motors, solenoids, etc. to create the mechanisms
 }
 
 void RobotConfigExample::DefineCANSensors()

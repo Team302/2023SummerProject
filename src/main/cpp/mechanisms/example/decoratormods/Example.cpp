@@ -19,6 +19,7 @@
 // FRC Includes
 
 // Team 302 includes
+#include "PeriodicLooper.h"
 #include "mechanisms/example/generated/ExampleGen.h"
 #include "mechanisms/example/decoratormods/Example.h"
 
@@ -34,6 +35,7 @@ using std::string;
 Example::Example(IExampleGen *base) : IExampleGen(),
                                       m_example(base)
 {
+    PeriodicLooper::GetInstance()->RegisterAll(*this);
 }
 
 bool Example::IsAtMinPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const

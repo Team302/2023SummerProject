@@ -21,10 +21,10 @@
 #include "units/current.h"
 #include "units/time.h"
 #include "units/voltage.h"
-#include "ctre/phoenix6/signals/SpnEnums.hpp"
+#include "ctre/phoenixpro/signals/SpnEnums.hpp"
+#include "ctre/phoenix/motorcontrol/FeedbackDevice.h"
+#include "ctre/phoenix/motorcontrol/RemoteSensorSource.h"
 
-// #include <ctre/phoenix.h>
-//  #include <ctre/phoenix/motorcontrol/FeedbackDeivice.h>
 #include "hw/DistanceAngleCalcStruc.h"
 #include "hw/interfaces/IDragonMotorController.h"
 
@@ -38,8 +38,8 @@ public:
     void SetUsage(std::string usage);
     void SetIDs(int canID, int PDPID);
     void SetIDs(int canID, int PDPID, int followID);
-    void SetMotorConfigs(ctre::phoenix6::signals::InvertedValue inverted,
-                         signals::phoenix6::signals::neutralMode mode,
+    void SetMotorConfigs(ctre::phoenixpro::signals::InvertedValue inverted,
+                         ctre::phoenixpro::signals::NeutralModeValue mode,
                          double deadbandPercent,
                          double peakMin,
                          double peakMax);
@@ -60,12 +60,10 @@ public:
                           units::current::ampere_t torqueNeutralDeadband);
 
     void SetFeedbackConfigs(units::angle::turn_t feedbackRotorOffset,
-                            ctre::phoenix6::configs::FeedbackConfigs::FeedbackSensorSource feedbackSensor,
-                            int remoteSensorID)
+                            ctre::phoenixpro::signals::FeedbackSensorSourceValue feedbackSensor,
+                            int remoteSensorID);
 
-        void ResetToDefaults();
-    void SetFeedbackDevice(ctre::phoenix::motorcontrol::FeedbackDevice device);
-    void SetFeedbackDevice(ctre::phoenix::motorcontrol::RemoteFeedbackDevice device);
+    void ResetToDefaults();
 
 private:
     std::string m_networkTableName;
@@ -76,9 +74,6 @@ private:
     bool m_brakeMode = true;
     bool m_inverted = false;
 
-    ctre::phoenix::motorcontrol::FeedbackDevice m_feedbackDevice;
-    ctre::phoenix::motorcontrol::RemoteLimitSwitchSource m_remoteSource;
-    ctre::phoenix::motorcontrol::RemoteFeedbackDevice m_remoteDevice;
     DistanceAngleCalcStruc m_calcStruc;
 
     bool m_enableCurrentLimiting;

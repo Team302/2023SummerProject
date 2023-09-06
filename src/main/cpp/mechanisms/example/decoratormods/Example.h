@@ -22,10 +22,11 @@
 
 // Team 302 includes
 #include "mechanisms/example/generated/IExampleGen.h"
+#include "mechanisms/base/StateMgr.h"
 
 // forward declares
 
-class Example : public IExampleGen
+class Example : public IExampleGen, public StateMgr
 {
 public:
     /// @brief  This method constructs the mechanism using composition with its various actuators and sensors.

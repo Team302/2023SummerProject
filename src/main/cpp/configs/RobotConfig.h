@@ -31,8 +31,10 @@ public:
 
     virtual SwerveChassis *GetSwerveChassis() const;
     virtual DifferentialChassis *GetDifferentialChassis() const;
-    virtual MecanumChassis* GetMecanumChassis() const;
-    virtual IChassis* GetIChassis() const;
+    virtual MecanumChassis *GetMecanumChassis() const;
+    virtual IChassis *GetIChassis() const;
+
+    // TODO:  add methods to access mechanisms and hardware as necessary
 
 protected:
     virtual void DefineBuiltInControlItems();
