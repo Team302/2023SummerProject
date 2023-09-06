@@ -30,7 +30,8 @@
 #include <auton/drivePrimitives/DragonTrajectoryUtils.h>
 #include <chassis/ChassisMovement.h>
 #include <chassis/ChassisOptionEnums.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <chassis/IChassis.h>
 #include "utils/logging/Logger.h"
 #include <chassis/swerve/driveStates/TrajectoryDrive.h>
@@ -40,7 +41,7 @@ using namespace frc;
 
 using namespace wpi::math;
 
-DrivePath::DrivePath() : m_chassis(ChassisFactory::GetChassisFactory()->GetIChassis()),
+DrivePath::DrivePath() : m_chassis(nullptr),
                          m_timer(make_unique<Timer>()),
                          m_trajectory(),
                          m_runHoloController(true),
@@ -51,6 +52,8 @@ DrivePath::DrivePath() : m_chassis(ChassisFactory::GetChassisFactory()->GetIChas
                          m_ntName("DrivePath")
 
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 }
 void DrivePath::Init(PrimitiveParams *params)
 {
@@ -102,7 +105,7 @@ void DrivePath::Run()
     }
 
     moveInfo.trajectory = m_trajectory;
-    m_chassis.get()->Drive(moveInfo);
+    m_chassis->Drive(moveInfo);
 }
 
 bool DrivePath::IsDone()
@@ -114,7 +117,7 @@ bool DrivePath::IsDone()
     }
     else
     {
-        SwerveChassis *swerveChassis = dynamic_cast<SwerveChassis *>(m_chassis.get());
+        SwerveChassis *swerveChassis = dynamic_cast<SwerveChassis *>(m_chassis);
         TrajectoryDrive *trajectoryDrive = dynamic_cast<TrajectoryDrive *>(swerveChassis->GetSpecifiedDriveState(ChassisOptionEnums::DriveStateType::TRAJECTORY_DRIVE));
 
         if (trajectoryDrive->IsDone()) // TrajectoryDrive is done -> log the reason why and end drive path primitive

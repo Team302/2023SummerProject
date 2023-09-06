@@ -24,13 +24,19 @@
 // Third Party Includes
 
 using std::string;
+using std::vector;
 
 State::State(string stateName, int stateId) : m_stateName(stateName),
-                                              m_stateId(stateId)
+                                              m_stateId(stateId),
+                                              m_transitionStates()
 {
 }
 
-bool State::IsTransitionCondition() const
+void State::RegisterTransitionState(State *state)
+{
+    m_transitionStates.emplace_back(state);
+}
+bool State::IsTransitionCondition(bool considerGamepadTransitions) const
 {
     return false;
 }

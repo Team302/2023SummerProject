@@ -33,7 +33,8 @@
 #include "teleopcontrol/TeleopControl.h"
 #include <teleopcontrol/TeleopControlFunctions.h>
 #include "State.h"
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <hw/factories/PigeonFactory.h>
 #include "utils/logging/Logger.h"
 #include <chassis/swerve/driveStates/DragonTrajectoryGenerator.h>
@@ -48,15 +49,19 @@ using namespace frc;
 /// @brief initialize the object and validate the necessary items are not nullptrs
 HolonomicDrive::HolonomicDrive() : State(string("HolonomicDrive"), -1),
                                    IRobotStateChangeSubscriber(),
-                                   m_chassis(ChassisFactory::GetChassisFactory()->GetIChassis()),
-                                   m_swerve(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
-                                   m_mecanum(ChassisFactory::GetChassisFactory()->GetMecanumChassis()),
-                                   m_trajectoryGenerator(new DragonTrajectoryGenerator(ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetMaxSpeed(),
-                                                                                       ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetMaxAcceleration())),
+                                   m_chassis(nullptr),
+                                   m_swerve(nullptr),
+                                   m_mecanum(nullptr),
+                                   m_trajectoryGenerator(nullptr),
                                    m_previousDriveState(ChassisOptionEnums::DriveStateType::FIELD_DRIVE),
                                    m_generatedTrajectory(frc::Trajectory()),
                                    m_desiredGamePiece(RobotStateChanges::GamePiece::None)
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
+    m_swerve = config != nullptr ? config->GetSwerveChassis() : nullptr;
+    m_mecanum = config != nullptr ? config->GetMecanumChassis() : nullptr;
+    m_trajectoryGenerator = m_swerve != nullptr ? new DragonTrajectoryGenerator(m_swerve->GetMaxSpeed(), m_swerve->GetMaxAcceleration()) : nullptr;
     RobotState::GetInstance()->RegisterForStateChanges(this, RobotStateChanges::StateChange::DesiredGamePiece);
 }
 

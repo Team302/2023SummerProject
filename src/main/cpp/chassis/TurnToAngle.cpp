@@ -22,7 +22,8 @@
 #include <frc/trajectory/TrapezoidProfile.h>
 #include <frc/controller/ProfiledPIDController.h>
 
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <chassis/ChassisMovement.h>
 #include <chassis/swerve/SwerveChassis.h>
 #include <chassis/TurnToAngle.h>
@@ -35,9 +36,11 @@ using namespace std;
 TurnToAngle::TurnToAngle(
     units::angle::degree_t targetAngle) : State(string("TurnToAAngle"), -1),
                                           m_targetAngle(targetAngle),
-                                          m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
+                                          m_chassis(nullptr),
                                           m_atTarget(false)
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 }
 
 void TurnToAngle::Init()

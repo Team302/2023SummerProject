@@ -99,9 +99,13 @@ public:
         RELEASE,
         // Compressor ON/Off controls
         TOGGLE_COMPRESSER,
-        MAX_FUNCTIONS,
         // tip correction controls
         TIPCORRECTION_TOGGLE,
+        // Example Mechanism
+        EXAMPLE_MECH_FORWARD,
+        EXAMPLE_MECH_REVERSE,
+
+        MAX_FUNCTIONS,
 
     };
 };

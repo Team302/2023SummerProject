@@ -10,16 +10,16 @@
 
 #include <auton/AutonPreviewer.h>
 #include <auton/CyclePrimitives.h>
-#include <chassis/ChassisFactory.h>
 #include <chassis/holonomic/HolonomicDrive.h>
 #include <chassis/swerve/SwerveChassis.h>
 #include <chassis/mecanum/MecanumChassis.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <driveteamfeedback/DriverFeedback.h>
 #include <DragonVision/LimelightFactory.h>
 #include <PeriodicLooper.h>
 #include <Robot.h>
 #include <robotstate/RobotState.h>
-#include <RobotXmlParser.h>
 #include "teleopcontrol/TeleopControl.h"
 #include <utils/DragonField.h>
 #include <utils/FMSData.h>
@@ -52,9 +52,9 @@ void Robot::RobotInit()
 
     m_controller = nullptr;
 
-    // Read the XML file to build the robot
-    auto XmlParser = new RobotXmlParser();
-    XmlParser->ParseXML();
+    // Build the robot
+    RobotConfigMgr::GetInstance()->InitRobot(RobotConfigMgr::RobotIdentifier::EXAMPLE);
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
 
     auto waypointParser = WaypointXmlParser::GetInstance();
     waypointParser->ParseWaypoints();
@@ -66,7 +66,7 @@ void Robot::RobotInit()
     m_robotState = RobotState::GetInstance();
     m_robotState->Init();
 
-    m_chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 
     m_holonomic = nullptr;
     if (m_chassis != nullptr)
@@ -96,16 +96,6 @@ void Robot::RobotPeriodic()
 
     m_someMech->Cyclic();
 
-    if (m_chassis != nullptr)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "balance info", "yaw", m_chassis->GetYaw().to<double>());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "balance info", "pitch", m_chassis->GetPitch().to<double>());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "balance info", "roll", m_chassis->GetRoll().to<double>());
-    }
-    // if (m_tuner != nullptr)
-    // {
-    //     m_tuner->ListenForUpdates();
-    // }
     if (m_robotState != nullptr)
     {
         m_robotState->Run();

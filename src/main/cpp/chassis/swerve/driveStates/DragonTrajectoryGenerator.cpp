@@ -20,7 +20,6 @@
 
 // Team 302 Includes
 #include <chassis/swerve/driveStates/DragonTrajectoryGenerator.h>
-#include <chassis/ChassisFactory.h>
 #include <utils/WaypointXmlParser.h>
 #include "utils/logging/Logger.h"
 #include <utils/Waypoint2d.h>

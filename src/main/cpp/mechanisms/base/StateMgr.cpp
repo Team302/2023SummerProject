@@ -130,18 +130,30 @@ void StateMgr::CheckForStateTransition()
 
 void StateMgr::CheckForSensorTransitions()
 {
-    // override this method if sensors could change states
+    auto transitions = m_currentState->GetPossibleStateTransitions();
+    for (auto state : transitions)
+    {
+        auto transition = state->IsTransitionCondition(false);
+        if (transition)
+        {
+            SetCurrentState(state->GetStateId(), true);
+            break;
+        }
+    }
 }
 
 void StateMgr::CheckForGamepadTransitions()
 {
-    // override this method if joystick inputs could change states;  Format
-    // would look something like:
-    //    auto controller = TeleopControl::GetInstance();
-    //    if ( controller != nullptr )
-    //    {
-    //          code here that checks the inputs
-    //    }
+    auto transitions = m_currentState->GetPossibleStateTransitions();
+    for (auto state : transitions)
+    {
+        auto transition = state->IsTransitionCondition(true);
+        if (transition)
+        {
+            SetCurrentState(state->GetStateId(), true);
+            break;
+        }
+    }
 }
 
 /// @brief  set the current state, initialize it and run it

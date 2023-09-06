@@ -18,7 +18,8 @@
 #include <string>
 #include <vector>
 
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <chassis/IChassis.h>
 #include <robotstate/RobotStateChangeBroker.h>
 #include "teleopcontrol/TeleopControl.h"
@@ -65,8 +66,8 @@ RobotState::~RobotState()
 
 void RobotState::Init()
 {
-    auto factory = ChassisFactory::GetChassisFactory();
-    m_chassis = factory->GetIChassis();
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetIChassis() : nullptr;
 }
 
 void RobotState::Run()

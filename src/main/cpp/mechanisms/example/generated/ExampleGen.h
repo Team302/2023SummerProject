@@ -36,23 +36,20 @@
 #include "mechanisms/base/BaseMechSolenoid.h"
 #include "mechanisms/base/BaseMechServo.h"
 #include "mechanisms/example/generated/IExampleGen.h"
+#include "mechanisms/base/StateMgr.h"
 
 // forward declares
 class IDragonMotorController;
 
-class ExampleGen : public IExampleGen, public BaseMech
+class ExampleGen : public IExampleGen, public BaseMech, public StateMgr
 {
 public:
     /// @brief  This method constructs the mechanism using composition with its various actuators and sensors.
     /// @param controlFileName The control file with the PID constants and Targets for each state
     /// @param networkTableName Location for logging information
-    /// @param motor  Motor in the mechanims - code generator should probably use the usage for the variable name
-    /// @param otherMotor Same as previous
-    /// @param solenoid Solenoid in the mechanism - code generator should probably use the usage for the variable name
-    /// Additional actuators and sensors are also in this list.
     ExampleGen(std::string controlFileName,
                std::string networkTableName);
-    ExampleGen() = delete;
+    ExampleGen();
     ~ExampleGen() = default;
 
     void AddMotor(IDragonMotorController &motor) override;
@@ -96,6 +93,11 @@ public:
     /// @param identifier solenoid Usage to indicate what motor to update
     /// @param extend target value
     void UpdateTarget(SolenoidUsage::SOLENOID_USAGE identifier, bool extend) override;
+
+    bool IsAtMinPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const override;
+    bool IsAtMinPosition(SolenoidUsage::SOLENOID_USAGE identifier) const override;
+    bool IsAtMaxPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const override;
+    bool IsAtMaxPosition(SolenoidUsage::SOLENOID_USAGE identifier) const override;
 
     std::vector<MotorControllerUsage::MOTOR_CONTROLLER_USAGE> GetMotorUsages() const;
     BaseMechMotor *GetMotorMech(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage) const;

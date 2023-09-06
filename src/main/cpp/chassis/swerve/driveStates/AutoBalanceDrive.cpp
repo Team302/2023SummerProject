@@ -18,14 +18,19 @@
 
 // Team302 Includes
 #include <chassis/swerve/driveStates/AutoBalanceDrive.h>
-#include <chassis/ChassisFactory.h>
 #include <chassis/swerve/SwerveChassis.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 
 /// DEBUGGING
 #include "utils/logging/Logger.h"
 
-AutoBalanceDrive::AutoBalanceDrive(RobotDrive *robotDrive) : RobotDrive(), m_robotDrive(robotDrive), m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis())
+AutoBalanceDrive::AutoBalanceDrive(RobotDrive *robotDrive) : RobotDrive(),
+                                                             m_robotDrive(robotDrive),
+                                                             m_chassis(nullptr)
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 }
 
 std::array<frc::SwerveModuleState, 4> AutoBalanceDrive::UpdateSwerveModuleStates(ChassisMovement &chassisMovement)

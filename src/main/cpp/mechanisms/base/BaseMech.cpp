@@ -50,6 +50,13 @@ BaseMech::BaseMech(MechanismTypes::MECHANISM_TYPE type,
         Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("Mech"), string("Mech"), string("network table name is not specified"));
     }
 }
+BaseMech::BaseMech(MechanismTypes::MECHANISM_TYPE type) : LoggableItem(),
+                                                          m_type(type),
+                                                          m_controlFile(),
+                                                          m_ntName(),
+                                                          m_stateMgr(nullptr)
+{
+}
 
 /// @brief          Indicates the type of mechanism this is
 /// @return         MechanismTypes::MECHANISM_TYPE

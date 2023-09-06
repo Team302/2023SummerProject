@@ -16,6 +16,7 @@
 
 #pragma once
 #include <string>
+#include <vector>
 
 #include "utils/logging/LoggableItem.h"
 
@@ -25,9 +26,8 @@ class State : public LoggableItem
 {
 
 public:
-    State(
-        std::string stateName,
-        int stateId);
+    State(std::string stateName,
+          int stateId);
     State() = delete;
     ~State() = default;
 
@@ -36,7 +36,9 @@ public:
     virtual void Exit() = 0;
     virtual bool AtTarget() const = 0;
 
-    virtual bool IsTransitionCondition() const;
+    virtual void RegisterTransitionState(State *state);
+    virtual bool IsTransitionCondition(bool considerGamepadTransitions) const;
+    std::vector<State *> GetPossibleStateTransitions() const { return m_transitionStates; }
 
     void LogInformation() const override;
 
@@ -46,4 +48,5 @@ public:
 private:
     std::string m_stateName;
     int m_stateId;
+    std::vector<State *> m_transitionStates;
 };

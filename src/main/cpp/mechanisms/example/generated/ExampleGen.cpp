@@ -41,6 +41,13 @@ ExampleGen::ExampleGen(string controlFileName,
 
 {
 }
+ExampleGen::ExampleGen() : IExampleGen(),
+                           BaseMech(MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM),
+                           m_motorMap(),
+                           m_solenoidMap()
+
+{
+}
 
 void ExampleGen::AddMotor(IDragonMotorController &motor)
 {
@@ -123,6 +130,43 @@ void ExampleGen::UpdateTarget(SolenoidUsage::SOLENOID_USAGE identifier, bool ext
     {
         sol->ActivateSolenoid(extend);
     }
+}
+
+bool ExampleGen::IsAtMinPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const
+{
+    auto motor = GetMotorMech(identifier);
+    if (motor != nullptr)
+    {
+        return motor->IsAtMinTravel();
+    }
+    return false;
+}
+bool ExampleGen::IsAtMinPosition(SolenoidUsage::SOLENOID_USAGE identifier) const
+{
+    auto sol = GetSolenoidMech(identifier);
+    if (sol != nullptr)
+    {
+        return !sol->IsSolenoidActivated();
+    }
+    return false;
+}
+bool ExampleGen::IsAtMaxPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const
+{
+    auto motor = GetMotorMech(identifier);
+    if (motor != nullptr)
+    {
+        return motor->IsAtMaxTravel();
+    }
+    return false;
+}
+bool ExampleGen::IsAtMaxPosition(SolenoidUsage::SOLENOID_USAGE identifier) const
+{
+    auto sol = GetSolenoidMech(identifier);
+    if (sol != nullptr)
+    {
+        return sol->IsSolenoidActivated();
+    }
+    return false;
 }
 
 BaseMechMotor *ExampleGen::GetMotorMech(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage) const

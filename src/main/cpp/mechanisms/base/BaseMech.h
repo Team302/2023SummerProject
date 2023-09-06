@@ -39,6 +39,8 @@ public:
              std::string controlFileName,
              std::string networkTableName);
 
+    BaseMech(MechanismTypes::MECHANISM_TYPE type);
+
     /// @brief          Indicates the type of mechanism this is
     /// @return         MechanismTypes::MECHANISM_TYPE
     virtual MechanismTypes::MECHANISM_TYPE GetType() const;
@@ -55,10 +57,12 @@ public:
     void LogInformation() const override;
 
     virtual StateMgr *GetStateMgr() const;
-    virtual void AddStateMgr(
-        StateMgr *mgr);
+    virtual void AddStateMgr(StateMgr *mgr);
 
     virtual ~BaseMech() = default;
+
+    void SetNetworkFileName(std::string ntName) { m_ntName = ntName; }
+    void SetControlFileName(std::string controlFile) { m_controlFile = controlFile; }
 
 private:
     BaseMech() = delete;

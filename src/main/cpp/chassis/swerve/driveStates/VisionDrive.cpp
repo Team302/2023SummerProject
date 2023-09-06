@@ -20,7 +20,8 @@
 
 // Team302 Includes
 #include <chassis/swerve/driveStates/VisionDrive.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <utils/FMSData.h>
 #include <robotstate/RobotState.h>
 #include <utils/FMSData.h>
@@ -37,12 +38,15 @@ VisionDrive::VisionDrive(RobotDrive *robotDrive) : RobotDrive(),
                                                    m_pipelineMode(DragonLimelight::APRIL_TAG),
                                                    m_inAutonMode(false),
                                                    m_robotDrive(robotDrive),
-                                                   m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
+                                                   m_chassis(nullptr),
                                                    m_vision(DragonVision::GetDragonVision()),
                                                    m_lostGamePieceTimer(new frc::Timer()),
                                                    m_haveGamePiece(false),
                                                    m_moveInXDir(false)
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
+
     RobotState::GetInstance()->RegisterForStateChanges(this, RobotStateChanges::StateChange::HoldingGamePiece);
 }
 

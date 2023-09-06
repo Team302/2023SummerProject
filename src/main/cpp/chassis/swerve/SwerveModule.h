@@ -61,21 +61,14 @@ public:
     /// @param [in] shared_ptr<IDragonMotorController>                      turnMotor:      Motor that turns the swerve module
     /// @param [in] DragonCanCoder*       		                            canCoder:       Sensor for detecting the angle of the wheel
     SwerveModule(ModuleID type,
-                 std::shared_ptr<IDragonMotorController> driveMotor,
-                 std::shared_ptr<IDragonMotorController> turningMotor,
+                 IDragonMotorController *driveMotor,
+                 IDragonMotorController *turningMotor,
                  DragonCanCoder *canCoder,
-                 double turnP,
-                 double turnI,
-                 double turnD,
-                 double turnF,
-                 double turnNominalPos,
-                 double turnNominalNeg,
-                 double turnMaxAcc,
-                 double turnCruiseVel,
-                 double countsOnTurnEncoderPerDegreesOnAngleSensor);
+                 ControlData *controlData,
+                 double countsOnTurnEncoderPerDegreesOnAngleSensor,
+                 units::length::inch_t wheelDiameter);
 
     void Init(
-        units::length::inch_t wheelDiameter,
         units::velocity::meters_per_second_t maxVelocity,
         units::angular_velocity::radians_per_second_t maxAngularVelocity,
         units::acceleration::meters_per_second_squared_t maxAcceleration,
@@ -131,8 +124,8 @@ private:
 
     ModuleID m_type;
 
-    std::shared_ptr<IDragonMotorController> m_driveMotor;
-    std::shared_ptr<IDragonMotorController> m_turnMotor;
+    IDragonMotorController *m_driveMotor;
+    IDragonMotorController *m_turnMotor;
     DragonCanCoder *m_turnSensor;
 
     ControlData *m_driveVelocityControlData;

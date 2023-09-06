@@ -16,7 +16,6 @@
 #pragma once
 
 // C++ Libraries
-#include <memory>
 
 // #include <frc/drive/Vector2d.h>
 
@@ -38,6 +37,6 @@ public:
 
 private:
     inline TeleopControl *GetController() const { return m_controller; }
-    std::shared_ptr<DifferentialChassis> m_chassis;
+    DifferentialChassis *m_chassis;
     TeleopControl *m_controller;
 };

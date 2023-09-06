@@ -85,4 +85,9 @@ public:
     /// @param identifier solenoid Usage to indicate what motor to update
     /// @param extend target value
     virtual void UpdateTarget(SolenoidUsage::SOLENOID_USAGE identifier, bool extend) = 0;
+
+    virtual bool IsAtMinPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const = 0;
+    virtual bool IsAtMinPosition(SolenoidUsage::SOLENOID_USAGE identifier) const = 0;
+    virtual bool IsAtMaxPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const = 0;
+    virtual bool IsAtMaxPosition(SolenoidUsage::SOLENOID_USAGE identifier) const = 0;
 };
