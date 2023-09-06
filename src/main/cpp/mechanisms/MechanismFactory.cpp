@@ -28,11 +28,11 @@
 #include "hw/DragonSolenoid.h"
 #include "configs/usages/MotorControllerUsage.h"
 #include "hw/interfaces/IDragonMotorController.h"
-#include <hw/usages/AnalogInputMap.h>
-#include <hw/usages/DigitalInputMap.h>
-#include <hw/usages/DragonSolenoidMap.h>
-#include <hw/usages/IDragonMotorControllerMap.h>
-#include <hw/usages/ServoMap.h>
+#include "configs/usages/AnalogInputMap.h"
+#include "configs/usages/DigitalInputMap.h"
+#include "configs/usages/DragonSolenoidMap.h"
+#include "configs/usages/IDragonMotorControllerMap.h"
+#include "configs/usages/ServoMap.h"
 #include "mechanisms/base/BaseMech.h"
 #include <mechanisms/MechanismFactory.h>
 #include "mechanisms/MechanismTypes.h"

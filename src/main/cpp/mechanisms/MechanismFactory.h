@@ -34,11 +34,11 @@
 // FRC includes
 
 // Team 302 includes
-#include <hw/usages/AnalogInputMap.h>
-#include <hw/usages/DigitalInputMap.h>
-#include <hw/usages/DragonSolenoidMap.h>
-#include <hw/usages/IDragonMotorControllerMap.h>
-#include <hw/usages/ServoMap.h>
+#include "configs/usages/AnalogInputMap.h"
+#include "configs/usages/DigitalInputMap.h"
+#include "configs/usages/DragonSolenoidMap.h"
+#include "configs/usages/IDragonMotorControllerMap.h"
+#include "configs/usages/ServoMap.h"
 #include "mechanisms/MechanismTypes.h"
 #include "mechanisms/base/BaseMech.h"
 // @ADDMECH include for your mechanism
