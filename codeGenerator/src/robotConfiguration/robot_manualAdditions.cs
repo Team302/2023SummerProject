@@ -92,6 +92,10 @@ namespace Robot
     {
         public static void initializeNullProperties(object obj)
         {
+            initializeNullProperties(obj, false);
+        }
+        public static void initializeNullProperties(object obj, bool recursive)
+        {
             PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
 
             for (int i = 0; i < propertyInfos.Length; i++)
@@ -104,6 +108,8 @@ namespace Robot
                     {
                         theObj = Activator.CreateInstance(pi.PropertyType);
                         pi.SetValue(obj, theObj);
+                        if(recursive)
+                            initializeNullProperties(theObj);
                     }
                 }
             }

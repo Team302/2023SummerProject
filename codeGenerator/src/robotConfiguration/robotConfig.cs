@@ -19,6 +19,7 @@ namespace robotConfiguration
     {
         public robotVariants theRobotVariants = new robotVariants();
         public Dictionary<string, statedata> mechanismControlDefinition;
+        public List<string> collectionBaseTypes = new List<string>(); 
         public List<string> tunableParameterTypes = new List<string>();
         public List<string> parameterTypes = new List<string>();
 
@@ -113,6 +114,8 @@ namespace robotConfiguration
                     //ignore configuration files
                     if (!tempFile.Contains("robotVariants") && !tempFile.Contains("toolConfiguration"))
                     {
+                        mySerializer = new XmlSerializer(typeof(mechanism));
+
                         using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
                         {
                             tempMech = mySerializer.Deserialize(myFileStream) as mechanism;
@@ -136,9 +139,11 @@ namespace robotConfiguration
                 {
                     MergeMechanismParametersIntoStructure(loadMechanism(fullPathName, mi.mechanism.name), mi.mechanism);
                 }
+
+                utilities.initializeNullProperties(theRobot, true);
             }
 
-            
+
 
             //foreach (robot theRobot in theRobotVariants.robot)
             //{
@@ -168,18 +173,47 @@ namespace robotConfiguration
             using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
             {
                 mechanism m = (mechanism)mySerializer.Deserialize(myFileStream);
-                return m;                
+                return m;
             }
         }
 
-        private bool isACollection(object obj)
+        public bool isACollection(object obj)
         {
             return isACollection(obj.GetType());
         }
 
-        private bool isACollection(Type t)
+        public bool isACollection(Type t)
         {
-            return ((t.Name == "Collection`1") && (t.Namespace == "System.Collections.ObjectModel"));
+
+            bool isaList = (t.Name == "List`1") && (t.Namespace == "System.Collections.Generic");
+            bool isaCollection = (t.Name == "Collection`1") && (t.Namespace == "System.Collections.ObjectModel");
+            return (isaCollection || isaList);
+        }
+
+        public bool isASubClassedCollection(object obj)
+        {
+            return isASubClassedCollection(obj.GetType());
+        }
+
+        public bool isASubClassedCollection(Type t)
+        {
+            if (isACollection(t))
+            {
+                Type elementType = t.GetGenericArguments().Single();
+                return collectionBaseTypes.Contains(elementType.FullName);
+            }
+
+            return false;
+        }
+
+        public bool isDerivedFromGenericRobotClass(Type t)
+        {
+            if(t.BaseType != null)
+            {
+                return collectionBaseTypes.Contains(t.BaseType.FullName);
+            }
+
+            return false;
         }
 
         bool isATunableParameterType(string typeName)
@@ -230,7 +264,7 @@ namespace robotConfiguration
 
                     PropertyInfo[] propertyInfos = objType.GetProperties();
 
-                    if(isATunableParameterType(objType.FullName))
+                    if (isATunableParameterType(objType.FullName))
                     {
                         PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
                         if (pi != null)
@@ -246,7 +280,7 @@ namespace robotConfiguration
                             pi.SetValue(structureSource, pi.GetValue(parametersSource));
                         }
                     }
-                    else if(objType.FullName == "System.String")
+                    else if (objType.FullName == "System.String")
                     {
 
                     }
@@ -257,7 +291,7 @@ namespace robotConfiguration
                             object theStructureObj = pi.GetValue(structureSource);
                             object theParametersObj = pi.GetValue(parametersSource);
 
-                            if ((theStructureObj != null) && (theParametersObj != null) )
+                            if ((theStructureObj != null) && (theParametersObj != null))
                             {
                                 MergeMechanismParametersIntoStructure(theStructureObj, theParametersObj);
                             }
@@ -284,11 +318,8 @@ namespace robotConfiguration
 
                     //        if (theObj != null)
                     //        {
-                    //            if (pi.Name != previousName + "Specified")
-                    //            {
                     //                AddNode(tn, theObj, pi.Name);
                     //                previousName = pi.Name;
-                    //            }
                     //        }
                     //    }
                     //}

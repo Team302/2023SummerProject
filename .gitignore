@@ -169,6 +169,8 @@ bin/
 codeGenerator/src/*/*/Debug
 codeGenerator/src/.vs
 codeGenerator/src/packages
+codeGenerator/guiTests/configuration
+codeGenerator/guiTests/robotConfiguration
 
 # Simulation GUI and other tools window save file
 *-window.json

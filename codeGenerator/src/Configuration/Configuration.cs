@@ -18,6 +18,8 @@ namespace Configuration
         public string robotConfiguration = "";
         public List<string> robotConfigurations = new List<string>();
         public List<string> treeviewParentNameExtensions = new List<string>();
+
+        public List<string> collectionBaseTypes = new List<string>();
         public List<string> tunableParameterTypes = new List<string>();
         public List<string> parameterTypes = new List<string>();
 
@@ -42,8 +44,14 @@ namespace Configuration
         {
             // make the paths relative to the configuration file
             string rootPath = Path.GetDirectoryName(configurationFullPath);
+
+            string temp = rootOutputFolder;
             rootOutputFolder = RelativePath(rootPath, rootOutputFolder);
+            rootOutputFolder = temp;
+
+            temp = robotConfiguration;
             robotConfiguration = RelativePath(rootPath, robotConfiguration);
+            robotConfiguration = temp;
         }
 
         private void postSerialize()

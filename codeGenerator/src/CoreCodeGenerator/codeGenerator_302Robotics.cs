@@ -100,7 +100,7 @@ namespace CoreCodeGenerator
 
                         foreach (PropertyInfo pi in propertyInfos)
                         {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                            bool skip = (pi.Name == "name");
                             if (!skip)
                                 allParameterReading += string.Format("{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", {2});{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
                         }
@@ -117,7 +117,7 @@ namespace CoreCodeGenerator
 
                         foreach (PropertyInfo pi in propertyInfos)
                         {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                            bool skip = (pi.Name == "name");
                             if (!skip)
                                 allParameterWriting += string.Format("{0}_{1} = m_table.get()->PutNumber(\"{0}_{1}\", {0}_{1});{2}", cLCParams.name, pi.Name, Environment.NewLine);
                         }
@@ -148,7 +148,7 @@ namespace CoreCodeGenerator
 
                         foreach (PropertyInfo pi in propertyInfos)
                         {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                            bool skip = (pi.Name == "name");
                             if (!skip)
                                 allParameters += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
                         }

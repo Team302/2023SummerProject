@@ -40,18 +40,6 @@ namespace StateData
         }
         
         /// <summary>
-        /// <para xml:lang="en">Gets a value indicating whether the controlData collection is empty.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool controlDataSpecified
-        {
-            get
-            {
-                return (this.controlData.Count != 0);
-            }
-        }
-        
-        /// <summary>
         /// <para xml:lang="en">Initializes a new instance of the <see cref="statedata" /> class.</para>
         /// </summary>
         public statedata()
@@ -73,18 +61,6 @@ namespace StateData
             private set
             {
                 _mechanismTarget = value;
-            }
-        }
-        
-        /// <summary>
-        /// <para xml:lang="en">Gets a value indicating whether the mechanismTarget collection is empty.</para>
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool mechanismTargetSpecified
-        {
-            get
-            {
-                return (this.mechanismTarget.Count != 0);
             }
         }
     }
