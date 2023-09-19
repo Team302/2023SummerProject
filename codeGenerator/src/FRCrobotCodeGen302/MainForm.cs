@@ -33,6 +33,7 @@ namespace FRCrobotCodeGen302
         bool needsSaving = false;
         bool loadRobotConfig = false;
         readonly string configurationCacheFile = Path.GetTempPath() + "DragonsCodeGeneratorCache.txt";
+        bool automationEnabled = false;
 
         const int treeIconIndex_lockedPadlock = 0;
         const int treeIconIndex_unlockedPadlock = 1;
@@ -48,6 +49,7 @@ namespace FRCrobotCodeGen302
             {
                 if (args[1] == "enableAutomation")
                 {
+                    automationEnabled = true;
                     selectNodeButton.Enabled = true;
                     selectNodeButton.Visible = true;
                     getCheckBoxListItemsButton.Enabled = true;
@@ -55,8 +57,8 @@ namespace FRCrobotCodeGen302
                     checkCheckBoxListItemButton.Enabled = true;
                     checkCheckBoxListItemButton.Visible = true;
                     getSelectedTreeElementPathButton.Enabled = true;
-                    getSelectedTreeElementPathButton.Visible = true;  
-                    
+                    getSelectedTreeElementPathButton.Visible = true;
+
                     infoIOtextBox.Enabled = true;
                     infoIOtextBox.Visible = true;
                     selectedNodePathTextBox.Enabled = true;
@@ -75,27 +77,30 @@ namespace FRCrobotCodeGen302
 
             this.Text += " Version " + ProductVersion;
 
-            //try to load cached configuration.xml
-            addProgress("Trying to load cached configuration.xml");
-            try
+            if (!automationEnabled)
             {
-                if (File.Exists(configurationCacheFile))
+                #region try to load cached configuration.xml
+                addProgress("Trying to load cached configuration.xml");
+                try
                 {
-                    configurationFilePathNameTextBox.Text = File.ReadAllText(configurationCacheFile);
-                    loadConfiguration(configurationFilePathNameTextBox.Text);
-                    addProgress("Loaded cached configuration.xml");
-                    robotConfigurationFileComboBox_TextChanged(null, null);
+                    if (File.Exists(configurationCacheFile))
+                    {
+                        configurationFilePathNameTextBox.Text = File.ReadAllText(configurationCacheFile);
+                        loadConfiguration(configurationFilePathNameTextBox.Text);
+                        addProgress("Loaded cached configuration.xml");
+                        robotConfigurationFileComboBox_TextChanged(null, null);
+                    }
+                    else
+                    {
+                        addProgress("Cached configuration.xml does not exist, robot configuration will not be automatically loaded");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    addProgress("Cached configuration.xml does not exist, robot configuration will not be automatically loaded");
+                    addProgress("Issue encountered while loading the cached generator configuration file\r\n" + ex.ToString());
                 }
+                #endregion
             }
-            catch (Exception ex)
-            {
-                addProgress("Issue encountered while loading the cached generator configuration file\r\n" + ex.ToString());
-            }
-
             robotTreeView.ImageList = treeViewIcons;
         }
 
@@ -418,10 +423,12 @@ namespace FRCrobotCodeGen302
 
                         loadConfiguration(configurationFilePathNameTextBox.Text);
 
-                        //now that generator config has loaded succesfully, save to a temp file to save the desired config for future uses
-
-                        File.WriteAllText(configurationCacheFile, configurationFilePathNameTextBox.Text);
-                        addProgress("Wrote cached configuration.xml to: " + configurationCacheFile);
+                        if (!automationEnabled)
+                        {
+                            //now that generator config has loaded succesfully, save to a temp file to save the desired config for future uses
+                            File.WriteAllText(configurationCacheFile, configurationFilePathNameTextBox.Text);
+                            addProgress("Wrote cached configuration.xml to: " + configurationCacheFile);
+                        }
                     }
                 }
             }
@@ -440,7 +447,7 @@ namespace FRCrobotCodeGen302
             addProgress("Configuration file loaded.");
 
             loadRobotConfig = false;
-            #region Load the Combobox with the robot configuration file list and select the first one
+            #region Load the Combobox with the robot configuration file list
             robotConfigurationFileComboBox.Items.Clear();
             foreach (string f in generatorConfig.robotConfigurations)
             {
@@ -448,13 +455,15 @@ namespace FRCrobotCodeGen302
                 fullfilePath = Path.GetFullPath(fullfilePath);
                 robotConfigurationFileComboBox.Items.Add(fullfilePath);
             }
-            if (robotConfigurationFileComboBox.Items.Count > 0)
-                robotConfigurationFileComboBox.SelectedIndex = 0;
             #endregion
 
             generatorConfig.rootOutputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), generatorConfig.rootOutputFolder));
             generatorConfig.robotConfiguration = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), robotConfigurationFileComboBox.Text));
             loadRobotConfig = true;
+
+            // select the config in the combobox after setting loadRobotConfig to true, otherwise robotConfigurationFileComboBox_TextChanged might fire before loadRobotConfig == true
+            if (robotConfigurationFileComboBox.Items.Count > 0)
+                robotConfigurationFileComboBox.SelectedIndex = 0;
         }
 
         private void robotConfigurationFileComboBox_TextChanged(object sender, EventArgs e)
@@ -895,7 +904,7 @@ namespace FRCrobotCodeGen302
                             }
                         }
 
-                        
+
 
                         lastSelectedValueNode.Text = getTreeNodeDisplayName(displayStr, lnt.name);
 
@@ -1391,7 +1400,7 @@ namespace FRCrobotCodeGen302
             foreach (TreeNode tn in currentNode.Nodes)
             {
                 string name = tn.Text;
-                
+
                 if (name == splitPath[currentIndex])
                 {
                     if (currentIndex == splitPath.Count - 1)
@@ -1428,8 +1437,8 @@ namespace FRCrobotCodeGen302
         }
         private void getSelectedTreeElementPathButton_Click(object sender, EventArgs e)
         {
-            infoIOtextBox.Text = robotTreeView.SelectedNode == null ? "":robotTreeView.SelectedNode.FullPath;
-        }       
+            infoIOtextBox.Text = robotTreeView.SelectedNode == null ? "" : robotTreeView.SelectedNode.FullPath;
+        }
         private void checkCheckBoxListItemButton_Click(object sender, EventArgs e)
         {
             try

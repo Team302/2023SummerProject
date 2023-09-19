@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
@@ -357,11 +355,19 @@ namespace robotConfiguration
                 string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
 
                 addProgress("Writing mechanism file " + mechanismFullPath);
-                var mechSerializer = new XmlSerializer(typeof(mechanism));
-                XmlWriter mechtw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings);
-                mechSerializer.Serialize(mechtw, mech);
-
-                mechtw.Close();
+                try
+                {
+                    using (XmlWriter mechtw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings))
+                    {
+                        var mechSerializer = new XmlSerializer(typeof(mechanism));
+                        mechSerializer.Serialize(mechtw, mech);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    addProgress("Problem encountered while writing mechanism file " + mechanismFullPath);
+                    addProgress(ex.ToString());
+                }
             }
 
             // after saving the mechanisms into separate files, clear the list of mechanisms, except for the name

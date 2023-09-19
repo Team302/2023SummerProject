@@ -162,8 +162,6 @@ namespace UnitTests
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
             addRobotElement("solenoid");
 
-
-
             clickSave();
         }
 

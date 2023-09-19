@@ -7,7 +7,10 @@ using System.Xml.Serialization;
 
 namespace Robot
 {
-    [Serializable]
+    [Serializable()]
+    [XmlType("motorBase", Namespace = "http://team302.org/robot")]
+    [XmlInclude(typeof(Falcon_Motor))]
+    [XmlInclude(typeof(TalonSRX_Motor))]
     public class motorBase
     {
         [XmlIgnore]
@@ -25,7 +28,8 @@ namespace Robot
         }
     }
 
-    [Serializable]
+    [Serializable()]
+    [XmlType("Falcon_Motor", Namespace = "http://team302.org/robot")]
     public class Falcon_Motor : motorBase
     {
         [DefaultValue(1.1)]
@@ -48,7 +52,8 @@ namespace Robot
         }
     }
 
-    [Serializable]
+    [Serializable()]
+    [XmlType("TalonSRX_Motor", Namespace = "http://team302.org/robot")]
     public class TalonSRX_Motor : motorBase
     {
         [DefaultValue(1.1)]
