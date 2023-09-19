@@ -40,23 +40,27 @@ namespace Configuration
             return "";
         }
 
+        string rootOutputFolder_temp;
+        string robotConfiguration_temp;
         private void preSerialize()
         {
             // make the paths relative to the configuration file
             string rootPath = Path.GetDirectoryName(configurationFullPath);
 
-            string temp = rootOutputFolder;
+            rootOutputFolder_temp = rootOutputFolder;
             rootOutputFolder = RelativePath(rootPath, rootOutputFolder);
-            rootOutputFolder = temp;
 
-            temp = robotConfiguration;
+            robotConfiguration_temp = robotConfiguration;
             robotConfiguration = RelativePath(rootPath, robotConfiguration);
-            robotConfiguration = temp;
         }
 
         private void postSerialize()
         {
-
+            rootOutputFolder = rootOutputFolder_temp;
+            robotConfiguration = robotConfiguration_temp;
+        }
+        private void postDeSerialize()
+        {
         }
         public void serialize(string rootPath)
         {
@@ -67,6 +71,8 @@ namespace Configuration
             {
                 mySerializer.Serialize(myFileStream, this);
             }
+
+            postSerialize();
         }
         public toolConfiguration deserialize(string fullFilePathName)
         {
@@ -77,7 +83,7 @@ namespace Configuration
                 toolConfiguration tc = (toolConfiguration)mySerializer.Deserialize(myFileStream);
                 tc.configurationFullPath = fullFilePathName;
 
-                postSerialize();
+                postDeSerialize();
 
                 return tc;
             }
