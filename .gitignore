@@ -171,6 +171,7 @@ codeGenerator/src/.vs
 codeGenerator/src/packages
 codeGenerator/guiTests/configuration
 codeGenerator/guiTests/robotConfiguration
+*.csproj.user
 
 # Simulation GUI and other tools window save file
 *-window.json
