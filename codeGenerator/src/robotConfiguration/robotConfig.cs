@@ -356,6 +356,7 @@ namespace robotConfiguration
             {
                 string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
 
+                addProgress("Writing mechanism file " + mechanismFullPath);
                 var mechSerializer = new XmlSerializer(typeof(mechanism));
                 XmlWriter mechtw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings);
                 mechSerializer.Serialize(mechtw, mech);
