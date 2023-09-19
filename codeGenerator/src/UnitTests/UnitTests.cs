@@ -105,13 +105,21 @@ namespace UnitTests
 
             Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
 
+            Session.FindElementByAccessibilityId("configurationBrowseButton").Click();
+            Thread.Sleep(TimeSpan.FromSeconds(1)); // wait a bit for the browse file dialog to pop up
+            Session.FindElementByXPath("//Edit[@Name='File name:']").SendKeys(configurationFile);
+            Thread.Sleep(TimeSpan.FromSeconds(1.5));
+            Session.FindElementByXPath("//Edit[@Name='File name:']").SendKeys(Keys.Enter);
+
+            Thread.Sleep(TimeSpan.FromSeconds(3)); // time for config to load
+
             Session.FindElementByAccessibilityId("createNewRobotVariantsConfigButton").Click();
             Thread.Sleep(TimeSpan.FromSeconds(1)); // wait a bit for the save file dialog to pop up
             Session.FindElementByXPath("//Edit[@Name='File name:']").SendKeys(testRobotConfigurationFile);
             Thread.Sleep(TimeSpan.FromSeconds(0.5));
             Session.FindElementByName("Save").Click();
 
-            Thread.Sleep(TimeSpan.FromSeconds(1)); // wait for the file to be written
+            Thread.Sleep(TimeSpan.FromSeconds(3)); // wait for the file to be written
             Assert.IsTrue(File.Exists(testRobotConfigurationFile));
         }
 
@@ -146,7 +154,16 @@ namespace UnitTests
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\UNKNOWN\name (UNKNOWN)");
             setTextInput("Super_Intake");
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\name (Super_Intake)");
-Thread.Sleep(TimeSpan.FromSeconds(5));
+
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
+            addRobotElement("Falcon_Motor");
+            //selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
+
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
+            addRobotElement("solenoid");
+
+
+
             clickSave();
         }
 
@@ -200,6 +217,7 @@ Thread.Sleep(TimeSpan.FromSeconds(5));
         private string getSelectedTreeNodeFullPath()
         {
             Session.FindElementByAccessibilityId("getSelectedTreeElementPathButton").Click();
+            Thread.Sleep(TimeSpan.FromSeconds(0.5));
             return Session.FindElementByAccessibilityId("infoIOtextBox").Text;
         }
         private List<string> getListOfAvailableRobotElements()
