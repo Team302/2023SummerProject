@@ -157,10 +157,45 @@ namespace UnitTests
 
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
             addRobotElement("Falcon_Motor");
-            //selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\Falcon_Motor\name");
+            setTextInput("intakePedalMotor");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\intakePedalMotor\name (intakePedalMotor)");
 
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
             addRobotElement("solenoid");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\UNKNOWN, REVPH, ID: 0\name (UNKNOWN)");
+            setTextInput("intakePusher");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\intakePusher, REVPH, ID: 0\name (intakePusher)");
+
+            clickSave();
+        }
+
+        [TestMethod]
+        public void TestMethod_00003_RenameFalcon_Motor()
+        {
+            Session.FindElementByName("Configuration").Click();
+
+            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
+
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\motorBases\UNKOWN_\name");
+            setTextInput("intakePedalMotor");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\intakePedalMotor\name (intakePedalMotor)");
+
+            clickSave();
+        }
+
+        [TestMethod]
+        public void TestMethod_00004_RenameSolenoid()
+        {
+            Session.FindElementByName("Configuration").Click();
+
+            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
+
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
+            addRobotElement("solenoid");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\UNKNOWN, REVPH, ID: 0\name (UNKNOWN)");
+            setTextInput("intakePusher");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\intakePusher, REVPH, ID: 0\name (intakePusher)");
 
             clickSave();
         }
