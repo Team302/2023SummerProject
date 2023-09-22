@@ -142,10 +142,6 @@ namespace UnitTests
         [TestMethod]
         public void TestMethod_00002_AddAMechanismTemplate()
         {
-            Session.FindElementByName("Configuration").Click();
-
-            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
-
             selectTreeNodeAndCheck(@"Robot Variant");
 
             addRobotElement("mechanism");
@@ -166,10 +162,6 @@ namespace UnitTests
         [TestMethod]
         public void TestMethod_00003_RenameFalcon_Motor()
         {
-            Session.FindElementByName("Configuration").Click();
-
-            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
-
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\Falcon_1\name (Falcon_1)");
             setTextInput("intakePedalMotor");
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\intakePedalMotor\name (intakePedalMotor)");
@@ -180,11 +172,6 @@ namespace UnitTests
         [TestMethod]
         public void TestMethod_00004_RenameSolenoid()
         {
-            Session.FindElementByName("Configuration").Click();
-
-            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
-
-            
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\solenoid_1\name (solenoid_1)");
             setTextInput("intakePusher");
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\intakePusher\name (intakePusher)");
@@ -195,10 +182,6 @@ namespace UnitTests
         [TestMethod]
         public void TestMethod_00005_CheckThatMotorsNotAvailableToAddAtMechLevel()
         {
-            Session.FindElementByName("Configuration").Click();
-
-            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
-
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
 
             List<string> elements = getListOfAvailableRobotElements();
@@ -210,10 +193,6 @@ namespace UnitTests
         [TestMethod]
         public void TestMethod_00006_AddA2ndMotor()
         {
-            Session.FindElementByName("Configuration").Click();
-
-            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
-
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases");
             addRobotElement("TalonSRX_Motor");
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\TalonSRX_2\name (TalonSRX_2)");
@@ -227,10 +206,6 @@ namespace UnitTests
         [TestMethod]
         public void TestMethod_00007_AddA2ndMechanism()
         {
-            Session.FindElementByName("Configuration").Click();
-
-            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
-
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms");
             addRobotElement("");
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\mechanism_2\name (mechanism_2)");
@@ -244,10 +219,6 @@ namespace UnitTests
         [TestMethod]
         public void TestMethod_00008_AddAmechanismInstanceToRobot2()
         {
-            Session.FindElementByName("Configuration").Click();
-
-            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
-
             selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #2");
             addRobotElement("Super_Intake");
             selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #2\mechanismInstances\mechanismInstanceName_1\name (mechanismInstanceName_1)");
