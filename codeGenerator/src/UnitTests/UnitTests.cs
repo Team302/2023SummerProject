@@ -208,6 +208,40 @@ namespace UnitTests
             clickSave();
         }
 
+        [TestMethod]
+        public void TestMethod_00006_AddA2ndMotor()
+        {
+            Session.FindElementByName("Configuration").Click();
+
+            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
+
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases");
+            addRobotElement("TalonSRX_Motor");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\TalonSRX_2\name (TalonSRX_2)");
+
+            setTextInput("intakeFan");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\intakeFan\name (intakeFan)");
+
+            clickSave();
+        }
+
+        [TestMethod]
+        public void TestMethod_00007_AddA2ndMechanism()
+        {
+            Session.FindElementByName("Configuration").Click();
+
+            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
+
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms");
+            addRobotElement("");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\mechanism_2\name (mechanism_2)");
+
+            setTextInput("floorExtender");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\floorExtender\name (floorExtender)");
+
+            clickSave();
+        }
+
         [TestCleanup]
         public void AfterEveryTest()
         {
@@ -295,7 +329,8 @@ namespace UnitTests
 
         private void addRobotElement(string name)
         {
-            checkmarkRobotElement(name);
+            if(name != "")
+                checkmarkRobotElement(name);
 
             Session.FindElementByAccessibilityId("addTreeElementButton").Click();
         }
