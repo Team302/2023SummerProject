@@ -151,21 +151,15 @@ namespace UnitTests
             addRobotElement("mechanism");
             
 
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\UNKNOWN\name (UNKNOWN)");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\mechanism_1\name (mechanism_1)");
             setTextInput("Super_Intake");
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\name (Super_Intake)");
 
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
             addRobotElement("Falcon_Motor");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\Falcon_Motor\name");
-            setTextInput("intakePedalMotor");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\intakePedalMotor\name (intakePedalMotor)");
-
+            
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
             addRobotElement("solenoid");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\UNKNOWN, REVPH, ID: 0\name (UNKNOWN)");
-            setTextInput("intakePusher");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\intakePusher, REVPH, ID: 0\name (intakePusher)");
 
             clickSave();
         }
@@ -177,7 +171,7 @@ namespace UnitTests
 
             Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
 
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\motorBases\UNKOWN_\name");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\Falcon_1\name (Falcon_1)");
             setTextInput("intakePedalMotor");
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\intakePedalMotor\name (intakePedalMotor)");
 
@@ -191,11 +185,25 @@ namespace UnitTests
 
             Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
 
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
-            addRobotElement("solenoid");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\UNKNOWN, REVPH, ID: 0\name (UNKNOWN)");
+            
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\solenoid_1\name (solenoid_1)");
             setTextInput("intakePusher");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\intakePusher, REVPH, ID: 0\name (intakePusher)");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\intakePusher\name (intakePusher)");
+
+            clickSave();
+        }
+
+        [TestMethod]
+        public void TestMethod_00005_CheckThatMotorsNotAvailableToAddAtMechLevel()
+        {
+            Session.FindElementByName("Configuration").Click();
+
+            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
+
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
+
+            List<string> elements = getListOfAvailableRobotElements();
+            Assert.AreEqual(0, elements.Count(e => e.EndsWith("_Motor")));
 
             clickSave();
         }

@@ -72,14 +72,6 @@ namespace Robot
         }
     }
 
-    partial class solenoid
-    {
-        public solenoid()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
     partial class talontach
     {
         public talontach()

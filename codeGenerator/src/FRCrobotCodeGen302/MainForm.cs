@@ -173,9 +173,10 @@ namespace FRCrobotCodeGen302
                                 if (propertyInfo.GetValue(obj) != null)
                                 {
                                     nodeName += propertyInfo.GetValue(obj).ToString() + ", ";
+                                    break;
                                 }
                                 else
-                                    nodeName += "UNKOWN_, ";
+                                    nodeName += "UNKOWN, ";
                             }
                         }
                     }
@@ -541,10 +542,14 @@ namespace FRCrobotCodeGen302
                 {
                     if (theRobotConfiguration.isASubClassedCollection(propertyInfo.PropertyType))
                     {
-                        Type elementType = propertyInfo.PropertyType.GetGenericArguments().Single();
-                        List<Type> subTypes = Assembly.GetAssembly(obj.GetType()).GetTypes().Where(t => t.BaseType == elementType).ToList();
-                        foreach (Type type in subTypes)
-                            types.Add(new robotElementType(type));
+                        ICollection ic = propertyInfo.GetValue(obj) as ICollection;
+                        if (ic.Count == 0)
+                        {
+                            Type elementType = propertyInfo.PropertyType.GetGenericArguments().Single();
+                            List<Type> subTypes = Assembly.GetAssembly(obj.GetType()).GetTypes().Where(t => t.BaseType == elementType).ToList();
+                            foreach (Type type in subTypes)
+                                types.Add(new robotElementType(type));
+                        }
                     }
                     //else if (theRobotConfiguration.isASubClassedCollection(obj.GetType()))
                     //{
@@ -1004,6 +1009,13 @@ namespace FRCrobotCodeGen302
                         // then add it to the collection
                         theObj.GetType().GetMethod("Add").Invoke(theObj, new object[] { obj });
                         int count = (int)theObj.GetType().GetProperty("Count").GetValue(theObj);
+                        try
+                        {
+                            string nameStr = obj.GetType().GetProperty("name").GetValue(obj).ToString();
+                            obj.GetType().GetProperty("name").SetValue(obj, nameStr + "_" + count);
+                        }
+                        catch { }
+
                         if (robotElementObj is mechanism)
                         {
                             if (mechanismInstancesNode == null)
@@ -1086,6 +1098,13 @@ namespace FRCrobotCodeGen302
                             lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
                             int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
 
+                            try
+                            {
+                                string nameStr = obj.GetType().GetProperty("name").GetValue(obj).ToString();
+                                obj.GetType().GetProperty("name").SetValue(obj, nameStr + "_" + count);
+                            }
+                            catch { }
+
                             AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                         }
                     }
@@ -1097,6 +1116,13 @@ namespace FRCrobotCodeGen302
                         // then add it to the collection
                         lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
                         int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+
+                        try
+                        {
+                            string nameStr = obj.GetType().GetProperty("name").GetValue(obj).ToString();
+                            obj.GetType().GetProperty("name").SetValue(obj, nameStr + "_" + count);
+                        }
+                        catch { }
 
                         AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                     }
