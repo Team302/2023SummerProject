@@ -150,7 +150,6 @@ namespace UnitTests
 
             addRobotElement("mechanism");
             
-
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\mechanism_1\name (mechanism_1)");
             setTextInput("Super_Intake");
             selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\name (Super_Intake)");
@@ -242,6 +241,23 @@ namespace UnitTests
             clickSave();
         }
 
+        [TestMethod]
+        public void TestMethod_00008_AddAmechanismInstanceToRobot2()
+        {
+            Session.FindElementByName("Configuration").Click();
+
+            Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
+
+            selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #2");
+            addRobotElement("Super_Intake");
+            selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #2\mechanismInstances\mechanismInstanceName_1\name (mechanismInstanceName_1)");
+
+            setTextInput("frontIntake");
+            selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #2\mechanismInstances\frontIntake\name (frontIntake)");
+
+            clickSave();
+        }
+
         [TestCleanup]
         public void AfterEveryTest()
         {
@@ -302,18 +318,6 @@ namespace UnitTests
             Session.FindElementByAccessibilityId("getCheckBoxListItemsButton").Click();
             string items = Session.FindElementByAccessibilityId("infoIOtextBox").Text;
             names = items.Trim('#').Split('#').ToList();
-            for (int i = 0; i < names.Count; i++)
-            {
-                string name = names[i];
-                string searchString = "Robot.";
-                if (name.Length > searchString.Length)
-                {
-                    int index = name.IndexOf(searchString);
-                    name = name.Substring(index + searchString.Length);
-                    name = name.Trim(']');
-                }
-                names[i] = name;
-            }
             return names;
         }
 
