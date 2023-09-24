@@ -23,6 +23,8 @@ using System.Xml.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 
 namespace FRCrobotCodeGen302
 {
@@ -110,7 +112,7 @@ namespace FRCrobotCodeGen302
             progressTextBox.AppendText(info + Environment.NewLine);
         }
 
-        private string getTreeNodeDisplayName(object parentObject, object obj, string nodeName)
+        private string getTreeNodeDisplayNameForNonLeafNode(object parentObject, object obj, string nodeName)
         {
             if (parentObject == null)
             {
@@ -140,18 +142,12 @@ namespace FRCrobotCodeGen302
                         }
                     }
                 }
-                else if (isATunableParameterType(objType.FullName))
-                {
-                    object value = null;
-                    value = properties[0].GetValue(obj);
-                    nodeValueString = value.ToString();
-                }
-                else if (isAParameterType(objType.FullName))
-                {
-                    object value = null;
-                    value = properties[0].GetValue(obj);
-                    nodeValueString = value.ToString();
-                }
+                //else if (isATunableParameterType(objType.FullName) || isAParameterType(objType.FullName))
+                //{
+                //    object value = null;
+                //    value = properties[0].GetValue(obj);
+                //    nodeValueString = value.ToString();
+                //}
                 else
                 {
                     nodeName = "";
@@ -216,8 +212,7 @@ namespace FRCrobotCodeGen302
 
         private TreeNode AddNode(TreeNode parent, object obj, string nodeName)
         {
-            // add this object to the tree
-            string extendedNodeName = getTreeNodeDisplayName(parent == null ? null : parent.Tag, obj, nodeName);
+            string originalNodeName = nodeName;
 
             TreeNode tn = null;
             if (parent == null)
@@ -226,13 +221,14 @@ namespace FRCrobotCodeGen302
                 {
                     ICollection ic = obj as ICollection;
                     if (ic.Count > 0)
-                        tn = robotTreeView.Nodes.Add(extendedNodeName);
+                        tn = robotTreeView.Nodes.Add(nodeName);
                 }
                 else
-                    tn = robotTreeView.Nodes.Add(extendedNodeName);
+                    tn = robotTreeView.Nodes.Add(nodeName);
             }
             else
             {
+                string extendedNodeName = getTreeNodeDisplayNameForNonLeafNode(parent == null ? null : parent.Tag, obj, nodeName);
                 if (theRobotConfiguration.isACollection(obj))
                 {
                     ICollection ic = obj as ICollection;
@@ -277,7 +273,35 @@ namespace FRCrobotCodeGen302
                         ((mechanism)obj).theTreeNode = tn;
                     }
 
-                    if (!isATunableParameterType(objType.FullName) && !isAParameterType(objType.FullName) && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
+                    bool isConstant = false;
+                    bool isParameter = false;
+                    bool isTunable = false;
+                    RangeAttribute range = null;
+                    DefaultValueAttribute defaultValue = null;
+
+                    if (parent != null)
+                    {
+                        PropertyInfo parentPi = parent.Tag.GetType().GetProperties().ToList().Find(p => p.Name == originalNodeName);
+                        if (parentPi != null)
+                        {
+                            robotParameterAttribute rpa = (robotParameterAttribute)parentPi.GetCustomAttribute(typeof(robotParameterAttribute), false);
+                            robotConstantAttribute rca = (robotConstantAttribute)parentPi.GetCustomAttribute(typeof(robotConstantAttribute), false);
+                            range = (RangeAttribute)parentPi.GetCustomAttribute(typeof(RangeAttribute), false);
+                            defaultValue = (DefaultValueAttribute)parentPi.GetCustomAttribute(typeof(DefaultValueAttribute), false);
+
+                            isConstant = rca != null;
+                            if (!isConstant)
+                            {
+                                if (rpa != null)
+                                {
+                                    isParameter = true;
+                                    isTunable = rpa.isTunable;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!isTunable && !isParameter && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
                     {
                         // add its children
                         string previousName = "";
@@ -305,21 +329,26 @@ namespace FRCrobotCodeGen302
                     else
                     {
                         // this means that this is a leaf node
-                        leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj);
-                        tn.Tag = lnt;
-
                         int imageIndex = treeIconIndex_unlockedPadlock;
-                        if (isAParameterType(objType.FullName))
-                            imageIndex = treeIconIndex_gear;
-                        else if (isATunableParameterType(objType.FullName))
+                        if (isConstant)
+                            imageIndex = treeIconIndex_lockedPadlock;
+                        else if (isTunable)
                             imageIndex = treeIconIndex_wrench;
+                        else if (isParameter)
+                            imageIndex = treeIconIndex_gear;
                         else if (isPartOfAMechanismInaMechInstance(tn))
                             imageIndex = treeIconIndex_lockedPadlock;
 
                         tn.ImageIndex = imageIndex;
                         tn.SelectedImageIndex = imageIndex;
 
+                        leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj, isConstant, isParameter, isTunable);
+                        if (range != null)
+                            lnt.setRange(Convert.ToDouble(range.Minimum), Convert.ToDouble(range.Maximum));
+                        if (defaultValue != null)
+                            lnt.setDefault(defaultValue.Value);
 
+                        tn.Tag = lnt;
                     }
                 }
             }
@@ -335,21 +364,7 @@ namespace FRCrobotCodeGen302
                 robotTreeView.Nodes[0].Expand();
         }
 
-        private void repopulateMechanisms(mechanismInstance theMechanismInstance)
-        {
 
-
-        }
-
-        bool isATunableParameterType(string typeName)
-        {
-            return generatorConfig.tunableParameterTypes.Contains(typeName);
-        }
-
-        bool isAParameterType(string typeName)
-        {
-            return generatorConfig.parameterTypes.Contains(typeName);
-        }
 
         public void loadGeneratorConfig(string configurationFullPathName)
         {
@@ -527,6 +542,8 @@ namespace FRCrobotCodeGen302
         {
             List<robotElementType> types = new List<robotElementType>();
 
+            if (obj is leafNodeTag)
+                obj = ((leafNodeTag)obj).obj;
 
             if (theRobotConfiguration.isASubClassedCollection(obj))
             {
@@ -686,23 +703,22 @@ namespace FRCrobotCodeGen302
                     object value = null;
                     PropertyInfo prop = null;
                     bool allowEdit = false;
-                    if (isATunableParameterType(lnt.type.FullName) || isAParameterType(lnt.type.FullName))
+                    if (lnt.isTunable || lnt.isParameter)
                     {
                         prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+
                         if (null != prop)
-                        {
                             value = prop.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
-                        }
-                        allowEdit = isInaMechanismInstance;
+                        else
+                            value = lnt.obj;
+
+                        allowEdit = true;
                     }
                     else
                     {
                         prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
                         if (null != prop)
-                        {
                             value = prop.GetValue(lastSelectedValueNode.Parent.Tag);
-                        }
-
 
                         allowEdit = !isInaMechanismInstance;
                     }
@@ -723,18 +739,16 @@ namespace FRCrobotCodeGen302
                         }
                         else if (value is uint || value is UInt32)
                         {
-                            RangeAttribute ra = prop.GetCustomAttribute<RangeAttribute>();
-                            if (ra == null)
+                            if (lnt.range == null)
                             {
                                 valueNumericUpDown.Minimum = 0;
                                 valueNumericUpDown.Maximum = 5000;
                             }
                             else
                             {
-                                valueNumericUpDown.Minimum = Convert.ToInt32(ra.Minimum);
-                                valueNumericUpDown.Maximum = Convert.ToInt32(ra.Maximum);
+                                valueNumericUpDown.Minimum = Convert.ToInt32(lnt.range.minRange);
+                                valueNumericUpDown.Maximum = Convert.ToInt32(lnt.range.maxRange);
                             }
-
 
                             valueNumericUpDown.DecimalPlaces = 0;
                             valueNumericUpDown.Value = (uint)value;
@@ -742,34 +756,20 @@ namespace FRCrobotCodeGen302
                         }
                         else if (value is double)
                         {
-                            RangeAttribute ra = prop.GetCustomAttribute<RangeAttribute>();
-                            if (ra == null)
+                            if (lnt.range == null)
                             {
                                 valueNumericUpDown.Minimum = Decimal.MinValue;
                                 valueNumericUpDown.Maximum = Decimal.MaxValue;
                             }
                             else
                             {
-                                valueNumericUpDown.Minimum = Convert.ToDecimal(ra.Minimum);
-                                valueNumericUpDown.Maximum = Convert.ToDecimal(ra.Maximum);
+                                valueNumericUpDown.Minimum = Convert.ToDecimal(lnt.range.minRange);
+                                valueNumericUpDown.Maximum = Convert.ToDecimal(lnt.range.maxRange);
                             }
 
                             valueNumericUpDown.DecimalPlaces = 5;
                             valueNumericUpDown.Value = Convert.ToDecimal(value);
                             showValueNumericUpDown();
-                        }
-                        else if (lastSelectedValueNode.Text == "controlFile")
-                        {
-                            showValueComboBox();
-                            valueComboBox.Items.Clear();
-
-                            string stateDataFilesPath = Path.Combine(Path.GetDirectoryName(generatorConfig.robotConfiguration), "states");
-
-                            string[] files = Directory.GetFiles(stateDataFilesPath, "*.xml");
-                            foreach (string f in files)
-                                valueComboBox.Items.Add(Path.GetFileName(f));
-
-                            valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
                         }
                         else
                         {
@@ -813,7 +813,7 @@ namespace FRCrobotCodeGen302
                             if (lastSelectedValueNode.Parent != null)
                             {
                                 if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
-                                    lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+                                    lastSelectedValueNode.Parent.Text = getTreeNodeDisplayNameForNonLeafNode(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
                             }
 
                             mechanism theMechanism;
@@ -853,7 +853,7 @@ namespace FRCrobotCodeGen302
                         if (lastSelectedValueNode.Parent != null)
                         {
                             if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
-                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayNameForNonLeafNode(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
                         }
 
 
@@ -882,7 +882,7 @@ namespace FRCrobotCodeGen302
 
                         string displayStr = "";
                         PropertyInfo prop;
-                        if (isATunableParameterType(lnt.type.FullName) || isAParameterType(lnt.type.FullName))
+                        if (lnt.isTunable || lnt.isParameter)
                         {
                             prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                             if (null != prop && prop.CanWrite)
@@ -919,7 +919,7 @@ namespace FRCrobotCodeGen302
                         if (lastSelectedValueNode.Parent != null)
                         {
                             if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
-                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayNameForNonLeafNode(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
                         }
 
                         mechanism theMechanism;
@@ -1202,7 +1202,7 @@ namespace FRCrobotCodeGen302
 
                 string mechInstancesName = @"\mechanismInstances\";
                 int index = fullPath.IndexOf(mechInstancesName);
-                if(index == -1)
+                if (index == -1)
                     return false;
 
                 fullPath = fullPath.Substring(index + mechInstancesName.Length);
@@ -1489,17 +1489,49 @@ namespace FRCrobotCodeGen302
         }
     }
 
+    class valueRange
+    {
+        public double minRange { get; set; }
+        public double maxRange { get; set; }
+    }
+
+    class defaultValue
+    {
+        public object value { get; set; }
+    }
+
     class leafNodeTag
     {
         public Type type { get; private set; }
         public string name { get; private set; }
         public object obj { get; private set; }
+        public bool isConstant { get; private set; }
+        public bool isParameter { get; private set; }
+        public bool isTunable { get; private set; }
+        public valueRange range { get; private set; }
+        public defaultValue theDefault { get; private set; }
 
-        public leafNodeTag(Type type, string name, object obj)
+        public leafNodeTag(Type type, string name, object obj, bool isConstant, bool isParameter, bool isTunable)
         {
             this.type = type;
             this.name = name;
             this.obj = obj;
+            this.isConstant = isConstant;
+            this.isParameter = isParameter;
+            this.isTunable = isTunable;
+            range = null;
+            theDefault = null;
+        }
+        public void setRange(double min, double max)
+        {
+            range = new valueRange();
+            range.minRange = min;
+            range.maxRange = max;
+        }
+        public void setDefault(object value)
+        {
+            theDefault = new defaultValue();
+            theDefault.value = value;
         }
     }
 

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
+using System.Reflection;
+
 
 namespace Robot
 {
@@ -17,7 +19,6 @@ namespace Robot
         [robotConstant()]
         public string motorType { get; protected set; }
 
-        [robotParameter(true)]
         public string name { get; set; }
 
         public CAN_ID CAN_ID { get; set; }
@@ -28,6 +29,14 @@ namespace Robot
             motorType = this.GetType().Name;
             motorType = motorType.Substring(0, motorType.LastIndexOf('_'));
             name = motorType;
+
+            PropertyInfo[] PIs = this.GetType().GetProperties();
+            foreach (PropertyInfo pi in PIs)
+            {
+                DefaultValueAttribute dva = pi.GetCustomAttribute<DefaultValueAttribute>();
+                if (dva != null)
+                    pi.SetValue(this, dva.Value);
+            }
         }
     }
 
@@ -35,7 +44,7 @@ namespace Robot
     [XmlType("Falcon_Motor", Namespace = "http://team302.org/robot")]
     public class Falcon_Motor : motorBase
     {
-        [DefaultValue(1.1)]
+        [DefaultValue(1.15)]
         [Range(typeof(double), "0", "62")]
         [robotParameter(true)]
         public double deadbandPercent { get; set; }
@@ -76,32 +85,13 @@ namespace Robot
     }
 
 
-    [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute("CAN_ID", Namespace = "http://team302.org/robot")]
+    [Serializable()]
+    [XmlType("CAN_ID", Namespace = "http://team302.org/robot")]
     public partial class CAN_ID
     {
-
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        private uint _value = 0u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 62.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "62")]
-        [System.Xml.Serialization.XmlAttributeAttribute("value")]
-        public uint value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                _value = value;
-            }
-        }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uint value { get; set; }
     }
 
 
@@ -3069,7 +3059,9 @@ namespace Robot
         }
     }
 
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+    // if isTunable == true, it means that live tuning over network tables is enabled
+    // if isTunable == false, it means that after changing the value of the parameter, it will take effect on code regeneration and robot code build
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
     public class robotParameterAttribute : Attribute
     {
         public bool isTunable { get; private set; }

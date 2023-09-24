@@ -262,23 +262,24 @@ namespace robotConfiguration
 
                     PropertyInfo[] propertyInfos = objType.GetProperties();
 
-                    if (isATunableParameterType(objType.FullName))
-                    {
-                        PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
-                        if (pi != null)
-                        {
-                            pi.SetValue(structureSource, pi.GetValue(parametersSource));
-                        }
-                    }
-                    else if (isAParameterType(objType.FullName))
-                    {
-                        PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
-                        if (pi != null)
-                        {
-                            pi.SetValue(structureSource, pi.GetValue(parametersSource));
-                        }
-                    }
-                    else if (objType.FullName == "System.String")
+                    //if (isATunableParameterType(objType.FullName))
+                    //{
+                    //    PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
+                    //    if (pi != null)
+                    //    {
+                    //        pi.SetValue(structureSource, pi.GetValue(parametersSource));
+                    //    }
+                    //}
+                    //else if (isAParameterType(objType.FullName))
+                    //{
+                    //    PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
+                    //    if (pi != null)
+                    //    {
+                    //        pi.SetValue(structureSource, pi.GetValue(parametersSource));
+                    //    }
+                    //}
+                    //else
+                    if (objType.FullName == "System.String")
                     {
 
                     }
