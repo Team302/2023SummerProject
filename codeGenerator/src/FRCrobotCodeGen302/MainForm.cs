@@ -260,7 +260,9 @@ namespace FRCrobotCodeGen302
                 }
                 else
                 {
+                    bool treatAsLeafNode = false;
                     Type objType = obj.GetType();
+                    PropertyInfo parentPi = null;
 
                     PropertyInfo[] propertyInfos = objType.GetProperties();
 
@@ -272,6 +274,16 @@ namespace FRCrobotCodeGen302
                     {
                         ((mechanism)obj).theTreeNode = tn;
                     }
+                    else
+                    {
+                        PropertyInfo pi = obj.GetType().GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        if(pi != null)
+                        {
+                            treatAsLeafNode = true;
+                            parentPi = pi;
+                            tn.Text = getTreeNodeDisplayName(pi.GetValue(obj).ToString(), tn.Text);
+                        }
+                    }
 
                     bool isConstant = false;
                     bool isParameter = false;
@@ -281,7 +293,9 @@ namespace FRCrobotCodeGen302
 
                     if (parent != null)
                     {
-                        PropertyInfo parentPi = parent.Tag.GetType().GetProperties().ToList().Find(p => p.Name == originalNodeName);
+                        if(parentPi == null)
+                            parentPi = parent.Tag.GetType().GetProperties().ToList().Find(p => p.Name == originalNodeName);
+                        
                         if (parentPi != null)
                         {
                             robotParameterAttribute rpa = (robotParameterAttribute)parentPi.GetCustomAttribute(typeof(robotParameterAttribute), false);
@@ -301,7 +315,7 @@ namespace FRCrobotCodeGen302
                         }
                     }
 
-                    if (!isTunable && !isParameter && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
+                    if (!treatAsLeafNode && !isTunable && !isParameter && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
                     {
                         // add its children
                         string previousName = "";
@@ -703,24 +717,27 @@ namespace FRCrobotCodeGen302
                     object value = null;
                     PropertyInfo prop = null;
                     bool allowEdit = false;
-                    if (lnt.isTunable || lnt.isParameter)
+                    if (!lnt.isConstant)
                     {
-                        prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        if (lnt.isTunable || lnt.isParameter)
+                        {
+                            prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
 
-                        if (null != prop)
-                            value = prop.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
+                            if (null != prop)
+                                value = prop.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
+                            else
+                                value = lnt.obj;
+
+                            allowEdit = true;
+                        }
                         else
-                            value = lnt.obj;
+                        {
+                            prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                            if (null != prop)
+                                value = prop.GetValue(lastSelectedValueNode.Parent.Tag);
 
-                        allowEdit = true;
-                    }
-                    else
-                    {
-                        prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
-                        if (null != prop)
-                            value = prop.GetValue(lastSelectedValueNode.Parent.Tag);
-
-                        allowEdit = !isInaMechanismInstance;
+                            allowEdit = !isInaMechanismInstance;
+                        }
                     }
 
                     if (allowEdit)

@@ -51,6 +51,7 @@ namespace Robot
 
         [DefaultValue(2.2)]
         [Range(typeof(double), "-1.0", "3.0")]
+        [robotParameter(false)]
         public double peakMin { get; set; }
 
         [DefaultValue(4.4)]
@@ -89,6 +90,7 @@ namespace Robot
     [XmlType("CAN_ID", Namespace = "http://team302.org/robot")]
     public partial class CAN_ID
     {
+        [robotParameter(false)]
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
         public uint value { get; set; }
