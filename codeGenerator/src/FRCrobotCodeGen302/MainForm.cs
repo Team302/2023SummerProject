@@ -833,6 +833,15 @@ namespace FRCrobotCodeGen302
                                 else if (prop.PropertyType.Name == "Double")
                                     prop.SetValue(lnt.obj, (double)valueNumericUpDown.Value);
                             }
+
+                                ///debug
+
+                            Debug.WriteLine(NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
+
+                            if (isATunableParameterType(lnt.type.FullName) && viewer.HasConnected())
+                            {
+                                viewer.PushValue((double)valueNumericUpDown.Value, NTViewer.ConvertFullNameToTuningKey(lnt.name));
+                            }
                         }
                         else
                         {
@@ -1291,18 +1300,9 @@ namespace FRCrobotCodeGen302
             }
         }
 
-        private void theTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        private void tuningEnableButton_Click(object sender, EventArgs e)
         {
-            if (theTabControl.SelectedIndex == theTabControl.TabPages.IndexOfKey("tabNetworkTables"))
-            {
-                
-                viewer.ConnectToNetworkTables();
-            }
-        }
-
-        private void ntTreeFilterInput_TextChanged(object sender, EventArgs e)
-        {
-            viewer.FilterTree(ntTreeFilterInput.Text);
+            viewer.ConnectToNetworkTables();
         }
     }
 

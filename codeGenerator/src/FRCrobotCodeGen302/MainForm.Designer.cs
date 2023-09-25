@@ -50,6 +50,7 @@ namespace FRCrobotCodeGen302
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.robotTreeView = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.tuningEnableButton = new System.Windows.Forms.Button();
             this.addRobotElementLabel = new System.Windows.Forms.Label();
             this.deleteTreeElementButton = new System.Windows.Forms.Button();
             this.addTreeElementButton = new System.Windows.Forms.Button();
@@ -235,7 +236,6 @@ namespace FRCrobotCodeGen302
             this.theTabControl.SelectedIndex = 0;
             this.theTabControl.Size = new System.Drawing.Size(591, 321);
             this.theTabControl.TabIndex = 10;
-            this.theTabControl.SelectedIndexChanged += new System.EventHandler(this.theTabControl_SelectedIndexChanged);
             // 
             // tabMainPage
             // 
@@ -314,6 +314,7 @@ namespace FRCrobotCodeGen302
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.tuningEnableButton);
             this.panel1.Controls.Add(this.addRobotElementLabel);
             this.panel1.Controls.Add(this.deleteTreeElementButton);
             this.panel1.Controls.Add(this.addTreeElementButton);
@@ -328,6 +329,16 @@ namespace FRCrobotCodeGen302
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(388, 293);
             this.panel1.TabIndex = 2;
+            // 
+            // tuningEnableButton
+            // 
+            this.tuningEnableButton.Location = new System.Drawing.Point(231, 266);
+            this.tuningEnableButton.Name = "tuningEnableButton";
+            this.tuningEnableButton.Size = new System.Drawing.Size(85, 23);
+            this.tuningEnableButton.TabIndex = 9;
+            this.tuningEnableButton.Text = "Enable tuning";
+            this.tuningEnableButton.UseVisualStyleBackColor = true;
+            this.tuningEnableButton.Click += new System.EventHandler(this.tuningEnableButton_Click);
             // 
             // addRobotElementLabel
             // 
@@ -491,6 +502,7 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.CheckedListBox robotElementCheckedListBox;
         private System.Windows.Forms.Label addRobotElementLabel;
         private System.Windows.Forms.ImageList treeViewIcons;
+        private System.Windows.Forms.Button tuningEnableButton;
     }
 }
 

@@ -74,6 +74,24 @@ namespace NTUtils
             table.PutBoolean(targetNTKey, value);
         }
 
+        public static string ConvertFullNameToTuningKey(string fullName)
+        {
+            string cleanedPath = "";
+
+            if(fullName.Contains("mechanismInstances"))
+            {
+                cleanedPath = fullName.Substring(fullName.IndexOf("mechanismInstances") + "mechanismInstances".Length + 1); //+1 is to get rid of leading '\'
+            }
+
+            //replace slashes for network tables
+            cleanedPath = cleanedPath.Replace('\\', '/');
+
+            //after replacing slashes, finally need to remove value from name
+            cleanedPath = cleanedPath.Remove(cleanedPath.IndexOf('(') - 1); //- 1 is to get rid of space before parentheses
+
+            return cleanedPath;
+        }
+
         private string GetTableName(ITable table)
         {
             return ((NetworkTable)table).ToString().Replace("NetworkTable: ", "");
@@ -210,6 +228,11 @@ namespace NTUtils
                     }
                 }
             }
+        }
+
+        public bool HasConnected()
+        {
+            return hasConnected;
         }
     }
 }
