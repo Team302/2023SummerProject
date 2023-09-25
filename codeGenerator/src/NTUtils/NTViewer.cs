@@ -22,9 +22,9 @@ namespace NTUtils
         private static Action<ITable, string, Value, NotifyFlags> onSubTableCreation;
         private static Action<ITable, string, Value, NotifyFlags> onTableChange;
 
-        public NTViewer(TreeView ntTree)
-        {
-            tree = ntTree;
+        public NTViewer(TreeView treeview)
+        {/*
+            tree = treeview;
 
             onSubTableCreation = (table, key, value, flag) =>
             {
@@ -32,14 +32,16 @@ namespace NTUtils
                 {
                     if(flag == NotifyFlags.NotifyNew)
                     {
-                        string tableName = ((NetworkTable)table).ToString();
-                        Debug.WriteLine("Table Name: " + tableName);
+                        //string tableName = ((NetworkTable)table).ToString();
+                        //Debug.WriteLine("Table Name: " + tableName);
                     }
                 }));
             };
 
             onTableChange = (table, key, value, flag) =>
             {
+                GetNodeFromTree(GetTableName(table), key);
+
                 switch(flag)
                 {
                     case NotifyFlags.NotifyNew:
@@ -52,11 +54,44 @@ namespace NTUtils
                         //No-op for delete at the moment
                         break;
                 }
-            };
+            };*/
+
+
         }
 
-        private string GetTreePath(string tableName, string key)
+        public void PushValue(string value, string targetNTKey)
         {
+            table.PutString(targetNTKey, value);
+        }
+
+        public void PushValue(double value, string targetNTKey)
+        {
+            table.PutNumber(targetNTKey, value);
+        }
+
+        public void PushValue(bool value, string targetNTKey)
+        {
+            table.PutBoolean(targetNTKey, value);
+        }
+
+        private string GetTableName(ITable table)
+        {
+            return ((NetworkTable)table).ToString().Replace("NetworkTable: ", "");
+        }
+
+        private string GetNodeFromTree(string tableName, string key)
+        {
+            string test = tree.Nodes[0].Nodes[0].FullPath;
+            List<TreeNode> results = tree.Nodes.Cast<TreeNode>().Where(node => node.FullPath == (tableName + key)) as List<TreeNode>;
+
+            /// Notes
+            /// full path may be "SomeMech\\intakeMotorGains\\pGain (1.0)"
+            /// network table name would be /SomeMech/intakeMotorGains plus the key which would be pGain
+            /// so first, split table name by "/"
+            /// next, find node with fullpath containg SomeMech .Where(node => node.FullPath.Contains(tableNameSplitArr[0]<SomeMech>)
+            /// then recurse into that node and do the same thing, except now with intakeMotorGains
+            /// keep iterating through table name until there's nothing left, then just find the node with the path containing the key
+
             return "";
         }
 
@@ -93,6 +128,18 @@ namespace NTUtils
             {
                 NetworkTable.AddGlobalConnectionListener(onConnect, true);
                 hasAttachedListener = true;
+            }
+        }
+
+        public void EditNetworkTable(TreeNode node, string value)
+        {
+            string fullname = node.FullPath;
+
+            string[] chunks = fullname.Split('/');
+
+            foreach(string chunk in chunks)
+            {
+
             }
         }
 

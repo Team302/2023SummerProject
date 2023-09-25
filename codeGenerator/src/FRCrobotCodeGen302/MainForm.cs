@@ -54,7 +54,7 @@ namespace FRCrobotCodeGen302
 
             this.Text += " Version " + ProductVersion;
 
-            viewer = new NTViewer(ntTreeview);
+            viewer = new NTViewer(robotTreeView);
 
             //try to load cached configuration.xml
             addProgress("Trying to load cached configuration.xml");
