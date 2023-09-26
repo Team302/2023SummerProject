@@ -332,6 +332,7 @@ namespace FRCrobotCodeGen302
             // 
             // tuningEnableButton
             // 
+            this.tuningEnableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.tuningEnableButton.Location = new System.Drawing.Point(231, 266);
             this.tuningEnableButton.Name = "tuningEnableButton";
             this.tuningEnableButton.Size = new System.Drawing.Size(85, 23);

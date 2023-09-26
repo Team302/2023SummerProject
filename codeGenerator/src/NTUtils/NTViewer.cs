@@ -61,17 +61,20 @@ namespace NTUtils
 
         public void PushValue(string value, string targetNTKey)
         {
-            table.PutString(targetNTKey, value);
+            if(table != null)
+                table.PutString(targetNTKey, value);
         }
 
         public void PushValue(double value, string targetNTKey)
         {
-            table.PutNumber(targetNTKey, value);
+            if (table != null)
+                table.PutNumber(targetNTKey, value);
         }
 
         public void PushValue(bool value, string targetNTKey)
         {
-            table.PutBoolean(targetNTKey, value);
+            if (table != null)
+                table.PutBoolean(targetNTKey, value);
         }
 
         public static string ConvertFullNameToTuningKey(string fullName)
@@ -136,17 +139,18 @@ namespace NTUtils
                 {
                     table = NetworkTable.GetTable("");
 
-                    AddListeners(table);
+                    //AddListeners(table);
 
                     hasConnected = true;
                 }
             };
-
+            
             if(!hasAttachedListener)
             {
                 NetworkTable.AddGlobalConnectionListener(onConnect, true);
                 hasAttachedListener = true;
             }
+            
         }
 
         public void EditNetworkTable(TreeNode node, string value)

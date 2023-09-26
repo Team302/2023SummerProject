@@ -838,9 +838,12 @@ namespace FRCrobotCodeGen302
 
                             Debug.WriteLine(NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
 
+                            Debug.WriteLine(viewer.HasConnected());
+
                             if (isATunableParameterType(lnt.type.FullName) && viewer.HasConnected())
                             {
-                                viewer.PushValue((double)valueNumericUpDown.Value, NTViewer.ConvertFullNameToTuningKey(lnt.name));
+                                viewer.PushValue((double)valueNumericUpDown.Value, NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
+                                Debug.WriteLine("Tried to set");
                             }
                         }
                         else
