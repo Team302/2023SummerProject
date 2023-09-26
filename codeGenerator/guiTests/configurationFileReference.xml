@@ -14,7 +14,7 @@
     <string>robotID</string>
   </treeviewParentNameExtensions>
   <collectionBaseTypes>
-    <string>Robot.motorBase</string>
+    <string>Robot.motor</string>
   </collectionBaseTypes>
   <tunableParameterTypes>
     <string>Robot.doubleParameter</string>

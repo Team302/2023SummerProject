@@ -25,22 +25,6 @@ namespace Robot
         public object theTreeNode = null;
     }
 
-    public partial class closedLoopControlParameters
-    {
-        public closedLoopControlParameters()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    public partial class motor
-    {
-        public void initialize()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
     public partial class robot
     {
         public void initialize()

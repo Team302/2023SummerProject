@@ -162,9 +162,9 @@ namespace UnitTests
         [TestMethod]
         public void TestMethod_00003_RenameFalcon_Motor()
         {
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\Falcon_1\name (Falcon_1)");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors\Falcon_1\name (Falcon_1)");
             setTextInput("intakePedalMotor");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\intakePedalMotor\name (intakePedalMotor)");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors\intakePedalMotor\name (intakePedalMotor)");
 
             clickSave();
         }
@@ -193,12 +193,12 @@ namespace UnitTests
         [TestMethod]
         public void TestMethod_00006_AddA2ndMotor()
         {
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors");
             addRobotElement("TalonSRX_Motor");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\TalonSRX_2\name (TalonSRX_2)");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors\TalonSRX_2\name (TalonSRX_2)");
 
             setTextInput("intakeFan");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motorBases\intakeFan\name (intakeFan)");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors\intakeFan\name (intakeFan)");
 
             clickSave();
         }
