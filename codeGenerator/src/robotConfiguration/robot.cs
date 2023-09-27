@@ -434,7 +434,6 @@ namespace Robot
     #endregion
 
     [Serializable()]
-    [XmlType("motor", Namespace = "http://team302.org/robot")]
     [XmlInclude(typeof(Falcon_Motor))]
     [XmlInclude(typeof(TalonSRX_Motor))]
     public class motor
@@ -465,7 +464,6 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlType("Falcon_Motor", Namespace = "http://team302.org/robot")]
     public class Falcon_Motor : motor
     {
         [DefaultValue(1.15)]
@@ -488,7 +486,6 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlType("TalonSRX_Motor", Namespace = "http://team302.org/robot")]
     public class TalonSRX_Motor : motor
     {
         [DefaultValue(1.1)]
@@ -511,7 +508,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlType("CAN_ID", Namespace = "http://team302.org/robot")]
     public partial class CAN_ID
     {
         [robotParameter(false)]
@@ -521,8 +517,6 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlType("robot", Namespace = "http://team302.org/robot")]
-    [XmlRoot("robot", Namespace = "http://team302.org/robot")]
     public partial class robot
     {
         public List<motor> motor { get; set; }
@@ -539,124 +533,29 @@ namespace Robot
             initialize();
             motor = new List<motor>();
             pcm = new List<pcm>();
+            pigeon = new List<pigeon>();
+            limelight = new List<limelight>();
+            mechanismInstance = new List<mechanismInstance>();
+            camera = new List<camera>();
+            roborio = new List<roborio>();
 
-            _pigeon = new System.Collections.ObjectModel.Collection<pigeon>();
-            _limelight = new System.Collections.ObjectModel.Collection<limelight>();
-            _mechanismInstance = new System.Collections.ObjectModel.Collection<mechanismInstance>();
-            _camera = new System.Collections.ObjectModel.Collection<camera>();
-            _roborio = new System.Collections.ObjectModel.Collection<roborio>();
+            robotID = 1;
         }
 
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<pigeon> _pigeon;
-
-        [XmlElementAttribute("pigeon")]
-        public System.Collections.ObjectModel.Collection<pigeon> pigeon
-        {
-            get
-            {
-                return _pigeon;
-            }
-            private set
-            {
-                _pigeon = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<limelight> _limelight;
-
-        [XmlElementAttribute("limelight")]
-        public System.Collections.ObjectModel.Collection<limelight> limelight
-        {
-            get
-            {
-                return _limelight;
-            }
-            private set
-            {
-                _limelight = value;
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlElementAttribute("chassis")]
+        public List<pigeon> pigeon { get; set; }
+        public List<limelight> limelight { get; set; }
         public chassis chassis { get; set; }
+        public List<mechanismInstance> mechanismInstance { get; set; }
+        public List<camera> camera { get; set; }
+        public List<roborio> roborio { get; set; }
 
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<mechanismInstance> _mechanismInstance;
-
-        [XmlElementAttribute("mechanismInstance")]
-        public System.Collections.ObjectModel.Collection<mechanismInstance> mechanismInstance
-        {
-            get
-            {
-                return _mechanismInstance;
-            }
-            private set
-            {
-                _mechanismInstance = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<camera> _camera;
-
-        [XmlElementAttribute("camera")]
-        public System.Collections.ObjectModel.Collection<camera> camera
-        {
-            get
-            {
-                return _camera;
-            }
-            private set
-            {
-                _camera = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<roborio> _roborio;
-
-        [XmlElementAttribute("roborio")]
-        public System.Collections.ObjectModel.Collection<roborio> roborio
-        {
-            get
-            {
-                return _roborio;
-            }
-            private set
-            {
-                _roborio = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private uint _robotID = 1u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 1.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 9999.</para>
-        /// </summary>
         [DefaultValueAttribute(1u)]
         [RangeAttribute(typeof(uint), "1", "9999")]
-        [XmlAttributeAttribute("robotID")]
-        public uint robotID
-        {
-            get
-            {
-                return _robotID;
-            }
-            set
-            {
-                _robotID = value;
-            }
-        }
+        public uint robotID { get; set; }
     }
 
 
     [Serializable()]
-    [XmlRoot("pdp", Namespace = "http://team302.org/robot")]
     public partial class pdp
     {
         [DefaultValue(pdptype.CTRE)]
