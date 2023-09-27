@@ -745,7 +745,11 @@ namespace FRCrobotCodeGen302
                             else
                             {
                                 prop.SetValue(lastSelectedValueNode.Parent.Tag, Enum.Parse(lnt.type, valueComboBox.Text));
-                                //  lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(null, lastSelectedValueNode.Parent.Tag, lastSelectedValueNode.Parent.Tag.GetType().Name);
+
+                                if (isATunableParameterType(lnt.type.FullName) && viewer.HasConnected())
+                                {
+                                    viewer.PushValue((double)Enum.Parse(lnt.type, valueComboBox.Text), NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
+                                }
                             }
 
                             lastSelectedValueNode.Text = getTreeNodeDisplayName(valueComboBox.Text, lnt.name);
@@ -786,6 +790,11 @@ namespace FRCrobotCodeGen302
                         if (null != prop && prop.CanWrite)
                         {
                             prop.SetValue(lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+
+                            if (isATunableParameterType(lnt.type.FullName) && viewer.HasConnected())
+                            {
+                                viewer.PushValue((string)valueTextBox.Text, NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
+                            }
                         }
 
                         lastSelectedValueNode.Text = getTreeNodeDisplayName(valueTextBox.Text, lnt.name);
@@ -834,16 +843,9 @@ namespace FRCrobotCodeGen302
                                     prop.SetValue(lnt.obj, (double)valueNumericUpDown.Value);
                             }
 
-                                ///debug
-
-                            Debug.WriteLine(NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
-
-                            Debug.WriteLine(viewer.HasConnected());
-
                             if (isATunableParameterType(lnt.type.FullName) && viewer.HasConnected())
                             {
                                 viewer.PushValue((double)valueNumericUpDown.Value, NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
-                                Debug.WriteLine("Tried to set");
                             }
                         }
                         else
