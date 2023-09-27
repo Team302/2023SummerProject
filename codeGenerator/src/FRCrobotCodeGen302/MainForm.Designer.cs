@@ -60,6 +60,7 @@ namespace FRCrobotCodeGen302
             this.valueComboBox = new System.Windows.Forms.ComboBox();
             this.robotElementCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.treeViewIcons = new System.Windows.Forms.ImageList(this.components);
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.configurationGroupBox.SuspendLayout();
             this.theTabControl.SuspendLayout();
             this.tabMainPage.SuspendLayout();
@@ -70,6 +71,7 @@ namespace FRCrobotCodeGen302
             this.splitContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.valueNumericUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -333,12 +335,13 @@ namespace FRCrobotCodeGen302
             // tuningEnableButton
             // 
             this.tuningEnableButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tuningEnableButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.tuningEnableButton.Location = new System.Drawing.Point(231, 266);
             this.tuningEnableButton.Name = "tuningEnableButton";
             this.tuningEnableButton.Size = new System.Drawing.Size(85, 23);
             this.tuningEnableButton.TabIndex = 9;
-            this.tuningEnableButton.Text = "Enable tuning";
-            this.tuningEnableButton.UseVisualStyleBackColor = true;
+            this.tuningEnableButton.Text = "Toggle Tuning";
+            this.tuningEnableButton.UseVisualStyleBackColor = false;
             this.tuningEnableButton.Click += new System.EventHandler(this.tuningEnableButton_Click);
             // 
             // addRobotElementLabel
@@ -469,6 +472,7 @@ namespace FRCrobotCodeGen302
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.valueNumericUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -504,6 +508,7 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.Label addRobotElementLabel;
         private System.Windows.Forms.ImageList treeViewIcons;
         private System.Windows.Forms.Button tuningEnableButton;
+        private System.Windows.Forms.BindingSource bindingSource1;
     }
 }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NetworkTables;
 using NetworkTables.Tables;
 using System.Windows.Forms;
+using System.Drawing;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 
@@ -14,6 +15,7 @@ namespace NTUtils
     public class NTViewer
     {
         NetworkTable table;
+        Button button;
         TreeView tree;
         Collection<TreeNode> treeNodes = new Collection<TreeNode>();
         bool hasAttachedListener = false;
@@ -22,8 +24,39 @@ namespace NTUtils
         private static Action<ITable, string, Value, NotifyFlags> onSubTableCreation;
         private static Action<ITable, string, Value, NotifyFlags> onTableChange;
 
-        public NTViewer(TreeView treeview)
-        {/*
+        public NTViewer(Button buton)
+        {
+            this.button = buton;
+
+            NetworkTable.SetClientMode();
+            NetworkTable.SetIPAddress("localhost"); //may have to change this to team number later?
+            NetworkTable.SetPort(57231);
+
+            Action<IRemote, ConnectionInfo, bool> onConnect = (iRemote, connectInfo, b) =>
+            {
+                if (b) //connected
+                {
+                    if (!hasConnected)
+                    {
+                        table = NetworkTable.GetTable("");
+
+                        //AddListeners(table);
+
+                        hasConnected = true;
+                    }
+
+                    button.BackColor = Color.FromArgb(100, Color.Green);
+                }
+                else //disconnected
+                {
+                    hasConnected = false;
+                    button.BackColor = Color.FromArgb(100, Color.Red);
+                }
+            };
+
+            NetworkTable.AddGlobalConnectionListener(onConnect, true);
+
+            /*
             tree = treeview;
 
             onSubTableCreation = (table, key, value, flag) =>
@@ -58,6 +91,14 @@ namespace NTUtils
 
 
         }
+        public void ConnectToNetworkTables()
+        {
+            //if (!hasConnected)
+            //{
+                NetworkTable.Initialize();
+            //}
+        }
+
 
         public void PushValue(string value, string targetNTKey)
         {
@@ -124,33 +165,6 @@ namespace NTUtils
         private void AddToTree(ITable table, string key, Value value)
         {
             throw new NotImplementedException();
-        }
-
-        public void ConnectToNetworkTables()
-        {
-            NetworkTable.SetClientMode();
-            NetworkTable.SetIPAddress("localhost"); //may have to change this to team number later?
-            NetworkTable.SetPort(57231);
-            NetworkTable.Initialize();
-
-            Action<IRemote, ConnectionInfo, bool> onConnect = (iRemote, connectInfo, b) =>
-            {
-                if (!hasConnected)
-                {
-                    table = NetworkTable.GetTable("");
-
-                    //AddListeners(table);
-
-                    hasConnected = true;
-                }
-            };
-            
-            if(!hasAttachedListener)
-            {
-                NetworkTable.AddGlobalConnectionListener(onConnect, true);
-                hasAttachedListener = true;
-            }
-            
         }
 
         public void EditNetworkTable(TreeNode node, string value)
