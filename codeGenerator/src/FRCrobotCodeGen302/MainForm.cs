@@ -129,7 +129,7 @@ namespace FRCrobotCodeGen302
                 PropertyInfo[] properties = objType.GetProperties();
 
                 string nodeValueString = "";
-                if ((properties.Length == 0) || (objType.FullName == "System.String"))
+                if ((properties.Length == 0) || (objType.FullName == "System.String") || (objType.FullName == "System.DateTime"))
                 {
                     if (parentObject != null)
                     {
@@ -277,7 +277,7 @@ namespace FRCrobotCodeGen302
                     else
                     {
                         PropertyInfo pi = obj.GetType().GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
-                        if(pi != null)
+                        if (pi != null)
                         {
                             treatAsLeafNode = true;
                             parentPi = pi;
@@ -293,9 +293,9 @@ namespace FRCrobotCodeGen302
 
                     if (parent != null)
                     {
-                        if(parentPi == null)
+                        if (parentPi == null)
                             parentPi = parent.Tag.GetType().GetProperties().ToList().Find(p => p.Name == originalNodeName);
-                        
+
                         if (parentPi != null)
                         {
                             robotParameterAttribute rpa = (robotParameterAttribute)parentPi.GetCustomAttribute(typeof(robotParameterAttribute), false);
@@ -315,7 +315,7 @@ namespace FRCrobotCodeGen302
                         }
                     }
 
-                    if (!treatAsLeafNode && !isTunable && !isParameter && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
+                    if (!treatAsLeafNode && !isTunable && !isParameter && (objType.FullName != "System.String") && (objType.FullName != "System.DateTime") && (propertyInfos.Length > 0))
                     {
                         // add its children
                         string previousName = "";
@@ -324,7 +324,8 @@ namespace FRCrobotCodeGen302
                             object theObj = pi.GetValue(obj);
 
                             //strings have to have some extra handling
-                            if (pi.PropertyType.FullName == "System.String")
+                            if ((pi.PropertyType.FullName == "System.String") ||
+                                (pi.PropertyType.FullName == "System.DateTime"))
                             {
                                 if (theObj == null)
                                 {
@@ -723,7 +724,7 @@ namespace FRCrobotCodeGen302
                         {
                             prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
 
-                            if (null != prop)
+                            if (prop != null)
                                 value = prop.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
                             else
                                 value = lnt.obj;
@@ -742,8 +743,20 @@ namespace FRCrobotCodeGen302
 
                     if (allowEdit)
                     {
+                        PropertyInfo valueStringList = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value_strings", BindingFlags.NonPublic | BindingFlags.Instance);
                         enableCallback = false;
-                        if (lnt.type.IsEnum)
+                        if (valueStringList != null)
+                        {
+                            showValueComboBox();
+                            valueComboBox.Items.Clear();
+
+                            List<string> strings = (List<string>)valueStringList.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
+                            foreach (string en in strings)
+                                valueComboBox.Items.Add(en);
+
+                            valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
+                        }
+                        else if (lnt.type.IsEnum)
                         {
                             showValueComboBox();
                             valueComboBox.Items.Clear();
@@ -814,14 +827,35 @@ namespace FRCrobotCodeGen302
                     {
                         leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
 
-                        PropertyInfo prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                        object parentObj = lastSelectedValueNode.Parent.Tag;
+
+                        PropertyInfo prop = null;
+                        PropertyInfo valueStringList = null;
+
+                        if (theRobotConfiguration.isACollection(parentObj))
+                        {
+                            Type elementType = parentObj.GetType().GetGenericArguments().Single();
+                            prop = elementType.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                            valueStringList = elementType.GetProperty("value_strings", BindingFlags.NonPublic | BindingFlags.Instance);
+                        }
+                        else
+                        {
+                            prop = parentObj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                        }
+
+
                         if (null != prop && prop.CanWrite)
                         {
                             if (lastSelectedValueNode.Text == "controlFile")
-                                prop.SetValue(lastSelectedValueNode.Parent.Tag, valueComboBox.Text);
+                                prop.SetValue(parentObj, valueComboBox.Text);
                             else
                             {
-                                prop.SetValue(lastSelectedValueNode.Parent.Tag, Enum.Parse(lnt.type, valueComboBox.Text));
+                                if(valueStringList == null)
+                                    prop.SetValue(parentObj, Enum.Parse(lnt.type, valueComboBox.Text));
+                                else
+                                {
+                                    prop.SetValue(lnt.obj, valueComboBox.Text);
+                                }
                                 //  lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(null, lastSelectedValueNode.Parent.Tag, lastSelectedValueNode.Parent.Tag.GetType().Name);
                             }
 
@@ -902,16 +936,28 @@ namespace FRCrobotCodeGen302
                         if (lnt.isTunable || lnt.isParameter)
                         {
                             prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
-                            if (null != prop && prop.CanWrite)
-                            {
-                                if (prop.PropertyType.Name == "UInt")
-                                    prop.SetValue(lnt.obj, (uint)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
-                                else if (prop.PropertyType.Name == "UInt32")
-                                    prop.SetValue(lnt.obj, (UInt32)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
-                                else if (prop.PropertyType.Name == "Double")
-                                    prop.SetValue(lnt.obj, (double)valueNumericUpDown.Value);
+                            Object obj = lnt.obj;
 
-                                displayStr = prop.GetValue(lnt.obj).ToString();
+                            if (prop == null)
+                            {
+                                obj = lastSelectedValueNode.Parent.Tag;
+                                prop = obj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                            }
+
+                            if (prop != null)
+                            {
+                                if (prop.CanWrite)
+                                {
+                                    if (prop.PropertyType.Name == "UInt")
+                                        prop.SetValue(obj, (uint)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
+                                    else if (prop.PropertyType.Name == "UInt32")
+                                        prop.SetValue(obj, (UInt32)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
+                                    else if (prop.PropertyType.Name == "Double")
+                                    {
+                                        prop.SetValue(obj, (double)valueNumericUpDown.Value);
+                                    }
+                                    displayStr = prop.GetValue(obj).ToString();
+                                }
                             }
                         }
                         else
@@ -1021,7 +1067,7 @@ namespace FRCrobotCodeGen302
 
                     if ((obj != null) && (name != null))
                     {
-                        //PropertyInfo[] pis = lastSelectedValueNode.Tag.GetType().GetProperties();
+                        PropertyInfo[] pis = lastSelectedValueNode.Tag.GetType().GetProperties();
                         pi = lastSelectedValueNode.Tag.GetType().GetProperty(name);
 
                         object theObj = pi.GetValue(lastSelectedValueNode.Tag, null);
@@ -1033,6 +1079,7 @@ namespace FRCrobotCodeGen302
                             int count = (int)theObj.GetType().GetProperty("Count").GetValue(theObj);
                             try
                             {
+                                PropertyInfo[] asd = obj.GetType().GetProperties();
                                 string nameStr = obj.GetType().GetProperty("name").GetValue(obj).ToString();
                                 obj.GetType().GetProperty("name").SetValue(obj, nameStr + "_" + count);
                             }

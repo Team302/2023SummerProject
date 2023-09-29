@@ -277,7 +277,7 @@ namespace robotConfiguration
                     //    }
                     //}
                     //else
-                    if (objType.FullName == "System.String")
+                    if ((objType.FullName == "System.String") || (objType.FullName == "System.DateTime"))
                     {
 
                     }
