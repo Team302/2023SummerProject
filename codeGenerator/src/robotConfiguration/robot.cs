@@ -76,14 +76,12 @@ namespace Robot
 
     #region enums
     [Serializable()]
-    [XmlType("CAN_BUS", Namespace = "http://team302.org/robot")]
     public enum CAN_BUS
     {
         rio,
     }
 
     [Serializable()]
-    [XmlType("pdptype", Namespace = "http://team302.org/robot")]
     public enum pdptype
     {
         CTRE,
@@ -91,14 +89,12 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlType("analogInputtype", Namespace = "http://team302.org/robot")]
     public enum analogInputType
     {
         PRESSURE_GAUGE,
     }
 
     [Serializable()]
-    [XmlType("pigeontype", Namespace = "http://team302.org/robot")]
     public enum pigeontype
     {
         pigeon1,
@@ -106,14 +102,12 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlType("pigeonname", Namespace = "http://team302.org/robot")]
     public enum pigeonname
     {
         CENTER_OF_ROTATION,
     }
 
     [Serializable()]
-    [XmlType("limelightrotation", Namespace = "http://team302.org/robot")]
     public enum limelightrotation
     {
         Angle_0_deg = 0,
@@ -124,7 +118,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlType("limelightdefaultledmode", Namespace = "http://team302.org/robot")]
     public enum limelightdefaultledmode
     {
         currentpipeline,
@@ -135,7 +128,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlType("limelightdefaultcammode", Namespace = "http://team302.org/robot")]
     public enum limelightdefaultcammode
     {
         vision,
@@ -144,7 +136,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlType("limelightstreammode", Namespace = "http://team302.org/robot")]
     public enum limelightstreammode
     {
         sidebyside,
@@ -154,7 +145,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlType("limelightsnapshots", Namespace = "http://team302.org/robot")]
     public enum limelightsnapshots
     {
         off,
@@ -162,7 +152,6 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlTypeAttribute("motormotorType", Namespace = "http://team302.org/robot")]
     public enum motormotorType
     {
 
@@ -211,7 +200,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlTypeAttribute("motorcontroller", Namespace = "http://team302.org/robot")]
     public enum motorcontroller
     {
 
@@ -226,7 +214,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlTypeAttribute("motorfeedbackDevice", Namespace = "http://team302.org/robot")]
     public enum motorfeedbackDevice
     {
 
@@ -253,86 +240,7 @@ namespace Robot
         SOFTWAREEMULATEDSENSOR,
     }
 
-
     [Serializable()]
-    [XmlTypeAttribute("motorcurrentLimiting", Namespace = "http://team302.org/robot")]
-    public enum motorcurrentLimiting
-    {
-
-        [XmlEnumAttribute("true")]
-        Item_true,
-
-        [XmlEnumAttribute("false")]
-        Item_false,
-    }
-
-
-    [Serializable()]
-    [XmlTypeAttribute("motorforwardlimitswitch", Namespace = "http://team302.org/robot")]
-    public enum motorforwardlimitswitch
-    {
-
-        [XmlEnumAttribute("true")]
-        Item_true,
-
-        [XmlEnumAttribute("false")]
-        Item_false,
-    }
-
-
-    [Serializable()]
-    [XmlTypeAttribute("motorforwardlimitswitchopen", Namespace = "http://team302.org/robot")]
-    public enum motorforwardlimitswitchopen
-    {
-
-        [XmlEnumAttribute("true")]
-        Item_true,
-
-        [XmlEnumAttribute("false")]
-        Item_false,
-    }
-
-
-    [Serializable()]
-    [XmlTypeAttribute("motorreverselimitswitch", Namespace = "http://team302.org/robot")]
-    public enum motorreverselimitswitch
-    {
-
-        [XmlEnumAttribute("true")]
-        Item_true,
-
-        [XmlEnumAttribute("false")]
-        Item_false,
-    }
-
-
-    [Serializable()]
-    [XmlTypeAttribute("motorreverselimitswitchopen", Namespace = "http://team302.org/robot")]
-    public enum motorreverselimitswitchopen
-    {
-
-        [XmlEnumAttribute("true")]
-        Item_true,
-
-        [XmlEnumAttribute("false")]
-        Item_false,
-    }
-
-
-    [Serializable()]
-    [XmlTypeAttribute("motorvoltageCompensationEnable", Namespace = "http://team302.org/robot")]
-    public enum motorvoltageCompensationEnable
-    {
-
-        [XmlEnumAttribute("true")]
-        Item_true,
-
-        [XmlEnumAttribute("false")]
-        Item_false,
-    }
-
-    [Serializable()]
-    [XmlType("swervemoduletype", Namespace = "http://team302.org/robot")]
     public enum swervemoduletype
     {
         LEFT_FRONT,
@@ -343,7 +251,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlType("chassistype", Namespace = "http://team302.org/robot")]
     public enum chassistype
     {
         TANK,
@@ -353,7 +260,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlType("chassiswheelSpeedCalcOption", Namespace = "http://team302.org/robot")]
     public enum chassiswheelSpeedCalcOption
     {
         WPI,
@@ -364,7 +270,6 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlTypeAttribute("chassisposeEstimationOption", Namespace = "http://team302.org/robot")]
     public enum chassisposeEstimationOption
     {
         WPI,
@@ -375,20 +280,6 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlTypeAttribute("solenoidreversed", Namespace = "http://team302.org/robot")]
-    public enum solenoidreversed
-    {
-
-        [XmlEnumAttribute("true")]
-        Item_true,
-
-        [XmlEnumAttribute("false")]
-        Item_false,
-    }
-
-
-    [Serializable()]
-    [XmlType("solenoidtype", Namespace = "http://team302.org/robot")]
     public enum solenoidtype
     {
         CTREPCM,
@@ -396,7 +287,6 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlType("colorsensorport", Namespace = "http://team302.org/robot")]
     public enum colorsensorport
     {
         kOnboard,
@@ -404,7 +294,6 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlType("cameraformat", Namespace = "http://team302.org/robot")]
     public enum cameraformat
     {
         KMJPEG,
@@ -415,7 +304,6 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlType("roborioorientation", Namespace = "http://team302.org/robot")]
     public enum roborioorientation
     {
         X_FORWARD_Y_LEFT,
@@ -434,24 +322,6 @@ namespace Robot
         X_LEFT_Y_UP,
         X_DOWN_Y_LEFT,
         X_RIGHT_Y_DOWN,
-    }
-
-    [Serializable()]
-    [XmlType("lidarname", Namespace = "http://team302.org/robot")]
-    public enum lidarname
-    {
-        front,
-        back,
-    }
-
-    [Serializable()]
-    [XmlType("blinkinname", Namespace = "http://team302.org/robot")]
-    public enum blinkinname
-    {
-        front,
-        back,
-        top,
-        bottom,
     }
 
     #endregion
@@ -1149,43 +1019,15 @@ namespace Robot
         }
     }
 
-
-
-
-
-
     [Serializable()]
-    [XmlTypeAttribute("led", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("led", Namespace = "http://team302.org/robot")]
     public partial class led
     {
-
-        private uint _pwmId = 0u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 19.</para>
-        /// </summary>
         [DefaultValue(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "19")]
-        [XmlAttributeAttribute("pwmId")]
-        public uint pwmId
-        {
-            get
-            {
-                return _pwmId;
-            }
-            set
-            {
-                _pwmId = value;
-            }
-        }
+        [Range(typeof(uint), "0", "19")]
+        public uint Id{get;set;}
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlAttributeAttribute("number")]
-        public string number { get; set; }
+        [DefaultValue(0u)] 
+        public uint number { get; set; }
 
         public led()
         {
@@ -1201,46 +1043,15 @@ namespace Robot
     [XmlRootAttribute("blinkin", Namespace = "http://team302.org/robot")]
     public partial class blinkin
     {
+        public string name{get;set; }
 
-        private blinkinname _name = Robot.blinkinname.front;
-
-        [DefaultValue(Robot.blinkinname.front)]
-        [XmlAttributeAttribute("name")]
-        public blinkinname name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-
-        private uint _pwmId = 0u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 19.</para>
-        /// </summary>
         [DefaultValue(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "19")]
-        [XmlAttributeAttribute("pwmId")]
-        public uint pwmId
-        {
-            get
-            {
-                return _pwmId;
-            }
-            set
-            {
-                _pwmId = value;
-            }
-        }
+        [Range(typeof(uint), "0", "19")]
+        public uint Id{get;set;}
 
         public blinkin()
         {
+            name = GetType().Name;
             helperFunctions.initializeDefaultValues(this);
         }
     }
@@ -1249,58 +1060,17 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlTypeAttribute("talontach", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("talontach", Namespace = "http://team302.org/robot")]
     public partial class talontach
     {
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlElementAttribute("canId")]
         public CAN_ID canId { get; set; }
 
-        private uint _name = 0u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 6.</para>
-        /// </summary>
         [DefaultValue(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "6")]
-        [XmlAttributeAttribute("name")]
-        public uint name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
+        [Range(typeof(uint), "0", "6")]
+        public uint name{get; set; }
 
-        private uint _generalpin = 0u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 11.</para>
-        /// </summary>
         [DefaultValue(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "11")]
-        [XmlAttributeAttribute("generalpin")]
-        public uint generalpin
-        {
-            get
-            {
-                return _generalpin;
-            }
-            set
-            {
-                _generalpin = value;
-            }
-        }
+        [Range(typeof(uint), "0", "11")]
+        public uint generalpin{get;set; }
 
         public talontach()
         {
@@ -1309,8 +1079,7 @@ namespace Robot
     }
 
     #region ====================== Attribute definitions
-    // if isTunable == true, it means that live tuning over network tables is enabled
-    // if isTunable == false, it means that after changing the value of the parameter, it will take effect on code regeneration and robot code build
+    // if applied to a property, it means that live tuning over network tables is enabled
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
     public class tunableParameterAttribute : Attribute
     {
