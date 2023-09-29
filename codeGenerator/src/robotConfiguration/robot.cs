@@ -9,71 +9,6 @@ using System.Reflection;
 
 namespace Robot
 {
-    [Serializable()]
-    [XmlInclude(typeof(PriceIncrease))]
-    [XmlInclude(typeof(PriceDecrease))]
-    public class PriceChange
-    {
-        public enum Reason { LIFT, ChangeRequest, RawMaterialIndex}
-        public enum Currency { ARS, AUD, BRL, CAD, CLP, CNY, COP, CRC, CZK, DKK, EUR, GHS, GBP, HKD, HUF, INR, IDR, ILS, JPY, KZT, MYR, MXN, MAD, NZD, NOK, PKR, PEN, PHP, PLN, RON, RUB, SAR, RSD, SGD, ZAR, KRW, LKR, SEK, CHF, TWD, THB, TND, TRY, AED, USD, VES}
-        public string name { get; set; }
-        public Reason changeReason { get; set; }
-        public string description { get; set; }
-        public DateTime effectiveDate { get; set; }
-
-        [DefaultValue(typeof(double), "0")]
-        public double amount { get; set; }
-        public Currency currency { get; set; }
-        public List<ShipTo> ShipTo { get; set; }
-
-        public PriceChange()
-        {
-            name = GetType().Name;
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
-
-    [Serializable()]
-    public class PriceIncrease : PriceChange
-    {
-        public PriceIncrease()
-        {
-            name = GetType().Name;
-        }
-    }
-
-    [Serializable()]
-    public class PriceDecrease : PriceChange
-    {
-        public PriceDecrease()
-        {
-            name = GetType().Name;
-        }
-    }
-
-    [Serializable()]
-    public class ShipTo
-    {
-        [XmlIgnore]
-        private List<string> value_strings { get; set; }
-
-        [tunableParameter()]
-        public string value { get; set; }
-
-        public ShipTo()
-        {
-            value_strings = GMInfo.shipToLocations;
-
-            value = "";
-        }
-    }
-
-    static class GMInfo
-    {
-        static public List<string> shipToLocations = new List<string>() { "sdf", "sdfsd" };
-    }
-
     #region enums
     [Serializable()]
     public enum CAN_BUS
@@ -947,15 +882,12 @@ namespace Robot
     [Serializable()]
     public partial class robotVariants
     {
-        public List<PriceChange> PriceChange { get; set; }
         public List<robot> robot { get; set; }
 
         public List<mechanism> mechanism { get; set; }
 
         public robotVariants()
         {
-            PriceChange = new List<PriceChange>();
-
             robot = new List<robot>();
             mechanism = new List<mechanism>();
 
