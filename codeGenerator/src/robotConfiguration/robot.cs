@@ -58,7 +58,7 @@ namespace Robot
         [XmlIgnore]
         private List<string> value_strings { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public string value { get; set; }
 
         public ShipTo()
@@ -462,7 +462,7 @@ namespace Robot
     public class motor
     {
         [XmlIgnore]
-        [robotConstant()]
+        [constant()]
         public string motorType { get; protected set; }
 
         public string name { get; set; }
@@ -485,12 +485,12 @@ namespace Robot
     {
         [DefaultValue(1.15)]
         [Range(typeof(double), "0", "62")]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double deadbandPercent { get; set; }
 
         [DefaultValue(2.2)]
         [Range(typeof(double), "-1.0", "3.0")]
-        [robotParameter(false)]
+        [tunableParameter()]
         public double peakMin { get; set; }
 
         [DefaultValue(4.4)]
@@ -507,7 +507,7 @@ namespace Robot
     {
         [DefaultValue(1.1)]
         [Range(typeof(double), "0", "62")]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double deadbandPercent_ { get; set; }
 
         [DefaultValue(2.2)]
@@ -527,7 +527,7 @@ namespace Robot
     [Serializable()]
     public partial class CAN_ID
     {
-        [robotParameter(false)]
+        [tunableParameter()]
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
         public uint value { get; set; }
@@ -574,7 +574,7 @@ namespace Robot
     public partial class pdp
     {
         [DefaultValue(pdptype.CTRE)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public pdptype type { get; set; }
 
         public pdp()
@@ -599,26 +599,26 @@ namespace Robot
     public partial class analogInput
     {
         [DefaultValue(analogInputType.PRESSURE_GAUGE)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public analogInputType type { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "7")]
-        [robotParameter(false)]
+        [tunableParameter()]
         public uint analogId { get; set; }
 
         [DefaultValue(0D)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public double voltageMin { get; set; }
 
         [DefaultValue(5D)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public double voltageMax { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public double outputMin { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public double outputMax { get; set; }
 
         public analogInput()
@@ -634,19 +634,19 @@ namespace Robot
         public CAN_ID canId { get; set; }
 
         [DefaultValue(CAN_BUS.rio)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public CAN_BUS canBusName { get; set; }
 
         [DefaultValue("0.0")]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string rotation { get; set; }
 
         [DefaultValue(pigeontype.pigeon1)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public pigeontype type { get; set; }
 
         [DefaultValue(pigeonname.CENTER_OF_ROTATION)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public pigeonname name { get; set; }
 
         public pigeon()
@@ -659,63 +659,63 @@ namespace Robot
     public partial class limelight
     {
         [XmlAttributeAttribute("name")]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double mountingheight { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double horizontaloffset { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double mountingangle { get; set; }
 
         [DefaultValue(limelightrotation.Angle_0_deg)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public limelightrotation rotation { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double targetheight { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double targetheight2 { get; set; }
 
         [DefaultValue(limelightdefaultledmode.currentpipeline)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public limelightdefaultledmode defaultledmode { get; set; }
 
         [DefaultValue(limelightdefaultcammode.vision)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public limelightdefaultcammode defaultcammode { get; set; }
 
         [DefaultValue(limelightstreammode.sidebyside)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public limelightstreammode streammode { get; set; }
 
         [DefaultValue(limelightsnapshots.off)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public limelightsnapshots snapshots { get; set; }
 
         [DefaultValue(0)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string crosshairx { get; set; }
 
         [DefaultValue(0)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string crosshairy { get; set; }
 
         [DefaultValue(0)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string secondcrosshairx { get; set; }
 
         [DefaultValue(0)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string secondcrosshairy { get; set; }
 
         public limelight()
@@ -743,33 +743,33 @@ namespace Robot
         [DefaultValue(Robot.chassistype.TANK)]
         public chassistype type { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public double wheelDiameter { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public double wheelBase { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public double track { get; set; }
 
         [DefaultValue(chassiswheelSpeedCalcOption.ETHER)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public chassiswheelSpeedCalcOption wheelSpeedCalcOption { get; set; }
 
         [DefaultValue(chassisposeEstimationOption.EULERCHASSIS)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public chassisposeEstimationOption poseEstimationOption { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public double maxVelocity { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public double maxAngularVelocity { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public double maxAcceleration { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public double maxAngularAcceleration { get; set; }
     }
 
@@ -777,7 +777,7 @@ namespace Robot
     public partial class digitalInput
     {
         [DefaultValue("UNKNOWN")]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0u)]
@@ -785,11 +785,11 @@ namespace Robot
         public uint digitalId { get; set; }
 
         [DefaultValue(false)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public bool reversed { get; set; }
 
         [DefaultValue(0D)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public double debouncetime { get; set; }
 
         public digitalInput()
@@ -813,43 +813,43 @@ namespace Robot
         public cancoder cancoder { get; set; }
 
         [DefaultValue(swervemoduletype.LEFT_FRONT)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public swervemoduletype type { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double turn_p { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double turn_i { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double turn_d { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double turn_f { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double turn_nominal_val { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double turn_peak_val { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double turn_max_acc { get; set; }
 
         [DefaultValue(0.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double turn_cruise_vel { get; set; }
 
         [DefaultValue(1.0)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public uint countsOnTurnEncoderPerDegreesOnAngleSensor { get; set; }
     }
 
@@ -863,7 +863,7 @@ namespace Robot
         public CAN_BUS canBusName { get; set; }
 
         [DefaultValue(0D)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public double offset { get; set; }
 
         [DefaultValue(false)]
@@ -926,7 +926,7 @@ namespace Robot
     {
         public CAN_ID canId { get; set; }
 
-        [robotParameter(false)]
+        [tunableParameter()]
         public string name { get; set; }
 
         // [DefaultValue(0u)]
@@ -934,11 +934,11 @@ namespace Robot
         public uint channel { get; set; }
 
         [DefaultValue(false)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public bool reversed { get; set; }
 
         [DefaultValue(solenoidtype.REVPH)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public solenoidtype type { get; set; }
 
         public solenoid()
@@ -956,7 +956,7 @@ namespace Robot
     [Serializable()]
     public partial class servo
     {
-        [robotParameter(false)]
+        [tunableParameter()]
         public string name { get; set; }
 
 
@@ -965,11 +965,11 @@ namespace Robot
         public uint pwmId { get; set; }
 
         [DefaultValue("0.0")]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string minAngle { get; set; }
 
         [DefaultValue("360.0")]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string maxAngle { get; set; }
 
         public servo()
@@ -984,7 +984,7 @@ namespace Robot
     public partial class colorsensor
     {
         [DefaultValue(colorsensorport.kOnboard)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public colorsensorport port { get; set; }
 
         public colorsensor()
@@ -996,27 +996,27 @@ namespace Robot
     [Serializable()]
     public partial class closedLoopControlParameters
     {
-        [robotParameter(true)]
+        [tunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0D)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double pGain { get; set; }
 
         [DefaultValue(0D)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double iGain { get; set; }
 
         [DefaultValue(0D)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double dGain { get; set; }
 
         [DefaultValue(0D)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double fGain { get; set; }
 
         [DefaultValue(0D)]
-        [robotParameter(true)]
+        [tunableParameter()]
         public double iZone { get; set; }
 
         public closedLoopControlParameters()
@@ -1032,27 +1032,27 @@ namespace Robot
     public partial class camera
     {
         [DefaultValue("0")]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string id { get; set; }
 
         [DefaultValue(Robot.cameraformat.KMJPEG)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public cameraformat format { get; set; }
 
         [DefaultValue(640u)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public uint width{get; set; }
 
         [DefaultValue(480)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public string height{get;set; }
 
         [DefaultValue(30)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public uint fps { get; set; }
 
         [DefaultValue(false)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public bool thread{get;set; }
 
         public camera()
@@ -1065,7 +1065,7 @@ namespace Robot
     public partial class roborio
     {
         [DefaultValue(Robot.roborioorientation.X_FORWARD_Y_LEFT)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public roborioorientation orientation { get; set; }
 
         public roborio()
@@ -1097,7 +1097,7 @@ namespace Robot
     [Serializable()]
     public partial class pwmultrasonic
     {
-        [robotParameter(false)]
+        [tunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0u)]
@@ -1114,7 +1114,7 @@ namespace Robot
     [Serializable()]
     public partial class analogultrasonic
     {
-        [robotParameter(false)]
+        [tunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0u)]
@@ -1131,15 +1131,15 @@ namespace Robot
     [Serializable()]
     public partial class lidar
     {
-        [robotParameter(false)]
+        [tunableParameter()]
         public string name{get; set;}
 
         [DefaultValue(0u)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public uint inputpin { get; set; }
 
         [DefaultValue(0)]
-        [robotParameter(false)]
+        [tunableParameter()]
         public uint triggerpin { get; set; }
 
         public lidar()
@@ -1312,20 +1312,17 @@ namespace Robot
     // if isTunable == true, it means that live tuning over network tables is enabled
     // if isTunable == false, it means that after changing the value of the parameter, it will take effect on code regeneration and robot code build
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
-    public class robotParameterAttribute : Attribute
+    public class tunableParameterAttribute : Attribute
     {
-        public bool isTunable { get; private set; }
-
-        public robotParameterAttribute(bool isTunable)
+        public tunableParameterAttribute()
         {
-            this.isTunable = isTunable;
         }
     }
 
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
-    public class robotConstantAttribute : Attribute
+    public class constantAttribute : Attribute
     {
-        public robotConstantAttribute()
+        public constantAttribute()
         {
         }
     }

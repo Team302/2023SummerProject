@@ -286,7 +286,6 @@ namespace FRCrobotCodeGen302
                     }
 
                     bool isConstant = false;
-                    bool isParameter = false;
                     bool isTunable = false;
                     RangeAttribute range = null;
                     DefaultValueAttribute defaultValue = null;
@@ -298,24 +297,17 @@ namespace FRCrobotCodeGen302
 
                         if (parentPi != null)
                         {
-                            robotParameterAttribute rpa = (robotParameterAttribute)parentPi.GetCustomAttribute(typeof(robotParameterAttribute), false);
-                            robotConstantAttribute rca = (robotConstantAttribute)parentPi.GetCustomAttribute(typeof(robotConstantAttribute), false);
+                            tunableParameterAttribute rpa = (tunableParameterAttribute)parentPi.GetCustomAttribute(typeof(tunableParameterAttribute), false);
+                            constantAttribute rca = (constantAttribute)parentPi.GetCustomAttribute(typeof(constantAttribute), false);
                             range = (RangeAttribute)parentPi.GetCustomAttribute(typeof(RangeAttribute), false);
                             defaultValue = (DefaultValueAttribute)parentPi.GetCustomAttribute(typeof(DefaultValueAttribute), false);
 
                             isConstant = rca != null;
-                            if (!isConstant)
-                            {
-                                if (rpa != null)
-                                {
-                                    isParameter = true;
-                                    isTunable = rpa.isTunable;
-                                }
-                            }
+                            isTunable = rpa != null;
                         }
                     }
 
-                    if (!treatAsLeafNode && !isTunable && !isParameter && (objType.FullName != "System.String") && (objType.FullName != "System.DateTime") && (propertyInfos.Length > 0))
+                    if (!treatAsLeafNode && !isTunable && (objType.FullName != "System.String") && (objType.FullName != "System.DateTime") && (propertyInfos.Length > 0))
                     {
                         // add its children
                         string previousName = "";
@@ -349,15 +341,13 @@ namespace FRCrobotCodeGen302
                             imageIndex = treeIconIndex_lockedPadlock;
                         else if (isTunable)
                             imageIndex = treeIconIndex_wrench;
-                        else if (isParameter)
-                            imageIndex = treeIconIndex_gear;
                         else if (isPartOfAMechanismInaMechInstance(tn))
                             imageIndex = treeIconIndex_lockedPadlock;
 
                         tn.ImageIndex = imageIndex;
                         tn.SelectedImageIndex = imageIndex;
 
-                        leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj, isConstant, isParameter, isTunable);
+                        leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj, isConstant, isTunable);
                         if (range != null)
                             lnt.setRange(Convert.ToDouble(range.Minimum), Convert.ToDouble(range.Maximum));
                         if (defaultValue != null)
@@ -720,7 +710,7 @@ namespace FRCrobotCodeGen302
                     bool allowEdit = false;
                     if (!lnt.isConstant)
                     {
-                        if (lnt.isTunable || lnt.isParameter)
+                        if (lnt.isTunable)
                         {
                             prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
 
@@ -933,7 +923,7 @@ namespace FRCrobotCodeGen302
 
                         string displayStr = "";
                         PropertyInfo prop;
-                        if (lnt.isTunable || lnt.isParameter)
+                        if (lnt.isTunable)
                         {
                             prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                             Object obj = lnt.obj;
@@ -1570,18 +1560,16 @@ namespace FRCrobotCodeGen302
         public string name { get; private set; }
         public object obj { get; private set; }
         public bool isConstant { get; private set; }
-        public bool isParameter { get; private set; }
         public bool isTunable { get; private set; }
         public valueRange range { get; private set; }
         public defaultValue theDefault { get; private set; }
 
-        public leafNodeTag(Type type, string name, object obj, bool isConstant, bool isParameter, bool isTunable)
+        public leafNodeTag(Type type, string name, object obj, bool isConstant, bool isTunable)
         {
             this.type = type;
             this.name = name;
             this.obj = obj;
             this.isConstant = isConstant;
-            this.isParameter = isParameter;
             this.isTunable = isTunable;
             range = null;
             theDefault = null;
