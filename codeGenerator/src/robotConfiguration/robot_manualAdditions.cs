@@ -25,44 +25,6 @@ namespace Robot
         public object theTreeNode = null;
     }
 
-    public partial class robot
-    {
-        public void initialize()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    partial class pcm
-    {
-        public pcm()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    partial class pigeon
-    {
-        public pigeon()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-    partial class cancoder
-    {
-        public cancoder()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    partial class talontach
-    {
-        public talontach()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
 
     static class utilities
     {

@@ -267,19 +267,6 @@ namespace Robot
     }
 
     [Serializable()]
-    [XmlTypeAttribute("cancoderreverse", Namespace = "http://team302.org/robot")]
-    public enum cancoderreverse
-    {
-
-        [XmlEnumAttribute("true")]
-        Item_true,
-
-        [XmlEnumAttribute("false")]
-        Item_false,
-    }
-
-
-    [Serializable()]
     [XmlType("swervemoduletype", Namespace = "http://team302.org/robot")]
     public enum swervemoduletype
     {
@@ -453,13 +440,7 @@ namespace Robot
             motorType = motorType.Substring(0, motorType.LastIndexOf('_'));
             name = motorType;
 
-            PropertyInfo[] PIs = this.GetType().GetProperties();
-            foreach (PropertyInfo pi in PIs)
-            {
-                DefaultValueAttribute dva = pi.GetCustomAttribute<DefaultValueAttribute>();
-                if (dva != null)
-                    pi.SetValue(this, dva.Value);
-            }
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -514,6 +495,11 @@ namespace Robot
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
         public uint value { get; set; }
+
+        public CAN_ID()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
     [Serializable()]
@@ -521,27 +507,7 @@ namespace Robot
     {
         public List<motor> motor { get; set; }
         public List<pcm> pcm { get; set; }
-
-        [XmlElementAttribute("pdp")]
         public pdp pdp { get; set; }
-
-        /// <summary>
-        /// <para xml:lang="en">Initializes a new instance of the <see cref="robot" /> class.</para>
-        /// </summary>
-        public robot()
-        {
-            initialize();
-            motor = new List<motor>();
-            pcm = new List<pcm>();
-            pigeon = new List<pigeon>();
-            limelight = new List<limelight>();
-            mechanismInstance = new List<mechanismInstance>();
-            camera = new List<camera>();
-            roborio = new List<roborio>();
-
-            robotID = 1;
-        }
-
         public List<pigeon> pigeon { get; set; }
         public List<limelight> limelight { get; set; }
         public chassis chassis { get; set; }
@@ -552,6 +518,19 @@ namespace Robot
         [DefaultValueAttribute(1u)]
         [RangeAttribute(typeof(uint), "1", "9999")]
         public uint robotID { get; set; }
+
+        public robot()
+        {
+            motor = new List<motor>();
+            pcm = new List<pcm>();
+            pigeon = new List<pigeon>();
+            limelight = new List<limelight>();
+            mechanismInstance = new List<mechanismInstance>();
+            camera = new List<camera>();
+            roborio = new List<roborio>();
+
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
 
@@ -561,19 +540,26 @@ namespace Robot
         [DefaultValue(pdptype.CTRE)]
         [robotParameter(false)]
         public pdptype type { get; set; }
+
+        public pdp()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
     [Serializable()]
-    [XmlRoot("pcm", Namespace = "http://team302.org/robot")]
     public partial class pcm
     {
         public analogInput analogInput { get; set; }
         public CAN_ID canId { get; set; }
+
+        public pcm()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
-
     [Serializable()]
-    [XmlRoot("analogInput", Namespace = "http://team302.org/robot")]
     public partial class analogInput
     {
         [DefaultValue(analogInputType.PRESSURE_GAUGE)]
@@ -598,11 +584,15 @@ namespace Robot
 
         [robotParameter(false)]
         public double outputMax { get; set; }
+
+        public analogInput()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
 
     [Serializable()]
-    [XmlRoot("pigeon", Namespace = "http://team302.org/robot")]
     public partial class pigeon
     {
         public CAN_ID canId { get; set; }
@@ -622,10 +612,14 @@ namespace Robot
         [DefaultValue(pigeonname.CENTER_OF_ROTATION)]
         [robotParameter(false)]
         public pigeonname name { get; set; }
+
+        public pigeon()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
     [Serializable()]
-    [XmlRoot("limelight", Namespace = "http://team302.org/robot")]
     public partial class limelight
     {
         [XmlAttributeAttribute("name")]
@@ -687,741 +681,235 @@ namespace Robot
         [DefaultValue(0)]
         [robotParameter(false)]
         public string secondcrosshairy { get; set; }
+
+        public limelight()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
 
     [Serializable()]
-    [XmlRoot("chassis", Namespace = "http://team302.org/robot")]
     public partial class chassis
     {
+        public List<motor> motor { get; set; }
 
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<motor> _motor;
-
-        [XmlElementAttribute("motor")]
-        public System.Collections.ObjectModel.Collection<motor> motor
-        {
-            get
-            {
-                return _motor;
-            }
-            private set
-            {
-                _motor = value;
-            }
-        }
-
-        /// <summary>
-        /// <para xml:lang="en">Initializes a new instance of the <see cref="chassis" /> class.</para>
-        /// </summary>
         public chassis()
         {
-            this._motor = new System.Collections.ObjectModel.Collection<motor>();
-            this._swervemodule = new System.Collections.ObjectModel.Collection<swervemodule>();
+            motor = new List<motor>();
+            swervemodule = new List<swervemodule>();
+
+            helperFunctions.initializeDefaultValues(this);
         }
 
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<swervemodule> _swervemodule;
+        public List<swervemodule> swervemodule { get; set; }
 
-        [XmlElementAttribute("swervemodule")]
-        public System.Collections.ObjectModel.Collection<swervemodule> swervemodule
-        {
-            get
-            {
-                return _swervemodule;
-            }
-            private set
-            {
-                _swervemodule = value;
-            }
-        }
+        [DefaultValue(Robot.chassistype.TANK)]
+        public chassistype type { get; set; }
 
-        private chassistype _type = Robot.chassistype.TANK;
+        [robotParameter(false)]
+        public double wheelDiameter { get; set; }
 
-        [System.ComponentModel.DefaultValueAttribute(Robot.chassistype.TANK)]
-        [XmlAttributeAttribute("type")]
-        public chassistype type
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                _type = value;
-            }
-        }
+        [robotParameter(false)]
+        public double wheelBase { get; set; }
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlAttributeAttribute("wheelDiameter")]
-        public string wheelDiameter { get; set; }
+        [robotParameter(false)]
+        public double track { get; set; }
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlAttributeAttribute("wheelBase")]
-        public string wheelBase { get; set; }
+        [DefaultValue(chassiswheelSpeedCalcOption.ETHER)]
+        [robotParameter(false)]
+        public chassiswheelSpeedCalcOption wheelSpeedCalcOption { get; set; }
 
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlAttributeAttribute("track")]
-        public string track { get; set; }
+        [DefaultValue(chassisposeEstimationOption.EULERCHASSIS)]
+        [robotParameter(false)]
+        public chassisposeEstimationOption poseEstimationOption { get; set; }
 
-        private chassiswheelSpeedCalcOption _wheelSpeedCalcOption = Robot.chassiswheelSpeedCalcOption.ETHER;
+        [robotParameter(false)]
+        public double maxVelocity { get; set; }
 
-        [System.ComponentModel.DefaultValueAttribute(Robot.chassiswheelSpeedCalcOption.ETHER)]
-        [XmlAttributeAttribute("wheelSpeedCalcOption")]
-        public chassiswheelSpeedCalcOption wheelSpeedCalcOption
-        {
-            get
-            {
-                return _wheelSpeedCalcOption;
-            }
-            set
-            {
-                _wheelSpeedCalcOption = value;
-            }
-        }
+        [robotParameter(false)]
+        public double maxAngularVelocity { get; set; }
 
-        private chassisposeEstimationOption _poseEstimationOption = Robot.chassisposeEstimationOption.EULERCHASSIS;
+        [robotParameter(false)]
+        public double maxAcceleration { get; set; }
 
-        [System.ComponentModel.DefaultValueAttribute(Robot.chassisposeEstimationOption.EULERCHASSIS)]
-        [XmlAttributeAttribute("poseEstimationOption")]
-        public chassisposeEstimationOption poseEstimationOption
-        {
-            get
-            {
-                return _poseEstimationOption;
-            }
-            set
-            {
-                _poseEstimationOption = value;
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlAttributeAttribute("maxVelocity")]
-        public string maxVelocity { get; set; }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlAttributeAttribute("maxAngularVelocity")]
-        public string maxAngularVelocity { get; set; }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlAttributeAttribute("maxAcceleration")]
-        public string maxAcceleration { get; set; }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlAttributeAttribute("maxAngularAcceleration")]
-        public string maxAngularAcceleration { get; set; }
-
-        [XmlAttributeAttribute("networkTable")]
-        public string networkTable { get; set; }
-
-        [XmlAttributeAttribute("controlFile")]
-        public string controlFile { get; set; }
+        [robotParameter(false)]
+        public double maxAngularAcceleration { get; set; }
     }
 
-
     [Serializable()]
-    [XmlRootAttribute("digitalInput", Namespace = "http://team302.org/robot")]
     public partial class digitalInput
     {
+        [DefaultValue("UNKNOWN")]
+        [robotParameter(false)]
+        public string name { get; set; }
 
-        [XmlIgnoreAttribute()]
-        private string _name = "UNKNOWN";
-
-        [System.ComponentModel.DefaultValueAttribute("UNKNOWN")]
-        [XmlAttributeAttribute("name")]
-        public string name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private uint _digitalId = 0u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 25.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "25")]
-        [XmlAttributeAttribute("digitalId")]
-        public uint digitalId
-        {
-            get
-            {
-                return _digitalId;
-            }
-            set
-            {
-                _digitalId = value;
-            }
-        }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "25")]
+        public uint digitalId { get; set; }
 
         [DefaultValue(false)]
         [robotParameter(false)]
         public bool reversed { get; set; }
 
-        [XmlIgnoreAttribute()]
-        private double _debouncetime = 0D;
+        [DefaultValue(0D)]
+        [robotParameter(false)]
+        public double debouncetime { get; set; }
 
-        [System.ComponentModel.DefaultValueAttribute(0D)]
-        [XmlAttributeAttribute("debouncetime")]
-        public double debouncetime
+        public digitalInput()
         {
-            get
-            {
-                return _debouncetime;
-            }
-            set
-            {
-                _debouncetime = value;
-            }
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
-
-
-
-
     [Serializable()]
-    [XmlTypeAttribute("swervemodule", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("swervemodule", Namespace = "http://team302.org/robot")]
     public partial class swervemodule
-    {
-
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<motor> _motor;
-
-        [XmlElementAttribute("motor")]
-        public System.Collections.ObjectModel.Collection<motor> motor
-        {
-            get
-            {
-                return _motor;
-            }
-            private set
-            {
-                _motor = value;
-            }
-        }
-
-        /// <summary>
-        /// <para xml:lang="en">Initializes a new instance of the <see cref="swervemodule" /> class.</para>
-        /// </summary>
-        public swervemodule()
-        {
-            this._motor = new System.Collections.ObjectModel.Collection<motor>();
-        }
-
-        [XmlElementAttribute("cancoder")]
-        public cancoder cancoder { get; set; }
-
-        private swervemoduletype _type = Robot.swervemoduletype.LEFT_FRONT;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.swervemoduletype.LEFT_FRONT)]
-        [XmlAttributeAttribute("type")]
-        public swervemoduletype type
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                _type = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _turn_p = "0.0";
-
-        [System.ComponentModel.DefaultValueAttribute("0.0")]
-        [XmlAttributeAttribute("turn_p")]
-        public string turn_p
-        {
-            get
-            {
-                return _turn_p;
-            }
-            set
-            {
-                _turn_p = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _turn_i = "0.0";
-
-        [System.ComponentModel.DefaultValueAttribute("0.0")]
-        [XmlAttributeAttribute("turn_i")]
-        public string turn_i
-        {
-            get
-            {
-                return _turn_i;
-            }
-            set
-            {
-                _turn_i = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _turn_d = "0.0";
-
-        [System.ComponentModel.DefaultValueAttribute("0.0")]
-        [XmlAttributeAttribute("turn_d")]
-        public string turn_d
-        {
-            get
-            {
-                return _turn_d;
-            }
-            set
-            {
-                _turn_d = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _turn_f = "0.0";
-
-        [System.ComponentModel.DefaultValueAttribute("0.0")]
-        [XmlAttributeAttribute("turn_f")]
-        public string turn_f
-        {
-            get
-            {
-                return _turn_f;
-            }
-            set
-            {
-                _turn_f = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _turn_nominal_val = "0.0";
-
-        [System.ComponentModel.DefaultValueAttribute("0.0")]
-        [XmlAttributeAttribute("turn_nominal_val")]
-        public string turn_nominal_val
-        {
-            get
-            {
-                return _turn_nominal_val;
-            }
-            set
-            {
-                _turn_nominal_val = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _turn_peak_val = "1.0";
-
-        [System.ComponentModel.DefaultValueAttribute("1.0")]
-        [XmlAttributeAttribute("turn_peak_val")]
-        public string turn_peak_val
-        {
-            get
-            {
-                return _turn_peak_val;
-            }
-            set
-            {
-                _turn_peak_val = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _turn_max_acc = "0.0";
-
-        [System.ComponentModel.DefaultValueAttribute("0.0")]
-        [XmlAttributeAttribute("turn_max_acc")]
-        public string turn_max_acc
-        {
-            get
-            {
-                return _turn_max_acc;
-            }
-            set
-            {
-                _turn_max_acc = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _turn_cruise_vel = "0.0";
-
-        [System.ComponentModel.DefaultValueAttribute("0.0")]
-        [XmlAttributeAttribute("turn_cruise_vel")]
-        public string turn_cruise_vel
-        {
-            get
-            {
-                return _turn_cruise_vel;
-            }
-            set
-            {
-                _turn_cruise_vel = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _countsOnTurnEncoderPerDegreesOnAngleSensor = "1.0";
-
-        [System.ComponentModel.DefaultValueAttribute("1.0")]
-        [XmlAttributeAttribute("countsOnTurnEncoderPerDegreesOnAngleSensor")]
-        public string countsOnTurnEncoderPerDegreesOnAngleSensor
-        {
-            get
-            {
-                return _countsOnTurnEncoderPerDegreesOnAngleSensor;
-            }
-            set
-            {
-                _countsOnTurnEncoderPerDegreesOnAngleSensor = value;
-            }
-        }
-    }
-
-
-    [Serializable()]
-    [XmlTypeAttribute("cancoder", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("cancoder", Namespace = "http://team302.org/robot")]
-    public partial class cancoder
-    {
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlElementAttribute("canId")]
-        public CAN_ID canId { get; set; }
-
-        private CAN_BUS _canBusName = Robot.CAN_BUS.rio;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.CAN_BUS.rio)]
-        [XmlAttributeAttribute("canBusName")]
-        public CAN_BUS canBusName
-        {
-            get
-            {
-                return _canBusName;
-            }
-            set
-            {
-                _canBusName = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private double _offset = 0D;
-
-        [System.ComponentModel.DefaultValueAttribute(0D)]
-        [XmlAttributeAttribute("offset")]
-        public double offset
-        {
-            get
-            {
-                return _offset;
-            }
-            set
-            {
-                _offset = value;
-            }
-        }
-
-        private cancoderreverse _reverse = Robot.cancoderreverse.Item_false;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.cancoderreverse.Item_false)]
-        [XmlAttributeAttribute("reverse")]
-        public cancoderreverse reverse
-        {
-            get
-            {
-                return _reverse;
-            }
-            set
-            {
-                _reverse = value;
-            }
-        }
-    }
-
-
-
-
-
-    [Serializable()]
-    [XmlTypeAttribute("mechanismInstance", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("mechanismInstance", Namespace = "http://team302.org/robot")]
-    public partial class mechanismInstance
-    {
-
-        [XmlIgnoreAttribute()]
-        private string _name = "mechanismInstanceName";
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlElementAttribute("name")]
-        public string name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlElementAttribute("mechanism")]
-        public mechanism mechanism { get; set; }
-    }
-
-
-    [Serializable()]
-    [XmlTypeAttribute("mechanism", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("mechanism", Namespace = "http://team302.org/robot")]
-    public partial class mechanism
     {
         public List<motor> motor { get; set; }
 
-        /// <summary>
-        /// <para xml:lang="en">Initializes a new instance of the <see cref="mechanism" /> class.</para>
-        /// </summary>
-        public mechanism()
+        public swervemodule()
         {
-            this.motor = new List<motor>();
-            name = this.GetType().Name;
+            motor = new List<motor>();
 
-            this._solenoid = new System.Collections.ObjectModel.Collection<solenoid>();
-            this._servo = new System.Collections.ObjectModel.Collection<servo>();
-            this._analogInput = new System.Collections.ObjectModel.Collection<analogInput>();
-            this._digitalInput = new System.Collections.ObjectModel.Collection<digitalInput>();
-            this._cancoder = new System.Collections.ObjectModel.Collection<cancoder>();
-            this._closedLoopControlParameters = new System.Collections.ObjectModel.Collection<closedLoopControlParameters>();
+            helperFunctions.initializeDefaultValues(this);
         }
 
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<solenoid> _solenoid;
+        public cancoder cancoder { get; set; }
 
-        [XmlElementAttribute("solenoid")]
-        public System.Collections.ObjectModel.Collection<solenoid> solenoid
+        [DefaultValue(swervemoduletype.LEFT_FRONT)]
+        [robotParameter(false)]
+        public swervemoduletype type { get; set; }
+
+        [DefaultValue(0.0)]
+        [robotParameter(true)]
+        public double turn_p { get; set; }
+
+        [DefaultValue(0.0)]
+        [robotParameter(true)]
+        public double turn_i { get; set; }
+
+        [DefaultValue(0.0)]
+        [robotParameter(true)]
+        public double turn_d { get; set; }
+
+        [DefaultValue(0.0)]
+        [robotParameter(true)]
+        public double turn_f { get; set; }
+
+        [DefaultValue(0.0)]
+        [robotParameter(true)]
+        public double turn_nominal_val { get; set; }
+
+        [DefaultValue(0.0)]
+        [robotParameter(true)]
+        public double turn_peak_val { get; set; }
+
+        [DefaultValue(0.0)]
+        [robotParameter(true)]
+        public double turn_max_acc { get; set; }
+
+        [DefaultValue(0.0)]
+        [robotParameter(true)]
+        public double turn_cruise_vel { get; set; }
+
+        [DefaultValue(1.0)]
+        [robotParameter(true)]
+        public uint countsOnTurnEncoderPerDegreesOnAngleSensor { get; set; }
+    }
+
+
+    [Serializable()]
+    public partial class cancoder
+    {
+        public CAN_ID canId { get; set; }
+
+        [DefaultValue(CAN_BUS.rio)]
+        public CAN_BUS canBusName { get; set; }
+
+        [DefaultValue(0D)]
+        [robotParameter(false)]
+        public double offset { get; set; }
+
+        [DefaultValue(false)]
+        public bool reverse { get; set; }
+
+        public cancoder()
         {
-            get
-            {
-                return _solenoid;
-            }
-            private set
-            {
-                _solenoid = value;
-            }
+            helperFunctions.initializeDefaultValues(this);
         }
+    }
 
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<servo> _servo;
+    [Serializable()]
+    public partial class mechanismInstance
+    {
+        public string name { get; set; }
 
-        [XmlElementAttribute("servo")]
-        public System.Collections.ObjectModel.Collection<servo> servo
+        public mechanism mechanism { get; set; }
+
+        public mechanismInstance()
         {
-            get
-            {
-                return _servo;
-            }
-            private set
-            {
-                _servo = value;
-            }
-        }
+            name = "mechanismInstanceName";
 
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<analogInput> _analogInput;
-
-        [XmlElementAttribute("analogInput")]
-        public System.Collections.ObjectModel.Collection<analogInput> analogInput
-        {
-            get
-            {
-                return _analogInput;
-            }
-            private set
-            {
-                _analogInput = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<digitalInput> _digitalInput;
-
-        [XmlElementAttribute("digitalInput")]
-        public System.Collections.ObjectModel.Collection<digitalInput> digitalInput
-        {
-            get
-            {
-                return _digitalInput;
-            }
-            private set
-            {
-                _digitalInput = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<cancoder> _cancoder;
-
-        [XmlElementAttribute("cancoder")]
-        public System.Collections.ObjectModel.Collection<cancoder> cancoder
-        {
-            get
-            {
-                return _cancoder;
-            }
-            private set
-            {
-                _cancoder = value;
-            }
-        }
-
-        [XmlElementAttribute("colorsensor")]
-        public colorsensor colorsensor { get; set; }
-
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<closedLoopControlParameters> _closedLoopControlParameters;
-
-        [XmlElementAttribute("closedLoopControlParameters")]
-        public System.Collections.ObjectModel.Collection<closedLoopControlParameters> closedLoopControlParameters
-        {
-            get
-            {
-                return _closedLoopControlParameters;
-            }
-            private set
-            {
-                _closedLoopControlParameters = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private string _name = "UNKNOWN";
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlElementAttribute("name")]
-        public string name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
 
     [Serializable()]
-    [XmlTypeAttribute("solenoid", Namespace = "http://team302.org/robot")]
+    public partial class mechanism
+    {
+        public List<motor> motor { get; set; }
+        public List<solenoid> solenoid { get; set; }
+        public List<servo> servo { get; set; }
+        public List<analogInput> analogInput { get; set; }
+        public List<digitalInput> digitalInput { get; set; }
+        public List<cancoder> cancoder { get; set; }
+        public colorsensor colorsensor { get; set; }
+        public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
+        public string name { get; set; }
+
+        public mechanism()
+        {
+            name = GetType().Name;
+
+            motor = new List<motor>();
+            solenoid = new List<solenoid>();
+            servo = new List<servo>();
+            analogInput = new List<analogInput>();
+            digitalInput = new List<digitalInput>();
+            cancoder = new List<cancoder>();
+            closedLoopControlParameters = new List<closedLoopControlParameters>();
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+    }
 
 
-    [XmlRootAttribute("solenoid", Namespace = "http://team302.org/robot")]
+    [Serializable()]
     public partial class solenoid
     {
-        public solenoid()
-        {
-            utilities.initializeNullProperties(this);
-            _name = this.GetType().Name;
-        }
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlElementAttribute("canId")]
         public CAN_ID canId { get; set; }
 
-        [XmlIgnoreAttribute()]
-        private string _name = "UNKNOWN";
+        [robotParameter(false)]
+        public string name { get; set; }
 
-        [System.ComponentModel.DefaultValueAttribute("UNKNOWN")]
-        [XmlAttributeAttribute("name")]
-        public string name
+        // [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "7")]
+        public uint channel { get; set; }
+
+        [DefaultValue(false)]
+        [robotParameter(false)]
+        public bool reversed { get; set; }
+
+        [DefaultValue(solenoidtype.REVPH)]
+        [robotParameter(false)]
+        public solenoidtype type { get; set; }
+
+        public solenoid()
         {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
+            name = this.GetType().Name;
 
-        [XmlIgnoreAttribute()]
-        private uint _channel = 0u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 7.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "7")]
-        [XmlAttributeAttribute("channel")]
-        public uint channel
-        {
-            get
-            {
-                return _channel;
-            }
-            set
-            {
-                _channel = value;
-            }
-        }
-
-        private solenoidreversed _reversed = Robot.solenoidreversed.Item_false;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.solenoidreversed.Item_false)]
-        [XmlAttributeAttribute("reversed")]
-        public solenoidreversed reversed
-        {
-            get
-            {
-                return _reversed;
-            }
-            set
-            {
-                _reversed = value;
-            }
-        }
-
-        private solenoidtype _type = Robot.solenoidtype.REVPH;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.solenoidtype.REVPH)]
-        [XmlAttributeAttribute("type")]
-        public solenoidtype type
-        {
-            get
-            {
-                return _type;
-            }
-            set
-            {
-                _type = value;
-            }
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1437,7 +925,6 @@ namespace Robot
     public partial class servo
     {
 
-        [XmlIgnoreAttribute()]
         private string _name = "UNKNOWN";
 
         [System.ComponentModel.DefaultValueAttribute("UNKNOWN")]
@@ -1454,7 +941,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private uint _pwmId = 0u;
 
         /// <summary>
@@ -1476,7 +962,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private string _minAngle = "0.0";
 
         [System.ComponentModel.DefaultValueAttribute("0.0")]
@@ -1493,7 +978,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private string _maxAngle = "360.0";
 
         [System.ComponentModel.DefaultValueAttribute("360.0")]
@@ -1508,6 +992,11 @@ namespace Robot
             {
                 _maxAngle = value;
             }
+        }
+
+        public servo()
+        {
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1534,6 +1023,11 @@ namespace Robot
             {
                 _port = value;
             }
+        }
+
+        public colorsensor()
+        {
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1572,7 +1066,9 @@ namespace Robot
 
         public closedLoopControlParameters()
         {
-            name = this.GetType().Name;
+            name = GetType().Name;
+
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1585,7 +1081,6 @@ namespace Robot
     public partial class camera
     {
 
-        [XmlIgnoreAttribute()]
         private string _id = "0";
 
         [System.ComponentModel.DefaultValueAttribute("0")]
@@ -1618,7 +1113,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private string _width = "640";
 
         [System.ComponentModel.DefaultValueAttribute("640")]
@@ -1635,7 +1129,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private string _height = "480";
 
         [System.ComponentModel.DefaultValueAttribute("480")]
@@ -1652,7 +1145,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private string _fps = "30";
 
         [System.ComponentModel.DefaultValueAttribute("30")]
@@ -1684,6 +1176,11 @@ namespace Robot
                 _thread = value;
             }
         }
+
+        public camera()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
 
@@ -1711,6 +1208,11 @@ namespace Robot
             {
                 _orientation = value;
             }
+        }
+
+        public roborio()
+        {
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1743,15 +1245,6 @@ namespace Robot
             }
         }
 
-        /// <summary>
-        /// <para xml:lang="en">Initializes a new instance of the <see cref="robotVariants" /> class.</para>
-        /// </summary>
-        public robotVariants()
-        {
-            this._robot = new System.Collections.ObjectModel.Collection<robot>();
-            this._mechanism = new System.Collections.ObjectModel.Collection<mechanism>();
-        }
-
         [XmlIgnoreAttribute()]
         private System.Collections.ObjectModel.Collection<mechanism> _mechanism;
 
@@ -1766,6 +1259,14 @@ namespace Robot
             {
                 _mechanism = value;
             }
+        }
+
+        public robotVariants()
+        {
+            this._robot = new System.Collections.ObjectModel.Collection<robot>();
+            this._mechanism = new System.Collections.ObjectModel.Collection<mechanism>();
+
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1794,7 +1295,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private uint _pwmId = 0u;
 
         /// <summary>
@@ -1814,6 +1314,11 @@ namespace Robot
             {
                 _pwmId = value;
             }
+        }
+
+        public pwmultrasonic()
+        {
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1843,7 +1348,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private uint _analogId = 0u;
 
         /// <summary>
@@ -1863,6 +1367,11 @@ namespace Robot
             {
                 _analogId = value;
             }
+        }
+
+        public analogultrasonic()
+        {
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1892,7 +1401,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private string _inputpin = "0";
 
         [System.ComponentModel.DefaultValueAttribute("0")]
@@ -1909,7 +1417,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private string _triggerpin = "0";
 
         [System.ComponentModel.DefaultValueAttribute("0")]
@@ -1924,6 +1431,11 @@ namespace Robot
             {
                 _triggerpin = value;
             }
+        }
+
+        public lidar()
+        {
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1940,7 +1452,6 @@ namespace Robot
     public partial class led
     {
 
-        [XmlIgnoreAttribute()]
         private uint _pwmId = 0u;
 
         /// <summary>
@@ -1965,6 +1476,11 @@ namespace Robot
         [System.ComponentModel.DataAnnotations.RequiredAttribute()]
         [XmlAttributeAttribute("number")]
         public string number { get; set; }
+
+        public led()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
 
@@ -1992,7 +1508,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private uint _pwmId = 0u;
 
         /// <summary>
@@ -2013,6 +1528,11 @@ namespace Robot
                 _pwmId = value;
             }
         }
+
+        public blinkin()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
     }
 
 
@@ -2030,7 +1550,6 @@ namespace Robot
         [XmlElementAttribute("canId")]
         public CAN_ID canId { get; set; }
 
-        [XmlIgnoreAttribute()]
         private uint _name = 0u;
 
         /// <summary>
@@ -2052,7 +1571,6 @@ namespace Robot
             }
         }
 
-        [XmlIgnoreAttribute()]
         private uint _generalpin = 0u;
 
         /// <summary>
@@ -2072,6 +1590,11 @@ namespace Robot
             {
                 _generalpin = value;
             }
+        }
+
+        public talontach()
+        {
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -2098,4 +1621,18 @@ namespace Robot
     }
 
     #endregion
+
+    static class helperFunctions
+    {
+        static public void initializeDefaultValues(object obj)
+        {
+            PropertyInfo[] PIs = obj.GetType().GetProperties();
+            foreach (PropertyInfo pi in PIs)
+            {
+                DefaultValueAttribute dva = pi.GetCustomAttribute<DefaultValueAttribute>();
+                if (dva != null)
+                    pi.SetValue(obj, Convert.ChangeType(dva.Value, pi.PropertyType));
+            }
+        }
+    }
 }

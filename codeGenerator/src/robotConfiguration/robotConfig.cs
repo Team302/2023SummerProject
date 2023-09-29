@@ -32,8 +32,6 @@ namespace robotConfiguration
 
                 foreach (robot theRobot in theRobotVariants.robot)
                 {
-                    theRobot.initialize();
-
                     ValidationContext context = new ValidationContext(theRobot.pdp);
                     IList<ValidationResult> errors = new List<ValidationResult>();
 
