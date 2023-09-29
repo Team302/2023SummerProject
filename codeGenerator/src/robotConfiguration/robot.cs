@@ -349,19 +349,6 @@ namespace Robot
         KGRAY,
     }
 
-
-    [Serializable()]
-    [XmlTypeAttribute("camerathread", Namespace = "http://team302.org/robot")]
-    public enum camerathread
-    {
-
-        [XmlEnumAttribute("true")]
-        Item_true,
-
-        [XmlEnumAttribute("false")]
-        Item_false,
-    }
-
     [Serializable()]
     [XmlType("roborioorientation", Namespace = "http://team302.org/robot")]
     public enum roborioorientation
@@ -382,22 +369,6 @@ namespace Robot
         X_LEFT_Y_UP,
         X_DOWN_Y_LEFT,
         X_RIGHT_Y_DOWN,
-    }
-
-    [Serializable()]
-    [XmlType("pwmultrasonicname", Namespace = "http://team302.org/robot")]
-    public enum pwmultrasonicname
-    {
-        front,
-        back,
-    }
-
-    [Serializable()]
-    [XmlType("analogultrasonicname", Namespace = "http://team302.org/robot")]
-    public enum analogultrasonicname
-    {
-        front,
-        back,
     }
 
     [Serializable()]
@@ -918,112 +889,38 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlTypeAttribute("servo", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("servo", Namespace = "http://team302.org/robot")]
     public partial class servo
     {
+        [robotParameter(false)]
+        public string name { get; set; }
 
-        private string _name = "UNKNOWN";
 
-        [System.ComponentModel.DefaultValueAttribute("UNKNOWN")]
-        [XmlAttributeAttribute("name")]
-        public string name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "19")]
+        public uint pwmId { get; set; }
 
-        private uint _pwmId = 0u;
+        [DefaultValue("0.0")]
+        [robotParameter(false)]
+        public string minAngle { get; set; }
 
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 19.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "19")]
-        [XmlAttributeAttribute("pwmId")]
-        public uint pwmId
-        {
-            get
-            {
-                return _pwmId;
-            }
-            set
-            {
-                _pwmId = value;
-            }
-        }
-
-        private string _minAngle = "0.0";
-
-        [System.ComponentModel.DefaultValueAttribute("0.0")]
-        [XmlAttributeAttribute("minAngle")]
-        public string minAngle
-        {
-            get
-            {
-                return _minAngle;
-            }
-            set
-            {
-                _minAngle = value;
-            }
-        }
-
-        private string _maxAngle = "360.0";
-
-        [System.ComponentModel.DefaultValueAttribute("360.0")]
-        [XmlAttributeAttribute("maxAngle")]
-        public string maxAngle
-        {
-            get
-            {
-                return _maxAngle;
-            }
-            set
-            {
-                _maxAngle = value;
-            }
-        }
+        [DefaultValue("360.0")]
+        [robotParameter(false)]
+        public string maxAngle { get; set; }
 
         public servo()
         {
+            name = GetType().Name;
             helperFunctions.initializeDefaultValues(this);
         }
     }
 
 
     [Serializable()]
-    [XmlTypeAttribute("colorsensor", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("colorsensor", Namespace = "http://team302.org/robot")]
     public partial class colorsensor
     {
-
-        private colorsensorport _port = Robot.colorsensorport.kOnboard;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.colorsensorport.kOnboard)]
-        [XmlAttributeAttribute("port")]
-        public colorsensorport port
-        {
-            get
-            {
-                return _port;
-            }
-            set
-            {
-                _port = value;
-            }
-        }
+        [DefaultValue(colorsensorport.kOnboard)]
+        [robotParameter(false)]
+        public colorsensorport port { get; set; }
 
         public colorsensor()
         {
@@ -1031,17 +928,10 @@ namespace Robot
         }
     }
 
-
-
-
-
     [Serializable()]
-    [XmlTypeAttribute("closedLoopControlParameters", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("closedLoopControlParameters", Namespace = "http://team302.org/robot")]
     public partial class closedLoopControlParameters
     {
+        [robotParameter(true)]
         public string name { get; set; }
 
         [DefaultValue(0D)]
@@ -1074,108 +964,31 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlTypeAttribute("camera", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("camera", Namespace = "http://team302.org/robot")]
     public partial class camera
     {
+        [DefaultValue("0")]
+        [robotParameter(false)]
+        public string id { get; set; }
 
-        private string _id = "0";
+        [DefaultValue(Robot.cameraformat.KMJPEG)]
+        [robotParameter(false)]
+        public cameraformat format { get; set; }
 
-        [System.ComponentModel.DefaultValueAttribute("0")]
-        [XmlAttributeAttribute("id")]
-        public string id
-        {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                _id = value;
-            }
-        }
+        [DefaultValue(640u)]
+        [robotParameter(false)]
+        public uint width{get; set; }
 
-        private cameraformat _format = Robot.cameraformat.KMJPEG;
+        [DefaultValue(480)]
+        [robotParameter(false)]
+        public string height{get;set; }
 
-        [System.ComponentModel.DefaultValueAttribute(Robot.cameraformat.KMJPEG)]
-        [XmlAttributeAttribute("format")]
-        public cameraformat format
-        {
-            get
-            {
-                return _format;
-            }
-            set
-            {
-                _format = value;
-            }
-        }
+        [DefaultValue(30)]
+        [robotParameter(false)]
+        public uint fps { get; set; }
 
-        private string _width = "640";
-
-        [System.ComponentModel.DefaultValueAttribute("640")]
-        [XmlAttributeAttribute("width")]
-        public string width
-        {
-            get
-            {
-                return _width;
-            }
-            set
-            {
-                _width = value;
-            }
-        }
-
-        private string _height = "480";
-
-        [System.ComponentModel.DefaultValueAttribute("480")]
-        [XmlAttributeAttribute("height")]
-        public string height
-        {
-            get
-            {
-                return _height;
-            }
-            set
-            {
-                _height = value;
-            }
-        }
-
-        private string _fps = "30";
-
-        [System.ComponentModel.DefaultValueAttribute("30")]
-        [XmlAttributeAttribute("fps")]
-        public string fps
-        {
-            get
-            {
-                return _fps;
-            }
-            set
-            {
-                _fps = value;
-            }
-        }
-
-        private camerathread _thread = Robot.camerathread.Item_false;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.camerathread.Item_false)]
-        [XmlAttributeAttribute("thread")]
-        public camerathread thread
-        {
-            get
-            {
-                return _thread;
-            }
-            set
-            {
-                _thread = value;
-            }
-        }
+        [DefaultValue(false)]
+        [robotParameter(false)]
+        public bool thread{get;set; }
 
         public camera()
         {
@@ -1183,32 +996,12 @@ namespace Robot
         }
     }
 
-
-
-
     [Serializable()]
-    [XmlTypeAttribute("roborio", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("roborio", Namespace = "http://team302.org/robot")]
     public partial class roborio
     {
-
-        private roborioorientation _orientation = Robot.roborioorientation.X_FORWARD_Y_LEFT;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.roborioorientation.X_FORWARD_Y_LEFT)]
-        [XmlAttributeAttribute("orientation")]
-        public roborioorientation orientation
-        {
-            get
-            {
-                return _orientation;
-            }
-            set
-            {
-                _orientation = value;
-            }
-        }
+        [DefaultValue(Robot.roborioorientation.X_FORWARD_Y_LEFT)]
+        [robotParameter(false)]
+        public roborioorientation orientation { get; set; }
 
         public roborio()
         {
@@ -1216,55 +1009,17 @@ namespace Robot
         }
     }
 
-
-
-
-
     [Serializable()]
-    [XmlTypeAttribute("robotVariants", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("robotVariants", Namespace = "http://team302.org/robot")]
     public partial class robotVariants
     {
+        public List<robot> robot { get; set; }
 
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<robot> _robot;
-
-        [System.ComponentModel.DataAnnotations.RequiredAttribute()]
-        [XmlElementAttribute("robot")]
-        public System.Collections.ObjectModel.Collection<robot> robot
-        {
-            get
-            {
-                return _robot;
-            }
-            private set
-            {
-                _robot = value;
-            }
-        }
-
-        [XmlIgnoreAttribute()]
-        private System.Collections.ObjectModel.Collection<mechanism> _mechanism;
-
-        [XmlElementAttribute("mechanism")]
-        public System.Collections.ObjectModel.Collection<mechanism> mechanism
-        {
-            get
-            {
-                return _mechanism;
-            }
-            private set
-            {
-                _mechanism = value;
-            }
-        }
+        public List<mechanism> mechanism { get; set; }
 
         public robotVariants()
         {
-            this._robot = new System.Collections.ObjectModel.Collection<robot>();
-            this._mechanism = new System.Collections.ObjectModel.Collection<mechanism>();
+            robot = new List<robot>();
+            mechanism = new List<mechanism>();
 
             helperFunctions.initializeDefaultValues(this);
         }
@@ -1272,169 +1027,56 @@ namespace Robot
 
 
     [Serializable()]
-    [XmlTypeAttribute("pwmultrasonic", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("pwmultrasonic", Namespace = "http://team302.org/robot")]
     public partial class pwmultrasonic
     {
+        [robotParameter(false)]
+        public string name { get; set; }
 
-        private pwmultrasonicname _name = Robot.pwmultrasonicname.front;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.pwmultrasonicname.front)]
-        [XmlAttributeAttribute("name")]
-        public pwmultrasonicname name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-
-        private uint _pwmId = 0u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 19.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "19")]
-        [XmlAttributeAttribute("pwmId")]
-        public uint pwmId
-        {
-            get
-            {
-                return _pwmId;
-            }
-            set
-            {
-                _pwmId = value;
-            }
-        }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "19")]
+        public uint Id { get; set; }
 
         public pwmultrasonic()
         {
+            name = GetType().Name;
             helperFunctions.initializeDefaultValues(this);
         }
     }
 
-
-
     [Serializable()]
-    [XmlTypeAttribute("analogultrasonic", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("analogultrasonic", Namespace = "http://team302.org/robot")]
     public partial class analogultrasonic
     {
+        [robotParameter(false)]
+        public string name { get; set; }
 
-        private analogultrasonicname _name = Robot.analogultrasonicname.front;
-
-        [System.ComponentModel.DefaultValueAttribute(Robot.analogultrasonicname.front)]
-        [XmlAttributeAttribute("name")]
-        public analogultrasonicname name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-
-        private uint _analogId = 0u;
-
-        /// <summary>
-        /// <para xml:lang="en">Minimum inclusive value: 0.</para>
-        /// <para xml:lang="en">Maximum inclusive value: 7.</para>
-        /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
-        [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "7")]
-        [XmlAttributeAttribute("analogId")]
-        public uint analogId
-        {
-            get
-            {
-                return _analogId;
-            }
-            set
-            {
-                _analogId = value;
-            }
-        }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "7")]
+        public uint id{get;set; }
 
         public analogultrasonic()
         {
+            name = GetType().Name;
             helperFunctions.initializeDefaultValues(this);
         }
     }
 
-
-
     [Serializable()]
-    [XmlTypeAttribute("lidar", Namespace = "http://team302.org/robot")]
-
-
-    [XmlRootAttribute("lidar", Namespace = "http://team302.org/robot")]
     public partial class lidar
     {
+        [robotParameter(false)]
+        public string name{get; set;}
 
-        private lidarname _name = Robot.lidarname.front;
+        [DefaultValue(0u)]
+        [robotParameter(false)]
+        public uint inputpin { get; set; }
 
-        [System.ComponentModel.DefaultValueAttribute(Robot.lidarname.front)]
-        [XmlAttributeAttribute("name")]
-        public lidarname name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-            }
-        }
-
-        private string _inputpin = "0";
-
-        [System.ComponentModel.DefaultValueAttribute("0")]
-        [XmlAttributeAttribute("inputpin")]
-        public string inputpin
-        {
-            get
-            {
-                return _inputpin;
-            }
-            set
-            {
-                _inputpin = value;
-            }
-        }
-
-        private string _triggerpin = "0";
-
-        [System.ComponentModel.DefaultValueAttribute("0")]
-        [XmlAttributeAttribute("triggerpin")]
-        public string triggerpin
-        {
-            get
-            {
-                return _triggerpin;
-            }
-            set
-            {
-                _triggerpin = value;
-            }
-        }
+        [DefaultValue(0)]
+        [robotParameter(false)]
+        public uint triggerpin { get; set; }
 
         public lidar()
         {
+            name = GetType().Name;
             helperFunctions.initializeDefaultValues(this);
         }
     }
@@ -1458,7 +1100,7 @@ namespace Robot
         /// <para xml:lang="en">Minimum inclusive value: 0.</para>
         /// <para xml:lang="en">Maximum inclusive value: 19.</para>
         /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
+        [DefaultValue(0u)]
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "19")]
         [XmlAttributeAttribute("pwmId")]
         public uint pwmId
@@ -1494,7 +1136,7 @@ namespace Robot
 
         private blinkinname _name = Robot.blinkinname.front;
 
-        [System.ComponentModel.DefaultValueAttribute(Robot.blinkinname.front)]
+        [DefaultValue(Robot.blinkinname.front)]
         [XmlAttributeAttribute("name")]
         public blinkinname name
         {
@@ -1514,7 +1156,7 @@ namespace Robot
         /// <para xml:lang="en">Minimum inclusive value: 0.</para>
         /// <para xml:lang="en">Maximum inclusive value: 19.</para>
         /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
+        [DefaultValue(0u)]
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "19")]
         [XmlAttributeAttribute("pwmId")]
         public uint pwmId
@@ -1556,7 +1198,7 @@ namespace Robot
         /// <para xml:lang="en">Minimum inclusive value: 0.</para>
         /// <para xml:lang="en">Maximum inclusive value: 6.</para>
         /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
+        [DefaultValue(0u)]
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "6")]
         [XmlAttributeAttribute("name")]
         public uint name
@@ -1577,7 +1219,7 @@ namespace Robot
         /// <para xml:lang="en">Minimum inclusive value: 0.</para>
         /// <para xml:lang="en">Maximum inclusive value: 11.</para>
         /// </summary>
-        [System.ComponentModel.DefaultValueAttribute(0u)]
+        [DefaultValue(0u)]
         [System.ComponentModel.DataAnnotations.RangeAttribute(typeof(uint), "0", "11")]
         [XmlAttributeAttribute("generalpin")]
         public uint generalpin
