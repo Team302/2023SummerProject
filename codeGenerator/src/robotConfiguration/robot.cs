@@ -267,7 +267,7 @@ namespace Robot
     public class motor
     {
         [XmlIgnore]
-        [constant()]
+        [Constant()]
         public string motorType { get; protected set; }
 
         public string name { get; set; }
@@ -290,12 +290,13 @@ namespace Robot
     {
         [DefaultValue(1.15)]
         [Range(typeof(double), "0", "62")]
-        [tunableParameter()]
+        [PhysicalUnits("%")]
+        [TunableParameter()]
         public double deadbandPercent { get; set; }
 
         [DefaultValue(2.2)]
         [Range(typeof(double), "-1.0", "3.0")]
-        [tunableParameter()]
+        [TunableParameter()]
         public double peakMin { get; set; }
 
         [DefaultValue(4.4)]
@@ -312,7 +313,7 @@ namespace Robot
     {
         [DefaultValue(1.1)]
         [Range(typeof(double), "0", "62")]
-        [tunableParameter()]
+        [TunableParameter()]
         public double deadbandPercent_ { get; set; }
 
         [DefaultValue(2.2)]
@@ -402,7 +403,7 @@ namespace Robot
     public partial class analogInput
     {
         [DefaultValue(analogInputType.PRESSURE_GAUGE)]
-        [tunableParameter()]
+        [TunableParameter()]
         public analogInputType type { get; set; }
 
         [DefaultValue(0u)]
@@ -432,7 +433,7 @@ namespace Robot
         public CAN_ID canId { get; set; }
 
         [DefaultValue(CAN_BUS.rio)]
-        [tunableParameter()]
+        [TunableParameter()]
         public CAN_BUS canBusName { get; set; }
 
         [DefaultValue("0.0")]
@@ -456,59 +457,59 @@ namespace Robot
         public string name { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double mountingheight { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double horizontaloffset { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double mountingangle { get; set; }
 
         [DefaultValue(limelightrotation.Angle_0_deg)]
-        [tunableParameter()]
+        [TunableParameter()]
         public limelightrotation rotation { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double targetheight { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double targetheight2 { get; set; }
 
         [DefaultValue(limelightdefaultledmode.currentpipeline)]
-        [tunableParameter()]
+        [TunableParameter()]
         public limelightdefaultledmode defaultledmode { get; set; }
 
         [DefaultValue(limelightdefaultcammode.vision)]
-        [tunableParameter()]
+        [TunableParameter()]
         public limelightdefaultcammode defaultcammode { get; set; }
 
         [DefaultValue(limelightstreammode.sidebyside)]
-        [tunableParameter()]
+        [TunableParameter()]
         public limelightstreammode streammode { get; set; }
 
         [DefaultValue(limelightsnapshots.off)]
-        [tunableParameter()]
+        [TunableParameter()]
         public limelightsnapshots snapshots { get; set; }
 
         [DefaultValue(0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public string crosshairx { get; set; }
 
         [DefaultValue(0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public string crosshairy { get; set; }
 
         [DefaultValue(0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public string secondcrosshairx { get; set; }
 
         [DefaultValue(0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public string secondcrosshairy { get; set; }
 
         public limelight()
@@ -536,7 +537,7 @@ namespace Robot
         [DefaultValue(Robot.chassistype.TANK)]
         public chassistype type { get; set; }
 
-        [tunableParameter()]
+        [TunableParameter()]
         public double wheelDiameter { get; set; }
 
         public double wheelBase { get; set; }
@@ -598,35 +599,35 @@ namespace Robot
         public swervemoduletype type { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double turn_p { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double turn_i { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double turn_d { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double turn_f { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double turn_nominal_val { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double turn_peak_val { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double turn_max_acc { get; set; }
 
         [DefaultValue(0.0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double turn_cruise_vel { get; set; }
 
         [DefaultValue(1.0)]
@@ -705,7 +706,7 @@ namespace Robot
     {
         public CAN_ID canId { get; set; }
 
-        [tunableParameter()]
+        [TunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0u)]
@@ -772,23 +773,27 @@ namespace Robot
         public string name { get; set; }
 
         [DefaultValue(0D)]
-        [tunableParameter()]
+        [System.ComponentModel.Description("The proportional gain of the PID controller.")]
+        [TunableParameter()]
         public double pGain { get; set; }
 
         [DefaultValue(0D)]
-        [tunableParameter()]
+        [System.ComponentModel.Description("The integral gain of the PID controller.")]
+        [TunableParameter()]
         public double iGain { get; set; }
 
         [DefaultValue(0D)]
-        [tunableParameter()]
+        [System.ComponentModel.Description("The differential gain of the PID controller.")]
+        [TunableParameter()]
         public double dGain { get; set; }
 
         [DefaultValue(0D)]
-        [tunableParameter()]
+        [System.ComponentModel.Description("The feed forward gain of the PID controller.")]
+        [TunableParameter()]
         public double fGain { get; set; }
 
         [DefaultValue(0D)]
-        [tunableParameter()]
+        [TunableParameter()]
         public double iZone { get; set; }
 
         public closedLoopControlParameters()
@@ -831,7 +836,7 @@ namespace Robot
     public partial class roborio
     {
         [DefaultValue(Robot.roborioorientation.X_FORWARD_Y_LEFT)]
-        [tunableParameter()]
+        [TunableParameter()]
         public roborioorientation orientation { get; set; }
 
         public roborio()
@@ -860,7 +865,7 @@ namespace Robot
     [Serializable()]
     public partial class pwmultrasonic
     {
-        [tunableParameter()]
+        [TunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0u)]
@@ -877,7 +882,7 @@ namespace Robot
     [Serializable()]
     public partial class analogultrasonic
     {
-        [tunableParameter()]
+        [TunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0u)]
@@ -894,15 +899,15 @@ namespace Robot
     [Serializable()]
     public partial class lidar
     {
-        [tunableParameter()]
+        [TunableParameter()]
         public string name{get; set;}
 
         [DefaultValue(0u)]
-        [tunableParameter()]
+        [TunableParameter()]
         public uint inputpin { get; set; }
 
         [DefaultValue(0)]
-        [tunableParameter()]
+        [TunableParameter()]
         public uint triggerpin { get; set; }
 
         public lidar()
@@ -951,7 +956,6 @@ namespace Robot
 
 
 
-
     [Serializable()]
     public partial class talontach
     {
@@ -973,22 +977,41 @@ namespace Robot
 
     #region ====================== Attribute definitions
     // if applied to a property, it means that live tuning over network tables is enabled
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
-    public class tunableParameterAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    public class TunableParameterAttribute : Attribute
     {
-        public tunableParameterAttribute()
+        public TunableParameterAttribute()
         {
         }
     }
 
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = false)]
-    public class constantAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    public class ConstantAttribute : Attribute
     {
-        public constantAttribute()
+        public ConstantAttribute()
         {
         }
     }
 
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    public class DescriptionAttribute : Attribute
+    {
+        public string description { get;set; } 
+        public DescriptionAttribute(string description)
+        {
+            this.description = description;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    public class PhysicalUnitsAttribute : Attribute
+    {
+        public string units { get; set; }
+        public PhysicalUnitsAttribute(string units)
+        {
+            this.units = units;
+        }
+    }
     #endregion
 
     static class helperFunctions

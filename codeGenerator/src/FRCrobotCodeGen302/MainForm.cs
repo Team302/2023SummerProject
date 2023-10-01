@@ -297,8 +297,8 @@ namespace FRCrobotCodeGen302
 
                         if (parentPi != null)
                         {
-                            tunableParameterAttribute rpa = (tunableParameterAttribute)parentPi.GetCustomAttribute(typeof(tunableParameterAttribute), false);
-                            constantAttribute rca = (constantAttribute)parentPi.GetCustomAttribute(typeof(constantAttribute), false);
+                            TunableParameterAttribute rpa = (TunableParameterAttribute)parentPi.GetCustomAttribute(typeof(TunableParameterAttribute), false);
+                            ConstantAttribute rca = (ConstantAttribute)parentPi.GetCustomAttribute(typeof(ConstantAttribute), false);
                             range = (RangeAttribute)parentPi.GetCustomAttribute(typeof(RangeAttribute), false);
                             defaultValue = (DefaultValueAttribute)parentPi.GetCustomAttribute(typeof(DefaultValueAttribute), false);
 
