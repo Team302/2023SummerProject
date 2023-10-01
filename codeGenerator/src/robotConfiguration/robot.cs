@@ -332,7 +332,6 @@ namespace Robot
     [Serializable()]
     public partial class CAN_ID
     {
-        [tunableParameter()]
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
         public uint value { get; set; }
@@ -379,7 +378,6 @@ namespace Robot
     public partial class pdp
     {
         [DefaultValue(pdptype.CTRE)]
-        [tunableParameter()]
         public pdptype type { get; set; }
 
         public pdp()
@@ -409,21 +407,16 @@ namespace Robot
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "7")]
-        [tunableParameter()]
         public uint analogId { get; set; }
 
         [DefaultValue(0D)]
-        [tunableParameter()]
         public double voltageMin { get; set; }
 
         [DefaultValue(5D)]
-        [tunableParameter()]
         public double voltageMax { get; set; }
 
-        [tunableParameter()]
         public double outputMin { get; set; }
 
-        [tunableParameter()]
         public double outputMax { get; set; }
 
         public analogInput()
@@ -443,15 +436,12 @@ namespace Robot
         public CAN_BUS canBusName { get; set; }
 
         [DefaultValue("0.0")]
-        [tunableParameter()]
         public string rotation { get; set; }
 
         [DefaultValue(pigeontype.pigeon1)]
-        [tunableParameter()]
         public pigeontype type { get; set; }
 
         [DefaultValue(pigeonname.CENTER_OF_ROTATION)]
-        [tunableParameter()]
         public pigeonname name { get; set; }
 
         public pigeon()
@@ -463,8 +453,6 @@ namespace Robot
     [Serializable()]
     public partial class limelight
     {
-        [XmlAttributeAttribute("name")]
-        [tunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0.0)]
@@ -551,38 +539,28 @@ namespace Robot
         [tunableParameter()]
         public double wheelDiameter { get; set; }
 
-        [tunableParameter()]
         public double wheelBase { get; set; }
 
-        [tunableParameter()]
         public double track { get; set; }
 
         [DefaultValue(chassiswheelSpeedCalcOption.ETHER)]
-        [tunableParameter()]
         public chassiswheelSpeedCalcOption wheelSpeedCalcOption { get; set; }
 
         [DefaultValue(chassisposeEstimationOption.EULERCHASSIS)]
-        [tunableParameter()]
         public chassisposeEstimationOption poseEstimationOption { get; set; }
 
-        [tunableParameter()]
         public double maxVelocity { get; set; }
 
-        [tunableParameter()]
         public double maxAngularVelocity { get; set; }
 
-        [tunableParameter()]
         public double maxAcceleration { get; set; }
 
-        [tunableParameter()]
         public double maxAngularAcceleration { get; set; }
     }
 
     [Serializable()]
     public partial class digitalInput
     {
-        [DefaultValue("UNKNOWN")]
-        [tunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0u)]
@@ -590,15 +568,14 @@ namespace Robot
         public uint digitalId { get; set; }
 
         [DefaultValue(false)]
-        [tunableParameter()]
         public bool reversed { get; set; }
 
         [DefaultValue(0D)]
-        [tunableParameter()]
         public double debouncetime { get; set; }
 
         public digitalInput()
         {
+            name = GetType().Name;
             helperFunctions.initializeDefaultValues(this);
         }
     }
@@ -618,7 +595,6 @@ namespace Robot
         public cancoder cancoder { get; set; }
 
         [DefaultValue(swervemoduletype.LEFT_FRONT)]
-        [tunableParameter()]
         public swervemoduletype type { get; set; }
 
         [DefaultValue(0.0)]
@@ -654,7 +630,6 @@ namespace Robot
         public double turn_cruise_vel { get; set; }
 
         [DefaultValue(1.0)]
-        [tunableParameter()]
         public uint countsOnTurnEncoderPerDegreesOnAngleSensor { get; set; }
     }
 
@@ -668,7 +643,6 @@ namespace Robot
         public CAN_BUS canBusName { get; set; }
 
         [DefaultValue(0D)]
-        [tunableParameter()]
         public double offset { get; set; }
 
         [DefaultValue(false)]
@@ -734,16 +708,14 @@ namespace Robot
         [tunableParameter()]
         public string name { get; set; }
 
-        // [DefaultValue(0u)]
+        [DefaultValue(0u)]
         [Range(typeof(uint), "0", "7")]
         public uint channel { get; set; }
 
         [DefaultValue(false)]
-        [tunableParameter()]
         public bool reversed { get; set; }
 
         [DefaultValue(solenoidtype.REVPH)]
-        [tunableParameter()]
         public solenoidtype type { get; set; }
 
         public solenoid()
@@ -761,20 +733,17 @@ namespace Robot
     [Serializable()]
     public partial class servo
     {
-        [tunableParameter()]
         public string name { get; set; }
 
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "19")]
-        public uint pwmId { get; set; }
+        public uint Id { get; set; }
 
         [DefaultValue("0.0")]
-        [tunableParameter()]
         public string minAngle { get; set; }
 
         [DefaultValue("360.0")]
-        [tunableParameter()]
         public string maxAngle { get; set; }
 
         public servo()
@@ -789,7 +758,6 @@ namespace Robot
     public partial class colorsensor
     {
         [DefaultValue(colorsensorport.kOnboard)]
-        [tunableParameter()]
         public colorsensorport port { get; set; }
 
         public colorsensor()
@@ -801,7 +769,6 @@ namespace Robot
     [Serializable()]
     public partial class closedLoopControlParameters
     {
-        [tunableParameter()]
         public string name { get; set; }
 
         [DefaultValue(0D)]
@@ -837,27 +804,21 @@ namespace Robot
     public partial class camera
     {
         [DefaultValue("0")]
-        [tunableParameter()]
         public string id { get; set; }
 
         [DefaultValue(Robot.cameraformat.KMJPEG)]
-        [tunableParameter()]
         public cameraformat format { get; set; }
 
         [DefaultValue(640u)]
-        [tunableParameter()]
         public uint width{get; set; }
 
         [DefaultValue(480)]
-        [tunableParameter()]
         public string height{get;set; }
 
         [DefaultValue(30)]
-        [tunableParameter()]
         public uint fps { get; set; }
 
         [DefaultValue(false)]
-        [tunableParameter()]
         public bool thread{get;set; }
 
         public camera()
