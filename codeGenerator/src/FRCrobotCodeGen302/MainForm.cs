@@ -306,10 +306,10 @@ namespace FRCrobotCodeGen302
                             PhysicalUnitsAttribute units = parentPi.GetCustomAttribute<PhysicalUnitsAttribute>();
                             physicalUnits = units == null ? null : units.units;
 
-                            TunableParameterAttribute rpa = (TunableParameterAttribute)parentPi.GetCustomAttribute(typeof(TunableParameterAttribute), false);
-                            ConstantAttribute rca = (ConstantAttribute)parentPi.GetCustomAttribute(typeof(ConstantAttribute), false);
-                            range = (RangeAttribute)parentPi.GetCustomAttribute(typeof(RangeAttribute), false);
-                            defaultValue = (DefaultValueAttribute)parentPi.GetCustomAttribute(typeof(DefaultValueAttribute), false);
+                            TunableParameterAttribute rpa = parentPi.GetCustomAttribute<TunableParameterAttribute>();
+                            ConstantAttribute rca = parentPi.GetCustomAttribute<ConstantAttribute>();
+                            range = parentPi.GetCustomAttribute<RangeAttribute>();
+                            defaultValue = parentPi.GetCustomAttribute<DefaultValueAttribute>();
 
                             isConstant = rca != null;
                             isTunable = rpa != null;
@@ -627,7 +627,7 @@ namespace FRCrobotCodeGen302
         {
             bool visible = !string.IsNullOrEmpty(str);
             physicalUnitsTextBox.Visible = visible;
-            if(visible)
+            if (visible)
                 physicalUnitsTextBox.Text = str;
         }
         void showValueComboBox()
@@ -1580,7 +1580,7 @@ namespace FRCrobotCodeGen302
         public object obj { get; private set; }
         public bool isConstant { get; private set; }
         public bool isTunable { get; private set; }
-        public string physicalUnits{ get; private set; }
+        public string physicalUnits { get; private set; }
         public valueRange range { get; private set; }
         public defaultValue theDefault { get; private set; }
 
