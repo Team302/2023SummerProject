@@ -18,6 +18,8 @@ namespace Configuration
         public string robotConfiguration = "";
         public List<string> robotConfigurations = new List<string>();
         public List<string> treeviewParentNameExtensions = new List<string>();
+
+        public List<string> collectionBaseTypes = new List<string>();
         public List<string> tunableParameterTypes = new List<string>();
         public List<string> parameterTypes = new List<string>();
 
@@ -38,17 +40,27 @@ namespace Configuration
             return "";
         }
 
+        string rootOutputFolder_temp;
+        string robotConfiguration_temp;
         private void preSerialize()
         {
             // make the paths relative to the configuration file
             string rootPath = Path.GetDirectoryName(configurationFullPath);
+
+            rootOutputFolder_temp = rootOutputFolder;
             rootOutputFolder = RelativePath(rootPath, rootOutputFolder);
+
+            robotConfiguration_temp = robotConfiguration;
             robotConfiguration = RelativePath(rootPath, robotConfiguration);
         }
 
         private void postSerialize()
         {
-
+            rootOutputFolder = rootOutputFolder_temp;
+            robotConfiguration = robotConfiguration_temp;
+        }
+        private void postDeSerialize()
+        {
         }
         public void serialize(string rootPath)
         {
@@ -59,6 +71,8 @@ namespace Configuration
             {
                 mySerializer.Serialize(myFileStream, this);
             }
+
+            postSerialize();
         }
         public toolConfiguration deserialize(string fullFilePathName)
         {
@@ -69,7 +83,7 @@ namespace Configuration
                 toolConfiguration tc = (toolConfiguration)mySerializer.Deserialize(myFileStream);
                 tc.configurationFullPath = fullFilePathName;
 
-                postSerialize();
+                postDeSerialize();
 
                 return tc;
             }

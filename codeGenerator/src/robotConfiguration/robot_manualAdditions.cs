@@ -25,72 +25,14 @@ namespace Robot
         public object theTreeNode = null;
     }
 
-    public partial class closedLoopControlParameters
-    {
-        public closedLoopControlParameters()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    public partial class motor
-    {
-        public void initialize()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    public partial class robot
-    {
-        public void initialize()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    partial class pcm
-    {
-        public pcm()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    partial class pigeon
-    {
-        public pigeon()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-    partial class cancoder
-    {
-        public cancoder()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    partial class solenoid
-    {
-        public solenoid()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
-
-    partial class talontach
-    {
-        public talontach()
-        {
-            utilities.initializeNullProperties(this);
-        }
-    }
 
     static class utilities
     {
         public static void initializeNullProperties(object obj)
+        {
+            initializeNullProperties(obj, false);
+        }
+        public static void initializeNullProperties(object obj, bool recursive)
         {
             PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
 
@@ -104,6 +46,8 @@ namespace Robot
                     {
                         theObj = Activator.CreateInstance(pi.PropertyType);
                         pi.SetValue(obj, theObj);
+                        if(recursive)
+                            initializeNullProperties(theObj);
                     }
                 }
             }

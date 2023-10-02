@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
@@ -12,17 +10,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
+using DataConfiguration;
 
 namespace robotConfiguration
 {
-    public class robotConfig : baseReportingClass
+    public class robotConfig : baseDataConfiguration
     {
         public robotVariants theRobotVariants = new robotVariants();
         public Dictionary<string, statedata> mechanismControlDefinition;
-        public List<string> tunableParameterTypes = new List<string>();
-        public List<string> parameterTypes = new List<string>();
 
-        public void load(string theRobotConfigFullPathFileName)
+        override public void load(string theRobotConfigFullPathFileName)
         {
             try
             {
@@ -33,8 +30,6 @@ namespace robotConfiguration
 
                 foreach (robot theRobot in theRobotVariants.robot)
                 {
-                    theRobot.initialize();
-
                     ValidationContext context = new ValidationContext(theRobot.pdp);
                     IList<ValidationResult> errors = new List<ValidationResult>();
 
@@ -56,7 +51,7 @@ namespace robotConfiguration
             }
         }
 
-        public void save(string theRobotConfigFullPathFileName)
+        override public void save(string theRobotConfigFullPathFileName)
         {
             try
             {
@@ -71,7 +66,7 @@ namespace robotConfiguration
             }
         }
 
-        robotVariants loadRobotConfiguration(string fullPathName)
+        private robotVariants loadRobotConfiguration(string fullPathName)
         {
             robotVariants theRobotVariants;
 
@@ -113,6 +108,8 @@ namespace robotConfiguration
                     //ignore configuration files
                     if (!tempFile.Contains("robotVariants") && !tempFile.Contains("toolConfiguration"))
                     {
+                        mySerializer = new XmlSerializer(typeof(mechanism));
+
                         using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
                         {
                             tempMech = mySerializer.Deserialize(myFileStream) as mechanism;
@@ -136,9 +133,11 @@ namespace robotConfiguration
                 {
                     MergeMechanismParametersIntoStructure(loadMechanism(fullPathName, mi.mechanism.name), mi.mechanism);
                 }
+
+                utilities.initializeNullProperties(theRobot, true);
             }
 
-            
+
 
             //foreach (robot theRobot in theRobotVariants.robot)
             //{
@@ -168,29 +167,11 @@ namespace robotConfiguration
             using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
             {
                 mechanism m = (mechanism)mySerializer.Deserialize(myFileStream);
-                return m;                
+                return m;
             }
         }
 
-        private bool isACollection(object obj)
-        {
-            return isACollection(obj.GetType());
-        }
-
-        private bool isACollection(Type t)
-        {
-            return ((t.Name == "Collection`1") && (t.Namespace == "System.Collections.ObjectModel"));
-        }
-
-        bool isATunableParameterType(string typeName)
-        {
-            return tunableParameterTypes.Contains(typeName);
-        }
-        bool isAParameterType(string typeName)
-        {
-            return parameterTypes.Contains(typeName);
-        }
-
+ 
 
         /// <summary>
         /// Merges the structure and default values from structureSource to parametersSource
@@ -230,23 +211,24 @@ namespace robotConfiguration
 
                     PropertyInfo[] propertyInfos = objType.GetProperties();
 
-                    if(isATunableParameterType(objType.FullName))
-                    {
-                        PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
-                        if (pi != null)
-                        {
-                            pi.SetValue(structureSource, pi.GetValue(parametersSource));
-                        }
-                    }
-                    else if (isAParameterType(objType.FullName))
-                    {
-                        PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
-                        if (pi != null)
-                        {
-                            pi.SetValue(structureSource, pi.GetValue(parametersSource));
-                        }
-                    }
-                    else if(objType.FullName == "System.String")
+                    //if (isATunableParameterType(objType.FullName))
+                    //{
+                    //    PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
+                    //    if (pi != null)
+                    //    {
+                    //        pi.SetValue(structureSource, pi.GetValue(parametersSource));
+                    //    }
+                    //}
+                    //else if (isAParameterType(objType.FullName))
+                    //{
+                    //    PropertyInfo pi = propertyInfos.ToList().Find(p => p.Name == "value");
+                    //    if (pi != null)
+                    //    {
+                    //        pi.SetValue(structureSource, pi.GetValue(parametersSource));
+                    //    }
+                    //}
+                    //else
+                    if ((objType.FullName == "System.String") || (objType.FullName == "System.DateTime"))
                     {
 
                     }
@@ -257,7 +239,7 @@ namespace robotConfiguration
                             object theStructureObj = pi.GetValue(structureSource);
                             object theParametersObj = pi.GetValue(parametersSource);
 
-                            if ((theStructureObj != null) && (theParametersObj != null) )
+                            if ((theStructureObj != null) && (theParametersObj != null))
                             {
                                 MergeMechanismParametersIntoStructure(theStructureObj, theParametersObj);
                             }
@@ -284,11 +266,8 @@ namespace robotConfiguration
 
                     //        if (theObj != null)
                     //        {
-                    //            if (pi.Name != previousName + "Specified")
-                    //            {
                     //                AddNode(tn, theObj, pi.Name);
                     //                previousName = pi.Name;
-                    //            }
                     //        }
                     //    }
                     //}
@@ -314,7 +293,7 @@ namespace robotConfiguration
             }
         }
 
-        void saveRobotConfiguration(string fullPathName)
+        private void saveRobotConfiguration(string fullPathName)
         {
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
             xmlWriterSettings.NewLineOnAttributes = true;
@@ -325,11 +304,20 @@ namespace robotConfiguration
             {
                 string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
 
-                var mechSerializer = new XmlSerializer(typeof(mechanism));
-                XmlWriter mechtw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings);
-                mechSerializer.Serialize(mechtw, mech);
-
-                mechtw.Close();
+                addProgress("Writing mechanism file " + mechanismFullPath);
+                try
+                {
+                    using (XmlWriter mechtw = XmlWriter.Create(mechanismFullPath, xmlWriterSettings))
+                    {
+                        var mechSerializer = new XmlSerializer(typeof(mechanism));
+                        mechSerializer.Serialize(mechtw, mech);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    addProgress("Problem encountered while writing mechanism file " + mechanismFullPath);
+                    addProgress(ex.ToString());
+                }
             }
 
             // after saving the mechanisms into separate files, clear the list of mechanisms, except for the name
@@ -360,42 +348,6 @@ namespace robotConfiguration
             {
                 theRobotVariants.mechanism.Add(mech);
             }
-        }
-
-        statedata loadStateDataConfiguration(string fullPathName)
-        {
-            var mySerializer = new XmlSerializer(typeof(statedata));
-            using (var myFileStream = new FileStream(fullPathName, FileMode.Open))
-            {
-                return (statedata)mySerializer.Deserialize(myFileStream);
-            }
-        }
-        void saveStateDataConfiguration(string fullPathName, statedata obj)
-        {
-            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
-            xmlWriterSettings.NewLineOnAttributes = true;
-            xmlWriterSettings.Indent = true;
-
-            var mySerializer = new XmlSerializer(typeof(statedata));
-            XmlWriter tw = XmlWriter.Create(fullPathName, xmlWriterSettings);
-            mySerializer.Serialize(tw, obj);
-            tw.Close();
-        }
-    }
-
-    public class baseReportingClass
-    {
-        public delegate void showMessage(string message);
-
-        protected showMessage progressCallback;
-        protected void addProgress(string info)
-        {
-            if (progressCallback != null)
-                progressCallback(info);
-        }
-        public void setProgressCallback(showMessage callback)
-        {
-            progressCallback = callback;
         }
     }
 }

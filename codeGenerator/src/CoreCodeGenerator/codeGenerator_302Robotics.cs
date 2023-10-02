@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml.Serialization;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using Configuration;
-using robotConfiguration;
+﻿using Configuration;
+using DataConfiguration;
 using Robot;
-using StateData;
-using System.Collections;
-using System.Reflection;
-using System.Diagnostics;
+using robotConfiguration;
+using System.Collections.Generic;
+using System.IO;
 
 namespace CoreCodeGenerator
 {
@@ -100,7 +90,7 @@ namespace CoreCodeGenerator
 
                         foreach (PropertyInfo pi in propertyInfos)
                         {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                            bool skip = (pi.Name == "name");
                             if (!skip)
                                 allParameterReading += string.Format("{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", {2});{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
                         }
@@ -117,7 +107,7 @@ namespace CoreCodeGenerator
 
                         foreach (PropertyInfo pi in propertyInfos)
                         {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                            bool skip = (pi.Name == "name");
                             if (!skip)
                                 allParameterWriting += string.Format("{0}_{1} = m_table.get()->PutNumber(\"{0}_{1}\", {0}_{1});{2}", cLCParams.name, pi.Name, Environment.NewLine);
                         }
@@ -148,7 +138,7 @@ namespace CoreCodeGenerator
 
                         foreach (PropertyInfo pi in propertyInfos)
                         {
-                            bool skip = (pi.Name == "name") || pi.Name.EndsWith("Specified");
+                            bool skip = (pi.Name == "name");
                             if (!skip)
                                 allParameters += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
                         }

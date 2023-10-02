@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{301CAB4C-FF29-4111-8D59-B4E69F485BD8}</ProjectGuid>
+    <ProjectGuid>{C6873437-DCD6-4894-8BC3-68B3F92E9899}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>robotConfiguration</RootNamespace>
-    <AssemblyName>robotConfiguration</AssemblyName>
+    <RootNamespace>DataConfiguration</RootNamespace>
+    <AssemblyName>DataConfiguration</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -32,7 +32,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,17 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="robotConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="robot.cs" />
-    <Compile Include="robot_manualAdditions.cs" />
-    <Compile Include="stateData.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DataConfiguration\DataConfiguration.csproj">
-      <Project>{c6873437-dcd6-4894-8bc3-68b3f92e9899}</Project>
-      <Name>DataConfiguration</Name>
-    </ProjectReference>
+    <Compile Include="dataConfig.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
