@@ -723,29 +723,16 @@ namespace FRCrobotCodeGen302
                     leafNodeTag lnt = (leafNodeTag)(e.Node.Tag);
 
                     object value = null;
-                    PropertyInfo prop = null;
                     bool allowEdit = false;
                     if (!lnt.isConstant)
                     {
-                        if (lnt.isTunable)
-                        {
-                            prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
-
-                            if (prop != null)
-                                value = prop.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
-                            else
-                                value = lnt.obj;
-
-                            allowEdit = true;
-                        }
+                        PropertyInfo valueProp = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        if (valueProp != null)
+                            value = valueProp.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
                         else
-                        {
-                            prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
-                            if (null != prop)
-                                value = prop.GetValue(lastSelectedValueNode.Parent.Tag);
+                            value = lnt.obj;
 
-                            allowEdit = !isInaMechanismInstance;
-                        }
+                        allowEdit = lnt.isTunable ? true : !isInaMechanismInstance;
                     }
 
                     setPhysicalUnitsTextBox(string.IsNullOrEmpty(lnt.physicalUnits) ? null : lnt.physicalUnits);
