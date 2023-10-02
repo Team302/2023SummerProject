@@ -927,51 +927,31 @@ namespace FRCrobotCodeGen302
                     {
                         leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
 
+                        object obj = lnt.obj;
+                        PropertyInfo prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        if (prop == null)
+                        {
+                            obj = lastSelectedValueNode.Parent.Tag;
+                            prop = obj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                        }
+
                         string displayStr = "";
-                        PropertyInfo prop;
-                        if (lnt.isTunable)
+
+                        if (prop != null)
                         {
-                            prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
-                            Object obj = lnt.obj;
-
-                            if (prop == null)
+                            if (prop.CanWrite)
                             {
-                                obj = lastSelectedValueNode.Parent.Tag;
-                                prop = obj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
-                            }
-
-                            if (prop != null)
-                            {
-                                if (prop.CanWrite)
+                                if (prop.PropertyType.Name == "UInt")
+                                    prop.SetValue(obj, (uint)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
+                                else if (prop.PropertyType.Name == "UInt32")
+                                    prop.SetValue(obj, (UInt32)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
+                                else if (prop.PropertyType.Name == "Double")
                                 {
-                                    if (prop.PropertyType.Name == "UInt")
-                                        prop.SetValue(obj, (uint)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
-                                    else if (prop.PropertyType.Name == "UInt32")
-                                        prop.SetValue(obj, (UInt32)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
-                                    else if (prop.PropertyType.Name == "Double")
-                                    {
-                                        prop.SetValue(obj, (double)valueNumericUpDown.Value);
-                                    }
-                                    displayStr = prop.GetValue(obj).ToString();
+                                    prop.SetValue(obj, (double)valueNumericUpDown.Value);
                                 }
+                                displayStr = prop.GetValue(obj).ToString();
                             }
                         }
-                        else
-                        {
-                            Type t = lastSelectedValueNode.Tag.GetType();
-                            prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
-                            if (null != prop && prop.CanWrite)
-                            {
-                                if (lnt.obj is uint)
-                                    prop.SetValue(lastSelectedValueNode.Parent.Tag, (uint)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
-                                else if (lnt.obj is double)
-                                    prop.SetValue(lastSelectedValueNode.Parent.Tag, (double)valueNumericUpDown.Value);
-
-                                displayStr = prop.GetValue(lastSelectedValueNode.Parent.Tag).ToString();
-                            }
-                        }
-
-
 
                         lastSelectedValueNode.Text = getTreeNodeDisplayName(displayStr, lnt.name);
 
