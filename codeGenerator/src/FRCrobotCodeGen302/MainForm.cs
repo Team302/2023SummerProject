@@ -509,8 +509,6 @@ namespace FRCrobotCodeGen302
                     try
                     {
                         theRobotConfiguration.collectionBaseTypes = generatorConfig.collectionBaseTypes;
-                        theRobotConfiguration.parameterTypes = generatorConfig.parameterTypes;
-                        theRobotConfiguration.tunableParameterTypes = generatorConfig.tunableParameterTypes;
                         theRobotConfiguration.load(generatorConfig.robotConfiguration);
                     }
                     catch (Exception ex)
@@ -1013,7 +1011,7 @@ namespace FRCrobotCodeGen302
                     PropertyInfo pi;
                     string name = "";
                     bool addToCollection = true;
-                    if (theRobotConfiguration.isDerivedFromGenericRobotClass(((robotElementType)robotElementObj).t))
+                    if (theRobotConfiguration.isDerivedFromGenericClass(((robotElementType)robotElementObj).t))
                     {
                         obj = Activator.CreateInstance(((robotElementType)robotElementObj).t);
 

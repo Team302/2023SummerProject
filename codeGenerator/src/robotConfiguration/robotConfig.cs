@@ -10,18 +10,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
+using DataConfiguration;
 
 namespace robotConfiguration
 {
-    public class robotConfig : baseReportingClass
+    public class robotConfig : baseDataConfiguration
     {
         public robotVariants theRobotVariants = new robotVariants();
         public Dictionary<string, statedata> mechanismControlDefinition;
-        public List<string> collectionBaseTypes = new List<string>(); 
-        public List<string> tunableParameterTypes = new List<string>();
-        public List<string> parameterTypes = new List<string>();
 
-        public void load(string theRobotConfigFullPathFileName)
+        override public void load(string theRobotConfigFullPathFileName)
         {
             try
             {
@@ -53,7 +51,7 @@ namespace robotConfiguration
             }
         }
 
-        public void save(string theRobotConfigFullPathFileName)
+        override public void save(string theRobotConfigFullPathFileName)
         {
             try
             {
@@ -68,7 +66,7 @@ namespace robotConfiguration
             }
         }
 
-        robotVariants loadRobotConfiguration(string fullPathName)
+        private robotVariants loadRobotConfiguration(string fullPathName)
         {
             robotVariants theRobotVariants;
 
@@ -173,54 +171,7 @@ namespace robotConfiguration
             }
         }
 
-        public bool isACollection(object obj)
-        {
-            return isACollection(obj.GetType());
-        }
-
-        public bool isACollection(Type t)
-        {
-
-            bool isaList = (t.Name == "List`1") && (t.Namespace == "System.Collections.Generic");
-            bool isaCollection = (t.Name == "Collection`1") && (t.Namespace == "System.Collections.ObjectModel");
-            return (isaCollection || isaList);
-        }
-
-        public bool isASubClassedCollection(object obj)
-        {
-            return isASubClassedCollection(obj.GetType());
-        }
-
-        public bool isASubClassedCollection(Type t)
-        {
-            if (isACollection(t))
-            {
-                Type elementType = t.GetGenericArguments().Single();
-                return collectionBaseTypes.Contains(elementType.FullName);
-            }
-
-            return false;
-        }
-
-        public bool isDerivedFromGenericRobotClass(Type t)
-        {
-            if(t.BaseType != null)
-            {
-                return collectionBaseTypes.Contains(t.BaseType.FullName);
-            }
-
-            return false;
-        }
-
-        bool isATunableParameterType(string typeName)
-        {
-            return tunableParameterTypes.Contains(typeName);
-        }
-        bool isAParameterType(string typeName)
-        {
-            return parameterTypes.Contains(typeName);
-        }
-
+ 
 
         /// <summary>
         /// Merges the structure and default values from structureSource to parametersSource
@@ -342,7 +293,7 @@ namespace robotConfiguration
             }
         }
 
-        void saveRobotConfiguration(string fullPathName)
+        private void saveRobotConfiguration(string fullPathName)
         {
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
             xmlWriterSettings.NewLineOnAttributes = true;
@@ -397,42 +348,6 @@ namespace robotConfiguration
             {
                 theRobotVariants.mechanism.Add(mech);
             }
-        }
-
-        statedata loadStateDataConfiguration(string fullPathName)
-        {
-            var mySerializer = new XmlSerializer(typeof(statedata));
-            using (var myFileStream = new FileStream(fullPathName, FileMode.Open))
-            {
-                return (statedata)mySerializer.Deserialize(myFileStream);
-            }
-        }
-        void saveStateDataConfiguration(string fullPathName, statedata obj)
-        {
-            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
-            xmlWriterSettings.NewLineOnAttributes = true;
-            xmlWriterSettings.Indent = true;
-
-            var mySerializer = new XmlSerializer(typeof(statedata));
-            XmlWriter tw = XmlWriter.Create(fullPathName, xmlWriterSettings);
-            mySerializer.Serialize(tw, obj);
-            tw.Close();
-        }
-    }
-
-    public class baseReportingClass
-    {
-        public delegate void showMessage(string message);
-
-        protected showMessage progressCallback;
-        protected void addProgress(string info)
-        {
-            if (progressCallback != null)
-                progressCallback(info);
-        }
-        public void setProgressCallback(showMessage callback)
-        {
-            progressCallback = callback;
         }
     }
 }

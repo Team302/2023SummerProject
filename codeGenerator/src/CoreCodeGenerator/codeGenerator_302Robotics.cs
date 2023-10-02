@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml.Serialization;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using Configuration;
-using robotConfiguration;
+﻿using Configuration;
+using DataConfiguration;
 using Robot;
-using StateData;
-using System.Collections;
-using System.Reflection;
-using System.Diagnostics;
+using robotConfiguration;
+using System.Collections.Generic;
+using System.IO;
 
 namespace CoreCodeGenerator
 {
