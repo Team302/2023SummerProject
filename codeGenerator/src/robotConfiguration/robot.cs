@@ -296,6 +296,7 @@ namespace Robot
 
         [DefaultValue(2.2)]
         [Range(typeof(double), "-1.0", "3.0")]
+        [PhysicalUnits("A")]
         [TunableParameter()]
         public double peakMin { get; set; }
 

@@ -55,6 +55,7 @@ namespace FRCrobotCodeGen302
             this.addTreeElementButton = new System.Windows.Forms.Button();
             this.saveConfigBbutton = new System.Windows.Forms.Button();
             this.valueTextBox = new System.Windows.Forms.TextBox();
+            this.physicalUnitsTextBox = new System.Windows.Forms.TextBox();
             this.valueNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.valueComboBox = new System.Windows.Forms.ComboBox();
             this.robotElementCheckedListBox = new System.Windows.Forms.CheckedListBox();
@@ -330,6 +331,7 @@ namespace FRCrobotCodeGen302
             this.panel1.Controls.Add(this.addTreeElementButton);
             this.panel1.Controls.Add(this.saveConfigBbutton);
             this.panel1.Controls.Add(this.valueTextBox);
+            this.panel1.Controls.Add(this.physicalUnitsTextBox);
             this.panel1.Controls.Add(this.valueNumericUpDown);
             this.panel1.Controls.Add(this.valueComboBox);
             this.panel1.Controls.Add(this.robotElementCheckedListBox);
@@ -397,6 +399,18 @@ namespace FRCrobotCodeGen302
             this.valueTextBox.TabIndex = 0;
             this.valueTextBox.Visible = false;
             this.valueTextBox.TextChanged += new System.EventHandler(this.valueTextBox_TextChanged);
+            // 
+            // physicalUnitsTextBox
+            // 
+            this.physicalUnitsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.physicalUnitsTextBox.Location = new System.Drawing.Point(195, 193);
+            this.physicalUnitsTextBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.physicalUnitsTextBox.Name = "physicalUnitsTextBox";
+            this.physicalUnitsTextBox.Size = new System.Drawing.Size(50, 20);
+            this.physicalUnitsTextBox.TabIndex = 0;
+            this.physicalUnitsTextBox.Visible = false;
+            this.physicalUnitsTextBox.Text = "";
+            this.physicalUnitsTextBox.ReadOnly = true;
             // 
             // valueNumericUpDown
             // 
@@ -570,6 +584,7 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ComboBox valueComboBox;
         private System.Windows.Forms.TextBox valueTextBox;
+        private System.Windows.Forms.TextBox physicalUnitsTextBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button saveConfigBbutton;
         private System.Windows.Forms.NumericUpDown valueNumericUpDown;

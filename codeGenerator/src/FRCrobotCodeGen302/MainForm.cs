@@ -75,8 +75,13 @@ namespace FRCrobotCodeGen302
 
             splitContainer1.SplitterDistance = splitContainer1.Width - 180;
 
+            valueNumericUpDown.Width -= physicalUnitsTextBox.Width;
+            valueComboBox.Width = valueNumericUpDown.Width;
+            valueTextBox.Width = valueNumericUpDown.Width;
+
             valueComboBox.Location = valueNumericUpDown.Location;
             valueTextBox.Location = valueNumericUpDown.Location;
+            physicalUnitsTextBox.Location = new Point(valueNumericUpDown.Location.X + valueNumericUpDown.Width + 3, valueNumericUpDown.Location.Y);
 
             this.Text += " Version " + ProductVersion;
 
@@ -287,6 +292,7 @@ namespace FRCrobotCodeGen302
 
                     bool isConstant = false;
                     bool isTunable = false;
+                    string physicalUnits = "";
                     RangeAttribute range = null;
                     DefaultValueAttribute defaultValue = null;
 
@@ -297,6 +303,9 @@ namespace FRCrobotCodeGen302
 
                         if (parentPi != null)
                         {
+                            PhysicalUnitsAttribute units = parentPi.GetCustomAttribute<PhysicalUnitsAttribute>();
+                            physicalUnits = units == null ? null : units.units;
+
                             TunableParameterAttribute rpa = (TunableParameterAttribute)parentPi.GetCustomAttribute(typeof(TunableParameterAttribute), false);
                             ConstantAttribute rca = (ConstantAttribute)parentPi.GetCustomAttribute(typeof(ConstantAttribute), false);
                             range = (RangeAttribute)parentPi.GetCustomAttribute(typeof(RangeAttribute), false);
@@ -304,6 +313,7 @@ namespace FRCrobotCodeGen302
 
                             isConstant = rca != null;
                             isTunable = rpa != null;
+
                         }
                     }
 
@@ -347,7 +357,7 @@ namespace FRCrobotCodeGen302
                         tn.ImageIndex = imageIndex;
                         tn.SelectedImageIndex = imageIndex;
 
-                        leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj, isConstant, isTunable);
+                        leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj, isConstant, isTunable, physicalUnits);
                         if (range != null)
                             lnt.setRange(Convert.ToDouble(range.Minimum), Convert.ToDouble(range.Maximum));
                         if (defaultValue != null)
@@ -613,6 +623,13 @@ namespace FRCrobotCodeGen302
             valueNumericUpDown.Visible = visible;
             valueTextBox.Visible = visible;
         }
+        void setPhysicalUnitsTextBox(string str)
+        {
+            bool visible = !string.IsNullOrEmpty(str);
+            physicalUnitsTextBox.Visible = visible;
+            if(visible)
+                physicalUnitsTextBox.Text = str;
+        }
         void showValueComboBox()
         {
             hideAllValueEntryBoxes();
@@ -731,6 +748,8 @@ namespace FRCrobotCodeGen302
                         }
                     }
 
+                    setPhysicalUnitsTextBox(string.IsNullOrEmpty(lnt.physicalUnits) ? null : lnt.physicalUnits);
+
                     if (allowEdit)
                     {
                         PropertyInfo valueStringList = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value_strings", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -840,7 +859,7 @@ namespace FRCrobotCodeGen302
                                 prop.SetValue(parentObj, valueComboBox.Text);
                             else
                             {
-                                if(valueStringList == null)
+                                if (valueStringList == null)
                                     prop.SetValue(parentObj, Enum.Parse(lnt.type, valueComboBox.Text));
                                 else
                                 {
@@ -1561,16 +1580,18 @@ namespace FRCrobotCodeGen302
         public object obj { get; private set; }
         public bool isConstant { get; private set; }
         public bool isTunable { get; private set; }
+        public string physicalUnits{ get; private set; }
         public valueRange range { get; private set; }
         public defaultValue theDefault { get; private set; }
 
-        public leafNodeTag(Type type, string name, object obj, bool isConstant, bool isTunable)
+        public leafNodeTag(Type type, string name, object obj, bool isConstant, bool isTunable, string physicalUnits)
         {
             this.type = type;
             this.name = name;
             this.obj = obj;
             this.isConstant = isConstant;
             this.isTunable = isTunable;
+            this.physicalUnits = physicalUnits;
             range = null;
             theDefault = null;
         }
