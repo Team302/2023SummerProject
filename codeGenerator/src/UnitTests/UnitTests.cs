@@ -229,6 +229,30 @@ namespace UnitTests
             clickSave();
         }
 
+        [TestMethod]
+        public void TestMethod_00009_AddClosedLoopControlParametersToSuper_Intake()
+        {
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
+            addRobotElement("closedLoopControlParameters");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\closedLoopControlParameters\closedLoopControlParameters_1\name (closedLoopControlParameters_1)");
+
+            setTextInput("intakePID");
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\closedLoopControlParameters\intakePID\name (intakePID)");
+
+            clickSave();
+        }
+
+        [TestMethod]
+        public void TestMethod_0000A_SetPGainTo2()
+        {
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\closedLoopControlParameters\intakePID\pGain (0)");
+            setNumericUpDown(2);
+            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\closedLoopControlParameters\intakePID\pGain (2)");
+
+            clickSave();
+        }
+
+
         [TestCleanup]
         public void AfterEveryTest()
         {
@@ -238,16 +262,19 @@ namespace UnitTests
         #region ====================================== Helper functions ================================================
         private void setNumericUpDown(double value)
         {
-            Session.FindElementByAccessibilityId("valueNumericUpDown").Click();
-            Session.FindElementByAccessibilityId("valueNumericUpDown").SendKeys(Keys.Delete);
-            Session.FindElementByAccessibilityId("valueNumericUpDown").SendKeys(value.ToString());
+            WindowsElement we = Session.FindElementByAccessibilityId("valueNumericUpDown");
+            we.Click();
+            we.SendKeys(Keys.Control + "a");
+            we.SendKeys(Keys.Delete);
+            we.SendKeys(value.ToString());
         }
 
         private void setTextInput(string value)
         {
-            Session.FindElementByAccessibilityId("valueTextBox").Click();
-            Session.FindElementByAccessibilityId("valueTextBox").Clear();
-            Session.FindElementByAccessibilityId("valueTextBox").SendKeys(value);
+            WindowsElement we = Session.FindElementByAccessibilityId("valueTextBox");
+            we.Click();
+            we.Clear();
+            we.SendKeys(value);
         }
 
         private void clickSave()
