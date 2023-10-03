@@ -81,6 +81,7 @@ namespace FRCrobotCodeGen302
 
             valueComboBox.Location = valueNumericUpDown.Location;
             valueTextBox.Location = valueNumericUpDown.Location;
+            valueDatePicker.Location = valueNumericUpDown.Location;
             physicalUnitsTextBox.Location = new Point(valueNumericUpDown.Location.X + valueNumericUpDown.Width + 3, valueNumericUpDown.Location.Y);
 
             this.Text += " Version " + ProductVersion;
@@ -620,6 +621,7 @@ namespace FRCrobotCodeGen302
             valueComboBox.Visible = visible;
             valueNumericUpDown.Visible = visible;
             valueTextBox.Visible = visible;
+            valueDatePicker.Visible = visible;
         }
         void setPhysicalUnitsTextBox(string str)
         {
@@ -644,6 +646,12 @@ namespace FRCrobotCodeGen302
         {
             hideAllValueEntryBoxes();
             valueTextBox.Visible = true;
+        }
+
+        void showValueDatePicker()
+        {
+            hideAllValueEntryBoxes();
+            valueDatePicker.Visible = true;
         }
 
 
@@ -795,6 +803,11 @@ namespace FRCrobotCodeGen302
                             valueNumericUpDown.Value = Convert.ToDecimal(value);
                             showValueNumericUpDown();
                         }
+                        else if (value is DateTime)
+                        {
+                            showValueDatePicker();
+                            valueDatePicker.Value = (DateTime)value;
+                        }
                         else
                         {
                             showValueTextBox();
@@ -871,6 +884,45 @@ namespace FRCrobotCodeGen302
                     catch (Exception)
                     {
                         MessageBox.Show("Failed to set " + lastSelectedValueNode.Text + " to " + valueComboBox.Text);
+                    }
+                }
+            }
+        }
+
+        private void valueDatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            if (enableCallback)
+            {
+                if (lastSelectedValueNode != null)
+                {
+                    try
+                    {
+                        leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
+
+                        Type t = lastSelectedValueNode.Tag.GetType();
+                        PropertyInfo prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                        if (null != prop && prop.CanWrite)
+                        {
+                            prop.SetValue(lastSelectedValueNode.Parent.Tag, valueDatePicker.Value);
+                        }
+
+                        lastSelectedValueNode.Text = getTreeNodeDisplayName(valueDatePicker.Value.ToShortDateString(), lnt.name);
+
+                        if (lastSelectedValueNode.Parent != null)
+                        {
+                            if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
+                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayNameForNonLeafNode(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueDatePicker.Value.ToShortDateString());
+                        }
+
+                        mechanism theMechanism;
+                        if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                            updateMechInstancesFromMechTemplate(theMechanism);
+
+                        setNeedsSaving();
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Failed to set " + lastSelectedValueNode.Text + " to " + valueDatePicker.Value.ToShortDateString());
                     }
                 }
             }
