@@ -375,6 +375,48 @@ namespace Robot
         }
     }
 
+    [Serializable()]
+    public class controlData
+    {
+        public string name { get; set; }
+
+        closedLoopControlParameters pid { get; set; }
+
+        public double maxAccel { get; set; }
+
+        public controlData()
+        {
+            name = GetType().Name;
+        }
+    }
+
+    [Serializable()]
+    public class actuatorTarget
+    {
+        public string name { get; set; }
+
+        closedLoopControlParameters pid { get; set; }
+
+        public double maxAccel { get; set; }
+
+        public actuatorTarget()
+        {
+            name = GetType().Name;
+        }
+    }
+    [Serializable()]
+    public class state
+    {
+        public string name { get; set; }
+
+        public List<controlData> controlData { get; set; }
+
+        public state()
+        {
+            name = GetType().Name;
+            controlData = new List<controlData>();
+        }
+    }
 
     [Serializable()]
     public partial class pdp
@@ -675,6 +717,8 @@ namespace Robot
     [Serializable()]
     public partial class mechanism
     {
+
+        public List<state> state { get; set; }
         public List<motor> motor { get; set; }
         public List<solenoid> solenoid { get; set; }
         public List<servo> servo { get; set; }
@@ -689,6 +733,7 @@ namespace Robot
         {
             name = GetType().Name;
 
+            state = new List<state>();
             motor = new List<motor>();
             solenoid = new List<solenoid>();
             servo = new List<servo>();
