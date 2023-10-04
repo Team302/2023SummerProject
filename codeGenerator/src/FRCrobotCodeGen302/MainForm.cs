@@ -25,7 +25,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
-//using NetworkTables;
+using NetworkTablesUtils;
 
 namespace FRCrobotCodeGen302
 {
@@ -34,7 +34,7 @@ namespace FRCrobotCodeGen302
         toolConfiguration generatorConfig = new toolConfiguration();
         robotConfig theRobotConfiguration = new robotConfig();
         codeGenerator_302Robotics codeGenerator = new codeGenerator_302Robotics();
-        //NTViewer viewer;
+        NTViewer viewer;
         bool needsSaving = false;
         bool loadRobotConfig = false;
         readonly string configurationCacheFile = Path.GetTempPath() + "DragonsCodeGeneratorCache.txt";
@@ -86,6 +86,9 @@ namespace FRCrobotCodeGen302
             physicalUnitsTextBox.Location = new Point(valueNumericUpDown.Location.X + valueNumericUpDown.Width + 3, valueNumericUpDown.Location.Y);
 
             this.Text += " Version " + ProductVersion;
+
+            //initialize NT viewer
+            //viewer = new NTViewer(tuningButton);
 
             if (!automationEnabled)
             {
@@ -893,6 +896,11 @@ namespace FRCrobotCodeGen302
                         if (null != prop && prop.CanWrite)
                         {
                             prop.SetValue(lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+
+                            if (lnt.isTunable)
+                            {
+                                viewer.PushValue(valueTextBox.Text, NTViewer.ConvertFullNameToTuningKey(lnt.name));
+                            }
                         }
 
                         lastSelectedValueNode.Text = getTreeNodeDisplayName(valueTextBox.Text, lnt.name);
@@ -950,6 +958,11 @@ namespace FRCrobotCodeGen302
                                     prop.SetValue(obj, (double)valueNumericUpDown.Value);
                                 }
                                 displayStr = prop.GetValue(obj).ToString();
+
+                                if (lnt.isTunable)
+                                {
+                                    viewer.PushValue((double)valueNumericUpDown.Value, NTViewer.ConvertFullNameToTuningKey(lnt.name));
+                                }
                             }
                         }
 
@@ -1526,6 +1539,11 @@ namespace FRCrobotCodeGen302
             {
 
             }
+        }
+
+        private void tuningButton_Click(object sender, EventArgs e)
+        {
+            viewer.ConnectToNetworkTables();
         }
     }
 

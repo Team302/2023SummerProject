@@ -112,8 +112,8 @@
       <Project>{c6873437-dcd6-4894-8bc3-68b3f92e9899}</Project>
       <Name>DataConfiguration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NetworkTables\NetworkTablesUtils.csproj">
-      <Project>{bb8491f9-6aa3-4c94-8e51-e28b564b1761}</Project>
+    <ProjectReference Include="..\NetworkTablesUtils\NetworkTablesUtils.csproj">
+      <Project>{8ac1fc79-3665-411d-9bfb-3d75c7e820d1}</Project>
       <Name>NetworkTablesUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\robotConfiguration\robotConfiguration.csproj">
