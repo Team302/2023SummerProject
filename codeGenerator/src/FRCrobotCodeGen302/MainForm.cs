@@ -25,6 +25,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
+//using NetworkTables;
 
 namespace FRCrobotCodeGen302
 {
@@ -33,6 +34,7 @@ namespace FRCrobotCodeGen302
         toolConfiguration generatorConfig = new toolConfiguration();
         robotConfig theRobotConfiguration = new robotConfig();
         codeGenerator_302Robotics codeGenerator = new codeGenerator_302Robotics();
+        //NTViewer viewer;
         bool needsSaving = false;
         bool loadRobotConfig = false;
         readonly string configurationCacheFile = Path.GetTempPath() + "DragonsCodeGeneratorCache.txt";
