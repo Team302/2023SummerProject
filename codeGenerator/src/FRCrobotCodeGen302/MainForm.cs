@@ -1,6 +1,7 @@
 ﻿using Configuration;
 using CoreCodeGenerator;
 using robotConfiguration;
+using NTUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,6 +34,7 @@ namespace FRCrobotCodeGen302
         toolConfiguration generatorConfig = new toolConfiguration();
         robotConfig theRobotConfiguration = new robotConfig();
         codeGenerator_302Robotics codeGenerator = new codeGenerator_302Robotics();
+        NTViewer viewer;
         bool needsSaving = false;
         bool loadRobotConfig = false;
         readonly string configurationCacheFile = Path.GetTempPath() + "DragonsCodeGeneratorCache.txt";
@@ -85,6 +87,11 @@ namespace FRCrobotCodeGen302
 
             this.Text += " Version " + ProductVersion;
 
+            viewer = new NTViewer(tuningEnableButton);
+
+            //try to load cached configuration.xml
+            addProgress("Trying to load cached configuration.xml");
+            try
             if (!automationEnabled)
             {
                 #region try to load cached configuration.xml
@@ -845,10 +852,22 @@ namespace FRCrobotCodeGen302
                             else
                             {
                                 if (valueStringList == null)
+                                {
                                     prop.SetValue(parentObj, Enum.Parse(lnt.type, valueComboBox.Text));
+                                    
+                                    if (isATunableParameterType(lnt.type.FullName) && viewer.HasConnected())
+                                    {
+                                        viewer.PushValue((double)Enum.Parse(lnt.type, valueComboBox.Text), NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
+                                    }
+                                }
                                 else
                                 {
                                     prop.SetValue(lnt.obj, valueComboBox.Text);
+
+                                    if (isATunableParameterType(lnt.type.FullName) && viewer.HasConnected())
+                                    {
+                                        viewer.PushValue((string)valueComboBox.Text, NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
+                                    }
                                 }
                                 //  lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(null, lastSelectedValueNode.Parent.Tag, lastSelectedValueNode.Parent.Tag.GetType().Name);
                             }
@@ -891,6 +910,11 @@ namespace FRCrobotCodeGen302
                         if (null != prop && prop.CanWrite)
                         {
                             prop.SetValue(lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+
+                            if (isATunableParameterType(lnt.type.FullName) && viewer.HasConnected())
+                            {
+                                viewer.PushValue((string)valueTextBox.Text, NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
+                            }
                         }
 
                         lastSelectedValueNode.Text = getTreeNodeDisplayName(valueTextBox.Text, lnt.name);
@@ -947,6 +971,12 @@ namespace FRCrobotCodeGen302
                                 {
                                     prop.SetValue(obj, (double)valueNumericUpDown.Value);
                                 }
+                                
+                                if (isATunableParameterType(lnt.type.FullName) && viewer.HasConnected())
+                                {
+                                    viewer.PushValue((double)valueNumericUpDown.Value, NTViewer.ConvertFullNameToTuningKey(lastSelectedValueNode.FullPath));
+                                }
+
                                 displayStr = prop.GetValue(obj).ToString();
                             }
                         }
@@ -1446,6 +1476,10 @@ namespace FRCrobotCodeGen302
             }
         }
 
+        private void tuningEnableButton_Click(object sender, EventArgs e)
+        {
+            viewer.ConnectToNetworkTables();
+        }
         private TreeNode getNode(string fullPath)
         {
             TreeNode node = null;

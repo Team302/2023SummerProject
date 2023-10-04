@@ -108,6 +108,9 @@
       <Project>{d8726625-5dbc-46e6-a6bc-816e6c9c3469}</Project>
       <Name>CoreCodeGenerator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NTUtils\NTUtils.csproj">
+      <Project>{2deca686-84db-4955-a256-54c95d80d30a}</Project>
+      <Name>NTUtils</Name>
     <ProjectReference Include="..\DataConfiguration\DataConfiguration.csproj">
       <Project>{c6873437-dcd6-4894-8bc3-68b3f92e9899}</Project>
       <Name>DataConfiguration</Name>

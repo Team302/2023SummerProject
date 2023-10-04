@@ -18,6 +18,7 @@
 
 #include <frc/TimedRobot.h>
 #include <DragonVision/DragonVision.h>
+#include <utils/BuildDetailsReader.h>
 
 class ArcadeDrive;
 class CyclePrimitives;
@@ -31,7 +32,6 @@ class DragonField;
 class AutonPreviewer;
 class RobotState;
 class SomeMech;
-class BuildDetailsReader;
 class RobotDefinition;
 
 class Robot : public frc::TimedRobot
@@ -68,5 +68,4 @@ private:
     SomeMech *m_someMech;
     BuildDetailsReader *m_detailsReader;
     BuildDetails m_details;
-    RobotDefinition *m_robot;
 };
