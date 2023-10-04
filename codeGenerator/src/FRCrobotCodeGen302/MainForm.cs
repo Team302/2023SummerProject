@@ -169,7 +169,7 @@ namespace FRCrobotCodeGen302
                             else if (propertyInfo.Name == "canId")
                             {
                                 if ((propertyInfo.GetValue(obj) as Robot.CAN_ID) != null)
-                                    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value.ToString() + ", ";
+                                    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value__.ToString() + ", ";
                             }
                             else
                             {
@@ -282,7 +282,7 @@ namespace FRCrobotCodeGen302
                     }
                     else
                     {
-                        PropertyInfo pi = obj.GetType().GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        PropertyInfo pi = obj.GetType().GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
                         if (pi != null)
                         {
                             treatAsLeafNode = true;
@@ -379,8 +379,6 @@ namespace FRCrobotCodeGen302
             if (myRobot.theRobotVariants.robot.Count > 0)
                 robotTreeView.Nodes[0].Expand();
         }
-
-
 
         public void loadGeneratorConfig(string configurationFullPathName)
         {
@@ -732,7 +730,7 @@ namespace FRCrobotCodeGen302
                     bool allowEdit = false;
                     if (!lnt.isConstant)
                     {
-                        PropertyInfo valueProp = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        PropertyInfo valueProp = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
                         if (valueProp != null)
                             value = valueProp.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
                         else
@@ -784,6 +782,23 @@ namespace FRCrobotCodeGen302
 
                             valueNumericUpDown.DecimalPlaces = 0;
                             valueNumericUpDown.Value = (uint)value;
+                            showValueNumericUpDown();
+                        }
+                        else if (value is int || value is Int32)
+                        {
+                            if (lnt.range == null)
+                            {
+                                valueNumericUpDown.Minimum = -5000;
+                                valueNumericUpDown.Maximum = 5000;
+                            }
+                            else
+                            {
+                                valueNumericUpDown.Minimum = Convert.ToInt32(lnt.range.minRange);
+                                valueNumericUpDown.Maximum = Convert.ToInt32(lnt.range.maxRange);
+                            }
+
+                            valueNumericUpDown.DecimalPlaces = 0;
+                            valueNumericUpDown.Value = (int)value;
                             showValueNumericUpDown();
                         }
                         else if (value is double)
@@ -842,7 +857,7 @@ namespace FRCrobotCodeGen302
                         if (theRobotConfiguration.isACollection(parentObj))
                         {
                             Type elementType = parentObj.GetType().GetGenericArguments().Single();
-                            prop = elementType.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                            prop = elementType.GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
                             valueStringList = elementType.GetProperty("value_strings", BindingFlags.NonPublic | BindingFlags.Instance);
                         }
                         else
@@ -978,7 +993,7 @@ namespace FRCrobotCodeGen302
                         leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
 
                         object obj = lnt.obj;
-                        PropertyInfo prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        PropertyInfo prop = lnt.type.GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
                         if (prop == null)
                         {
                             obj = lastSelectedValueNode.Parent.Tag;
