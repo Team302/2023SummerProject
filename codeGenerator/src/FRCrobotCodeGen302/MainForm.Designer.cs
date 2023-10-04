@@ -55,6 +55,7 @@ namespace FRCrobotCodeGen302
             this.addTreeElementButton = new System.Windows.Forms.Button();
             this.saveConfigBbutton = new System.Windows.Forms.Button();
             this.valueTextBox = new System.Windows.Forms.TextBox();
+            this.valueDatePicker = new System.Windows.Forms.DateTimePicker();
             this.physicalUnitsTextBox = new System.Windows.Forms.TextBox();
             this.valueNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.valueComboBox = new System.Windows.Forms.ComboBox();
@@ -331,6 +332,7 @@ namespace FRCrobotCodeGen302
             this.panel1.Controls.Add(this.addTreeElementButton);
             this.panel1.Controls.Add(this.saveConfigBbutton);
             this.panel1.Controls.Add(this.valueTextBox);
+            this.panel1.Controls.Add(this.valueDatePicker);
             this.panel1.Controls.Add(this.physicalUnitsTextBox);
             this.panel1.Controls.Add(this.valueNumericUpDown);
             this.panel1.Controls.Add(this.valueComboBox);
@@ -399,6 +401,16 @@ namespace FRCrobotCodeGen302
             this.valueTextBox.TabIndex = 0;
             this.valueTextBox.Visible = false;
             this.valueTextBox.TextChanged += new System.EventHandler(this.valueTextBox_TextChanged);
+            // 
+            // valueDatePicker
+            // 
+            this.valueDatePicker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.valueDatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.valueDatePicker.Location = new System.Drawing.Point(474, 253);
+            this.valueDatePicker.Name = "valueDatePicker";
+            this.valueDatePicker.Size = new System.Drawing.Size(153, 20);
+            this.valueDatePicker.TabIndex = 0;
+            this.valueDatePicker.TextChanged += new System.EventHandler(this.valueDatePicker_ValueChanged);
             // 
             // physicalUnitsTextBox
             // 
@@ -601,6 +613,7 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.Button checkCheckBoxListItemButton;
         private System.Windows.Forms.TextBox infoIOtextBox;
         private System.Windows.Forms.TextBox selectedNodePathTextBox;
+        private System.Windows.Forms.DateTimePicker valueDatePicker;
     }
 }
 

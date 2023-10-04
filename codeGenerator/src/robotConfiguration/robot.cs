@@ -336,7 +336,7 @@ namespace Robot
     {
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
-        public uint value { get; set; }
+        public uint value__ { get; set; }
 
         public CAN_ID()
         {
@@ -345,8 +345,76 @@ namespace Robot
     }
 
     [Serializable()]
+    [XmlInclude(typeof(uintParameter))]
+    [XmlInclude(typeof(intParameter))]
+    [XmlInclude(typeof(doubleParameter))]
+    [XmlInclude(typeof(boolParameter))]
+    public partial class parameter
+    {
+        public string name { get; set; }
+
+        [Constant()]
+        public string type { get; set; }
+
+        public parameter()
+        {
+            name = GetType().Name;
+            helperFunctions.initializeDefaultValues(this);
+        }
+    }
+
+    [Serializable()]
+    public partial class uintParameter : parameter
+    {
+        [DefaultValue(0u)]
+        public uint value { get; set; }
+
+        public uintParameter()
+        {
+            type = value.GetType().Name;
+        }
+    }
+
+    [Serializable()]
+    public partial class intParameter : parameter
+    {
+        [DefaultValue(0u)]
+        public int value { get; set; }
+
+        public intParameter()
+        {
+            type = value.GetType().Name;
+        }
+    }
+
+    [Serializable()]
+    public partial class doubleParameter : parameter
+    {
+        [DefaultValue(0u)]
+        public double value { get; set; }
+
+        public doubleParameter()
+        {
+            type = value.GetType().Name;
+        }
+    }
+
+    [Serializable()]
+    public partial class boolParameter : parameter
+    {
+        [DefaultValue(0u)]
+        public bool value { get; set; }
+
+        public boolParameter()
+        {
+            type = value.GetType().Name;
+        }
+    }
+
+    [Serializable()]
     public partial class robot
     {
+        public List<parameter> parameter { get; set; }
         public List<motor> motor { get; set; }
         public List<pcm> pcm { get; set; }
         public pdp pdp { get; set; }
@@ -363,6 +431,7 @@ namespace Robot
 
         public robot()
         {
+            parameter = new List<parameter>();
             motor = new List<motor>();
             pcm = new List<pcm>();
             pigeon = new List<pigeon>();
@@ -861,16 +930,16 @@ namespace Robot
         public cameraformat format { get; set; }
 
         [DefaultValue(640u)]
-        public uint width{get; set; }
+        public uint width { get; set; }
 
         [DefaultValue(480)]
-        public string height{get;set; }
+        public string height { get; set; }
 
         [DefaultValue(30)]
         public uint fps { get; set; }
 
         [DefaultValue(false)]
-        public bool thread{get;set; }
+        public bool thread { get; set; }
 
         public camera()
         {
@@ -933,7 +1002,7 @@ namespace Robot
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "7")]
-        public uint id{get;set; }
+        public uint id { get; set; }
 
         public analogultrasonic()
         {
@@ -946,7 +1015,7 @@ namespace Robot
     public partial class lidar
     {
         [TunableParameter()]
-        public string name{get; set;}
+        public string name { get; set; }
 
         [DefaultValue(0u)]
         [TunableParameter()]
@@ -968,9 +1037,9 @@ namespace Robot
     {
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "19")]
-        public uint Id{get;set;}
+        public uint Id { get; set; }
 
-        [DefaultValue(0u)] 
+        [DefaultValue(0u)]
         public uint number { get; set; }
 
         public led()
@@ -987,11 +1056,11 @@ namespace Robot
     [XmlRootAttribute("blinkin", Namespace = "http://team302.org/robot")]
     public partial class blinkin
     {
-        public string name{get;set; }
+        public string name { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "19")]
-        public uint Id{get;set;}
+        public uint Id { get; set; }
 
         public blinkin()
         {
@@ -1009,11 +1078,11 @@ namespace Robot
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "6")]
-        public uint name{get; set; }
+        public uint name { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "11")]
-        public uint generalpin{get;set; }
+        public uint generalpin { get; set; }
 
         public talontach()
         {
@@ -1042,7 +1111,7 @@ namespace Robot
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class DescriptionAttribute : Attribute
     {
-        public string description { get;set; } 
+        public string description { get; set; }
         public DescriptionAttribute(string description)
         {
             this.description = description;

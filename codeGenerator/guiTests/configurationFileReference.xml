@@ -15,7 +15,8 @@
   </treeviewParentNameExtensions>
   <collectionBaseTypes>
     <string>Robot.motor</string>
-        <string>Robot.PriceChange</string>
+    <string>Robot.PriceChange</string>
+	<string>Robot.parameter</string>
   </collectionBaseTypes>
   <tunableParameterTypes>
     <string>Robot.doubleParameter</string>

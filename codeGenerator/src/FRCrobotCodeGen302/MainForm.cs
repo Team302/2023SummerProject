@@ -81,6 +81,7 @@ namespace FRCrobotCodeGen302
 
             valueComboBox.Location = valueNumericUpDown.Location;
             valueTextBox.Location = valueNumericUpDown.Location;
+            valueDatePicker.Location = valueNumericUpDown.Location;
             physicalUnitsTextBox.Location = new Point(valueNumericUpDown.Location.X + valueNumericUpDown.Width + 3, valueNumericUpDown.Location.Y);
 
             this.Text += " Version " + ProductVersion;
@@ -168,7 +169,7 @@ namespace FRCrobotCodeGen302
                             else if (propertyInfo.Name == "canId")
                             {
                                 if ((propertyInfo.GetValue(obj) as Robot.CAN_ID) != null)
-                                    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value.ToString() + ", ";
+                                    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value__.ToString() + ", ";
                             }
                             else
                             {
@@ -281,7 +282,7 @@ namespace FRCrobotCodeGen302
                     }
                     else
                     {
-                        PropertyInfo pi = obj.GetType().GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        PropertyInfo pi = obj.GetType().GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
                         if (pi != null)
                         {
                             treatAsLeafNode = true;
@@ -378,8 +379,6 @@ namespace FRCrobotCodeGen302
             if (myRobot.theRobotVariants.robot.Count > 0)
                 robotTreeView.Nodes[0].Expand();
         }
-
-
 
         public void loadGeneratorConfig(string configurationFullPathName)
         {
@@ -620,6 +619,7 @@ namespace FRCrobotCodeGen302
             valueComboBox.Visible = visible;
             valueNumericUpDown.Visible = visible;
             valueTextBox.Visible = visible;
+            valueDatePicker.Visible = visible;
         }
         void setPhysicalUnitsTextBox(string str)
         {
@@ -644,6 +644,12 @@ namespace FRCrobotCodeGen302
         {
             hideAllValueEntryBoxes();
             valueTextBox.Visible = true;
+        }
+
+        void showValueDatePicker()
+        {
+            hideAllValueEntryBoxes();
+            valueDatePicker.Visible = true;
         }
 
 
@@ -724,7 +730,7 @@ namespace FRCrobotCodeGen302
                     bool allowEdit = false;
                     if (!lnt.isConstant)
                     {
-                        PropertyInfo valueProp = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        PropertyInfo valueProp = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
                         if (valueProp != null)
                             value = valueProp.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
                         else
@@ -778,6 +784,23 @@ namespace FRCrobotCodeGen302
                             valueNumericUpDown.Value = (uint)value;
                             showValueNumericUpDown();
                         }
+                        else if (value is int || value is Int32)
+                        {
+                            if (lnt.range == null)
+                            {
+                                valueNumericUpDown.Minimum = -5000;
+                                valueNumericUpDown.Maximum = 5000;
+                            }
+                            else
+                            {
+                                valueNumericUpDown.Minimum = Convert.ToInt32(lnt.range.minRange);
+                                valueNumericUpDown.Maximum = Convert.ToInt32(lnt.range.maxRange);
+                            }
+
+                            valueNumericUpDown.DecimalPlaces = 0;
+                            valueNumericUpDown.Value = (int)value;
+                            showValueNumericUpDown();
+                        }
                         else if (value is double)
                         {
                             if (lnt.range == null)
@@ -794,6 +817,11 @@ namespace FRCrobotCodeGen302
                             valueNumericUpDown.DecimalPlaces = 5;
                             valueNumericUpDown.Value = Convert.ToDecimal(value);
                             showValueNumericUpDown();
+                        }
+                        else if (value is DateTime)
+                        {
+                            showValueDatePicker();
+                            valueDatePicker.Value = (DateTime)value;
                         }
                         else
                         {
@@ -829,7 +857,7 @@ namespace FRCrobotCodeGen302
                         if (theRobotConfiguration.isACollection(parentObj))
                         {
                             Type elementType = parentObj.GetType().GetGenericArguments().Single();
-                            prop = elementType.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                            prop = elementType.GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
                             valueStringList = elementType.GetProperty("value_strings", BindingFlags.NonPublic | BindingFlags.Instance);
                         }
                         else
@@ -871,6 +899,45 @@ namespace FRCrobotCodeGen302
                     catch (Exception)
                     {
                         MessageBox.Show("Failed to set " + lastSelectedValueNode.Text + " to " + valueComboBox.Text);
+                    }
+                }
+            }
+        }
+
+        private void valueDatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            if (enableCallback)
+            {
+                if (lastSelectedValueNode != null)
+                {
+                    try
+                    {
+                        leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
+
+                        Type t = lastSelectedValueNode.Tag.GetType();
+                        PropertyInfo prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                        if (null != prop && prop.CanWrite)
+                        {
+                            prop.SetValue(lastSelectedValueNode.Parent.Tag, valueDatePicker.Value);
+                        }
+
+                        lastSelectedValueNode.Text = getTreeNodeDisplayName(valueDatePicker.Value.ToShortDateString(), lnt.name);
+
+                        if (lastSelectedValueNode.Parent != null)
+                        {
+                            if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
+                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayNameForNonLeafNode(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueDatePicker.Value.ToShortDateString());
+                        }
+
+                        mechanism theMechanism;
+                        if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                            updateMechInstancesFromMechTemplate(theMechanism);
+
+                        setNeedsSaving();
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Failed to set " + lastSelectedValueNode.Text + " to " + valueDatePicker.Value.ToShortDateString());
                     }
                 }
             }
@@ -926,7 +993,7 @@ namespace FRCrobotCodeGen302
                         leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
 
                         object obj = lnt.obj;
-                        PropertyInfo prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        PropertyInfo prop = lnt.type.GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
                         if (prop == null)
                         {
                             obj = lastSelectedValueNode.Parent.Tag;
