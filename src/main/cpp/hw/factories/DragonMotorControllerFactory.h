@@ -24,7 +24,7 @@
 
 // Team 302 includes
 #include "hw/interfaces/IDragonMotorController.h"
-#include <hw/DistanceAngleCalcStruc.h>
+#include "hw/DistanceAngleCalcStruc.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/FeedbackDevice.h>

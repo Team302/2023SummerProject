@@ -4,7 +4,7 @@
 
 #include <hw/factories/DragonMotorControllerFactory.h>
 #include "configs/usages/MotorControllerUsage.h"
-#include <hw/DistanceAngleCalcStruc.h>
+#include "hw/DistanceAngleCalcStruc.h"
 #include <hw/DragonTalonSRX.h>
 #include <hw/DragonFalcon.h>
 #include "utils/logging/Logger.h"
@@ -110,6 +110,7 @@ shared_ptr<IDragonMotorController> DragonMotorControllerFactory::CreateMotorCont
             talon->EnableVoltageCompensation(voltageCompensationSaturation);
         }
     }
+    /**
     else if (type == MOTOR_TYPE::FALCON)
     {
         auto talon = new DragonFalcon(networkTableName, MotorControllerUsage::GetInstance()->GetUsage(usage), canID, canBusName, pdpID, calsStruc, motorType);
@@ -142,9 +143,9 @@ shared_ptr<IDragonMotorController> DragonMotorControllerFactory::CreateMotorCont
             talon->EnableVoltageCompensation(voltageCompensationSaturation);
         }
 
-        /** **/
         controller.reset(talon);
     }
+    **/
     else
     {
         hasError = true;

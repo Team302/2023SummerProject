@@ -21,8 +21,8 @@
 #include <string>
 
 // Team 302 includes
-#include <hw/DistanceAngleCalcStruc.h>
-#include <hw/ctreadapters/DragonControlToCTREAdapter.h>
+#include "hw/DistanceAngleCalcStruc.h"
+#include "hw/ctreadapters/DragonControlToCTREAdapter.h"
 
 namespace ctre
 {

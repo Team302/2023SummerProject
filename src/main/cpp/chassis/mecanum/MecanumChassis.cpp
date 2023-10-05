@@ -31,7 +31,7 @@
 #include <chassis/ChassisMovement.h>
 #include <hw/factories/PigeonFactory.h>
 #include <hw/DragonPigeon.h>
-#include <utils/ConversionUtils.h>
+#include "utils/ConversionUtils.h"
 #include "utils/logging/Logger.h"
 
 #include <chassis/mecanum/MecanumChassis.h>
@@ -160,7 +160,7 @@ void MecanumChassis::ZeroEncoder(shared_ptr<IDragonMotorController> controller)
     if (controller.get() != nullptr)
     {
         auto motor = controller.get()->GetSpeedController();
-        auto talon = dynamic_cast<WPI_TalonSRX *>(motor.get());
+        auto talon = dynamic_cast<WPI_TalonSRX *>(motor);
         talon->SetSelectedSensorPosition(0, 0);
     }
 }

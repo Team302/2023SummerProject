@@ -35,13 +35,12 @@
 #include "mechanisms/base/BaseMechMotor.h"
 #include "mechanisms/base/BaseMechSolenoid.h"
 #include "mechanisms/base/BaseMechServo.h"
-#include "mechanisms/example/generated/IExampleGen.h"
 #include "mechanisms/base/StateMgr.h"
 
 // forward declares
 class IDragonMotorController;
 
-class ExampleGen : public IExampleGen, public BaseMech, public StateMgr
+class ExampleGen : public BaseMech, public StateMgr
 {
 public:
     /// @brief  This method constructs the mechanism using composition with its various actuators and sensors.
@@ -52,61 +51,61 @@ public:
     ExampleGen();
     ~ExampleGen() = default;
 
-    void AddMotor(IDragonMotorController &motor) override;
-    void AddSolenoid(DragonSolenoid &solenoid) override;
+    virtual void AddMotor(IDragonMotorController &motor);
+    virtual void AddSolenoid(DragonSolenoid &solenoid);
 
     /// @brief Set the control constants (e.g. PIDF values).
     /// @param indentifier the motor controller usage to identify the motor
     /// @param slot position on the motor controller to set
     /// @param pid control data / constants
-    void SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE indentifier, int slot, ControlData pid) override;
+    virtual void SetControlConstants(MotorControllerUsage::MOTOR_CONTROLLER_USAGE indentifier, int slot, ControlData pid);
 
     /// @brief update the output to the mechanism using the current controller and target value(s)
-    void Update() override;
+    virtual void Update();
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param percentOutput target value
-    void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, double percentOutput) override;
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, double percentOutput);
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param angle target value
-    void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angle::degree_t angle) override;
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angle::degree_t angle);
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param angularVelocity target value
-    void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angular_velocity::revolutions_per_minute_t angVel) override;
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::angular_velocity::revolutions_per_minute_t angVel);
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param position target value
-    void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::length::inch_t position) override;
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::length::inch_t position);
 
     /// @brief Set the target value for the actuator
     /// @param identifier Motor Control Usage to indicate what motor to update
     /// @param velocity target value
-    void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::velocity::feet_per_second_t velocity) override;
+    virtual void UpdateTarget(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier, units::velocity::feet_per_second_t velocity);
 
     /// @brief Set the target value for the actuator
     /// @param identifier solenoid Usage to indicate what motor to update
     /// @param extend target value
-    void UpdateTarget(SolenoidUsage::SOLENOID_USAGE identifier, bool extend) override;
+    virtual void UpdateTarget(SolenoidUsage::SOLENOID_USAGE identifier, bool extend);
 
-    bool IsAtMinPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const override;
-    bool IsAtMinPosition(SolenoidUsage::SOLENOID_USAGE identifier) const override;
-    bool IsAtMaxPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const override;
-    bool IsAtMaxPosition(SolenoidUsage::SOLENOID_USAGE identifier) const override;
+    virtual bool IsAtMinPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const;
+    virtual bool IsAtMinPosition(SolenoidUsage::SOLENOID_USAGE identifier) const;
+    virtual bool IsAtMaxPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const;
+    virtual bool IsAtMaxPosition(SolenoidUsage::SOLENOID_USAGE identifier) const;
 
-    std::vector<MotorControllerUsage::MOTOR_CONTROLLER_USAGE> GetMotorUsages() const;
-    BaseMechMotor *GetMotorMech(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage) const;
+    virtual std::vector<MotorControllerUsage::MOTOR_CONTROLLER_USAGE> GetMotorUsages() const;
+    virtual BaseMechMotor *GetMotorMech(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage) const;
 
-    std::vector<SolenoidUsage::SOLENOID_USAGE> GetSolenoidUsages() const;
-    BaseMechSolenoid *GetSolenoidMech(SolenoidUsage::SOLENOID_USAGE usage) const;
+    virtual std::vector<SolenoidUsage::SOLENOID_USAGE> GetSolenoidUsages() const;
+    virtual BaseMechSolenoid *GetSolenoidMech(SolenoidUsage::SOLENOID_USAGE usage) const;
 
-    std::vector<ServoUsage::SERVO_USAGE> GetServoUsages() const;
-    BaseMechServo *GetServoMech(ServoUsage::SERVO_USAGE usage) const;
+    virtual std::vector<ServoUsage::SERVO_USAGE> GetServoUsages() const;
+    virtual BaseMechServo *GetServoMech(ServoUsage::SERVO_USAGE usage) const;
 
 private:
     std::unordered_map<MotorControllerUsage::MOTOR_CONTROLLER_USAGE, BaseMechMotor *> m_motorMap;

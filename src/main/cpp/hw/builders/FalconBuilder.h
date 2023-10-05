@@ -25,24 +25,27 @@
 #include "ctre/phoenix/motorcontrol/FeedbackDevice.h"
 #include "ctre/phoenix/motorcontrol/RemoteSensorSource.h"
 
+#include "configs/usages/MotorControllerUsage.h"
 #include "hw/DistanceAngleCalcStruc.h"
+#include "hw/DragonFalcon.h"
 #include "hw/interfaces/IDragonMotorController.h"
 
 class FalconBuilder
 {
 public:
     FalconBuilder() = default;
+    // FalconBuilder(DragonFalcon* existingFalcon);
     ~FalconBuilder() = default;
 
     void SetNetworkTableName(std::string networkTableName);
-    void SetUsage(std::string usage);
+    void SetUsage(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage);
     void SetIDs(int canID, int PDPID);
     void SetIDs(int canID, int PDPID, int followID);
     void SetMotorConfigs(ctre::phoenixpro::signals::InvertedValue inverted,
                          ctre::phoenixpro::signals::NeutralModeValue mode,
                          double deadbandPercent,
-                         double peakMin,
-                         double peakMax);
+                         double peakForwardDutyCycle,
+                         double peakReverseDutyCycle);
 
     void SetCurrentLimits(bool enableStatorCurrentLimit,
                           units::current::ampere_t statorCurrentLimit,
@@ -62,24 +65,53 @@ public:
     void SetFeedbackConfigs(units::angle::turn_t feedbackRotorOffset,
                             ctre::phoenixpro::signals::FeedbackSensorSourceValue feedbackSensor,
                             int remoteSensorID);
+    void SetCANBusName(std::string canbus);
 
     void ResetToDefaults();
 
+    bool IsValid() const;
+
+    DragonFalcon *Commit();
+
 private:
+    bool m_voltageSet = false;
+    bool m_torqueSet = false;
+    bool m_feedbackSet = false;
+
     std::string m_networkTableName;
-    std::string m_usage;
-    int m_canID;
-    int m_pdpID;
+    MotorControllerUsage::MOTOR_CONTROLLER_USAGE m_usage;
+    int m_canID = -1;
+    int m_pdpID = -1;
     int m_followId = -1;
-    bool m_brakeMode = true;
-    bool m_inverted = false;
+
+    bool m_motorConfigSet = false;
+    ctre::phoenixpro::signals::NeutralModeValue m_brakeMode = ctre::phoenixpro::signals::NeutralModeValue::Brake;
+    ctre::phoenixpro::signals::InvertedValue m_inverted = ctre::phoenixpro::signals::InvertedValue::CounterClockwise_Positive;
+    double m_peakForwardDutyCycle;
+    double m_peakReverseDutyCycle;
+    double m_deadbandPercent;
 
     DistanceAngleCalcStruc m_calcStruc;
 
-    bool m_enableCurrentLimiting;
-    int m_peakCurrentLimit;
-    int m_peakCurrnetDuration;
-    int m_continuousCurrnetDuration;
+    bool m_currentSet = false;
+    bool m_enableStatorCurrentLimiting = false;
+    units::current::ampere_t m_statorCurrentLimit = units::current::ampere_t(0.0);
+    bool m_enableSupplyCurrentLimiting = false;
+    units::current::ampere_t m_supplyContinuousCurrentLimit = units::current::ampere_t(0.0);
+    units::current::ampere_t m_supplyPeakCurrentLimit = units::current::ampere_t(0.0);
+    units::time::second_t m_supplyCurrentDuration = units::time::second_t(0.0);
+
+    units::voltage::volt_t m_reverseVoltage = units::voltage::volt_t(-12.0);
+    units::voltage::volt_t m_forwardVoltage = units::voltage::volt_t(12.0);
+    units::time::second_t m_voltageTime = units::time::second_t(0.0);
+
+    units::current::ampere_t m_peakForwardTorqueCurrent = units::current::ampere_t(0.0);
+    units::current::ampere_t m_peakReverseTorqueCurrent = units::current::ampere_t(0.0);
+    units::current::ampere_t m_torqueNeutralDeadband = units::current::ampere_t(0.0);
+
+    units::angle::turn_t m_feedbackRotorOffset = units::angle::turn_t(0.0);
+    ctre::phoenixpro::signals::FeedbackSensorSourceValue m_feedbackSensor = ctre::phoenixpro::signals::FeedbackSensorSourceValue::FusedCANcoder;
+    int m_remoteSensorID = -1;
 
     bool m_forwardLimitSwitch = false;
     bool m_forwardLimitSwitchNormallyOpen = false;

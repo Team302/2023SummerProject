@@ -16,6 +16,8 @@
 
 #pragma once
 #include "configs/RobotConfig.h"
+#include "hw/DragonFalcon.h"
+#include "mechanisms/example/decoratormods/Example.h"
 
 class RobotConfigExample : public RobotConfig
 {
@@ -33,4 +35,9 @@ protected:
 
     // mechanisms
     void DefineMechanisms() override;
+
+private:
+    DragonFalcon *m_motor1 = nullptr;
+    DragonFalcon *m_motor2 = nullptr;
+    Example *m_example = nullptr;
 };

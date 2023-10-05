@@ -122,14 +122,14 @@ void DifferentialChassis::SetEncodersToZero()
     if (m_leftMotor.get() != nullptr)
     {
         auto motor = m_leftMotor.get()->GetSpeedController();
-        auto fx = dynamic_cast<WPI_TalonFX *>(motor.get());
+        auto fx = dynamic_cast<WPI_TalonFX *>(motor);
         auto driveMotorSensors = fx->GetSensorCollection();
         driveMotorSensors.SetIntegratedSensorPosition(0, 0);
     }
     if (m_rightMotor.get() != nullptr)
     {
         auto motor = m_rightMotor.get()->GetSpeedController();
-        auto fx = dynamic_cast<WPI_TalonFX *>(motor.get());
+        auto fx = dynamic_cast<WPI_TalonFX *>(motor);
         auto driveMotorSensors = fx->GetSensorCollection();
         driveMotorSensors.SetIntegratedSensorPosition(0, 0);
     }

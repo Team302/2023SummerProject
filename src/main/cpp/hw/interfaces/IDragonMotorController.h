@@ -96,7 +96,7 @@ public:
 
     /// @brief  Return the speedcontroller
     /// @return std::shared_ptr<frc::SpeedControll> - pointer to the speed controller object
-    virtual std::shared_ptr<frc::MotorController> GetSpeedController() const = 0;
+    virtual frc::MotorController *GetSpeedController() const = 0;
 
     // Setters
     virtual void Set(double value) = 0;

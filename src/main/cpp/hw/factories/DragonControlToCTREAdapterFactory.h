@@ -20,7 +20,7 @@
 #include <string>
 
 // Team 302 includes
-#include <hw/DistanceAngleCalcStruc.h>
+#include "hw/DistanceAngleCalcStruc.h"
 
 // forward declares
 namespace ctre

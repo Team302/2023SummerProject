@@ -32,8 +32,8 @@ using std::string;
 /// @param otherMotor Same as previous
 /// @param solenoid Solenoid in the mechanism - code generator should probably use the usage for the variable name
 /// Additional actuators and sensors are also in this list.
-Example::Example(IExampleGen *base) : IExampleGen(),
-                                      m_example(base)
+Example::Example(ExampleGen *base) : ExampleGen(),
+                                     m_example(base)
 {
     PeriodicLooper::GetInstance()->RegisterAll(*this);
 }

@@ -21,12 +21,12 @@
 // FRC includes
 
 // Team 302 includes
-#include <hw/DistanceAngleCalcStruc.h>
-#include <hw/ctreadapters/DragonControlToCTREAdapter.h>
+#include "hw/DistanceAngleCalcStruc.h"
+#include "hw/ctreadapters/DragonControlToCTREAdapter.h"
 #include <hw/ctreadapters/DragonVelocityDegreeToCTREAdapter.h>
 #include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
-#include <utils/ConversionUtils.h>
+#include "utils/ConversionUtils.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/ControlMode.h>

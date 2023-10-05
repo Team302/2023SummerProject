@@ -22,7 +22,7 @@
 
 #include <frc/motorcontrol/MotorController.h>
 
-#include <hw/DistanceAngleCalcStruc.h>
+#include "hw/DistanceAngleCalcStruc.h"
 #include <hw/interfaces/IDragonControlToVendorControlAdapter.h>
 #include "hw/interfaces/IDragonMotorController.h"
 #include "configs/usages/MotorControllerUsage.h"
@@ -54,7 +54,7 @@ public:
     double GetRPS() const override;
     MotorControllerUsage::MOTOR_CONTROLLER_USAGE GetType() const override;
     int GetID() const override;
-    std::shared_ptr<frc::MotorController> GetSpeedController() const override;
+    frc::MotorController *GetSpeedController() const override;
     double GetCurrent() const override;
     IDragonMotorController::MOTOR_TYPE GetMotorType() const override;
     bool IsMotorInverted() const override { return m_inverted; };

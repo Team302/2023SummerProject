@@ -26,217 +26,175 @@
 #include <frc/motorcontrol/MotorController.h>
 
 // Team 302 includes
-#include <hw/DistanceAngleCalcStruc.h>
+#include "hw/DistanceAngleCalcStruc.h"
 #include "hw/interfaces/IDragonMotorController.h"
 #include <hw/DragonFalcon.h>
 #include <hw/factories/PDPFactory.h>
-#include <hw/factories/DragonControlToCTREAdapterFactory.h>
+#include "hw/factories/DragonControlToCTREAdapterFactory.h"
 #include "configs/usages/MotorControllerUsage.h"
 #include "utils/logging/Logger.h"
-#include <utils/ConversionUtils.h>
-#include <hw/ctreadapters/DragonControlToCTREAdapter.h>
+#include "utils/ConversionUtils.h"
+#include "hw/ctreadapters/DragonControlToCTREAdapter.h"
 
 // Third Party Includes
-#include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
-#include <ctre/phoenix/motorcontrol/SupplyCurrentLimitConfiguration.h>
+#include "ctre/phoenixpro/TalonFX.hpp"
+#include "ctre/phoenixpro/controls/Follower.hpp"
+#include "ctre/phoenixpro/configs/Configs.hpp"
+// #include <ctre/phoenix/motorcontrol/can/TalonFX.h>
+// #include <ctre/phoenix/motorcontrol/SupplyCurrentLimitConfiguration.h>
 
 using namespace frc;
-using namespace std;
-using namespace ctre::phoenix;
-using namespace ctre::phoenix::motorcontrol;
-using namespace ctre::phoenix::motorcontrol::can;
+using ctre::phoenixpro::configs::CurrentLimitsConfigs;
 
-DragonFalcon::DragonFalcon(
-	string networkTableName,
-	MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
-	int deviceID,
-	string canBusName,
-	int pdpID,
-	DistanceAngleCalcStruc calcStruc,
-	MOTOR_TYPE motorType) : m_networkTableName(networkTableName),
-							m_talon(make_shared<WPI_TalonFX>(deviceID, canBusName)),
-							m_controller(),
-							m_type(deviceType),
-							m_id(deviceID),
-							m_pdp(pdpID),
-							m_calcStruc(calcStruc),
-							m_motorType(motorType),
-							m_inverted(false)
+// using namespace std;
+// using namespace ctre::phoenix;
+// using namespace ctre::phoenix::motorcontrol;
+// using namespace ctre::phoenix::motorcontrol::can;
+
+using ctre::phoenixpro::configs::ClosedLoopRampsConfigs;
+using ctre::phoenixpro::configs::HardwareLimitSwitchConfigs;
+using ctre::phoenixpro::configs::MotorOutputConfigs;
+using ctre::phoenixpro::configs::OpenLoopRampsConfigs;
+using ctre::phoenixpro::configs::Slot0Configs;
+using ctre::phoenixpro::configs::Slot1Configs;
+using ctre::phoenixpro::configs::Slot2Configs;
+using ctre::phoenixpro::configs::VoltageConfigs;
+using ctre::phoenixpro::controls::Follower;
+using ctre::phoenixpro::signals::ForwardLimitSourceValue;
+using ctre::phoenixpro::signals::ForwardLimitTypeValue;
+using ctre::phoenixpro::signals::ForwardLimitValue;
+using ctre::phoenixpro::signals::InvertedValue;
+using ctre::phoenixpro::signals::NeutralModeValue;
+using ctre::phoenixpro::signals::ReverseLimitSourceValue;
+using ctre::phoenixpro::signals::ReverseLimitTypeValue;
+using ctre::phoenixpro::signals::ReverseLimitValue;
+
+using ctre::phoenixpro::configs::TalonFXConfiguration;
+using ctre::phoenixpro::hardware::TalonFX;
+using std::shared_ptr;
+using std::string;
+using std::to_string;
+
+DragonFalcon::DragonFalcon(string networkTableName,
+						   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
+						   int deviceID,
+						   string canBusName,
+						   int pdpID) : m_networkTableName(networkTableName),
+										m_talon(new TalonFX(deviceID, canBusName)),
+										m_controller(),
+										m_type(deviceType),
+										m_id(deviceID),
+										m_pdp(pdpID),
+										m_calcStruc(),
+										m_motorType(MOTOR_TYPE::FALCON500),
+										m_inverted(false)
 {
-	m_networkTableName += string(" - motor ");
-	m_networkTableName += to_string(deviceID);
+	m_talon->GetConfigurator().Apply(TalonFXConfiguration{}); // reset to factory default
+}
 
-	for (auto i = 1; i < 4; ++i)
+void DragonFalcon::ConfigHWLimitSW(bool enableForward,
+								   int remoteForwardSensorID,
+								   bool forwardResetPosition,
+								   double forwardPosition,
+								   ForwardLimitSourceValue forwardType,
+								   ForwardLimitTypeValue forwardOpenClose,
+								   bool enableReverse,
+								   int remoteReverseSensorID,
+								   bool reverseResetPosition,
+								   double reversePosition,
+								   ReverseLimitSourceValue revType,
+								   ReverseLimitTypeValue revOpenClose)
+{
+	if (m_talon != nullptr)
 	{
-		m_controller[i] = DragonControlToCTREAdapterFactory::GetFactory()->CreatePercentOuptutAdapter(networkTableName, m_talon.get());
-		m_controller[i]->InitializeDefaults();
-	}
-	auto prompt = string("CTRE CAN motor controller ");
-	prompt += to_string(deviceID);
+		HardwareLimitSwitchConfigs hwswitch{};
+		hwswitch.ForwardLimitEnable = enableForward;
+		hwswitch.ForwardLimitRemoteSensorID = remoteForwardSensorID;
+		hwswitch.ForwardLimitAutosetPositionEnable = forwardResetPosition;
+		hwswitch.ForwardLimitAutosetPositionValue = forwardPosition;
+		hwswitch.ForwardLimitSource = forwardType;
+		hwswitch.ForwardLimitType = forwardOpenClose;
 
-	SupplyCurrentLimitConfiguration climit;
-	climit.enable = false;
-	climit.currentLimit = 1.0;
-	climit.triggerThresholdCurrent = 1.0;
-	climit.triggerThresholdTime = 0.001;
-	auto error = m_talon.get()->ConfigSupplyCurrentLimit(climit, 50);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigSupplyCurrentLimit"), string("error"));
-	}
-	StatorCurrentLimitConfiguration climit2;
-	climit2.enable = false;
-	climit2.currentLimit = 1.0;
-	climit2.triggerThresholdCurrent = 1.0;
-	climit2.triggerThresholdTime = 0.001;
-	error = m_talon.get()->ConfigStatorCurrentLimit(climit2, 50);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigStatorCurrentLimit"), string("error"));
-	}
-
-	error = m_talon.get()->ConfigVoltageCompSaturation(12.0, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigVoltageCompSaturation"), string("error"));
-	}
-
-	error = m_talon.get()->ConfigForwardLimitSwitchSource(LimitSwitchSource::LimitSwitchSource_Deactivated, LimitSwitchNormal::LimitSwitchNormal_Disabled, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigForwardLimitSwitchSource"), string("error"));
-	}
-	error = m_talon.get()->ConfigReverseLimitSwitchSource(LimitSwitchSource::LimitSwitchSource_Deactivated, LimitSwitchNormal::LimitSwitchNormal_Disabled, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigReverseLimitSwitchSource"), string("error"));
-	}
-
-	error = m_talon.get()->ConfigForwardSoftLimitEnable(false, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigForwardSoftLimitEnable"), string("error"));
-	}
-	error = m_talon.get()->ConfigForwardSoftLimitThreshold(0.0, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigForwardSoftLimitThreshold"), string("error"));
-	}
-
-	error = m_talon.get()->ConfigReverseSoftLimitEnable(false, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigReverseSoftLimitEnable"), string("error"));
-	}
-	error = m_talon.get()->ConfigReverseSoftLimitThreshold(0.0, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigReverseSoftLimitThreshold"), string("error"));
-	}
-
-	error = m_talon.get()->ConfigMotionAcceleration(1500.0, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigMotionAcceleration"), string("error"));
-	}
-	error = m_talon.get()->ConfigMotionCruiseVelocity(1500.0, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigMotionCruiseVelocity"), string("error"));
-	}
-	error = m_talon.get()->ConfigMotionSCurveStrength(0, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigMotionSCurveStrength"), string("error"));
-	}
-
-	error = m_talon.get()->ConfigMotionProfileTrajectoryPeriod(0, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigMotionProfileTrajectoryPeriod"), string("error"));
-	}
-	error = m_talon.get()->ConfigMotionProfileTrajectoryInterpolationEnable(true, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigMotionProfileTrajectoryInterpolationEnable"), string("error"));
-	}
-
-	m_talon.get()->ConfigAllowableClosedloopError(0.0, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigAllowableClosedloopError"), string("error"));
-	}
-
-	for (auto inx = 0; inx < 4; ++inx)
-	{
-		error = m_talon.get()->ConfigClosedLoopPeakOutput(inx, 1.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigClosedLoopPeakOutput"), string("error"));
-		}
-		error = m_talon.get()->ConfigClosedLoopPeriod(inx, 10, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigClosedLoopPeriod"), string("error"));
-		}
-		error = m_talon.get()->Config_kP(inx, 0.01, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("Config_kP"), string("error"));
-		}
-		error = m_talon.get()->Config_kI(inx, 0.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("Config_kI"), string("error"));
-		}
-		error = m_talon.get()->Config_kD(inx, 0.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("Config_kD"), string("error"));
-		}
-		error = m_talon.get()->Config_kF(inx, 1.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("Config_kF"), string("error"));
-		}
-		error = m_talon.get()->Config_IntegralZone(inx, 0.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("Config_IntegralZone"), string("error"));
-		}
-	}
-
-	error = m_talon.get()->ConfigRemoteFeedbackFilter(60, RemoteSensorSource::RemoteSensorSource_Off, 0, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigRemoteFeedbackFilter"), string("error"));
-	}
-	error = m_talon.get()->ConfigRemoteFeedbackFilter(60, RemoteSensorSource::RemoteSensorSource_Off, 1, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigRemoteFeedbackFilter"), string("error"));
+		hwswitch.ReverseLimitEnable = enableReverse;
+		hwswitch.ReverseLimitRemoteSensorID = remoteReverseSensorID;
+		hwswitch.ReverseLimitAutosetPositionEnable = reverseResetPosition;
+		hwswitch.ReverseLimitAutosetPositionValue = reversePosition;
+		hwswitch.ReverseLimitSource = revType;
+		hwswitch.ReverseLimitType = revOpenClose;
+		m_talon->GetConfigurator().Apply(hwswitch);
 	}
 }
 
+void DragonFalcon::ConfigMotorSettings(InvertedValue inverted,
+									   NeutralModeValue mode,
+									   double deadbandPercent,
+									   double peakForwardDutyCycle,
+									   double peakReverseDutyCycle)
+{
+	if (m_talon != nullptr)
+	{
+		MotorOutputConfigs motorconfig{};
+		motorconfig.Inverted = inverted;
+		motorconfig.NeutralMode = mode;
+		motorconfig.PeakForwardDutyCycle = peakForwardDutyCycle;
+		motorconfig.PeakReverseDutyCycle = peakReverseDutyCycle;
+		motorconfig.DutyCycleNeutralDeadband = deadbandPercent;
+		m_talon->GetConfigurator().Apply(motorconfig);
+	}
+}
+void DragonFalcon::SetPIDConstants(int slot, double p, double i, double d, double f)
+{
+	if (m_talon != nullptr)
+	{
+		if (slot == 0)
+		{
+			Slot0Configs slot0;
+			slot0.kP = p;
+			slot0.kI = i;
+			slot0.kD = d;
+			slot0.kV = f;
+			m_talon->GetConfigurator().Apply(slot0);
+		}
+		else if (slot == 1)
+		{
+			Slot1Configs slot1;
+			slot1.kP = p;
+			slot1.kI = i;
+			slot1.kD = d;
+			slot1.kV = f;
+			m_talon->GetConfigurator().Apply(slot1);
+		}
+		else if (slot == 2)
+		{
+			Slot2Configs slot2;
+			slot2.kP = p;
+			slot2.kI = i;
+			slot2.kD = d;
+			slot2.kV = f;
+			m_talon->GetConfigurator().Apply(slot2);
+		}
+	}
+}
 double DragonFalcon::GetRotations() const
 {
-	if (m_calcStruc.countsPerDegree > 0.01)
-	{
-		return m_talon.get()->GetSelectedSensorPosition() / (m_calcStruc.countsPerDegree * 360.0);
-	}
-	return (ConversionUtils::CountsToRevolutions((m_talon.get()->GetSelectedSensorPosition()), m_calcStruc.countsPerRev) / m_calcStruc.gearRatio);
+	auto &possig = m_talon->GetPosition();
+	possig.Refresh();
+
+	auto &velsig = m_talon->GetVelocity();
+	auto turnsPerSec = velsig.GetValue();
+
+	auto rotations = possig.GetValue() + turnsPerSec * possig.GetTimestamp().GetLatency();
+	return rotations.to<double>();
 }
 
 double DragonFalcon::GetRPS() const
 {
-	if (m_calcStruc.countsPerDegree > 0.01)
-	{
-		return m_talon.get()->GetSelectedSensorVelocity() * 10.0 / (m_calcStruc.countsPerDegree * 360.0);
-	}
-	return (ConversionUtils::CountsPer100msToRPS(m_talon.get()->GetSelectedSensorVelocity(), m_calcStruc.countsPerRev) / m_calcStruc.gearRatio);
+	auto &velsig = m_talon->GetVelocity();
+	auto turnsPerSec = velsig.GetValue();
+	return turnsPerSec.to<double>();
 }
 
-shared_ptr<MotorController> DragonFalcon::GetSpeedController() const
+MotorController *DragonFalcon::GetSpeedController() const
 {
 	return m_talon;
 }
@@ -258,11 +216,10 @@ void DragonFalcon::UpdateFramePeriods
 	uint8_t												milliseconds
 )
 {
-	m_talon.get()->SetStatusFramePeriod( frame, milliseconds, 0 );
+	m_talon->SetStatusFramePeriod( frame, milliseconds, 0 );
 }
 **/
-void DragonFalcon::SetFramePeriodPriority(
-	MOTOR_PRIORITY priority)
+void DragonFalcon::SetFramePeriodPriority(MOTOR_PRIORITY priority)
 {
 	return;
 	/**
@@ -333,56 +290,49 @@ void DragonFalcon::SetRotationOffset(double rotations)
 
 void DragonFalcon::SetVoltageRamping(double ramping, double rampingClosedLoop)
 {
-	auto prompt = string("Dragon Falcon");
-	prompt += to_string(m_talon.get()->GetDeviceID());
-	auto error = m_talon.get()->ConfigOpenloopRamp(ramping);
-	if (error != ErrorCode::OKAY)
+	if (m_talon != nullptr)
 	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigOpenloopRamp"), string("error"));
-	}
-	if (rampingClosedLoop >= 0)
-	{
-		error = m_talon.get()->ConfigClosedloopRamp(rampingClosedLoop);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigClosedloopRamp"), string("error"));
-		}
-	}
-}
+		ClosedLoopRampsConfigs configs{};
+		m_talon->GetConfigurator().Refresh(configs);
+		configs.VoltageClosedLoopRampPeriod = rampingClosedLoop;
+		m_talon->GetConfigurator().Apply(configs);
 
-void DragonFalcon::EnableCurrentLimiting(bool enabled)
-{
-	SupplyCurrentLimitConfiguration limit;
-	auto prompt = string("Dragon Falcon");
-	prompt += to_string(m_talon.get()->GetDeviceID());
-	int timeout = 50.0;
-	auto error = m_talon.get()->ConfigGetSupplyCurrentLimit(limit, timeout);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigGetSupplyCurrentLimit"), string("error"));
-	}
-	limit.enable = enabled;
-	error = m_talon.get()->ConfigSupplyCurrentLimit(limit, timeout);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigSupplyCurrentLimit"), string("error"));
+		if (rampingClosedLoop > 0.0)
+		{
+			OpenLoopRampsConfigs oconfigs{};
+			m_talon->GetConfigurator().Refresh(oconfigs);
+			oconfigs.VoltageOpenLoopRampPeriod = ramping;
+			m_talon->GetConfigurator().Apply(oconfigs);
+		}
 	}
 }
 
 void DragonFalcon::EnableBrakeMode(bool enabled)
 {
-	m_talon.get()->SetNeutralMode(enabled ? ctre::phoenix::motorcontrol::NeutralMode::Brake : ctre::phoenix::motorcontrol::NeutralMode::Coast);
+	if (m_talon != nullptr)
+	{
+		MotorOutputConfigs motorconfig{};
+		m_talon->GetConfigurator().Refresh(motorconfig);
+		if (enabled)
+		{
+			motorconfig.NeutralMode = NeutralModeValue::Brake;
+		}
+		else
+		{
+			motorconfig.NeutralMode = NeutralModeValue::Coast;
+		}
+		m_talon->GetConfigurator().Apply(motorconfig);
+	}
 }
 
 void DragonFalcon::Invert(bool inverted)
 {
 	m_inverted = inverted;
-	m_talon.get()->SetInverted(inverted);
+	m_talon->SetInverted(inverted);
 }
 
 void DragonFalcon::SetSensorInverted(bool inverted)
 {
-	m_talon.get()->SetSensorPhase(inverted);
 }
 
 MotorControllerUsage::MOTOR_CONTROLLER_USAGE DragonFalcon::GetType() const
@@ -395,39 +345,21 @@ int DragonFalcon::GetID() const
 	return m_id;
 }
 
-//------------------------------------------------------------------------------
-// Method:		SelectClosedLoopProfile
-// Description:	Selects which profile slot to use for closed-loop control
-// Returns:		void
-//------------------------------------------------------------------------------
-void DragonFalcon::SelectClosedLoopProfile(
-	int slot,	 // <I> - profile slot to select
-	int pidIndex // <I> - 0 for primary closed loop, 1 for cascaded closed-loop
-)
-{
-	auto error = m_talon.get()->SelectProfileSlot(slot, pidIndex);
-	if (error != ErrorCode::OKAY)
-	{
-		auto prompt = string("Dragon Falcon");
-		prompt += to_string(m_talon.get()->GetDeviceID());
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("SelectProfileSlot"), string("error"));
-	}
-}
-
+/**
 int DragonFalcon::ConfigSelectedFeedbackSensor(
 	FeedbackDevice feedbackDevice,
 	int pidIdx,
 	int timeoutMs)
 {
 	int error = 0;
-	if (m_talon.get() != nullptr)
+	if (m_talon != nullptr)
 	{
-		error = m_talon.get()->ConfigSelectedFeedbackSensor(feedbackDevice, pidIdx, timeoutMs);
+		error = m_talon->ConfigSelectedFeedbackSensor(feedbackDevice, pidIdx, timeoutMs);
 	}
 	else
 	{
 		auto prompt = string("Dragon Falcon");
-		prompt += to_string(m_talon.get()->GetDeviceID());
+		prompt += to_string(m_talon->GetDeviceID());
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("DragonFalcon::ConfigSelectedFeedbackSensor"), string("m_talon is a nullptr"));
 	}
 	return error;
@@ -439,112 +371,56 @@ int DragonFalcon::ConfigSelectedFeedbackSensor(
 	int timeoutMs)
 {
 	int error = 0;
-	if (m_talon.get() != nullptr)
+	if (m_talon != nullptr)
 	{
-		error = m_talon.get()->ConfigSelectedFeedbackSensor(feedbackDevice, pidIdx, timeoutMs);
+		error = m_talon->ConfigSelectedFeedbackSensor(feedbackDevice, pidIdx, timeoutMs);
 	}
 	else
 	{
 		auto prompt = string("Dragon Falcon");
-		prompt += to_string(m_talon.get()->GetDeviceID());
+		prompt += to_string(m_talon->GetDeviceID());
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("DragonFalcon::ConfigSelectedFeedbackSensor"), string("m_talon is a nullptr"));
 	}
 	return error;
 }
-
-int DragonFalcon::ConfigPeakCurrentLimit(
-	int amps,
-	int timeoutMs)
+**/
+void DragonFalcon::SetCurrentLimits(bool enableStatorCurrentLimit,
+									units::current::ampere_t statorCurrentLimit,
+									bool enableSupplyCurrentLimit,
+									units::current::ampere_t supplyCurrentLimit,
+									units::current::ampere_t supplyCurrentThreshold,
+									units::time::second_t supplyTimeThreshold)
 {
-	int ierror = 0;
-	if (m_talon.get() != nullptr)
+	if (m_talon != nullptr)
 	{
-		auto prompt = string("Dragon Falcon");
-		prompt += to_string(m_talon.get()->GetDeviceID());
-		SupplyCurrentLimitConfiguration limit;
-		auto error = m_talon.get()->ConfigGetSupplyCurrentLimit(limit, timeoutMs);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigGetSupplyCurrentLimit"), string("error"));
-		}
-		limit.triggerThresholdCurrent = amps;
-		error = m_talon.get()->ConfigSupplyCurrentLimit(limit, timeoutMs);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigSupplyCurrentLimit"), string("error"));
-		}
-		ierror = error;
+		CurrentLimitsConfigs currconfigs{};
+		currconfigs.StatorCurrentLimit = statorCurrentLimit.to<double>();
+		currconfigs.StatorCurrentLimitEnable = enableSupplyCurrentLimit;
+		currconfigs.SupplyCurrentLimit = supplyCurrentLimit.to<double>();
+		currconfigs.SupplyCurrentLimitEnable = enableSupplyCurrentLimit;
+		m_talon->GetConfigurator().Apply(currconfigs);
 	}
-	else
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonFalcon"), string("DragonFalcon::ConfigPeakCurrentLimit"), string("m_talon is a nullptr"));
-	}
-	return ierror;
 }
 
-int DragonFalcon::ConfigPeakCurrentDuration(
-	int milliseconds,
-	int timeoutMs)
+void DragonFalcon::EnableCurrentLimiting(bool enabled)
 {
-	int error = 0;
-	if (m_talon.get() != nullptr)
+	if (m_talon != nullptr)
 	{
-		auto prompt = string("Dragon Falcon");
-		prompt += to_string(m_talon.get()->GetDeviceID());
-		SupplyCurrentLimitConfiguration limit;
-		auto error = m_talon.get()->ConfigGetSupplyCurrentLimit(limit, timeoutMs);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigGetSupplyCurrentLimit"), string("error"));
-		}
-		limit.triggerThresholdTime = milliseconds;
-		error = m_talon.get()->ConfigSupplyCurrentLimit(limit, timeoutMs);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigSupplyCurrentLimit"), string("error"));
-		}
+		CurrentLimitsConfigs configs{};
+		m_talon->GetConfigurator().Refresh(configs);
+		configs.StatorCurrentLimitEnable = enabled;
+		configs.SupplyCurrentLimitEnable = enabled;
+		m_talon->GetConfigurator().Apply(configs);
 	}
-	else
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonFalcon"), string("ConfigPeakCurrentDuration"), string("m_talon is a nullptr"));
-	}
-	return error;
 }
 
-int DragonFalcon::ConfigContinuousCurrentLimit(
-	int amps,
-	int timeoutMs)
-{
-	int error = 0;
-	if (m_talon.get() != nullptr)
-	{
-		auto prompt = string("Dragon Falcon");
-		prompt += to_string(m_talon.get()->GetDeviceID());
-		SupplyCurrentLimitConfiguration limit;
-		auto error = m_talon.get()->ConfigGetSupplyCurrentLimit(limit, timeoutMs);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigGetSupplyCurrentLimit"), string("error"));
-		}
-		limit.currentLimit = amps;
-		error = m_talon.get()->ConfigSupplyCurrentLimit(limit, timeoutMs);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("ConfigSupplyCurrentLimit"), string("error"));
-		}
-	}
-	else
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonFalcon"), string("ConfigContinuousCurrentLimit"), string("m_talon is a nullptr"));
-	}
-	return error;
-}
-
-void DragonFalcon::SetAsFollowerMotor(
-	int masterCANID // <I> - master motor
+void DragonFalcon::SetAsFollowerMotor(int masterCANID // <I> - master motor
 )
 {
-	m_talon.get()->Set(ControlMode::Follower, masterCANID);
+	if (m_talon != nullptr)
+	{
+		m_talon->SetControl(Follower(masterCANID, false));
+	}
 }
 
 /// @brief  Set the control constants (e.g. PIDF values).
@@ -553,94 +429,88 @@ void DragonFalcon::SetAsFollowerMotor(
 /// @return void
 void DragonFalcon::SetControlConstants(int slot, ControlData *controlInfo)
 {
-	delete m_controller[slot];
-	m_controller[slot] = DragonControlToCTREAdapterFactory::GetFactory()->CreateAdapter(m_networkTableName, slot, controlInfo, m_calcStruc, m_talon.get());
-}
-
-void DragonFalcon::SetForwardLimitSwitch(
-	bool normallyOpen)
-{
-	LimitSwitchNormal type = normallyOpen ? LimitSwitchNormal::LimitSwitchNormal_NormallyOpen : LimitSwitchNormal::LimitSwitchNormal_NormallyClosed;
-	auto error = m_talon.get()->ConfigForwardLimitSwitchSource(LimitSwitchSource::LimitSwitchSource_FeedbackConnector, type, 0);
-	if (error != ErrorCode::OKAY)
+	if (m_talon != nullptr)
 	{
-		auto m_networkTableName = std::string("MotorOutput");
-		m_networkTableName += to_string(m_talon.get()->GetDeviceID());
-		auto prompt = string("Dragon Falcon");
-		prompt += to_string(m_talon.get()->GetDeviceID());
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, m_networkTableName, prompt, string("ConfigForwardLimitSwitchSource error"));
+		// SetPeakAndNominalValues(m_networkTableName, controlInfo);
+		// SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);
 	}
+	// delete m_controller[slot];
+	// m_controller[slot] = DragonControlToCTREAdapterFactory::GetFactory()->CreateAdapter(m_networkTableName, slot, controlInfo, m_calcStruc, m_talon);
 }
 
-void DragonFalcon::SetReverseLimitSwitch(
-	bool normallyOpen)
+void DragonFalcon::SetRemoteSensor(int canID,
+								   ctre::phoenix::motorcontrol::RemoteSensorSource deviceType)
 {
-	LimitSwitchNormal type = normallyOpen ? LimitSwitchNormal::LimitSwitchNormal_NormallyOpen : LimitSwitchNormal::LimitSwitchNormal_NormallyClosed;
-	auto error = m_talon.get()->ConfigReverseLimitSwitchSource(LimitSwitchSource::LimitSwitchSource_FeedbackConnector, type, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, m_networkTableName, string("ConfigReverseLimitSwitchSource"), string("error"));
-	}
-}
-
-void DragonFalcon::SetRemoteSensor(
-	int canID,
-	ctre::phoenix::motorcontrol::RemoteSensorSource deviceType)
-{
-	auto error = m_talon.get()->ConfigRemoteFeedbackFilter(canID, deviceType, 0, 0.0);
+	/**
+	auto error = m_talon->ConfigRemoteFeedbackFilter(canID, deviceType, 0, 0.0);
 	if (error != ErrorCode::OKAY)
 	{
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, m_networkTableName, string("ConfigRemoteFeedbackFilter"), string("error"));
 	}
-	error = m_talon.get()->ConfigSelectedFeedbackSensor(RemoteFeedbackDevice::RemoteFeedbackDevice_RemoteSensor0, 0, 0);
+	error = m_talon->ConfigSelectedFeedbackSensor(RemoteFeedbackDevice::RemoteFeedbackDevice_RemoteSensor0, 0, 0);
 	if (error != ErrorCode::OKAY)
 	{
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, m_networkTableName, string("ConfigSelectedFeedbackSensor"), string("error"));
 	}
+	*/
 }
 
-void DragonFalcon::SetDiameter(
-	double diameter)
+void DragonFalcon::SetDiameter(double diameter)
 {
 	m_calcStruc.diameter = diameter;
 }
 
-void DragonFalcon::SetVoltage(
-	units::volt_t output)
+void DragonFalcon::SetVoltage(units::volt_t output)
 {
-	m_talon.get()->SetVoltage(output);
+	if (m_talon != nullptr)
+	{
+		m_talon->SetVoltage(output);
+	}
 }
 
 bool DragonFalcon::IsForwardLimitSwitchClosed() const
 {
-	auto sensors = m_talon.get()->GetSensorCollection();
-	auto closed = sensors.IsFwdLimitSwitchClosed();
-	return closed == 1;
+	if (m_talon != nullptr)
+	{
+		auto signal = m_talon->GetForwardLimit();
+		return signal.GetValue() == ForwardLimitValue::ClosedToGround;
+	}
+	return false;
 }
 
 bool DragonFalcon::IsReverseLimitSwitchClosed() const
 {
-	auto sensors = m_talon.get()->GetSensorCollection();
-	auto closed = sensors.IsRevLimitSwitchClosed();
-	return closed == 1;
+	if (m_talon != nullptr)
+	{
+		auto signal = m_talon->GetReverseLimit();
+		return signal.GetValue() == ReverseLimitValue::ClosedToGround;
+	}
+	return false;
 }
 
-void DragonFalcon::EnableDisableLimitSwitches(
-	bool enable)
+void DragonFalcon::EnableDisableLimitSwitches(bool enable)
 {
-	m_talon.get()->OverrideLimitSwitchesEnable(enable);
+	if (m_talon != nullptr)
+	{
+		HardwareLimitSwitchConfigs hwswitch{};
+		m_talon->GetConfigurator().Refresh(hwswitch);
+		hwswitch.ForwardLimitEnable = enable;
+		m_talon->GetConfigurator().Apply(hwswitch);
+	}
 }
 
 void DragonFalcon::EnableVoltageCompensation(double fullvoltage)
 {
-	m_talon.get()->ConfigVoltageCompSaturation(fullvoltage);
-	m_talon.get()->EnableVoltageCompensation(true);
+	// m_talon->ConfigVoltageCompSaturation(fullvoltage);
+	// m_talon->EnableVoltageCompensation(true);
 }
 
-void DragonFalcon::SetSelectedSensorPosition(
-	double initialPosition)
+void DragonFalcon::SetSelectedSensorPosition(double initialPosition)
 {
-	m_talon.get()->SetSelectedSensorPosition(initialPosition, 0, 50);
+	if (m_talon != nullptr)
+	{
+		m_talon->SetRotorPosition(units::angle::degree_t(initialPosition));
+	}
 }
 
 double DragonFalcon::GetCountsPerInch() const
@@ -661,7 +531,11 @@ ControlModes::CONTROL_TYPE DragonFalcon::GetControlMode() const
 
 double DragonFalcon::GetCounts() const
 {
-	return m_talon.get()->GetSelectedSensorPosition();
+	if (m_talon != nullptr)
+	{
+		return GetRotations() * 2048;
+	}
+	return 0.0;
 }
 
 IDragonMotorController::MOTOR_TYPE DragonFalcon::GetMotorType() const

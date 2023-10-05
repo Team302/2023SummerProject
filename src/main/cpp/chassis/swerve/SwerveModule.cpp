@@ -89,7 +89,7 @@ SwerveModule::SwerveModule(ModuleID type,
 
     // Set up the Drive Motor
     auto motor = m_driveMotor->GetSpeedController();
-    auto fx = dynamic_cast<WPI_TalonFX *>(motor.get());
+    auto fx = dynamic_cast<WPI_TalonFX *>(motor);
 
     // fx->ConfigOpenloopRamp(0.4, 0);
     // fx->ConfigClosedloopRamp(0.4, 0);
@@ -105,7 +105,7 @@ SwerveModule::SwerveModule(ModuleID type,
 
     // Set up the Turn Motor
     motor = m_turnMotor->GetSpeedController();
-    fx = dynamic_cast<WPI_TalonFX *>(motor.get());
+    fx = dynamic_cast<WPI_TalonFX *>(motor);
     fx->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::IntegratedSensor, 0, 10);
     fx->ConfigIntegratedSensorInitializationStrategy(BootToZero);
     auto turnMotorSensors = fx->GetSensorCollection();
@@ -179,7 +179,7 @@ void SwerveModule::Init(
 void SwerveModule::SetEncodersToZero()
 {
     auto motor = m_driveMotor->GetSpeedController();
-    auto fx = dynamic_cast<WPI_TalonFX *>(motor.get());
+    auto fx = dynamic_cast<WPI_TalonFX *>(motor);
     auto driveMotorSensors = fx->GetSensorCollection();
     driveMotorSensors.SetIntegratedSensorPosition(0, 0);
 }
@@ -189,7 +189,7 @@ void SwerveModule::SetEncodersToZero()
 double SwerveModule::GetEncoderValues()
 {
     auto motor = m_driveMotor->GetSpeedController();
-    auto fx = dynamic_cast<WPI_TalonFX *>(motor.get());
+    auto fx = dynamic_cast<WPI_TalonFX *>(motor);
     auto driveMotorSensors = fx->GetSensorCollection();
     return driveMotorSensors.GetIntegratedSensorPosition();
 }
@@ -307,7 +307,7 @@ void SwerveModule::RunCurrentState()
     SetDriveSpeed(m_activeState.speed);
 
     auto motor = m_turnMotor->GetSpeedController();
-    auto fx = dynamic_cast<WPI_TalonFX *>(motor.get());
+    auto fx = dynamic_cast<WPI_TalonFX *>(motor);
     fx->StopMotor();
 }
 
@@ -355,7 +355,7 @@ void SwerveModule::SetTurnAngle(units::angle::degree_t targetAngle)
     if (abs(deltaAngle.to<double>()) > 1.0)
     {
         auto motor = m_turnMotor->GetSpeedController();
-        auto fx = dynamic_cast<WPI_TalonFX *>(motor.get());
+        auto fx = dynamic_cast<WPI_TalonFX *>(motor);
         auto sensors = fx->GetSensorCollection();
         auto deltaTicks = m_countsOnTurnEncoderPerDegreesOnAngleSensor * deltaAngle.to<double>();
 

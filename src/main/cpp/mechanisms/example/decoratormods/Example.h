@@ -21,12 +21,12 @@
 // FRC Includes
 
 // Team 302 includes
-#include "mechanisms/example/generated/IExampleGen.h"
+#include "mechanisms/example/generated/ExampleGen.h"
 #include "mechanisms/base/StateMgr.h"
 
 // forward declares
 
-class Example : public IExampleGen, public StateMgr
+class Example : public ExampleGen
 {
 public:
     /// @brief  This method constructs the mechanism using composition with its various actuators and sensors.
@@ -36,7 +36,7 @@ public:
     /// @param otherMotor Same as previous
     /// @param solenoid Solenoid in the mechanism - code generator should probably use the usage for the variable name
     /// Additional actuators and sensors are also in this list.
-    Example(IExampleGen *generatedMech);
+    Example(ExampleGen *generatedMech);
     Example() = delete;
     ~Example() = default;
 
@@ -46,5 +46,5 @@ public:
     bool IsAtMaxPosition(SolenoidUsage::SOLENOID_USAGE identifier) const override;
 
 private:
-    IExampleGen *m_example;
+    ExampleGen *m_example;
 };

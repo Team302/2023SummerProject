@@ -15,12 +15,42 @@
 //====================================================================================================================================================
 
 #include "configs/RobotConfigExample.h"
-#include "hw/builders/FalconBuilder.h"
+#include "hw/DragonFalcon.h"
+#include "mechanisms/example/decoratormods/Example.h"
+#include "mechanisms/example/generated/ExampleGen.h"
 
 void RobotConfigExample::DefineMotors()
 {
-    FalconBuilder bldr;
-    // TODO:  specify motor info in bluilder and commit to create the motors.
+
+    m_motor1 = new DragonFalcon("ExampleMech_Motor1",
+                                MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR1,
+                                1,
+                                "Canivore",
+                                1);
+    m_motor1->SetCurrentLimits(true,
+                               units::current::ampere_t(25.0),
+                               true,
+                               units::current::ampere_t(25.0),
+                               units::current::ampere_t(30.0),
+                               units::time::second_t(0.02));
+    m_motor1->ConfigMotorSettings(ctre::phoenixpro::signals::InvertedValue::CounterClockwise_Positive,
+                                  ctre::phoenixpro::signals::NeutralModeValue::Brake,
+                                  0.01, -1, 1);
+
+    m_motor2 = new DragonFalcon("ExampleMech_Motor2",
+                                MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR2,
+                                2,
+                                "Canivore",
+                                2);
+    m_motor2->SetCurrentLimits(true,
+                               units::current::ampere_t(25.0),
+                               true,
+                               units::current::ampere_t(25.0),
+                               units::current::ampere_t(30.0),
+                               units::time::second_t(0.02));
+    m_motor2->ConfigMotorSettings(ctre::phoenixpro::signals::InvertedValue::CounterClockwise_Positive,
+                                  ctre::phoenixpro::signals::NeutralModeValue::Brake,
+                                  0.01, -1, 1);
 }
 
 void RobotConfigExample::DefineSolenoids()
@@ -30,6 +60,8 @@ void RobotConfigExample::DefineSolenoids()
 void RobotConfigExample::DefineMechanisms()
 {
     // TODO:  utilize the motors, solenoids, etc. to create the mechanisms
+    auto genmech = new ExampleGen("Example.xml", "ExampleMech");
+    m_example = new Example(genmech);
 }
 
 void RobotConfigExample::DefineCANSensors()

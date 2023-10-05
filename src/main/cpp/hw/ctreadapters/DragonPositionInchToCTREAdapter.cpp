@@ -21,36 +21,33 @@
 // FRC includes
 
 // Team 302 includes
-#include <hw/DistanceAngleCalcStruc.h>
-#include <hw/ctreadapters/DragonControlToCTREAdapter.h>
+#include "hw/DistanceAngleCalcStruc.h"
+#include "hw/ctreadapters/DragonControlToCTREAdapter.h"
 #include <hw/ctreadapters/DragonPositionInchToCTREAdapter.h>
 #include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
-#include <utils/ConversionUtils.h>
+#include "utils/ConversionUtils.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/ControlMode.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
 
-DragonPositionInchToCTREAdapter::DragonPositionInchToCTREAdapter(
-    std::string networkTableName,
-    int controllerSlot,
-    ControlData *controlInfo,
-    DistanceAngleCalcStruc calcStruc,
-    ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+DragonPositionInchToCTREAdapter::DragonPositionInchToCTREAdapter(std::string networkTableName,
+                                                                 int controllerSlot,
+                                                                 ControlData *controlInfo,
+                                                                 DistanceAngleCalcStruc calcStruc,
+                                                                 ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
-void DragonPositionInchToCTREAdapter::Set(
-    double value)
+void DragonPositionInchToCTREAdapter::Set(double value)
 {
     auto output = (m_calcStruc.countsPerInch > 0.01) ? m_calcStruc.countsPerInch * value : (ConversionUtils::InchesToCounts(value, m_calcStruc.countsPerRev, m_calcStruc.diameter) * m_calcStruc.gearRatio);
     m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
 }
 
-void DragonPositionInchToCTREAdapter::SetControlConstants(
-    int controlSlot,
-    ControlData *controlInfo)
+void DragonPositionInchToCTREAdapter::SetControlConstants(int controlSlot,
+                                                          ControlData *controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);

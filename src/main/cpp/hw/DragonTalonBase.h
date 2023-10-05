@@ -53,7 +53,7 @@ public:
     double GetRPS() const override;
     MotorControllerUsage::MOTOR_CONTROLLER_USAGE GetType() const override;
     int GetID() const override;
-    std::shared_ptr<frc::MotorController> GetSpeedController() const override;
+    frc::MotorController *GetSpeedController() const override;
     double GetCurrent() const override;
     IDragonMotorController::MOTOR_TYPE GetMotorType() const override;
 
