@@ -88,7 +88,7 @@ namespace FRCrobotCodeGen302
             this.Text += " Version " + ProductVersion;
 
             //initialize NT viewer
-            //viewer = new NTViewer(tuningButton);
+            viewer = new NTViewer(tuningButton);
 
             if (!automationEnabled)
             {
@@ -899,7 +899,8 @@ namespace FRCrobotCodeGen302
 
                             if (lnt.isTunable)
                             {
-                                viewer.PushValue(valueTextBox.Text, NTViewer.ConvertFullNameToTuningKey(lnt.name));
+                                if (viewer != null)
+                                    viewer.PushValue(valueTextBox.Text, NTViewer.ConvertFullNameToTuningKey(lnt.name));
                             }
                         }
 
@@ -961,7 +962,8 @@ namespace FRCrobotCodeGen302
 
                                 if (lnt.isTunable)
                                 {
-                                    viewer.PushValue((double)valueNumericUpDown.Value, NTViewer.ConvertFullNameToTuningKey(lnt.name));
+                                    if (viewer != null)
+                                        viewer.PushValue((double)valueNumericUpDown.Value, NTViewer.ConvertFullNameToTuningKey(lnt.name));
                                 }
                             }
                         }
@@ -1543,7 +1545,8 @@ namespace FRCrobotCodeGen302
 
         private void tuningButton_Click(object sender, EventArgs e)
         {
-            viewer.ConnectToNetworkTables();
+            if (viewer != null)
+                viewer.ConnectToNetworkTables();
         }
     }
 

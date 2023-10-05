@@ -50,12 +50,6 @@ namespace FRCrobotCodeGen302
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.robotTreeView = new System.Windows.Forms.TreeView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.selectNodeButton = new System.Windows.Forms.Button();
-            this.getSelectedTreeElementPathButton = new System.Windows.Forms.Button();
-            this.getCheckBoxListItemsButton = new System.Windows.Forms.Button();
-            this.checkCheckBoxListItemButton = new System.Windows.Forms.Button();
-            this.infoIOtextBox = new System.Windows.Forms.TextBox();
-            this.selectedNodePathTextBox = new System.Windows.Forms.TextBox();
             this.addRobotElementLabel = new System.Windows.Forms.Label();
             this.deleteTreeElementButton = new System.Windows.Forms.Button();
             this.addTreeElementButton = new System.Windows.Forms.Button();
@@ -67,8 +61,12 @@ namespace FRCrobotCodeGen302
             this.valueComboBox = new System.Windows.Forms.ComboBox();
             this.robotElementCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.treeViewIcons = new System.Windows.Forms.ImageList(this.components);
-            this.tuningButton = new System.Windows.Forms.Button();
-			
+            this.selectNodeButton = new System.Windows.Forms.Button();
+            this.getSelectedTreeElementPathButton = new System.Windows.Forms.Button();
+            this.getCheckBoxListItemsButton = new System.Windows.Forms.Button();
+            this.checkCheckBoxListItemButton = new System.Windows.Forms.Button();
+            this.infoIOtextBox = new System.Windows.Forms.TextBox();
+            this.selectedNodePathTextBox = new System.Windows.Forms.TextBox();
             this.configurationGroupBox.SuspendLayout();
             this.theTabControl.SuspendLayout();
             this.tabMainPage.SuspendLayout();
@@ -323,7 +321,6 @@ namespace FRCrobotCodeGen302
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.tuningButton);
             this.panel1.Controls.Add(this.selectNodeButton);
             this.panel1.Controls.Add(this.getSelectedTreeElementPathButton);
             this.panel1.Controls.Add(this.getCheckBoxListItemsButton);
@@ -413,6 +410,7 @@ namespace FRCrobotCodeGen302
             this.valueDatePicker.Name = "valueDatePicker";
             this.valueDatePicker.Size = new System.Drawing.Size(153, 20);
             this.valueDatePicker.TabIndex = 0;
+            this.valueDatePicker.TextChanged += new System.EventHandler(this.valueDatePicker_ValueChanged);
             // 
             // physicalUnitsTextBox
             // 
@@ -463,6 +461,7 @@ namespace FRCrobotCodeGen302
             this.robotElementCheckedListBox.Size = new System.Drawing.Size(382, 139);
             this.robotElementCheckedListBox.TabIndex = 7;
             this.robotElementCheckedListBox.Visible = false;
+
             // 
             // treeViewIcons
             // 
@@ -486,18 +485,6 @@ namespace FRCrobotCodeGen302
             this.selectNodeButton.Visible= false;
             this.selectNodeButton.Click += new System.EventHandler(this.selectNodeButton_Click);
             // 
-            // getSelectedTreeElementPathButton
-            // 
-            this.getSelectedTreeElementPathButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.getSelectedTreeElementPathButton.Location = new System.Drawing.Point(302, 90);
-            this.getSelectedTreeElementPathButton.Name = "getSelectedTreeElementPathButton";
-            this.getSelectedTreeElementPathButton.Size = new System.Drawing.Size(82, 26);
-            this.getSelectedTreeElementPathButton.TabIndex = 10;
-            this.getSelectedTreeElementPathButton.Text = "Get Selected node path";
-            this.getSelectedTreeElementPathButton.UseVisualStyleBackColor = true;
-            this.getSelectedTreeElementPathButton.Enabled = false;
-            this.getSelectedTreeElementPathButton.Visible= false;
-            this.getSelectedTreeElementPathButton.Click += new System.EventHandler(this.getSelectedTreeElementPathButton_Click);            
             // getCheckBoxListItemsButton
             // 
             this.getCheckBoxListItemsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -510,6 +497,19 @@ namespace FRCrobotCodeGen302
             this.getCheckBoxListItemsButton.Enabled = false;
             this.getCheckBoxListItemsButton.Visible= false;
             this.getCheckBoxListItemsButton.Click += new System.EventHandler(this.getCheckBoxListItemsButton_Click);
+            // 
+            // getSelectedTreeElementPathButton
+            // 
+            this.getSelectedTreeElementPathButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.getSelectedTreeElementPathButton.Location = new System.Drawing.Point(302, 90);
+            this.getSelectedTreeElementPathButton.Name = "getSelectedTreeElementPathButton";
+            this.getSelectedTreeElementPathButton.Size = new System.Drawing.Size(82, 26);
+            this.getSelectedTreeElementPathButton.TabIndex = 10;
+            this.getSelectedTreeElementPathButton.Text = "Get Selected node path";
+            this.getSelectedTreeElementPathButton.UseVisualStyleBackColor = true;
+            this.getSelectedTreeElementPathButton.Enabled = false;
+            this.getSelectedTreeElementPathButton.Visible= false;
+            this.getSelectedTreeElementPathButton.Click += new System.EventHandler(this.getSelectedTreeElementPathButton_Click);            
             // 
             // checkCheckBoxListItemButton
             // 
@@ -547,17 +547,6 @@ namespace FRCrobotCodeGen302
             this.selectedNodePathTextBox.TabIndex = 9;
             this.selectedNodePathTextBox.Enabled = false;
             this.selectedNodePathTextBox.Visible = false;
-			// 
-            // tuningButton
-            // 
-            this.tuningButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.tuningButton.BackColor = System.Drawing.Color.IndianRed;
-            this.tuningButton.Location = new System.Drawing.Point(310, 331);
-            this.tuningButton.Name = "tuningButton";
-            this.tuningButton.Size = new System.Drawing.Size(106, 27);
-            this.tuningButton.TabIndex = 12;
-            this.tuningButton.Text = "Toggle Tuning";
-            this.tuningButton.UseVisualStyleBackColor = false;
             // 
             // MainForm
             // 
@@ -625,7 +614,6 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.TextBox infoIOtextBox;
         private System.Windows.Forms.TextBox selectedNodePathTextBox;
         private System.Windows.Forms.DateTimePicker valueDatePicker;
-        private System.Windows.Forms.Button tuningButton;
     }
 }
 

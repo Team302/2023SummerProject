@@ -130,7 +130,8 @@ namespace NetworkTablesUtils
             cleanedPath = cleanedPath.Replace('\\', '/');
 
             //after replacing slashes, finally need to remove value from name
-            cleanedPath = cleanedPath.Remove(cleanedPath.IndexOf('(') - 1); //- 1 is to get rid of space before parentheses
+            if(cleanedPath.Contains('('))
+                cleanedPath = cleanedPath.Remove(cleanedPath.IndexOf('(') - 1); //- 1 is to get rid of space before parentheses
 
             return cleanedPath;
         }
