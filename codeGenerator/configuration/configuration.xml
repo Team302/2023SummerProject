@@ -1,11 +1,9 @@
 <?xml version="1.0"?>
 <toolConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <rootOutputFolder>..\..\src\main\cpp</rootOutputFolder>
-  <robotConfiguration>2025SummerRobots.xml</robotConfiguration>
+  <robotConfiguration>TestVariants.xml</robotConfiguration>
   <robotConfigurations>
-    <string>2023SummerRobots.xml</string>
-    <string>2024SummerRobots.xml</string>
-    <string>2025SummerRobots.xml</string>
+    <string>TestVariants.xml</string>
   </robotConfigurations>
   <treeviewParentNameExtensions>
     <string>name</string>

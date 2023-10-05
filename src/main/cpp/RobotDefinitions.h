@@ -52,11 +52,7 @@ public:
 */
     enum Components
     {
-        superIntake,
-	regularIntake,
-	Turret,
-	activeIntake,
-	passiveIntake
+        
     };
 
 private:
