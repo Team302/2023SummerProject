@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <toolConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <rootOutputFolder>..\..\src\main\cpp</rootOutputFolder>
-  <robotConfiguration>TestVariants.xml</robotConfiguration>
+  <robotConfiguration>robotConfig.xml</robotConfiguration>
   <robotConfigurations>
-    <string>TestVariants.xml</string>
+    <string>robotConfig.xml</string>
   </robotConfigurations>
   <treeviewParentNameExtensions>
     <string>name</string>
@@ -15,7 +15,9 @@
     <string>robotID</string>
   </treeviewParentNameExtensions>
   <collectionBaseTypes>
-    <string>Robot.motorBase</string>
+    <string>Robot.motor</string>
+    <string>Robot.PriceChange</string>
+    <string>Robot.parameter</string>
   </collectionBaseTypes>
   <tunableParameterTypes>
     <string>Robot.doubleParameter</string>
@@ -54,5 +56,4 @@
 // the code is regenerated, unless the changes are delimited by:
 //==============================================================
 </GenerationNotice>
-
 </toolConfiguration>
