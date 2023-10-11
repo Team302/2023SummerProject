@@ -49,8 +49,8 @@ namespace CoreCodeGenerator
                 addProgress("Output directory " + rootFolder + " already exists");
             }
 
-            generateMechanismFiles();
-            generateRobotDefinitionFiles();
+            //generateMechanismFiles();
+            //generateRobotDefinitionFiles();
         }
 
         private void generateMechanismFiles()
