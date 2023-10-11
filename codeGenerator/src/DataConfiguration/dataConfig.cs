@@ -14,12 +14,12 @@ namespace DataConfiguration
     {
         public List<string> collectionBaseTypes = new List<string>(); 
 
-        public bool isACollection(object obj)
+        static public bool isACollection(object obj)
         {
             return isACollection(obj.GetType());
         }
 
-        public bool isACollection(Type t)
+        static public bool isACollection(Type t)
         {
 
             bool isaList = (t.Name == "List`1") && (t.Namespace == "System.Collections.Generic");

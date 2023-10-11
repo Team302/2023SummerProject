@@ -5,7 +5,16 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 using System.Reflection;
+using Configuration;
+using System.Linq;
+using System.Xml.Linq;
 
+// =================================== Rules =====================================
+// A property named __units__ will be converted to the list of physical units
+// A property named value__ will not be shown in the tree directly. Its value is shown in the parent node
+// Attributes are only allowed on the standard types (uint, int, double, bool) and on doubleParameter, unitParameter, intParameter, boolParameter
+// The attribute PhysicalUnitsFamily can only be applied on doubleParameter, uintParameter, intParameter, boolParameter
+// A class can only contain one List of a particular type
 
 namespace Robot
 {
@@ -268,20 +277,26 @@ namespace Robot
     {
         [XmlIgnore]
         [Constant()]
-        public string motorType { get; protected set; }
+        public stringParameter motorType { get; protected set; }
 
-        public string name { get; set; }
+        public stringParameter name { get; set; }
 
         public CAN_ID CAN_ID { get; set; }
 
         public motor()
         {
+            motorType = new stringParameter();
+            name = new stringParameter();
             CAN_ID = new CAN_ID();
-            motorType = this.GetType().Name;
-            motorType = motorType.Substring(0, motorType.LastIndexOf('_'));
-            name = motorType;
+            string temp = this.GetType().Name;
+            motorType.value__ = temp.Substring(0, temp.LastIndexOf('_'));
+            name.value__ = motorType.value__;
 
             helperFunctions.initializeDefaultValues(this);
+        }
+        public string getDisplayName()
+        {
+            return name.value__;
         }
     }
 
@@ -290,19 +305,26 @@ namespace Robot
     {
         [DefaultValue(1.15)]
         [Range(typeof(double), "0", "62")]
-        [PhysicalUnits("%")]
+        [PhysicalUnitsFamily(Configuration.physicalUnit.Family.percent)]
         [TunableParameter()]
-        public double deadbandPercent { get; set; }
+        public doubleParameter deadbandPercent { get; set; }
+
+        [DefaultValue(5.55)]
+        [Range(typeof(double), "0", "100")]
+        [PhysicalUnitsFamily(physicalUnit.Family.percent)]
+        [TunableParameter()]
+        public doubleParameter deadband { get; set; }
 
         [DefaultValue(2.2)]
         [Range(typeof(double), "-1.0", "3.0")]
-        [PhysicalUnits("A")]
+        [PhysicalUnitsFamily(physicalUnit.Family.current)]
         [TunableParameter()]
-        public double peakMin { get; set; }
+        public doubleParameter peakMin { get; set; }
 
         [DefaultValue(4.4)]
         [Range(typeof(double), "-10.0", "20.0")]
-        public double peakMax { get; set; }
+        [PhysicalUnitsFamily(physicalUnit.Family.current)]
+        public doubleParameter peakMax { get; set; }
 
         public Falcon_Motor()
         {
@@ -315,15 +337,16 @@ namespace Robot
         [DefaultValue(1.1)]
         [Range(typeof(double), "0", "62")]
         [TunableParameter()]
-        public double deadbandPercent_ { get; set; }
+        public doubleParameter deadbandPercent_ { get; set; }
 
         [DefaultValue(2.2)]
         [Range(typeof(double), "-1.0", "3.0")]
-        public double peakMin_ { get; set; }
+        public doubleParameter peakMin_ { get; set; }
 
         [DefaultValue(4.4)]
         [Range(typeof(double), "-10.0", "20.0")]
-        public double peakMax_ { get; set; }
+        [TunableParameter()]
+        public doubleParameter peakMax_ { get; set; }
 
         public TalonSRX_Motor()
         {
@@ -342,9 +365,15 @@ namespace Robot
         {
             helperFunctions.initializeDefaultValues(this);
         }
+
+        public string getDisplayName()
+        {
+            return "CAN_ID (" + value__ + ")";
+        }
     }
 
     [Serializable()]
+    [NotUserAddable]
     [XmlInclude(typeof(uintParameter))]
     [XmlInclude(typeof(intParameter))]
     [XmlInclude(typeof(doubleParameter))]
@@ -355,57 +384,218 @@ namespace Robot
 
         [Constant()]
         public string type { get; set; }
-
+        public string __units__ { get; set; } = "";
         public parameter()
         {
             name = GetType().Name;
             helperFunctions.initializeDefaultValues(this);
         }
+
+        virtual public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (propertyName == "name")
+                return string.Format("{0} ({1})", propertyName, name);
+            else if (propertyName == "type")
+                return string.Format("{0} ({1})", propertyName, type);
+
+            return "Should not be here";
+        }
     }
 
     [Serializable()]
+    [NotUserAddable]
     public partial class uintParameter : parameter
     {
         [DefaultValue(0u)]
-        public uint value { get; set; }
-
+        public uint value__ { get; set; }
         public uintParameter()
+        {
+            type = value__.GetType().Name;
+        }
+
+        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+        }
+    }
+
+    [Serializable()]
+    public partial class uintUserDefinedParameter : parameter
+    {
+        [DefaultValue(0u)]
+        public uint value { get; set; }
+        public physicalUnit.Family unitsFamily { get; set; }
+        public uintUserDefinedParameter()
         {
             type = value.GetType().Name;
         }
     }
 
     [Serializable()]
+    [NotUserAddable]
+
     public partial class intParameter : parameter
     {
         [DefaultValue(0u)]
-        public int value { get; set; }
+        public int value__ { get; set; }
 
         public intParameter()
         {
-            type = value.GetType().Name;
+            type = value__.GetType().Name;
+        }
+
+        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
         }
     }
 
     [Serializable()]
-    public partial class doubleParameter : parameter
+    public partial class intUserDefinedParameter : parameter
     {
         [DefaultValue(0u)]
-        public double value { get; set; }
-
-        public doubleParameter()
+        public int value { get; set; }
+        public physicalUnit.Family unitsFamily { get; set; }
+        public intUserDefinedParameter()
         {
             type = value.GetType().Name;
         }
     }
 
     [Serializable()]
+    [NotUserAddable]
+    public partial class stringParameter : parameter
+    {
+        [DefaultValue(0u)]
+        public string value__ { get; set; }
+
+        public stringParameter()
+        {
+            type = value__.GetType().Name;
+        }
+        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            return string.Format("{0} ({1})", instanceName, value__);
+        }
+    }
+
+    [Serializable()]
+    [NotUserAddable]
+    public partial class doubleParameter : parameter
+    {
+        [DefaultValue(0u)]
+        public double value__ { get; set; }
+
+        public doubleParameter()
+        {
+            type = value__.GetType().Name;
+        }
+        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+        }
+    }
+
+    [Serializable()]
+    public partial class doubleUserDefinedParameterBase : parameter
+    {
+        public physicalUnit.Family unitsFamily { get; set; } = physicalUnit.Family.unitless;
+
+        protected string getDisplayName(string propertyName, double value, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (string.IsNullOrEmpty(propertyName))
+                return string.Format("{0} ({1} {2})", name, value, __units__);
+            else if (propertyName == "value")
+            {
+                refresh = helperFunctions.RefreshLevel.parentHeader;
+                return string.Format("value ({0} {1})", value, __units__);
+            }
+            else if (propertyName == "unitsFamily")
+            {
+                refresh = helperFunctions.RefreshLevel.fullParent;
+                return string.Format("{0} ({1})", propertyName, unitsFamily);
+            }
+
+            return base.getDisplayName(propertyName, out refresh);
+        }
+    }
+
+    [Serializable()]
+    public partial class doubleUserDefinedParameterNonTunable : doubleUserDefinedParameterBase
+    {
+        [DefaultValue(0u)]
+        public double value { get; set; } = 0;
+        public doubleUserDefinedParameterNonTunable()
+        {
+            type = value.GetType().Name;
+        }
+
+        override public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            return getDisplayName(propertyName, value, out refresh);
+        }
+    }
+
+    [Serializable()]
+    public partial class doubleUserDefinedParameterTunable : doubleUserDefinedParameterBase
+    {
+        [DefaultValue(0u)]
+        [TunableParameter()]
+        public double value { get; set; } = 0;
+        public doubleUserDefinedParameterTunable()
+        {
+            type = value.GetType().Name;
+        }
+
+        override public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            return getDisplayName(propertyName, value, out refresh);
+        }
+    }
+
+
+
+    [Serializable()]
+    [NotUserAddable]
     public partial class boolParameter : parameter
+    {
+        [DefaultValue(0u)]
+        public bool value__ { get; set; }
+
+        public boolParameter()
+        {
+            type = value__.GetType().Name;
+            value__ = false;
+        }
+
+        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+            return string.Format("{0} ({1})", instanceName, value__);
+        }
+    }
+
+    [Serializable()]
+    public partial class boolUserDefinedParameter : parameter
     {
         [DefaultValue(0u)]
         public bool value { get; set; }
 
-        public boolParameter()
+        public physicalUnit.Family unitsFamily { get; set; }
+
+        public boolUserDefinedParameter()
         {
             type = value.GetType().Name;
         }
@@ -414,6 +604,7 @@ namespace Robot
     [Serializable()]
     public partial class robot
     {
+        public testClass testClass { get; set; }
         public List<parameter> parameter { get; set; }
         public List<motor> motor { get; set; }
         public List<pcm> pcm { get; set; }
@@ -431,6 +622,7 @@ namespace Robot
 
         public robot()
         {
+            testClass = new testClass();
             parameter = new List<parameter>();
             motor = new List<motor>();
             pcm = new List<pcm>();
@@ -441,6 +633,20 @@ namespace Robot
             roborio = new List<roborio>();
 
             helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (string.IsNullOrEmpty(propertyName))
+                return string.Format("Robot #{0}", robotID);
+            else if (propertyName == "testClass")
+                return string.Format("{0} ({1}))", propertyName, testClass.name);
+            else if (propertyName == "pdp")
+                return string.Format("{0} ({1})", propertyName, pdp.type);
+
+            return "robot class - incomplete getDisplayName";
         }
     }
 
@@ -496,6 +702,11 @@ namespace Robot
         public pdp()
         {
             helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName()
+        {
+            return "Pdp (" + type.ToString() + ")";
         }
     }
 
@@ -974,6 +1185,11 @@ namespace Robot
 
             helperFunctions.initializeDefaultValues(this);
         }
+
+        public string getDisplayName()
+        {
+            return "robotVariants";
+        }
     }
 
 
@@ -1090,6 +1306,63 @@ namespace Robot
         }
     }
 
+    [Serializable()]
+    public partial class testClass
+    {
+        public stringParameter name { get; set; }
+
+        [DefaultValue(-4)]
+        [Range(typeof(double), "-10", "10")]
+        [TunableParameter()]
+        public doubleParameter aDouble { get; set; }
+
+        public List<doubleUserDefinedParameterNonTunable> aListOfDoubles { get; set; }
+
+        [TunableParameter()]
+        public List<doubleUserDefinedParameterTunable> aListOfTunableDoubles { get; set; }
+
+        /*
+        public enum testClassEnum { Value1, value2, value3 }
+        public CAN_ID canId { get; set; }
+
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "6")]
+        public stringParameter name { get; set; }
+
+        [DefaultValue(11)]
+        [Range(typeof(uint), "10", "20")]
+        [TunableParameter()]
+        public uintParameter aUint { get; set; }
+
+        [DefaultValue(-4)]
+        [Range(typeof(int), "-10", "10")]
+        [TunableParameter()]
+        public intParameter anInt { get; set; }
+
+        [DefaultValue(true)]
+        [TunableParameter()]
+        public boolParameter aBool { get; set; }
+
+        [DefaultValue(testClassEnum.value2)]
+        testClassEnum aTestClassEnum { get;set; }
+        */
+        public testClass()
+        {
+            name = new stringParameter();
+            aDouble = new doubleParameter();
+            aListOfDoubles = new List<doubleUserDefinedParameterNonTunable>();
+            aListOfTunableDoubles = new List<doubleUserDefinedParameterTunable>();
+
+            name.value__ = this.GetType().Name;
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName()
+        {
+            return name.value__;
+        }
+    }
+
     #region ====================== Attribute definitions
     // if applied to a property, it means that live tuning over network tables is enabled
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
@@ -1108,6 +1381,14 @@ namespace Robot
         }
     }
 
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class NotUserAddableAttribute : Attribute
+    {
+        public NotUserAddableAttribute()
+        {
+        }
+    }
+
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class DescriptionAttribute : Attribute
     {
@@ -1119,18 +1400,19 @@ namespace Robot
     }
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public class PhysicalUnitsAttribute : Attribute
+    public class PhysicalUnitsFamilyAttribute : Attribute
     {
-        public string units { get; set; }
-        public PhysicalUnitsAttribute(string units)
+        public Configuration.physicalUnit.Family family { get; set; }
+        public PhysicalUnitsFamilyAttribute(Configuration.physicalUnit.Family family)
         {
-            this.units = units;
+            this.family = family;
         }
     }
     #endregion
 
-    static class helperFunctions
+    public static class helperFunctions
     {
+        public enum RefreshLevel { none, parentHeader, fullParent }
         static public void initializeDefaultValues(object obj)
         {
             PropertyInfo[] PIs = obj.GetType().GetProperties();
@@ -1138,7 +1420,44 @@ namespace Robot
             {
                 DefaultValueAttribute dva = pi.GetCustomAttribute<DefaultValueAttribute>();
                 if (dva != null)
-                    pi.SetValue(obj, Convert.ChangeType(dva.Value, pi.PropertyType));
+                {
+                    if (pi.PropertyType.FullName.StartsWith("System."))
+                        pi.SetValue(obj, Convert.ChangeType(dva.Value, pi.PropertyType));
+                    else
+                    {
+                        object nestedObj = pi.GetValue(obj);
+                        if (nestedObj == null)
+                        {
+                            nestedObj = Activator.CreateInstance(pi.PropertyType);
+                            pi.SetValue(obj, nestedObj);
+                        }
+                        initializeDefaultValues(nestedObj);
+                    }
+                }
+                //else
+                //{
+                //    if (DataConfiguration.baseDataConfiguration.isACollection(pi.PropertyType))
+                //    {
+                //        object nestedObj = pi.GetValue(obj);
+
+                //        if (nestedObj == null)
+                //        {
+                //            Type elementType = pi.PropertyType.GetGenericArguments().Single();
+                //            nestedObj = Activator.CreateInstance(elementType);
+                //            pi.SetValue(obj, nestedObj);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        object nestedObj = pi.GetValue(obj);
+                //        if (nestedObj == null)
+                //        {
+                //            nestedObj = Activator.CreateInstance(pi.PropertyType);
+                //            pi.SetValue(obj, nestedObj);
+                //        }
+                //        initializeDefaultValues(nestedObj);
+                //    }
+                //}
             }
         }
     }

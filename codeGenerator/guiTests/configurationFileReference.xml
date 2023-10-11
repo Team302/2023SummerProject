@@ -16,7 +16,7 @@
   <collectionBaseTypes>
     <string>Robot.motor</string>
     <string>Robot.PriceChange</string>
-	<string>Robot.parameter</string>
+    <string>Robot.parameter</string>
   </collectionBaseTypes>
   <tunableParameterTypes>
     <string>Robot.doubleParameter</string>
@@ -27,6 +27,44 @@
   <parameterTypes>
     <string>Robot.CAN_ID</string>
   </parameterTypes>
+  <physicalUnits>
+    <physicalUnit>
+      <shortName>%</shortName>
+      <longName>Percent</longName>
+      <family>percent</family>
+      <wpiClassName></wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>V</shortName>
+      <longName>Volts</longName>
+      <family>voltage</family>
+      <wpiClassName>Units.voltage</wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>A</shortName>
+      <longName>Amperes</longName>
+      <family>current</family>
+      <wpiClassName>Units.Amps</wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>m</shortName>
+      <longName>meters</longName>
+      <family>length</family>
+      <wpiClassName>Units.meters</wpiClassName>
+    </physicalUnit>
+	<physicalUnit>
+      <shortName>in</shortName>
+      <longName>inches</longName>
+      <family>length</family>
+      <wpiClassName>Units.inches</wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>m/s^2</shortName>
+      <longName>meters per second squared</longName>
+      <family>acceleration</family>
+      <wpiClassName>Units.meters</wpiClassName>
+    </physicalUnit>
+  </physicalUnits>
   <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
   <templateMechanismHPath>..\templates\MECHANISM_NAME.h</templateMechanismHPath>
   <templateRobotDefinitionsCppPath>..\templates\RobotDefinitions.cpp</templateRobotDefinitionsCppPath>

@@ -49,6 +49,10 @@
     <Compile Include="stateData.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Configuration\Configuration.csproj">
+      <Project>{48cc06ef-8522-46b4-a570-10924dc0fcc5}</Project>
+      <Name>Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataConfiguration\DataConfiguration.csproj">
       <Project>{c6873437-dcd6-4894-8bc3-68b3f92e9899}</Project>
       <Name>DataConfiguration</Name>

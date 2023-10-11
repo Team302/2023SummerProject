@@ -23,6 +23,8 @@ namespace Configuration
         public List<string> tunableParameterTypes = new List<string>();
         public List<string> parameterTypes = new List<string>();
 
+        public List<physicalUnit> physicalUnits = new List<physicalUnit>();
+
         public string templateMechanismCppPath = "";
         public string templateMechanismHPath = "";
         public string templateRobotDefinitionsCppPath = "";
@@ -136,4 +138,18 @@ namespace Configuration
     }
 
 
+    [Serializable]
+    public class physicalUnit
+    {
+        public enum Family { unitless, all, length, time, mass, current, voltage, acceleration, percent }
+        public string shortName { get; set; }
+        public string longName { get; set; }
+        public Family family { get; set; }
+        public string wpiClassName { get; set; }
+
+        public override string ToString()
+        {
+            return shortName;
+        }
+    }
 }

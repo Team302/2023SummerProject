@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<robotVariants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <robot>
+    <robot>
+      <testClass>
+        <name>
+          <name>stringParameter</name>
+          <type>String</type>
+          <__units__ />
+          <value__>testClassert</value__>
+        </name>
+        <aDouble>
+          <name>doubleParameter</name>
+          <type>Double</type>
+          <__units__ />
+          <value__>-6</value__>
+        </aDouble>
+        <aListOfDoubles>
+          <doubleUserDefinedParameterNonTunable>
+            <name>bvc</name>
+            <type>Double</type>
+            <__units__>in</__units__>
+            <unitsFamily>length</unitsFamily>
+          </doubleUserDefinedParameterNonTunable>
+        </aListOfDoubles>
+        <aListOfTunableDoubles>
+          <doubleUserDefinedParameterTunable>
+            <name>asdTunable</name>
+            <type>Double</type>
+            <__units__>%</__units__>
+            <unitsFamily>percent</unitsFamily>
+            <value>1</value>
+          </doubleUserDefinedParameterTunable>
+        </aListOfTunableDoubles>
+      </testClass>
+      <parameter />
+      <motor />
+      <pcm />
+      <pdp />
+      <pigeon />
+      <limelight />
+      <chassis>
+        <motor />
+        <swervemodule />
+        <wheelDiameter>0</wheelDiameter>
+        <wheelBase>0</wheelBase>
+        <track>0</track>
+        <wheelSpeedCalcOption>WPI</wheelSpeedCalcOption>
+        <poseEstimationOption>WPI</poseEstimationOption>
+        <maxVelocity>0</maxVelocity>
+        <maxAngularVelocity>0</maxAngularVelocity>
+        <maxAcceleration>0</maxAcceleration>
+        <maxAngularAcceleration>0</maxAngularAcceleration>
+      </chassis>
+      <mechanismInstance />
+      <camera />
+      <roborio />
+    </robot>
+  </robot>
+  <mechanism />
+</robotVariants>

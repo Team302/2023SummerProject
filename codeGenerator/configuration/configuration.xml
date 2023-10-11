@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <toolConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <rootOutputFolder>..\..\src\main\cpp</rootOutputFolder>
-  <robotConfiguration>robotConfig.xml</robotConfiguration>
+  <robotConfiguration>..\robotConfigurations\test.xml</robotConfiguration>
   <robotConfigurations>
-    <string>robotConfig.xml</string>
+    <string>../robotConfigurations/test.xml</string>
   </robotConfigurations>
   <treeviewParentNameExtensions>
     <string>name</string>
@@ -28,6 +28,44 @@
   <parameterTypes>
     <string>Robot.CAN_ID</string>
   </parameterTypes>
+  <physicalUnits>
+    <physicalUnit>
+      <shortName>%</shortName>
+      <longName>Percent</longName>
+      <family>percent</family>
+      <wpiClassName></wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>V</shortName>
+      <longName>Volts</longName>
+      <family>voltage</family>
+      <wpiClassName>Units.voltage</wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>A</shortName>
+      <longName>Amperes</longName>
+      <family>current</family>
+      <wpiClassName>Units.Amps</wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>m</shortName>
+      <longName>meters</longName>
+      <family>length</family>
+      <wpiClassName>Units.meters</wpiClassName>
+    </physicalUnit>
+	<physicalUnit>
+      <shortName>in</shortName>
+      <longName>inches</longName>
+      <family>length</family>
+      <wpiClassName>Units.inches</wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>m/s^2</shortName>
+      <longName>meters per second squared</longName>
+      <family>acceleration</family>
+      <wpiClassName>Units.meters</wpiClassName>
+    </physicalUnit>
+  </physicalUnits>
   <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
   <templateMechanismHPath>..\templates\MECHANISM_NAME.h</templateMechanismHPath>
   <templateRobotDefinitionsCppPath>..\templates\RobotDefinitions.cpp</templateRobotDefinitionsCppPath>

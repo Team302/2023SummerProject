@@ -63,7 +63,7 @@ namespace FRCrobotCodeGen302
             this.saveConfigBbutton = new System.Windows.Forms.Button();
             this.valueTextBox = new System.Windows.Forms.TextBox();
             this.valueDatePicker = new System.Windows.Forms.DateTimePicker();
-            this.physicalUnitsTextBox = new System.Windows.Forms.TextBox();
+            this.physicalUnitsComboBox = new System.Windows.Forms.ComboBox();
             this.valueNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.valueComboBox = new System.Windows.Forms.ComboBox();
             this.robotElementCheckedListBox = new System.Windows.Forms.CheckedListBox();
@@ -335,7 +335,7 @@ namespace FRCrobotCodeGen302
             this.panel1.Controls.Add(this.saveConfigBbutton);
             this.panel1.Controls.Add(this.valueTextBox);
             this.panel1.Controls.Add(this.valueDatePicker);
-            this.panel1.Controls.Add(this.physicalUnitsTextBox);
+            this.panel1.Controls.Add(this.physicalUnitsComboBox);
             this.panel1.Controls.Add(this.valueNumericUpDown);
             this.panel1.Controls.Add(this.valueComboBox);
             this.panel1.Controls.Add(this.robotElementCheckedListBox);
@@ -502,16 +502,18 @@ namespace FRCrobotCodeGen302
             this.valueDatePicker.TabIndex = 0;
             this.valueDatePicker.TextChanged += new System.EventHandler(this.valueDatePicker_ValueChanged);
             // 
-            // physicalUnitsTextBox
+            // physicalUnitsComboBox
             // 
-            this.physicalUnitsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.physicalUnitsTextBox.Location = new System.Drawing.Point(195, 193);
-            this.physicalUnitsTextBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.physicalUnitsTextBox.Name = "physicalUnitsTextBox";
-            this.physicalUnitsTextBox.ReadOnly = true;
-            this.physicalUnitsTextBox.Size = new System.Drawing.Size(50, 20);
-            this.physicalUnitsTextBox.TabIndex = 0;
-            this.physicalUnitsTextBox.Visible = false;
+            this.physicalUnitsComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.physicalUnitsComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.physicalUnitsComboBox.FormattingEnabled = true;
+            this.physicalUnitsComboBox.Location = new System.Drawing.Point(195, 193);
+            this.physicalUnitsComboBox.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.physicalUnitsComboBox.Name = "physicalUnitsComboBox";
+            this.physicalUnitsComboBox.Size = new System.Drawing.Size(50, 20);
+            this.physicalUnitsComboBox.TabIndex = 1;
+            this.physicalUnitsComboBox.Visible = false;
+            this.physicalUnitsComboBox.SelectedValueChanged += new System.EventHandler(this.physicalUnitsComboBox_SelectedValueChanged);
             // 
             // valueNumericUpDown
             // 
@@ -607,7 +609,7 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ComboBox valueComboBox;
         private System.Windows.Forms.TextBox valueTextBox;
-        private System.Windows.Forms.TextBox physicalUnitsTextBox;
+        private System.Windows.Forms.ComboBox physicalUnitsComboBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button saveConfigBbutton;
         private System.Windows.Forms.NumericUpDown valueNumericUpDown;
