@@ -406,70 +406,6 @@ namespace Robot
 
     [Serializable()]
     [NotUserAddable]
-    public partial class uintParameter : parameter
-    {
-        [DefaultValue(0u)]
-        public uint value__ { get; set; }
-        public uintParameter()
-        {
-            type = value__.GetType().Name;
-        }
-
-        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
-        {
-            refresh = helperFunctions.RefreshLevel.none;
-
-            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
-        }
-    }
-
-    [Serializable()]
-    public partial class uintUserDefinedParameter : parameter
-    {
-        [DefaultValue(0u)]
-        public uint value { get; set; }
-        public physicalUnit.Family unitsFamily { get; set; }
-        public uintUserDefinedParameter()
-        {
-            type = value.GetType().Name;
-        }
-    }
-
-    //[Serializable()]
-    //[NotUserAddable]
-
-    //public partial class intParameter : parameter
-    //{
-    //    [DefaultValue(0u)]
-    //    public int value__ { get; set; }
-
-    //    public intParameter()
-    //    {
-    //        type = value__.GetType().Name;
-    //    }
-
-    //    override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
-    //    {
-    //        refresh = helperFunctions.RefreshLevel.none;
-
-    //        return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
-    //    }
-    //}
-
-    //[Serializable()]
-    //public partial class intUserDefinedParameter : parameter
-    //{
-    //    [DefaultValue(0u)]
-    //    public int value { get; set; }
-    //    public physicalUnit.Family unitsFamily { get; set; }
-    //    public intUserDefinedParameter()
-    //    {
-    //        type = value.GetType().Name;
-    //    }
-    //}
-
-    [Serializable()]
-    [NotUserAddable]
     public partial class stringParameter : parameter
     {
         [DefaultValue(0u)]
@@ -645,6 +581,84 @@ namespace Robot
     }
     #endregion
 
+    #region uint definitions
+    [Serializable()]
+    [NotUserAddable]
+    public partial class uintParameter : parameter
+    {
+        public uint value__ { get; set; }
+
+        public uintParameter()
+        {
+            type = value__.GetType().Name;
+        }
+        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+        }
+    }
+
+    [Serializable()]
+    public partial class uintParameterUserDefinedBase : parameter
+    {
+        public physicalUnit.Family unitsFamily { get; set; } = physicalUnit.Family.unitless;
+
+        protected string getDisplayName(string propertyName, double value, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (string.IsNullOrEmpty(propertyName))
+                return string.Format("{0} ({1} {2})", name, value, __units__);
+            else if (propertyName == "value")
+            {
+                refresh = helperFunctions.RefreshLevel.parentHeader;
+                return string.Format("value ({0} {1})", value, __units__);
+            }
+            else if (propertyName == "unitsFamily")
+            {
+                refresh = helperFunctions.RefreshLevel.fullParent;
+                return string.Format("{0} ({1})", propertyName, unitsFamily);
+            }
+
+            return base.getDisplayName(propertyName, out refresh);
+        }
+    }
+
+    [Serializable()]
+    public partial class uintParameterUserDefinedNonTunable : doubleParameterUserDefinedBase
+    {
+        [DefaultValue(0u)]
+        public int value { get; set; } = 0;
+        public uintParameterUserDefinedNonTunable()
+        {
+            type = value.GetType().Name;
+        }
+
+        override public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            return getDisplayName(propertyName, value, out refresh);
+        }
+    }
+
+    [Serializable()]
+    public partial class uintParameterUserDefinedTunable : doubleParameterUserDefinedBase
+    {
+        [DefaultValue(0u)]
+        [TunableParameter()]
+        public int value { get; set; } = 0;
+        public uintParameterUserDefinedTunable()
+        {
+            type = value.GetType().Name;
+        }
+
+        override public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            return getDisplayName(propertyName, value, out refresh);
+        }
+    }
+    #endregion
 
     [Serializable()]
     [NotUserAddable]
@@ -1421,6 +1435,21 @@ namespace Robot
         [TunableParameter()]
         public List<intParameterUserDefinedTunable> aListOfTunableInts { get; set; }
 
+        [DefaultValue(40)]
+        [Range(typeof(int), "0", "43")]
+        [PhysicalUnitsFamily(physicalUnit.Family.mass)]
+        [TunableParameter()]
+        public uintParameter aUint { get; set; }
+
+        [PhysicalUnitsFamily(physicalUnit.Family.current)]
+        [TunableParameter()]
+        public uintParameter anotherUint { get; set; }
+
+        public List<uintParameterUserDefinedNonTunable> aListOfUints { get; set; }
+
+        [TunableParameter()]
+        public List<uintParameterUserDefinedTunable> aListOfTunableUints { get; set; }
+
 
         /*
         public enum testClassEnum { Value1, value2, value3 }
@@ -1459,6 +1488,11 @@ namespace Robot
             anotherInt = new intParameter();
             aListOfInts = new List<intParameterUserDefinedNonTunable>();
             aListOfTunableInts = new List<intParameterUserDefinedTunable>();
+
+            aUint = new uintParameter();
+            anotherUint = new uintParameter();
+            aListOfUints = new List<uintParameterUserDefinedNonTunable>();
+            aListOfTunableUints = new List<uintParameterUserDefinedTunable>();
 
             name.value__ = this.GetType().Name;
             helperFunctions.initializeDefaultValues(this);

@@ -348,8 +348,13 @@ namespace FRCrobotCodeGen302
                         leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj, isConstant, isTunable, unitsFamily, unitsAsString);
                         if (range != null)
                             lnt.setRange(Convert.ToDouble(range.Minimum), Convert.ToDouble(range.Maximum));
+                        else
+                            lnt.setRange(obj is uint ? Convert.ToDouble(0) : Convert.ToDouble(-10000), Convert.ToDouble(10000));
+
                         if (defaultValue != null)
                             lnt.setDefault(defaultValue.Value);
+                        else
+                            lnt.setDefault(0);
 
                         tn.Tag = lnt;
 
@@ -862,7 +867,7 @@ namespace FRCrobotCodeGen302
                     }
 
                     enableCallback = false;
-                    if ((lnt.name == "value") || isValue__ )
+                    if ((lnt.name == "value") || isValue__)
                     {
                         string updatedUnits = setPhysicalUnitsComboBox(lnt.unitsFamily, lnt.physicalUnits);
                         if (!String.IsNullOrEmpty(updatedUnits))
@@ -906,16 +911,8 @@ namespace FRCrobotCodeGen302
                         }
                         else if (value is uint || value is UInt32)
                         {
-                            if (lnt.range == null)
-                            {
-                                valueNumericUpDown.Minimum = 0;
-                                valueNumericUpDown.Maximum = 5000;
-                            }
-                            else
-                            {
-                                valueNumericUpDown.Minimum = Convert.ToInt32(lnt.range.minRange);
-                                valueNumericUpDown.Maximum = Convert.ToInt32(lnt.range.maxRange);
-                            }
+                            valueNumericUpDown.Minimum = Convert.ToInt32(lnt.range.minRange);
+                            valueNumericUpDown.Maximum = Convert.ToInt32(lnt.range.maxRange);
 
                             if ((uint)value < lnt.range.minRange || (uint)value > lnt.range.maxRange)
                             {
@@ -931,16 +928,8 @@ namespace FRCrobotCodeGen302
                         }
                         else if (value is int || value is Int32)
                         {
-                            if (lnt.range == null)
-                            {
-                                valueNumericUpDown.Minimum = -5000;
-                                valueNumericUpDown.Maximum = 5000;
-                            }
-                            else
-                            {
-                                valueNumericUpDown.Minimum = Convert.ToInt32(lnt.range.minRange);
-                                valueNumericUpDown.Maximum = Convert.ToInt32(lnt.range.maxRange);
-                            }
+                            valueNumericUpDown.Minimum = Convert.ToInt32(lnt.range.minRange);
+                            valueNumericUpDown.Maximum = Convert.ToInt32(lnt.range.maxRange);
 
                             valueNumericUpDown.DecimalPlaces = 0;
                             valueNumericUpDown.Value = (int)value;
@@ -948,16 +937,8 @@ namespace FRCrobotCodeGen302
                         }
                         else if (value is double)
                         {
-                            if (lnt.range == null)
-                            {
-                                valueNumericUpDown.Minimum = Decimal.MinValue;
-                                valueNumericUpDown.Maximum = Decimal.MaxValue;
-                            }
-                            else
-                            {
-                                valueNumericUpDown.Minimum = Convert.ToDecimal(lnt.range.minRange);
-                                valueNumericUpDown.Maximum = Convert.ToDecimal(lnt.range.maxRange);
-                            }
+                            valueNumericUpDown.Minimum = Convert.ToDecimal(lnt.range.minRange);
+                            valueNumericUpDown.Maximum = Convert.ToDecimal(lnt.range.maxRange);
 
                             valueNumericUpDown.DecimalPlaces = 5;
                             valueNumericUpDown.Value = Convert.ToDecimal(value);

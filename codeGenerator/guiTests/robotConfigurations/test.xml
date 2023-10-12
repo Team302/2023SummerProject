@@ -61,6 +61,28 @@
             <value>7</value>
           </intParameterUserDefinedTunable>
         </aListOfTunableInts>
+        <aUint>
+          <name>uintParameter</name>
+          <type>UInt32</type>
+          <__units__>g</__units__>
+          <value__>43</value__>
+        </aUint>
+        <anotherUint>
+          <name>uintParameter</name>
+          <type>UInt32</type>
+          <__units__>A</__units__>
+          <value__>132</value__>
+        </anotherUint>
+        <aListOfUints>
+          <uintParameterUserDefinedNonTunable>
+            <name>uint</name>
+            <type>Int32</type>
+            <__units__>W</__units__>
+            <unitsFamily>power</unitsFamily>
+            <value>5</value>
+          </uintParameterUserDefinedNonTunable>
+        </aListOfUints>
+        <aListOfTunableUints />
       </testClass>
       <parameter />
       <motor />
