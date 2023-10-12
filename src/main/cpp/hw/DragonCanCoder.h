@@ -17,22 +17,34 @@
 #pragma once
 
 #include <string>
-#include <ctre/phoenix/sensors/WPI_CANCoder.h>
+#include "ctre/phoenixpro/CANcoder.hpp"
+#include "configs/usages/CanCoderUsage.h"
+#include "units/angle.h"
+#include "units/angular_velocity.h"
 
-class DragonCanCoder : public ctre::phoenix::sensors::WPI_CANCoder
+class DragonCanCoder
 {
 public:
-	DragonCanCoder(
-		std::string networkTableName,
-		std::string usage,
-		int canID,
-		std::string canBusName,
-		double offset,
-		bool reverse);
+	DragonCanCoder(std::string networkTableName,
+				   CanCoderUsage::CANCODER_USAGE usage,
+				   int canID,
+				   std::string canBusName,
+				   double offset,
+				   bool reverse);
 	virtual ~DragonCanCoder() = default;
-	std::string GetUsage() const { return m_usage; }
+
+	void SetRange(ctre::phoenixpro::signals::AbsoluteSensorRangeValue range);
+	void SetMagnetOffset(double offset);
+	void SetDirection(ctre::phoenixpro::signals::SensorDirectionValue direction);
+
+	units::angle::radian_t GetAbsolutePosition();
+	units::angular_velocity::revolutions_per_minute_t GetVelocity();
+	int GetCanId();
+	std::string GetNetworkTableName() const { return m_networkTableName; }
+	CanCoderUsage::CANCODER_USAGE GetUsage() const { return m_usage; }
 
 private:
 	std::string m_networkTableName;
-	std::string m_usage;
+	CanCoderUsage::CANCODER_USAGE m_usage;
+	ctre::phoenixpro::hardware::CANcoder m_cancoder;
 };

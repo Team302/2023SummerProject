@@ -100,8 +100,7 @@ SwerveModule::SwerveModule(ModuleID type,
     driveMotorSensors.SetIntegratedSensorPosition(0, 0);
 
     // Set up the Absolute Turn Sensor
-    m_turnSensor->ConfigAbsoluteSensorRange(AbsoluteSensorRange::Signed_PlusMinus180, 0);
-    m_turnSensor->GetAbsolutePosition();
+    m_turnSensor->SetRange(AbsoluteSensorRange::Signed_PlusMinus180);
 
     // Set up the Turn Motor
     motor = m_turnMotor->GetSpeedController();
@@ -211,7 +210,7 @@ SwerveModuleState SwerveModule::GetState() const
     auto mps = units::velocity::meters_per_second_t(mpr.to<double>() * m_driveMotor->GetRPS());
 
     // Get the Module Current Rotation Angle
-    Rotation2d angle{units::angle::degree_t(m_turnSensor->GetAbsolutePosition())};
+    Rotation2d angle{m_turnSensor->GetAbsolutePosition()};
 
     // Create the state and return it
     SwerveModuleState state{mps, angle};
@@ -222,8 +221,8 @@ SwerveModuleState SwerveModule::GetState() const
 /// @return frc::SwerveModulePosition - current position
 frc::SwerveModulePosition SwerveModule::GetPosition() const
 {
-    return {m_driveMotor->GetRotations() * m_wheelDiameter * numbers::pi,             // distance travled by drive motor
-            Rotation2d(units::angle::degree_t(m_turnSensor->GetAbsolutePosition()))}; // angle of the swerve module from sensor
+    return {m_driveMotor->GetRotations() * m_wheelDiameter * numbers::pi, // distance travled by drive motor
+            Rotation2d(m_turnSensor->GetAbsolutePosition())};             // angle of the swerve module from sensor
 }
 
 /// @brief Set the current state of the module (speed of the wheel and angle of the wheel)
@@ -236,7 +235,7 @@ void SwerveModule::SetDesiredState(
     // If the desired angle is less than 90 degrees from the target angle (e.g., -90 to 90 is the amount of turn), just use the angle and speed values
     // if it is more than 90 degrees (90 to 270), the can turn the opposite direction -- increase the angle by 180 degrees -- and negate the wheel speed
     // finally, get the value between -90 and 90
-    Rotation2d currAngle = Rotation2d(units::angle::degree_t(m_turnSensor->GetAbsolutePosition()));
+    Rotation2d currAngle = Rotation2d(m_turnSensor->GetAbsolutePosition());
     auto optimizedState = Optimize(targetState, currAngle);
     // auto optimizedState = SwerveModuleState::Optimize(targetState, currAngle);
     // auto optimizedState = targetState;
@@ -346,10 +345,9 @@ void SwerveModule::SetTurnAngle(units::angle::degree_t targetAngle)
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("turn motor id"), m_turnMotor->GetID());
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("target angle"), targetAngle.to<double>());
 
-    auto currAngle = units::angle::degree_t(m_turnSensor->GetAbsolutePosition());
-    auto deltaAngle = AngleUtils::GetDeltaAngle(currAngle, targetAngle);
+    auto deltaAngle = AngleUtils::GetDeltaAngle(m_turnSensor->GetAbsolutePosition(), targetAngle);
 
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("current angle"), currAngle.to<double>());
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("current angle"), m_turnSensor->GetAbsolutePosition().to<double>());
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("delta angle"), deltaAngle.to<double>());
 
     if (abs(deltaAngle.to<double>()) > 1.0)
@@ -388,7 +386,7 @@ frc::Pose2d SwerveModule::GetCurrentPose(PoseEstimatorEnum opt)
 
     // read sensor info (cancoder, encoders) for current speed and angle of the module
     // calculate the average from the last
-    auto currentAngle = units::angle::radian_t(units::angle::degree_t(m_turnSensor->GetPosition()));
+    auto currentAngle = m_turnSensor->GetAbsolutePosition();
     auto currentRotations = m_driveMotor->GetRotations();
 
     units::length::meter_t currentX{units::length::meter_t(0)};
@@ -471,5 +469,5 @@ void SwerveModule::UpdateCurrPose(
     units::length::meter_t x,
     units::length::meter_t y)
 {
-    m_currentPose = m_currentPose + Transform2d{Translation2d{x, y}, Rotation2d{units::angle::degree_t(m_turnSensor->GetPosition())}};
+    m_currentPose = m_currentPose + Transform2d{Translation2d{x, y}, Rotation2d{m_turnSensor->GetAbsolutePosition()}};
 }

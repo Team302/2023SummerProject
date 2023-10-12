@@ -13,19 +13,27 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
+#include <string>
 
 #include "configs/RobotConfigExample.h"
+#include "configs/usages/CanCoderUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
+#include "hw/DragonCanCoder.h"
 #include "hw/DragonFalcon.h"
 #include "mechanisms/example/decoratormods/Example.h"
 #include "mechanisms/example/generated/ExampleGen.h"
 
+constexpr char canBusName[] = "Canivore";
+
+using std::string;
+
 void RobotConfigExample::DefineMotors()
 {
 
-    m_motor1 = new DragonFalcon("ExampleMech_Motor1",
+    m_motor1 = new DragonFalcon(string("ExampleMech_Motor1"),
                                 MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR1,
                                 1,
-                                "Canivore",
+                                string(canBusName),
                                 1);
     m_motor1->SetCurrentLimits(true,
                                units::current::ampere_t(25.0),
@@ -37,10 +45,10 @@ void RobotConfigExample::DefineMotors()
                                   ctre::phoenixpro::signals::NeutralModeValue::Brake,
                                   0.01, -1, 1);
 
-    m_motor2 = new DragonFalcon("ExampleMech_Motor2",
+    m_motor2 = new DragonFalcon(string("ExampleMech_Motor2"),
                                 MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR2,
                                 2,
-                                "Canivore",
+                                string(canBusName),
                                 2);
     m_motor2->SetCurrentLimits(true,
                                units::current::ampere_t(25.0),
@@ -51,6 +59,7 @@ void RobotConfigExample::DefineMotors()
     m_motor2->ConfigMotorSettings(ctre::phoenixpro::signals::InvertedValue::CounterClockwise_Positive,
                                   ctre::phoenixpro::signals::NeutralModeValue::Brake,
                                   0.01, -1, 1);
+    m_motor2->FuseCancoder(*m_cancoder, 1.0, 12.8);
 }
 
 void RobotConfigExample::DefineSolenoids()
@@ -60,10 +69,18 @@ void RobotConfigExample::DefineSolenoids()
 void RobotConfigExample::DefineMechanisms()
 {
     // TODO:  utilize the motors, solenoids, etc. to create the mechanisms
-    auto genmech = new ExampleGen("Example.xml", "ExampleMech");
+    auto genmech = new ExampleGen(string("Example.xml"), string("ExampleMech"));
     m_example = new Example(genmech);
+    m_example->AddMotor(*m_motor1);
+    m_example->AddMotor(*m_motor2);
 }
 
 void RobotConfigExample::DefineCANSensors()
 {
+    m_cancoder = new DragonCanCoder(string("ExampleMech_Motor1"),
+                                    CanCoderUsage::CANCODER_USAGE::EXAMPLE_CANCODER,
+                                    0,
+                                    string(canBusName),
+                                    35.0,
+                                    false);
 }

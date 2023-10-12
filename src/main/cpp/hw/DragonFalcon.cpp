@@ -51,6 +51,7 @@ using ctre::phoenixpro::configs::CurrentLimitsConfigs;
 // using namespace ctre::phoenix::motorcontrol;
 // using namespace ctre::phoenix::motorcontrol::can;
 
+using ctre::phoenixpro::configs::CANcoderConfiguration;
 using ctre::phoenixpro::configs::ClosedLoopRampsConfigs;
 using ctre::phoenixpro::configs::HardwareLimitSwitchConfigs;
 using ctre::phoenixpro::configs::MotorOutputConfigs;
@@ -60,6 +61,8 @@ using ctre::phoenixpro::configs::Slot1Configs;
 using ctre::phoenixpro::configs::Slot2Configs;
 using ctre::phoenixpro::configs::VoltageConfigs;
 using ctre::phoenixpro::controls::Follower;
+using ctre::phoenixpro::signals::AbsoluteSensorRangeValue;
+using ctre::phoenixpro::signals::FeedbackSensorSourceValue;
 using ctre::phoenixpro::signals::ForwardLimitSourceValue;
 using ctre::phoenixpro::signals::ForwardLimitTypeValue;
 using ctre::phoenixpro::signals::ForwardLimitValue;
@@ -68,6 +71,7 @@ using ctre::phoenixpro::signals::NeutralModeValue;
 using ctre::phoenixpro::signals::ReverseLimitSourceValue;
 using ctre::phoenixpro::signals::ReverseLimitTypeValue;
 using ctre::phoenixpro::signals::ReverseLimitValue;
+using ctre::phoenixpro::signals::SensorDirectionValue;
 
 using ctre::phoenixpro::configs::TalonFXConfiguration;
 using ctre::phoenixpro::hardware::TalonFX;
@@ -345,45 +349,6 @@ int DragonFalcon::GetID() const
 	return m_id;
 }
 
-/**
-int DragonFalcon::ConfigSelectedFeedbackSensor(
-	FeedbackDevice feedbackDevice,
-	int pidIdx,
-	int timeoutMs)
-{
-	int error = 0;
-	if (m_talon != nullptr)
-	{
-		error = m_talon->ConfigSelectedFeedbackSensor(feedbackDevice, pidIdx, timeoutMs);
-	}
-	else
-	{
-		auto prompt = string("Dragon Falcon");
-		prompt += to_string(m_talon->GetDeviceID());
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("DragonFalcon::ConfigSelectedFeedbackSensor"), string("m_talon is a nullptr"));
-	}
-	return error;
-}
-
-int DragonFalcon::ConfigSelectedFeedbackSensor(
-	RemoteFeedbackDevice feedbackDevice,
-	int pidIdx,
-	int timeoutMs)
-{
-	int error = 0;
-	if (m_talon != nullptr)
-	{
-		error = m_talon->ConfigSelectedFeedbackSensor(feedbackDevice, pidIdx, timeoutMs);
-	}
-	else
-	{
-		auto prompt = string("Dragon Falcon");
-		prompt += to_string(m_talon->GetDeviceID());
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, prompt, string("DragonFalcon::ConfigSelectedFeedbackSensor"), string("m_talon is a nullptr"));
-	}
-	return error;
-}
-**/
 void DragonFalcon::SetCurrentLimits(bool enableStatorCurrentLimit,
 									units::current::ampere_t statorCurrentLimit,
 									bool enableSupplyCurrentLimit,
@@ -441,18 +406,34 @@ void DragonFalcon::SetControlConstants(int slot, ControlData *controlInfo)
 void DragonFalcon::SetRemoteSensor(int canID,
 								   ctre::phoenix::motorcontrol::RemoteSensorSource deviceType)
 {
-	/**
-	auto error = m_talon->ConfigRemoteFeedbackFilter(canID, deviceType, 0, 0.0);
-	if (error != ErrorCode::OKAY)
+	if (m_talon != nullptr)
 	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, m_networkTableName, string("ConfigRemoteFeedbackFilter"), string("error"));
+		TalonFXConfiguration configs{};
+		configs.Feedback.FeedbackRemoteSensorID = canID;
+		configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue::FusedCANcoder;
+
+		m_talon->GetConfigurator().Apply(configs);
 	}
-	error = m_talon->ConfigSelectedFeedbackSensor(RemoteFeedbackDevice::RemoteFeedbackDevice_RemoteSensor0, 0, 0);
-	if (error != ErrorCode::OKAY)
+}
+void DragonFalcon::FuseCancoder(DragonCanCoder &cancoder,
+								double sensorToMechanismRatio,
+								double rotorToSensorRatio)
+{
+	if (m_talon != nullptr)
 	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, m_networkTableName, string("ConfigSelectedFeedbackSensor"), string("error"));
+		// update cancoder definition
+		cancoder.SetRange(AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
+		cancoder.SetDirection(SensorDirectionValue::CounterClockwise_Positive);
+
+		TalonFXConfiguration configs{};
+		m_talon->GetConfigurator().Refresh(configs);
+		configs.Feedback.FeedbackRemoteSensorID = cancoder.GetCanId();
+		configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue::FusedCANcoder;
+		configs.Feedback.SensorToMechanismRatio = sensorToMechanismRatio;
+		configs.Feedback.RotorToSensorRatio = rotorToSensorRatio;
+
+		m_talon->GetConfigurator().Apply(configs);
 	}
-	*/
 }
 
 void DragonFalcon::SetDiameter(double diameter)

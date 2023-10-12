@@ -13,8 +13,6 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#pragma once
-
 // C++ Includes
 #include <map>
 #include <memory>
@@ -23,47 +21,59 @@
 // FRC includes
 
 // Team 302 includes
+#include "configs/usages/CanCoderUsage.h"
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 
-class MotorControllerUsage
+using namespace std;
+
+CanCoderUsage *CanCoderUsage::m_instance = nullptr;
+CanCoderUsage *CanCoderUsage::GetInstance()
+{
+	if (m_instance == nullptr)
+	{
+		m_instance = new CanCoderUsage();
+	}
+	return m_instance;
+}
+
+CanCoderUsage::CanCoderUsage()
 {
 
-public:
-	/// @enum MOTOR_CONTROLLER_USAGE
-	/// @brief Defines motor usages.  This should be modified for each robot.
-	enum MOTOR_CONTROLLER_USAGE
+	m_usageMap["LEFT_FRONT_SWERVE_ANGLE"] = CANCODER_USAGE::LEFT_FRONT_SWERVE_ANGLE;
+	m_usageMap["RIGHT_FRONT_SWERVE_ANGLE"] = CANCODER_USAGE::RIGHT_FRONT_SWERVE_ANGLE;
+	m_usageMap["LEFT_BACK_SWERVE_ANGLE"] = CANCODER_USAGE::LEFT_BACK_SWERVE_ANGLE;
+	m_usageMap["RIGHT_BACK_SWERVE_ANGLE"] = CANCODER_USAGE::RIGHT_BACK_SWERVE_ANGLE;
+	m_usageMap["ARM_ANGLE"] = CANCODER_USAGE::ARM_ANGLE;
+	m_usageMap["EXAMPLE_CANCODER"] = CANCODER_USAGE::EXAMPLE_CANCODER;
+}
+
+CanCoderUsage::~CanCoderUsage()
+{
+	m_usageMap.clear();
+}
+
+CanCoderUsage::CANCODER_USAGE CanCoderUsage::GetUsage(
+	string usageString)
+{
+	auto it = m_usageMap.find(usageString);
+	if (it != m_usageMap.end())
 	{
-		UNKNOWN_MOTOR_CONTROLLER_USAGE = -1,
+		return it->second;
+	}
+	Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("CanCoderUsage::GetUsage"), string("unknown usage"), usageString);
+	return CanCoderUsage::CANCODER_USAGE::UNKNOWN_CANCODER_USAGE;
+}
 
-		LEFT_FRONT_SWERVE_DRIVE,
-		LEFT_FRONT_SWERVE_TURN,
-		RIGHT_FRONT_SWERVE_DRIVE,
-		RIGHT_FRONT_SWERVE_TURN,
-		LEFT_BACK_SWERVE_DRIVE,
-		LEFT_BACK_SWERVE_TURN,
-		RIGHT_BACK_SWERVE_DRIVE,
-		RIGHT_BACK_SWERVE_TURN,
-		ARM,
-		Extender,
-		INTAKE1,
-		INTAKE2,
-
-		EXAMPLE_MOTOR1,
-		EXAMPLE_MOTOR2,
-
-		MAX_MOTOR_CONTROLLER_USAGES
-	};
-
-	static MotorControllerUsage *GetInstance();
-
-	MOTOR_CONTROLLER_USAGE GetUsage(std::string usageString);
-	std::string GetUsage(MOTOR_CONTROLLER_USAGE usate);
-
-private:
-	static MotorControllerUsage *m_instance;
-	MotorControllerUsage();
-	~MotorControllerUsage();
-
-	std::map<std::string, MOTOR_CONTROLLER_USAGE> m_usageMap;
-};
+std::string CanCoderUsage::GetUsage(CanCoderUsage::CANCODER_USAGE usage)
+{
+	for (auto thisUsage : m_usageMap)
+	{
+		if (thisUsage.second == usage)
+		{
+			return thisUsage.first;
+		}
+	}
+	return string("");
+}

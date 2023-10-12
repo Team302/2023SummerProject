@@ -24,6 +24,7 @@
 #include <frc/motorcontrol/MotorController.h>
 
 // Team 302 includes
+#include "hw/DragonCanCoder.h"
 #include "hw/DistanceAngleCalcStruc.h"
 #include "hw/interfaces/IDragonMotorController.h"
 #include "configs/usages/MotorControllerUsage.h"
@@ -112,6 +113,10 @@ public:
 
     void SetRemoteSensor(int canID,
                          ctre::phoenix::motorcontrol::RemoteSensorSource deviceType) override;
+
+    void FuseCancoder(DragonCanCoder &cancoder,
+                      double sensorToMechanismRatio,
+                      double rotorToSensorRatio);
 
     void SetDiameter(double diameter) override;
 

@@ -1,4 +1,3 @@
-
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -15,30 +14,48 @@
 //====================================================================================================================================================
 
 #pragma once
-#include "configs/RobotConfig.h"
-#include "hw/DragonFalcon.h"
-#include "mechanisms/example/decoratormods/Example.h"
 
-class RobotConfigExample : public RobotConfig
+// C++ Includes
+#include <map>
+#include <memory>
+#include <string>
+
+// FRC includes
+
+// Team 302 includes
+
+// Third Party Includes
+
+class CanCoderUsage
 {
+
 public:
-    RobotConfigExample() = default;
-    ~RobotConfigExample() = default;
+	/// @enum CANCODER_USAGE
+	/// @brief Defines CanCoder usages.  This should be modified for each robot.
+	enum CANCODER_USAGE
+	{
+		UNKNOWN_CANCODER_USAGE = -1,
 
-protected:
-    // actuators
-    void DefineMotors() override;
-    void DefineSolenoids() override;
+		LEFT_FRONT_SWERVE_ANGLE,
+		RIGHT_FRONT_SWERVE_ANGLE,
+		LEFT_BACK_SWERVE_ANGLE,
+		RIGHT_BACK_SWERVE_ANGLE,
+		ARM_ANGLE,
 
-    // sensors
-    void DefineCANSensors() override;
+		EXAMPLE_CANCODER,
 
-    // mechanisms
-    void DefineMechanisms() override;
+		MAX_CANCODER_USAGES
+	};
+
+	static CanCoderUsage *GetInstance();
+
+	CANCODER_USAGE GetUsage(std::string usageString);
+	std::string GetUsage(CANCODER_USAGE usate);
 
 private:
-    DragonFalcon *m_motor1 = nullptr;
-    DragonFalcon *m_motor2 = nullptr;
-    DragonCanCoder *m_cancoder = nullptr;
-    Example *m_example = nullptr;
+	static CanCoderUsage *m_instance;
+	CanCoderUsage();
+	~CanCoderUsage();
+
+	std::map<std::string, CANCODER_USAGE> m_usageMap;
 };
