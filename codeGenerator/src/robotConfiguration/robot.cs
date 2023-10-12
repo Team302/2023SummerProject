@@ -400,7 +400,7 @@ namespace Robot
             else if (propertyName == "type")
                 return string.Format("{0} ({1})", propertyName, type);
 
-            return "Should not be here";
+            return null;
         }
     }
 
@@ -491,7 +491,6 @@ namespace Robot
     [NotUserAddable]
     public partial class doubleParameter : parameter
     {
-        [DefaultValue(0u)]
         public double value__ { get; set; }
 
         public doubleParameter()
@@ -1313,6 +1312,7 @@ namespace Robot
 
         [DefaultValue(-4)]
         [Range(typeof(double), "-10", "10")]
+        [PhysicalUnitsFamily(physicalUnit.Family.length)]
         [TunableParameter()]
         public doubleParameter aDouble { get; set; }
 
@@ -1357,9 +1357,22 @@ namespace Robot
             helperFunctions.initializeDefaultValues(this);
         }
 
-        public string getDisplayName()
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
         {
-            return name.value__;
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                return name.value__;
+            }
+            else if (propertyName == "aDouble")
+            {
+                return aDouble.getDisplayName(propertyName, out refresh);
+            }
+            else
+            {
+                return propertyName;
+            }
         }
     }
 

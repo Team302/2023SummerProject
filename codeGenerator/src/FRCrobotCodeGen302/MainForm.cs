@@ -353,7 +353,7 @@ namespace FRCrobotCodeGen302
 
                         tn.Tag = lnt;
 
-                        tn.Text = getDisplayName((parent == null) ? obj : nonLeafNodeTag.getObject(parent.Tag), nodeName);
+                        tn.Text = getDisplayName((piValue__ != null) ? obj : nonLeafNodeTag.getObject(parent.Tag), nodeName);
                     }
                 }
             }
@@ -846,11 +846,15 @@ namespace FRCrobotCodeGen302
 
                     object value = null;
                     bool allowEdit = false;
+                    bool isValue__ = false;
                     if (!lnt.isConstant)
                     {
                         PropertyInfo valueProp = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
                         if (valueProp != null)
+                        {
+                            isValue__ = true;
                             value = valueProp.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
+                        }
                         else
                             value = lnt.obj;
 
@@ -858,7 +862,7 @@ namespace FRCrobotCodeGen302
                     }
 
                     enableCallback = false;
-                    if (lnt.name == "value")
+                    if ((lnt.name == "value") || isValue__ )
                     {
                         string updatedUnits = setPhysicalUnitsComboBox(lnt.unitsFamily, lnt.physicalUnits);
                         if (!String.IsNullOrEmpty(updatedUnits))

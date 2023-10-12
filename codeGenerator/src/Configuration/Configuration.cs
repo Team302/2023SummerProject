@@ -141,7 +141,7 @@ namespace Configuration
     [Serializable]
     public class physicalUnit
     {
-        public enum Family { unitless, all, length, time, mass, current, voltage, acceleration, percent }
+        public enum Family { unitless, all, angle, angularAcceleration, angularVelocity, length, mass, current, voltage, acceleration, percent, power, time, velocity }
         public string shortName { get; set; }
         public string longName { get; set; }
         public Family family { get; set; }

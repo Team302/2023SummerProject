@@ -7,13 +7,13 @@
           <name>stringParameter</name>
           <type>String</type>
           <__units__ />
-          <value__>testClassert</value__>
+          <value__>testClassertqwe</value__>
         </name>
         <aDouble>
           <name>doubleParameter</name>
           <type>Double</type>
-          <__units__ />
-          <value__>-6</value__>
+          <__units__>in</__units__>
+          <value__>-7</value__>
         </aDouble>
         <aListOfDoubles>
           <doubleUserDefinedParameterNonTunable>
@@ -21,6 +21,7 @@
             <type>Double</type>
             <__units__>in</__units__>
             <unitsFamily>length</unitsFamily>
+            <value>3</value>
           </doubleUserDefinedParameterNonTunable>
         </aListOfDoubles>
         <aListOfTunableDoubles>
@@ -29,7 +30,6 @@
             <type>Double</type>
             <__units__>%</__units__>
             <unitsFamily>percent</unitsFamily>
-            <value>1</value>
           </doubleUserDefinedParameterTunable>
         </aListOfTunableDoubles>
       </testClass>
