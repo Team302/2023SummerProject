@@ -7,31 +7,60 @@
           <name>stringParameter</name>
           <type>String</type>
           <__units__ />
-          <value__>testClassertqwe</value__>
+          <value__>aTestClass</value__>
         </name>
         <aDouble>
           <name>doubleParameter</name>
           <type>Double</type>
-          <__units__>in</__units__>
+          <__units__>m</__units__>
           <value__>-7</value__>
         </aDouble>
+        <anotherDouble>
+          <name>doubleParameter</name>
+          <type>Double</type>
+          <__units__>g</__units__>
+          <value__>5</value__>
+        </anotherDouble>
         <aListOfDoubles>
-          <doubleUserDefinedParameterNonTunable>
-            <name>bvc</name>
+          <doubleParameterUserDefinedNonTunable>
+            <name>robotWeight</name>
             <type>Double</type>
-            <__units__>in</__units__>
-            <unitsFamily>length</unitsFamily>
-            <value>3</value>
-          </doubleUserDefinedParameterNonTunable>
+            <__units__>g</__units__>
+            <unitsFamily>mass</unitsFamily>
+            <value>32</value>
+          </doubleParameterUserDefinedNonTunable>
         </aListOfDoubles>
         <aListOfTunableDoubles>
-          <doubleUserDefinedParameterTunable>
-            <name>asdTunable</name>
+          <doubleParameterUserDefinedTunable>
+            <name>wert</name>
             <type>Double</type>
-            <__units__>%</__units__>
-            <unitsFamily>percent</unitsFamily>
-          </doubleUserDefinedParameterTunable>
+            <__units__>rad</__units__>
+            <unitsFamily>angle</unitsFamily>
+            <value>4</value>
+          </doubleParameterUserDefinedTunable>
         </aListOfTunableDoubles>
+        <anInt>
+          <name>intParameter</name>
+          <type>Int32</type>
+          <__units__>g</__units__>
+          <value__>4</value__>
+        </anInt>
+        <anotherInt>
+          <name>intParameter</name>
+          <type>Int32</type>
+          <__units__>V</__units__>
+          <value__>9</value__>
+        </anotherInt>
+        <aListOfInts />
+        <aListOfTunableInts>
+          <intParameterUserDefinedTunable>
+            <name>asdafhdj</name>
+            <type>Int32</type>
+            <__units__>A</__units__>
+            <unitsFamily>current</unitsFamily>
+            <value>7</value>
+          </intParameterUserDefinedTunable>
+        </aListOfTunableInts>
       </testClass>
       <parameter />
       <motor />

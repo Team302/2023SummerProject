@@ -435,38 +435,38 @@ namespace Robot
         }
     }
 
-    [Serializable()]
-    [NotUserAddable]
+    //[Serializable()]
+    //[NotUserAddable]
 
-    public partial class intParameter : parameter
-    {
-        [DefaultValue(0u)]
-        public int value__ { get; set; }
+    //public partial class intParameter : parameter
+    //{
+    //    [DefaultValue(0u)]
+    //    public int value__ { get; set; }
 
-        public intParameter()
-        {
-            type = value__.GetType().Name;
-        }
+    //    public intParameter()
+    //    {
+    //        type = value__.GetType().Name;
+    //    }
 
-        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
-        {
-            refresh = helperFunctions.RefreshLevel.none;
+    //    override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+    //    {
+    //        refresh = helperFunctions.RefreshLevel.none;
 
-            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
-        }
-    }
+    //        return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+    //    }
+    //}
 
-    [Serializable()]
-    public partial class intUserDefinedParameter : parameter
-    {
-        [DefaultValue(0u)]
-        public int value { get; set; }
-        public physicalUnit.Family unitsFamily { get; set; }
-        public intUserDefinedParameter()
-        {
-            type = value.GetType().Name;
-        }
-    }
+    //[Serializable()]
+    //public partial class intUserDefinedParameter : parameter
+    //{
+    //    [DefaultValue(0u)]
+    //    public int value { get; set; }
+    //    public physicalUnit.Family unitsFamily { get; set; }
+    //    public intUserDefinedParameter()
+    //    {
+    //        type = value.GetType().Name;
+    //    }
+    //}
 
     [Serializable()]
     [NotUserAddable]
@@ -487,6 +487,7 @@ namespace Robot
         }
     }
 
+    #region double definitions
     [Serializable()]
     [NotUserAddable]
     public partial class doubleParameter : parameter
@@ -506,7 +507,7 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class doubleUserDefinedParameterBase : parameter
+    public partial class doubleParameterUserDefinedBase : parameter
     {
         public physicalUnit.Family unitsFamily { get; set; } = physicalUnit.Family.unitless;
 
@@ -532,11 +533,11 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class doubleUserDefinedParameterNonTunable : doubleUserDefinedParameterBase
+    public partial class doubleParameterUserDefinedNonTunable : doubleParameterUserDefinedBase
     {
         [DefaultValue(0u)]
         public double value { get; set; } = 0;
-        public doubleUserDefinedParameterNonTunable()
+        public doubleParameterUserDefinedNonTunable()
         {
             type = value.GetType().Name;
         }
@@ -548,12 +549,74 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class doubleUserDefinedParameterTunable : doubleUserDefinedParameterBase
+    public partial class doubleParameterUserDefinedTunable : doubleParameterUserDefinedBase
     {
         [DefaultValue(0u)]
         [TunableParameter()]
         public double value { get; set; } = 0;
-        public doubleUserDefinedParameterTunable()
+        public doubleParameterUserDefinedTunable()
+        {
+            type = value.GetType().Name;
+        }
+
+        override public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            return getDisplayName(propertyName, value, out refresh);
+        }
+    }
+    #endregion
+
+    #region int definitions
+    [Serializable()]
+    [NotUserAddable]
+    public partial class intParameter : parameter
+    {
+        public int value__ { get; set; }
+
+        public intParameter()
+        {
+            type = value__.GetType().Name;
+        }
+        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+        }
+    }
+
+    [Serializable()]
+    public partial class intParameterUserDefinedBase : parameter
+    {
+        public physicalUnit.Family unitsFamily { get; set; } = physicalUnit.Family.unitless;
+
+        protected string getDisplayName(string propertyName, double value, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (string.IsNullOrEmpty(propertyName))
+                return string.Format("{0} ({1} {2})", name, value, __units__);
+            else if (propertyName == "value")
+            {
+                refresh = helperFunctions.RefreshLevel.parentHeader;
+                return string.Format("value ({0} {1})", value, __units__);
+            }
+            else if (propertyName == "unitsFamily")
+            {
+                refresh = helperFunctions.RefreshLevel.fullParent;
+                return string.Format("{0} ({1})", propertyName, unitsFamily);
+            }
+
+            return base.getDisplayName(propertyName, out refresh);
+        }
+    }
+
+    [Serializable()]
+    public partial class intParameterUserDefinedNonTunable : doubleParameterUserDefinedBase
+    {
+        [DefaultValue(0u)]
+        public int value { get; set; } = 0;
+        public intParameterUserDefinedNonTunable()
         {
             type = value.GetType().Name;
         }
@@ -564,6 +627,23 @@ namespace Robot
         }
     }
 
+    [Serializable()]
+    public partial class intParameterUserDefinedTunable : doubleParameterUserDefinedBase
+    {
+        [DefaultValue(0u)]
+        [TunableParameter()]
+        public int value { get; set; } = 0;
+        public intParameterUserDefinedTunable()
+        {
+            type = value.GetType().Name;
+        }
+
+        override public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            return getDisplayName(propertyName, value, out refresh);
+        }
+    }
+    #endregion
 
 
     [Serializable()]
@@ -1316,10 +1396,31 @@ namespace Robot
         [TunableParameter()]
         public doubleParameter aDouble { get; set; }
 
-        public List<doubleUserDefinedParameterNonTunable> aListOfDoubles { get; set; }
+        [PhysicalUnitsFamily(physicalUnit.Family.mass)]
+        [TunableParameter()]
+        public doubleParameter anotherDouble { get; set; }
+
+        public List<doubleParameterUserDefinedNonTunable> aListOfDoubles { get; set; }
 
         [TunableParameter()]
-        public List<doubleUserDefinedParameterTunable> aListOfTunableDoubles { get; set; }
+        public List<doubleParameterUserDefinedTunable> aListOfTunableDoubles { get; set; }
+
+
+        [DefaultValue(-40)]
+        [Range(typeof(int), "-100", "10")]
+        [PhysicalUnitsFamily(physicalUnit.Family.mass)]
+        [TunableParameter()]
+        public intParameter anInt { get; set; }
+
+        [PhysicalUnitsFamily(physicalUnit.Family.voltage)]
+        [TunableParameter()]
+        public intParameter anotherInt { get; set; }
+
+        public List<intParameterUserDefinedNonTunable> aListOfInts { get; set; }
+
+        [TunableParameter()]
+        public List<intParameterUserDefinedTunable> aListOfTunableInts { get; set; }
+
 
         /*
         public enum testClassEnum { Value1, value2, value3 }
@@ -1350,8 +1451,14 @@ namespace Robot
         {
             name = new stringParameter();
             aDouble = new doubleParameter();
-            aListOfDoubles = new List<doubleUserDefinedParameterNonTunable>();
-            aListOfTunableDoubles = new List<doubleUserDefinedParameterTunable>();
+            anotherDouble = new doubleParameter();
+            aListOfDoubles = new List<doubleParameterUserDefinedNonTunable>();
+            aListOfTunableDoubles = new List<doubleParameterUserDefinedTunable>();
+
+            anInt = new intParameter();
+            anotherInt = new intParameter();
+            aListOfInts = new List<intParameterUserDefinedNonTunable>();
+            aListOfTunableInts = new List<intParameterUserDefinedTunable>();
 
             name.value__ = this.GetType().Name;
             helperFunctions.initializeDefaultValues(this);
