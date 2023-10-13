@@ -26,6 +26,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
 using NetworkTablesUtils;
+using DataConfiguration;
 
 namespace FRCrobotCodeGen302
 {
