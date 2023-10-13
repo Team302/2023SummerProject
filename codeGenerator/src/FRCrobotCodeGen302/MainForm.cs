@@ -173,8 +173,8 @@ namespace FRCrobotCodeGen302
                             }
                             else if (propertyInfo.Name == "canId")
                             {
-                                if ((propertyInfo.GetValue(obj) as Robot.CAN_ID) != null)
-                                    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value__.ToString() + ", ";
+                                //if ((propertyInfo.GetValue(obj) as Robot.CAN_ID) != null)
+                                //    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value__.ToString() + ", ";
                             }
                             else
                             {
@@ -1052,16 +1052,29 @@ namespace FRCrobotCodeGen302
                         }
                         else
                         {
-                            isValue__ = false;
-                            obj = nonLeafNodeTag.getObject(lastSelectedValueNode.Parent.Tag);
-                            prop = obj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                            obj = lnt.obj;
+                            prop = lnt.type.GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
+                            if (prop == null)
+                            {
+                                isValue__ = false;
+                                obj = nonLeafNodeTag.getObject(lastSelectedValueNode.Parent.Tag);
+                                prop = obj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                            }
                         }
 
 
                         if ((prop != null) && (prop.CanWrite))
                         {
                             if (valueStringList == null)
-                                prop.SetValue(obj, Enum.Parse(lnt.type, valueComboBox.Text));
+                                if (isValue__)
+                                    prop.SetValue(lnt.obj, valueComboBox.Text == "True");
+                                else
+                                {
+                                    if (prop.PropertyType == typeof(bool))
+                                        prop.SetValue(obj, valueComboBox.Text == "True");
+                                    else
+                                        prop.SetValue(obj, Enum.Parse(lnt.type, valueComboBox.Text));
+                                }
                             else
                             {
                                 prop.SetValue(lnt.obj, valueComboBox.Text);
@@ -1095,7 +1108,10 @@ namespace FRCrobotCodeGen302
                         }
 
                         helperFunctions.RefreshLevel refresh;
-                        lastSelectedValueNode.Text = getDisplayName(obj, prop.Name, out refresh);
+                        if (isValue__)
+                            lastSelectedValueNode.Text = getDisplayName(obj, lnt.name, out refresh);
+                        else
+                            lastSelectedValueNode.Text = getDisplayName(obj, prop.Name, out refresh);
 
                         if (lastSelectedValueNode.Parent != null)
                         {

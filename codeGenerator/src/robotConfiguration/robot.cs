@@ -281,13 +281,15 @@ namespace Robot
 
         public stringParameter name { get; set; }
 
-        public CAN_ID CAN_ID { get; set; }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter CAN_ID { get; set; }
 
         public motor()
         {
             motorType = new stringParameter();
             name = new stringParameter();
-            CAN_ID = new CAN_ID();
+            CAN_ID = new uintParameter();
             string temp = this.GetType().Name;
             motorType.value__ = temp.Substring(0, temp.LastIndexOf('_'));
             name.value__ = motorType.value__;
@@ -366,25 +368,30 @@ namespace Robot
             helperFunctions.initializeDefaultValues(this);
         }
 
-        public string getDisplayName()
+        public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
+            refresh = helperFunctions.RefreshLevel.parentHeader;
+
             return "CAN_ID (" + value__ + ")";
         }
     }
 
     [Serializable()]
     [NotUserAddable]
+    [XmlInclude(typeof(parameter))]
+    [XmlInclude(typeof(stringParameter))]
     [XmlInclude(typeof(uintParameter))]
     [XmlInclude(typeof(intParameter))]
     [XmlInclude(typeof(doubleParameter))]
     [XmlInclude(typeof(boolParameter))]
+
     public partial class parameter
     {
         public string name { get; set; }
+        public string __units__ { get; set; } = "";
 
         [Constant()]
         public string type { get; set; }
-        public string __units__ { get; set; } = "";
         public parameter()
         {
             name = GetType().Name;
@@ -404,6 +411,7 @@ namespace Robot
         }
     }
 
+    #region string parameter
     [Serializable()]
     [NotUserAddable]
     public partial class stringParameter : parameter
@@ -422,6 +430,7 @@ namespace Robot
             return string.Format("{0} ({1})", instanceName, value__);
         }
     }
+    #endregion
 
     #region double definitions
     [Serializable()]
@@ -660,39 +669,77 @@ namespace Robot
     }
     #endregion
 
+    #region bool definitions
     [Serializable()]
     [NotUserAddable]
     public partial class boolParameter : parameter
     {
-        [DefaultValue(0u)]
         public bool value__ { get; set; }
 
         public boolParameter()
         {
             type = value__.GetType().Name;
-            value__ = false;
         }
-
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
             refresh = helperFunctions.RefreshLevel.none;
+
             return string.Format("{0} ({1})", instanceName, value__);
         }
     }
 
     [Serializable()]
-    public partial class boolUserDefinedParameter : parameter
+    public partial class boolParameterUserDefinedBase : parameter
     {
-        [DefaultValue(0u)]
-        public bool value { get; set; }
+        protected string getDisplayName(string propertyName, bool value, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
 
-        public physicalUnit.Family unitsFamily { get; set; }
+            if (string.IsNullOrEmpty(propertyName))
+                return string.Format("{0} ({1})", name, value);
+            else if (propertyName == "value")
+            {
+                refresh = helperFunctions.RefreshLevel.parentHeader;
+                return string.Format("value ({0})", value);
+            }
 
-        public boolUserDefinedParameter()
+            return base.getDisplayName(propertyName, out refresh);
+        }
+    }
+
+    [Serializable()]
+    public partial class boolParameterUserDefinedNonTunable : boolParameterUserDefinedBase
+    {
+        [DefaultValue(false)]
+        public bool value { get; set; } = false;
+        public boolParameterUserDefinedNonTunable()
         {
             type = value.GetType().Name;
         }
+
+        override public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            return getDisplayName(propertyName, value, out refresh);
+        }
     }
+
+    [Serializable()]
+    public partial class boolParameterUserDefinedTunable : boolParameterUserDefinedBase
+    {
+        [DefaultValue(0u)]
+        [TunableParameter()]
+        public bool value { get; set; } = false;
+        public boolParameterUserDefinedTunable()
+        {
+            type = value.GetType().Name;
+        }
+
+        override public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            return getDisplayName(propertyName, value, out refresh);
+        }
+    }
+    #endregion
 
     [Serializable()]
     public partial class robot
@@ -1447,9 +1494,15 @@ namespace Robot
 
         public List<uintParameterUserDefinedNonTunable> aListOfUints { get; set; }
 
-        [TunableParameter()]
         public List<uintParameterUserDefinedTunable> aListOfTunableUints { get; set; }
 
+        public boolParameter aBool { get; set; }
+
+        [TunableParameter]
+        public boolParameter aTunableBool { get; set; }
+
+        public List<boolParameterUserDefinedNonTunable> aListOfNonTunableBools { get; set; }
+        public List<boolParameterUserDefinedTunable> aListOfTunableBools { get; set; }
 
         /*
         public enum testClassEnum { Value1, value2, value3 }
@@ -1493,6 +1546,11 @@ namespace Robot
             anotherUint = new uintParameter();
             aListOfUints = new List<uintParameterUserDefinedNonTunable>();
             aListOfTunableUints = new List<uintParameterUserDefinedTunable>();
+
+            aBool = new boolParameter();
+            aTunableBool = new boolParameter();
+            aListOfNonTunableBools = new List<boolParameterUserDefinedNonTunable>();
+            aListOfTunableBools = new List<boolParameterUserDefinedTunable>();
 
             name.value__ = this.GetType().Name;
             helperFunctions.initializeDefaultValues(this);

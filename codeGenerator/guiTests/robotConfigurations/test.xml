@@ -75,14 +75,26 @@
         </anotherUint>
         <aListOfUints>
           <uintParameterUserDefinedNonTunable>
-            <name>uint</name>
+            <name>uints</name>
             <type>Int32</type>
-            <__units__>W</__units__>
-            <unitsFamily>power</unitsFamily>
-            <value>5</value>
+            <__units__>rad/s^2</__units__>
+            <unitsFamily>angularAcceleration</unitsFamily>
+            <value>9</value>
           </uintParameterUserDefinedNonTunable>
         </aListOfUints>
         <aListOfTunableUints />
+        <aBool>
+          <name>boolParameter</name>
+          <type>Boolean</type>
+          <value__>false</value__>
+        </aBool>
+        <aTunableBool>
+          <name>boolParameter</name>
+          <type>Boolean</type>
+          <value__>true</value__>
+        </aTunableBool>
+        <aListOfNonTunableBools />
+        <aListOfTunableBools />
       </testClass>
       <parameter />
       <motor />
