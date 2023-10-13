@@ -9,7 +9,6 @@ namespace CoreCodeGenerator
 {
     public class codeGenerator_302Robotics : baseReportingClass
     {
-        private string generatorConfigFullPathName = "";
         public enum MECHANISM_FILE_TYPE { MAIN, STATE, STATE_MGR }
 
         private robotConfig theRobotConfiguration = new robotConfig();

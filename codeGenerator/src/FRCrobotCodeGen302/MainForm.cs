@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Robot;
-using StateData;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Web;
@@ -513,13 +512,6 @@ namespace FRCrobotCodeGen302
             robot myRobot = new robot();
             // Call the Deserialize method and cast to the object type.
             mySerializer.Serialize(myFileStream, myRobot);
-
-            mySerializer = new XmlSerializer(typeof(statedata));
-            // To read the file, create a FileStream.
-            myFileStream = new FileStream(@"C:\GitRepos\2023SummerProject\codeGenerator\src\mechExample.xml", FileMode.Create);
-            statedata myStates = new statedata();
-            // Call the Deserialize method and cast to the object type.
-            mySerializer.Serialize(myFileStream, myStates);
         }
 
         private void configurationBrowseButton_Click(object sender, EventArgs e)
@@ -1443,7 +1435,6 @@ namespace FRCrobotCodeGen302
             {
                 if (lastSelectedArrayNode.Text == "mechanismInstances")
                 {
-                    TreeNode tn = null;
                     foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems) // there should only be mechanisms in the checkedItems list 
                     {
                         // first create a new element instance
@@ -1596,19 +1587,6 @@ namespace FRCrobotCodeGen302
             }
 
             return false;
-        }
-
-        private void addStateDataButton_Click(object sender, EventArgs e)
-        {
-            string mechanismName = "";
-            if (InputBox("Enter mechanism name", "Please enter a name for the mechanism file. A .xml extension will be added.", ref mechanismName) == DialogResult.OK)
-            {
-                statedata sd = new statedata();
-                string filename = Path.GetFileNameWithoutExtension(mechanismName) + ".xml";
-
-                theRobotConfiguration.mechanismControlDefinition.Add(filename, sd);
-                AddNode(null, sd, filename);
-            }
         }
 
         public static DialogResult InputBox(string title, string promptText, ref string value)

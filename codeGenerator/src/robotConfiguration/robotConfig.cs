@@ -5,7 +5,6 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 using Robot;
-using StateData;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Collections;
@@ -17,7 +16,6 @@ namespace robotConfiguration
     public class robotConfig : baseDataConfiguration
     {
         public robotVariants theRobotVariants = new robotVariants();
-        public Dictionary<string, statedata> mechanismControlDefinition;
 
         override public void load(string theRobotConfigFullPathFileName)
         {

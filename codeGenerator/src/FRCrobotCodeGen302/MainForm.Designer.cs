@@ -32,7 +32,6 @@ namespace FRCrobotCodeGen302
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.configurationBrowseButton = new System.Windows.Forms.Button();
             this.configurationFilePathNameTextBox = new System.Windows.Forms.TextBox();
             this.outputFolderLabel = new System.Windows.Forms.Label();
@@ -91,18 +90,6 @@ namespace FRCrobotCodeGen302
             this.button1.Text = "Generate";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(387, 272);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(50, 14);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // configurationBrowseButton
             // 
@@ -249,7 +236,6 @@ namespace FRCrobotCodeGen302
             // 
             this.tabMainPage.Controls.Add(this.clearReportButton);
             this.tabMainPage.Controls.Add(this.createNewRobotVariantsConfigButton);
-            this.tabMainPage.Controls.Add(this.button2);
             this.tabMainPage.Controls.Add(this.label1);
             this.tabMainPage.Controls.Add(this.button1);
             this.tabMainPage.Controls.Add(this.configurationFilePathNameTextBox);
@@ -592,7 +578,6 @@ namespace FRCrobotCodeGen302
         #endregion
 
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button configurationBrowseButton;
         private System.Windows.Forms.Button createNewRobotVariantsConfigButton;
         private System.Windows.Forms.TextBox configurationFilePathNameTextBox;
