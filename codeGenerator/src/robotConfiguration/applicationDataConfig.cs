@@ -26,22 +26,23 @@ namespace applicationConfiguration
                 addProgress("Loading robot configuration " + theRobotConfigFullPathFileName);
                 theRobotVariants = loadRobotConfiguration(theRobotConfigFullPathFileName);
 
-                foreach (applicationData theRobot in theRobotVariants.robot)
-                {
-                    ValidationContext context = new ValidationContext(theRobot.pdp);
-                    IList<ValidationResult> errors = new List<ValidationResult>();
+                // switch off validation... maybe switch it on once we understand how it works
+                //foreach (applicationData theRobot in theRobotVariants.robot)
+                //{
+                //    ValidationContext context = new ValidationContext(theRobot.pdp);
+                //    IList<ValidationResult> errors = new List<ValidationResult>();
 
-                    addProgress("Validating Robot with ID " + theRobot.robotID);
-                    if (!Validator.TryValidateObject(theRobot.pdp, context, errors, true))
-                    {
-                        addProgress("Error(s) found ");
-                        //todo should the error be "fixed" without user intervention?
-                        foreach (ValidationResult result in errors)
-                            addProgress(result.ErrorMessage);
-                    }
-                    else
-                        addProgress("Validation passed");
-                }
+                //    addProgress("Validating Robot with ID " + theRobot.robotID);
+                //    if (!Validator.TryValidateObject(theRobot.pdp, context, errors, true))
+                //    {
+                //        addProgress("Error(s) found ");
+                //        //todo should the error be "fixed" without user intervention?
+                //        foreach (ValidationResult result in errors)
+                //            addProgress(result.ErrorMessage);
+                //    }
+                //    else
+                //        addProgress("Validation passed");
+                //}
             }
             catch (Exception ex)
             {
