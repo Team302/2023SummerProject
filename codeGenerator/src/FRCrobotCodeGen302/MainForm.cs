@@ -1,6 +1,6 @@
 ﻿using Configuration;
 using CoreCodeGenerator;
-using robotConfiguration;
+using applicationConfiguration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using Robot;
+using ApplicationData;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Web;
@@ -32,7 +32,7 @@ namespace FRCrobotCodeGen302
     public partial class MainForm : Form
     {
         toolConfiguration generatorConfig = new toolConfiguration();
-        robotConfig theRobotConfiguration = new robotConfig();
+        applicationDataConfig theRobotConfiguration = new applicationDataConfig();
         codeGenerator_302Robotics codeGenerator = new codeGenerator_302Robotics();
         NTViewer viewer;
         bool needsSaving = false;
@@ -197,9 +197,9 @@ namespace FRCrobotCodeGen302
                 if (String.IsNullOrEmpty(nodeName))
                     nodeName = objType.Name;
 
-                if (objType == typeof(robot))
+                if (objType == typeof(applicationData))
                 {
-                    robot tempBot = (robot)obj;
+                    applicationData tempBot = (applicationData)obj;
                     nodeName = "Robot #" + tempBot.robotID;
                 }
 
@@ -451,7 +451,7 @@ namespace FRCrobotCodeGen302
             return unitsAsString;
         }
 
-        private void populateTree(robotConfig myRobot)
+        private void populateTree(applicationDataConfig myRobot)
         {
             robotTreeView.Nodes.Clear();
             AddNode(null, myRobot.theRobotVariants, "Robot Variant");
@@ -506,10 +506,10 @@ namespace FRCrobotCodeGen302
 
             // Construct an instance of the XmlSerializer with the type
             // of object that is being deserialized.
-            var mySerializer = new XmlSerializer(typeof(robot));
+            var mySerializer = new XmlSerializer(typeof(applicationData));
             // To read the file, create a FileStream.
             var myFileStream = new FileStream(@"C:\GitRepos\2023SummerProject\codeGenerator\src\robotExample.xml", FileMode.Create);
-            robot myRobot = new robot();
+            applicationData myRobot = new applicationData();
             // Call the Deserialize method and cast to the object type.
             mySerializer.Serialize(myFileStream, myRobot);
         }
@@ -1343,7 +1343,7 @@ namespace FRCrobotCodeGen302
                         obj = Activator.CreateInstance((new mechanismInstance()).GetType());
 
                         name = "mechanismInstance";
-                        ((mechanismInstance)obj).mechanism = robotConfig.DeepClone((mechanism)((robotElementType)robotElementObj).theObject);
+                        ((mechanismInstance)obj).mechanism = applicationDataConfig.DeepClone((mechanism)((robotElementType)robotElementObj).theObject);
                     }
                     else if (DataConfiguration.baseDataConfiguration.isACollection(((robotElementType)robotElementObj).t))
                     {
@@ -1443,7 +1443,7 @@ namespace FRCrobotCodeGen302
                             Type elementType = ((mechanism)robotElementObj).GetType();
 
                             object obj = Activator.CreateInstance((new mechanismInstance()).GetType());
-                            ((mechanismInstance)obj).mechanism = robotConfig.DeepClone((mechanism)robotElementObj);
+                            ((mechanismInstance)obj).mechanism = applicationDataConfig.DeepClone((mechanism)robotElementObj);
 
                             // then add it to the collection
                             nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag).GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
@@ -1509,13 +1509,13 @@ namespace FRCrobotCodeGen302
 
         void updateMechInstancesFromMechTemplate(mechanism theMechanism)
         {
-            foreach (robot r in theRobotConfiguration.theRobotVariants.robot)
+            foreach (applicationData r in theRobotConfiguration.theRobotVariants.robot)
             {
                 foreach (mechanismInstance mi in r.mechanismInstance)
                 {
                     if (mi.mechanism.name == theMechanism.name)
                     {
-                        mechanism m = robotConfig.DeepClone(theMechanism);
+                        mechanism m = applicationDataConfig.DeepClone(theMechanism);
 
                         theRobotConfiguration.MergeMechanismParametersIntoStructure(m, mi.mechanism);
 
@@ -1734,10 +1734,10 @@ namespace FRCrobotCodeGen302
                 {
                     using (var myFileStream = new FileStream(dlg.FileName, FileMode.Create))
                     {
-                        robotVariants newRobotVariantsConfig = new robotVariants();
-                        newRobotVariantsConfig.robot.Add(new robot());
+                        topLevelAppDataElement newRobotVariantsConfig = new topLevelAppDataElement();
+                        newRobotVariantsConfig.robot.Add(new applicationData());
 
-                        var mySerializer = new XmlSerializer(typeof(robotVariants));
+                        var mySerializer = new XmlSerializer(typeof(topLevelAppDataElement));
                         mySerializer.Serialize(myFileStream, newRobotVariantsConfig);
                     }
 

@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<topLevelAppDataElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <robot>
+    <applicationData>
+      <testClass>
+        <name>
+          <name>stringParameter</name>
+          <__units__ />
+          <type>String</type>
+          <value__>testClass</value__>
+        </name>
+        <aDouble>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value__>0</value__>
+        </aDouble>
+        <anotherDouble>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value__>0</value__>
+        </anotherDouble>
+        <aListOfDoubles />
+        <aListOfTunableDoubles />
+        <anInt>
+          <name>intParameter</name>
+          <__units__ />
+          <type>Int32</type>
+          <value__>0</value__>
+        </anInt>
+        <anotherInt>
+          <name>intParameter</name>
+          <__units__ />
+          <type>Int32</type>
+          <value__>0</value__>
+        </anotherInt>
+        <aListOfInts />
+        <aListOfTunableInts />
+        <aUint>
+          <name>uintParameter</name>
+          <__units__ />
+          <type>UInt32</type>
+          <value__>0</value__>
+        </aUint>
+        <anotherUint>
+          <name>uintParameter</name>
+          <__units__ />
+          <type>UInt32</type>
+          <value__>0</value__>
+        </anotherUint>
+        <aListOfUints />
+        <aListOfTunableUints />
+        <aBool>
+          <name>boolParameter</name>
+          <__units__ />
+          <type>Boolean</type>
+          <value__>false</value__>
+        </aBool>
+        <aTunableBool>
+          <name>boolParameter</name>
+          <__units__ />
+          <type>Boolean</type>
+          <value__>false</value__>
+        </aTunableBool>
+        <aListOfNonTunableBools />
+        <aListOfTunableBools />
+      </testClass>
+      <parameter />
+      <motor />
+      <pcm />
+      <pigeon />
+      <limelight />
+      <mechanismInstance />
+      <camera />
+      <roborio />
+    </applicationData>
+  </robot>
+  <mechanism />
+</topLevelAppDataElement>

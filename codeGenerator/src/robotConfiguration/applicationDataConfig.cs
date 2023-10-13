@@ -1,21 +1,21 @@
-﻿using System;
+﻿using ApplicationData;
+using DataConfiguration;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using System.Xml.Serialization;
-using System.IO;
-using Robot;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using System.Collections;
-using System.Runtime.Serialization.Formatters.Binary;
-using DataConfiguration;
 
-namespace robotConfiguration
+namespace applicationConfiguration
 {
-    public class robotConfig : baseDataConfiguration
+    public class applicationDataConfig : baseDataConfiguration
     {
-        public robotVariants theRobotVariants = new robotVariants();
+        public topLevelAppDataElement theRobotVariants = new topLevelAppDataElement();
 
         override public void load(string theRobotConfigFullPathFileName)
         {
@@ -26,7 +26,7 @@ namespace robotConfiguration
                 addProgress("Loading robot configuration " + theRobotConfigFullPathFileName);
                 theRobotVariants = loadRobotConfiguration(theRobotConfigFullPathFileName);
 
-                foreach (robot theRobot in theRobotVariants.robot)
+                foreach (applicationData theRobot in theRobotVariants.robot)
                 {
                     ValidationContext context = new ValidationContext(theRobot.pdp);
                     IList<ValidationResult> errors = new List<ValidationResult>();
@@ -64,14 +64,14 @@ namespace robotConfiguration
             }
         }
 
-        private robotVariants loadRobotConfiguration(string fullPathName)
+        private topLevelAppDataElement loadRobotConfiguration(string fullPathName)
         {
-            robotVariants theRobotVariants;
+            topLevelAppDataElement theRobotVariants;
 
-            var mySerializer = new XmlSerializer(typeof(robotVariants));
+            var mySerializer = new XmlSerializer(typeof(topLevelAppDataElement));
             using (var myFileStream = new FileStream(fullPathName, FileMode.Open))
             {
-                theRobotVariants = (robotVariants)mySerializer.Deserialize(myFileStream);
+                theRobotVariants = (topLevelAppDataElement)mySerializer.Deserialize(myFileStream);
             }
 
             for (int m = 0; m < theRobotVariants.mechanism.Count; m++)
@@ -104,7 +104,7 @@ namespace robotConfiguration
                     mechanism tempMech;
 
                     //ignore configuration files
-                    if (!tempFile.Contains("robotVariants") && !tempFile.Contains("toolConfiguration"))
+                    if (!tempFile.Contains("topLevelAppDataElement") && !tempFile.Contains("toolConfiguration"))
                     {
                         mySerializer = new XmlSerializer(typeof(mechanism));
 
@@ -125,14 +125,14 @@ namespace robotConfiguration
                 }
             }
 
-            foreach (robot theRobot in theRobotVariants.robot)
+            foreach (applicationData theRobot in theRobotVariants.robot)
             {
                 foreach (mechanismInstance mi in theRobot.mechanismInstance)
                 {
                     MergeMechanismParametersIntoStructure(loadMechanism(fullPathName, mi.mechanism.name), mi.mechanism);
                 }
 
-                utilities.initializeNullProperties(theRobot, true);
+                helperFunctions.initializeNullProperties(theRobot, true);
             }
 
 
@@ -334,7 +334,7 @@ namespace robotConfiguration
                 theRobotVariants.mechanism.Add(temp);
             }
 
-            var robotSerializer = new XmlSerializer(typeof(robotVariants));
+            var robotSerializer = new XmlSerializer(typeof(topLevelAppDataElement));
             XmlWriter tw = XmlWriter.Create(fullPathName, xmlWriterSettings);
             robotSerializer.Serialize(tw, theRobotVariants);
 

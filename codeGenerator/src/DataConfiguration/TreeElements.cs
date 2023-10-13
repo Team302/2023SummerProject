@@ -475,6 +475,31 @@ namespace DataConfiguration
                 //}
             }
         }
+    
+        public static void initializeNullProperties(object obj)
+        {
+            initializeNullProperties(obj, false);
+        }
+        public static void initializeNullProperties(object obj, bool recursive)
+        {
+            PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
+
+            for (int i = 0; i < propertyInfos.Length; i++)
+            {
+                PropertyInfo pi = propertyInfos[i];
+                if (pi.PropertyType != typeof(System.String))
+                {
+                    object theObj = pi.GetValue(obj);
+                    if (theObj == null)
+                    {
+                        theObj = Activator.CreateInstance(pi.PropertyType);
+                        pi.SetValue(obj, theObj);
+                        if (recursive)
+                            initializeNullProperties(theObj);
+                    }
+                }
+            }
+        }
     }
 }
 

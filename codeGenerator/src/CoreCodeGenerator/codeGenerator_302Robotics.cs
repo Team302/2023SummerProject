@@ -1,7 +1,7 @@
 ﻿using Configuration;
 using DataConfiguration;
-using Robot;
-using robotConfiguration;
+using ApplicationData;
+using applicationConfiguration;
 using System.Collections.Generic;
 using System.IO;
 
@@ -11,7 +11,7 @@ namespace CoreCodeGenerator
     {
         public enum MECHANISM_FILE_TYPE { MAIN, STATE, STATE_MGR }
 
-        private robotConfig theRobotConfiguration = new robotConfig();
+        private applicationDataConfig theRobotConfiguration = new applicationDataConfig();
         private toolConfiguration theToolConfiguration = new toolConfiguration();
 
         private string getTemplateFullPath(string templatePath)
@@ -29,7 +29,7 @@ namespace CoreCodeGenerator
             return File.ReadAllText(getTemplateFullPath(templatePath));
         }
 
-        public void generate(robotConfig theRobotConfig, toolConfiguration generatorConfig)
+        public void generate(applicationDataConfig theRobotConfig, toolConfiguration generatorConfig)
         {
             theRobotConfiguration = theRobotConfig;
             theToolConfiguration = generatorConfig;
@@ -58,7 +58,7 @@ namespace CoreCodeGenerator
             List<string> mechMainFiles = new List<string>();
             List<string> mechStateFiles = new List<string>();
             List<string> mechStateMgrFiles = new List<string>();
-            foreach (robot theRobot in theRobotConfiguration.theRobotVariants.robot)
+            foreach (applicationData theRobot in theRobotConfiguration.theRobotVariants.robot)
             {
                 /*
                 foreach (mechanism mech in theRobot.mechanism)
@@ -171,7 +171,7 @@ namespace CoreCodeGenerator
             string functionTemplate = "void Get#Definition();";
             string replacement = "";
 
-            foreach(robot bot in theRobotConfiguration.theRobotVariants.robot)
+            foreach(applicationData bot in theRobotConfiguration.theRobotVariants.robot)
             {
                 //this conditional makes sure the functions are on a new line after the first function
                 replacement += replacement != "" ? "\n" : "" + functionTemplate.Replace("#", bot.robotID.ToString());
@@ -231,7 +231,7 @@ namespace CoreCodeGenerator
             //# is robot id
             string caseTemplate = "\t\tcase #:\r\n\t\t\treturn Get#Definition();\n\t\t\tbreak;";
 
-            foreach (robot bot in theRobotConfiguration.theRobotVariants.robot)
+            foreach (applicationData bot in theRobotConfiguration.theRobotVariants.robot)
             {
                 //this conditional makes sure the functions are on a new line after the first function
                 replacement += (replacement != "" ? "\n" : "") + caseTemplate.Replace("#", bot.robotID.ToString());
@@ -248,7 +248,7 @@ namespace CoreCodeGenerator
             string functionFooter = "\r\n\r\n\treturn new RobotDefinition(components);\n}";
             string mechanismTemplate = "\r\n\r\n\tMechanism *MECH = TYPEBuilder::GetBuilder()->CreateNewTYPE(args);\r\n\tmechs.emplace_back(std::make_pair(RobotDefinitions::Components::TYPE, MECH));";
 
-            foreach (robot bot in theRobotConfiguration.theRobotVariants.robot)
+            foreach (applicationData bot in theRobotConfiguration.theRobotVariants.robot)
             {
                 replacement += (replacement != "" ? "\n\n" : "") + functionHeaderTemplate.Replace("#", bot.robotID.ToString());
                 replacement += vectorCreation;

@@ -1,14 +1,10 @@
+using Configuration;
+using DataConfiguration;
 using System;
-
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
-using System.Reflection;
-using Configuration;
-using System.Linq;
-using System.Xml.Linq;
-using DataConfiguration;
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -17,7 +13,7 @@ using DataConfiguration;
 // The attribute PhysicalUnitsFamily can only be applied on doubleParameter, uintParameter, intParameter, boolParameter
 // A class can only contain one List of a particular type
 
-namespace Robot
+namespace ApplicationData
 {
     #region enums
     [Serializable()]
@@ -378,7 +374,7 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class robot
+    public partial class applicationData
     {
         public testClass testClass { get; set; }
         public List<parameter> parameter { get; set; }
@@ -396,7 +392,7 @@ namespace Robot
         [RangeAttribute(typeof(uint), "1", "9999")]
         public uint robotID { get; set; }
 
-        public robot()
+        public applicationData()
         {
             testClass = new testClass();
             parameter = new List<parameter>();
@@ -633,7 +629,7 @@ namespace Robot
 
         public List<swervemodule> swervemodule { get; set; }
 
-        [DefaultValue(Robot.chassistype.TANK)]
+        [DefaultValue(ApplicationData.chassistype.TANK)]
         public chassistype type { get; set; }
 
         [TunableParameter()]
@@ -757,6 +753,9 @@ namespace Robot
     [Serializable()]
     public partial class mechanismInstance
     {
+        [XmlIgnore]
+        public object theTreeNode = null;
+
         public string name { get; set; }
 
         public mechanism mechanism { get; set; }
@@ -773,6 +772,13 @@ namespace Robot
     [Serializable()]
     public partial class mechanism
     {
+        [XmlIgnore]
+        public object theTreeNode = null;
+
+        public override string ToString()
+        {
+            return name;
+        }
 
         public List<state> state { get; set; }
         public List<motor> motor { get; set; }
@@ -913,7 +919,7 @@ namespace Robot
         [DefaultValue("0")]
         public string id { get; set; }
 
-        [DefaultValue(Robot.cameraformat.KMJPEG)]
+        [DefaultValue(ApplicationData.cameraformat.KMJPEG)]
         public cameraformat format { get; set; }
 
         [DefaultValue(640u)]
@@ -937,7 +943,7 @@ namespace Robot
     [Serializable()]
     public partial class roborio
     {
-        [DefaultValue(Robot.roborioorientation.X_FORWARD_Y_LEFT)]
+        [DefaultValue(ApplicationData.roborioorientation.X_FORWARD_Y_LEFT)]
         [TunableParameter()]
         public roborioorientation orientation { get; set; }
 
@@ -948,15 +954,15 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class robotVariants
+    public partial class topLevelAppDataElement
     {
-        public List<robot> robot { get; set; }
+        public List<applicationData> robot { get; set; }
 
         public List<mechanism> mechanism { get; set; }
 
-        public robotVariants()
+        public topLevelAppDataElement()
         {
-            robot = new List<robot>();
+            robot = new List<applicationData>();
             mechanism = new List<mechanism>();
 
             helperFunctions.initializeDefaultValues(this);
