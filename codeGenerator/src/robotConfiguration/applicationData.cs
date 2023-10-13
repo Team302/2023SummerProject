@@ -15,6 +15,164 @@ using System.Xml.Serialization;
 
 namespace ApplicationData
 {
+    [Serializable()]
+    public partial class topLevelAppDataElement
+    {
+        public List<applicationData> Robots { get; set; }
+
+        public List<mechanism> Mechanisms { get; set; }
+
+        public topLevelAppDataElement()
+        {
+            Robots = new List<applicationData>();
+            Mechanisms = new List<mechanism>();
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName()
+        {
+            return "robotBuildDefinition";
+        }
+    }
+
+    [Serializable()]
+    public partial class applicationData
+    {
+        public testClass testClass { get; set; }
+        public List<parameter> parameter { get; set; }
+        public List<motor> motor { get; set; }
+        public List<pcm> pcm { get; set; }
+        public pdp pdp { get; set; }
+        public List<pigeon> pigeon { get; set; }
+        public List<limelight> limelight { get; set; }
+        public chassis chassis { get; set; }
+        public List<mechanismInstance> mechanismInstance { get; set; }
+        public List<camera> camera { get; set; }
+        public List<roborio> roborio { get; set; }
+
+        [DefaultValueAttribute(1u)]
+        [RangeAttribute(typeof(uint), "1", "9999")]
+        public uint robotID { get; set; }
+
+        public applicationData()
+        {
+            testClass = new testClass();
+            parameter = new List<parameter>();
+            motor = new List<motor>();
+            pcm = new List<pcm>();
+            pigeon = new List<pigeon>();
+            limelight = new List<limelight>();
+            mechanismInstance = new List<mechanismInstance>();
+            camera = new List<camera>();
+            roborio = new List<roborio>();
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (string.IsNullOrEmpty(propertyName))
+                return string.Format("Robot #{0}", robotID);
+            else if (propertyName == "testClass")
+                return string.Format("{0} ({1}))", propertyName, testClass.name);
+            else if (propertyName == "pdp")
+                return string.Format("{0} ({1})", propertyName, pdp.type);
+
+            return "robot class - incomplete getDisplayName";
+        }
+    }
+
+    [Serializable()]
+    public partial class mechanism
+    {
+        [XmlIgnore]
+        public object theTreeNode = null;
+
+        public stringParameter name { get; set; }
+
+        public override string ToString()
+        {
+            return name.value__;
+        }
+        public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
+        public List<motor> motor { get; set; }
+
+
+        public List<state> state { get; set; }
+        public List<solenoid> solenoid { get; set; }
+        public List<servo> servo { get; set; }
+        public List<analogInput> analogInput { get; set; }
+        public List<digitalInput> digitalInput { get; set; }
+        public List<cancoder> cancoder { get; set; }
+        public colorsensor colorsensor { get; set; }
+
+        public mechanism()
+        {
+            helperFunctions.initializeNullProperties(this);
+
+            name.value__ = GetType().Name;
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName()
+        {
+            return string.Format("{0}", name.value__);
+        }
+    }
+
+    [Serializable()]
+    public partial class closedLoopControlParameters
+    {
+        public stringParameter name { get; set; }
+
+        [DefaultValue(0D)]
+        [System.ComponentModel.Description("The proportional gain of the PID controller.")]
+        [TunableParameter()]
+        public doubleParameter pGain { get; set; }
+
+        [DefaultValue(0D)]
+        [System.ComponentModel.Description("The integral gain of the PID controller.")]
+        [TunableParameter()]
+        public doubleParameter iGain { get; set; }
+
+        [DefaultValue(0D)]
+        [System.ComponentModel.Description("The differential gain of the PID controller.")]
+        [TunableParameter()]
+        public doubleParameter dGain { get; set; }
+
+        [DefaultValue(0D)]
+        [System.ComponentModel.Description("The feed forward gain of the PID controller.")]
+        [TunableParameter()]
+        public doubleParameter fGain { get; set; }
+
+        [DefaultValue(0D)]
+        [TunableParameter()]
+        public doubleParameter iZone { get; set; }
+
+        public closedLoopControlParameters()
+        {
+            helperFunctions.initializeNullProperties(this);
+
+            name.value__ = GetType().Name;
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName()
+        {
+            return string.Format("{0}", name.value__);
+        }
+    }
+
+
+
+
+
+
     #region enums
     [Serializable()]
     public enum CAN_BUS
@@ -284,9 +442,8 @@ namespace ApplicationData
 
         public motor()
         {
-            motorType = new stringParameter();
-            name = new stringParameter();
-            CAN_ID = new uintParameter();
+            helperFunctions.initializeNullProperties(this);
+
             string temp = this.GetType().Name;
             motorType.value__ = temp.Substring(0, temp.LastIndexOf('_'));
             name.value__ = motorType.value__;
@@ -402,54 +559,7 @@ namespace ApplicationData
         }
     }
 
-    [Serializable()]
-    public partial class applicationData
-    {
-        public testClass testClass { get; set; }
-        public List<parameter> parameter { get; set; }
-        public List<motor> motor { get; set; }
-        public List<pcm> pcm { get; set; }
-        public pdp pdp { get; set; }
-        public List<pigeon> pigeon { get; set; }
-        public List<limelight> limelight { get; set; }
-        public chassis chassis { get; set; }
-        public List<mechanismInstance> mechanismInstance { get; set; }
-        public List<camera> camera { get; set; }
-        public List<roborio> roborio { get; set; }
 
-        [DefaultValueAttribute(1u)]
-        [RangeAttribute(typeof(uint), "1", "9999")]
-        public uint robotID { get; set; }
-
-        public applicationData()
-        {
-            testClass = new testClass();
-            parameter = new List<parameter>();
-            motor = new List<motor>();
-            pcm = new List<pcm>();
-            pigeon = new List<pigeon>();
-            limelight = new List<limelight>();
-            mechanismInstance = new List<mechanismInstance>();
-            camera = new List<camera>();
-            roborio = new List<roborio>();
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-
-        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
-        {
-            refresh = helperFunctions.RefreshLevel.none;
-
-            if (string.IsNullOrEmpty(propertyName))
-                return string.Format("Robot #{0}", robotID);
-            else if (propertyName == "testClass")
-                return string.Format("{0} ({1}))", propertyName, testClass.name);
-            else if (propertyName == "pdp")
-                return string.Format("{0} ({1})", propertyName, pdp.type);
-
-            return "robot class - incomplete getDisplayName";
-        }
-    }
 
     [Serializable()]
     public class controlData
@@ -798,45 +908,6 @@ namespace ApplicationData
     }
 
 
-    [Serializable()]
-    public partial class mechanism
-    {
-        [XmlIgnore]
-        public object theTreeNode = null;
-
-        public override string ToString()
-        {
-            return name;
-        }
-
-        public List<state> state { get; set; }
-        public List<motor> motor { get; set; }
-        public List<solenoid> solenoid { get; set; }
-        public List<servo> servo { get; set; }
-        public List<analogInput> analogInput { get; set; }
-        public List<digitalInput> digitalInput { get; set; }
-        public List<cancoder> cancoder { get; set; }
-        public colorsensor colorsensor { get; set; }
-        public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
-        public string name { get; set; }
-
-        public mechanism()
-        {
-            name = GetType().Name;
-
-            state = new List<state>();
-            motor = new List<motor>();
-            solenoid = new List<solenoid>();
-            servo = new List<servo>();
-            analogInput = new List<analogInput>();
-            digitalInput = new List<digitalInput>();
-            cancoder = new List<cancoder>();
-            closedLoopControlParameters = new List<closedLoopControlParameters>();
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
-
 
     [Serializable()]
     public partial class solenoid
@@ -904,42 +975,6 @@ namespace ApplicationData
         }
     }
 
-    [Serializable()]
-    public partial class closedLoopControlParameters
-    {
-        public string name { get; set; }
-
-        [DefaultValue(0D)]
-        [System.ComponentModel.Description("The proportional gain of the PID controller.")]
-        [TunableParameter()]
-        public double pGain { get; set; }
-
-        [DefaultValue(0D)]
-        [System.ComponentModel.Description("The integral gain of the PID controller.")]
-        [TunableParameter()]
-        public double iGain { get; set; }
-
-        [DefaultValue(0D)]
-        [System.ComponentModel.Description("The differential gain of the PID controller.")]
-        [TunableParameter()]
-        public double dGain { get; set; }
-
-        [DefaultValue(0D)]
-        [System.ComponentModel.Description("The feed forward gain of the PID controller.")]
-        [TunableParameter()]
-        public double fGain { get; set; }
-
-        [DefaultValue(0D)]
-        [TunableParameter()]
-        public double iZone { get; set; }
-
-        public closedLoopControlParameters()
-        {
-            name = GetType().Name;
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
 
 
     [Serializable()]
@@ -982,26 +1017,7 @@ namespace ApplicationData
         }
     }
 
-    [Serializable()]
-    public partial class topLevelAppDataElement
-    {
-        public List<applicationData> robot { get; set; }
 
-        public List<mechanism> mechanism { get; set; }
-
-        public topLevelAppDataElement()
-        {
-            robot = new List<applicationData>();
-            mechanism = new List<mechanism>();
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-
-        public string getDisplayName()
-        {
-            return "robotVariants";
-        }
-    }
 
 
     [Serializable()]

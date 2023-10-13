@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topLevelAppDataElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Robots />
+  <Mechanisms>
+    <mechanism>
+      <name>
+        <name>stringParameter</name>
+        <__units__ />
+        <type>String</type>
+        <value__>myMechanism</value__>
+      </name>
+      <closedLoopControlParameters />
+      <motor />
+      <state />
+      <solenoid />
+      <servo />
+      <analogInput />
+      <digitalInput />
+      <cancoder />
+      <colorsensor />
+    </mechanism>
+  </Mechanisms>
+</topLevelAppDataElement>

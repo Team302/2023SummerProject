@@ -1,31 +1,21 @@
-﻿using Configuration;
+﻿using applicationConfiguration;
+using ApplicationData;
+using Configuration;
 using CoreCodeGenerator;
-using applicationConfiguration;
+using DataConfiguration;
+using NetworkTablesUtils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using ApplicationData;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Web;
-using System.Drawing;
-using System.Deployment.Application;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Eventing.Reader;
-using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel;
-using NetworkTablesUtils;
-using DataConfiguration;
 
 namespace FRCrobotCodeGen302
 {
@@ -340,7 +330,7 @@ namespace FRCrobotCodeGen302
         {
             robotTreeView.Nodes.Clear();
             AddNode(null, theApplicationDataConfig.theRobotVariants, "Robot Variant");
-            if (theApplicationDataConfig.theRobotVariants.robot.Count > 0)
+            if (theApplicationDataConfig.theRobotVariants.Robots.Count > 0)
                 robotTreeView.Nodes[0].Expand();
         }
 
@@ -678,7 +668,7 @@ namespace FRCrobotCodeGen302
                         // Add the defined mechanisms as choices to add to a robot variant
                         if (elementType.Equals((new mechanismInstance()).GetType()))
                         {
-                            foreach (mechanism m in theAppDataConfiguration.theRobotVariants.mechanism)
+                            foreach (mechanism m in theAppDataConfiguration.theRobotVariants.Mechanisms)
                             {
                                 robotElementType ret = new robotElementType(m.GetType(), m);
 
@@ -1338,8 +1328,8 @@ namespace FRCrobotCodeGen302
                             object obj = Activator.CreateInstance(elementType);
 
                             // then add it to the collection
-                            nonLeafNodeTag.getType(lastSelectedArrayNode.Tag).GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
-                            int count = (int)nonLeafNodeTag.getType(lastSelectedArrayNode.Tag).GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+                            nonLeafNodeTag.getType(lastSelectedArrayNode.Tag).GetMethod("Add").Invoke(nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag), new object[] { obj });
+                            int count = (int)nonLeafNodeTag.getType(lastSelectedArrayNode.Tag).GetProperty("Count").GetValue(nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag));
 
                             try
                             {
@@ -1357,8 +1347,8 @@ namespace FRCrobotCodeGen302
                         object obj = Activator.CreateInstance(elementType);
 
                         // then add it to the collection
-                        nonLeafNodeTag.getType(lastSelectedArrayNode.Tag).GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
-                        int count = (int)nonLeafNodeTag.getType(lastSelectedArrayNode.Tag).GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+                        nonLeafNodeTag.getType(lastSelectedArrayNode.Tag).GetMethod("Add").Invoke(nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag), new object[] { obj });
+                        int count = (int)nonLeafNodeTag.getType(lastSelectedArrayNode.Tag).GetProperty("Count").GetValue(nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag));
 
                         try
                         {
@@ -1381,7 +1371,7 @@ namespace FRCrobotCodeGen302
 
         void updateMechInstancesFromMechTemplate(mechanism theMechanism)
         {
-            foreach (applicationData r in theAppDataConfiguration.theRobotVariants.robot)
+            foreach (applicationData r in theAppDataConfiguration.theRobotVariants.Robots)
             {
                 foreach (mechanismInstance mi in r.mechanismInstance)
                 {
@@ -1394,7 +1384,7 @@ namespace FRCrobotCodeGen302
                         ((TreeNode)mi.mechanism.theTreeNode).Remove();
 
                         mi.mechanism = m;
-                        mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name);
+                        mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name.value__);
                     }
                 }
             }
@@ -1518,11 +1508,11 @@ namespace FRCrobotCodeGen302
                             if (isPartOfAMechanismTemplate(tn, out theMechanism))
                                 updateMechanismInstances = true;
 
-                            parent.Tag.GetType().GetMethod("Remove").Invoke(nonLeafNodeTag.getObject(parent.Tag), new object[] { theObjectToDelete });
+                            nonLeafNodeTag.getObject(parent.Tag).GetType().GetMethod("Remove").Invoke(nonLeafNodeTag.getObject(parent.Tag), new object[] { theObjectToDelete });
                             tn.Remove();
                             setNeedsSaving();
 
-                            if ((int)parent.Tag.GetType().GetProperty("Count").GetValue(nonLeafNodeTag.getObject(parent.Tag)) == 0)
+                            if ((int)nonLeafNodeTag.getObject(parent.Tag).GetType().GetProperty("Count").GetValue(nonLeafNodeTag.getObject(parent.Tag)) == 0)
                             {
                                 parent.Remove();
                             }
@@ -1782,7 +1772,7 @@ namespace FRCrobotCodeGen302
         public robotElementType(Type t, mechanism m)
         {
             this.t = t;
-            this.name = m.name;
+            this.name = m.name.value__;
             theObject = m;
         }
 

@@ -58,7 +58,7 @@ namespace CoreCodeGenerator
             List<string> mechMainFiles = new List<string>();
             List<string> mechStateFiles = new List<string>();
             List<string> mechStateMgrFiles = new List<string>();
-            foreach (applicationData theRobot in theRobotConfiguration.theRobotVariants.robot)
+            foreach (applicationData theRobot in theRobotConfiguration.theRobotVariants.Robots)
             {
                 /*
                 foreach (mechanism mech in theRobot.mechanism)
@@ -171,7 +171,7 @@ namespace CoreCodeGenerator
             string functionTemplate = "void Get#Definition();";
             string replacement = "";
 
-            foreach(applicationData bot in theRobotConfiguration.theRobotVariants.robot)
+            foreach(applicationData bot in theRobotConfiguration.theRobotVariants.Robots)
             {
                 //this conditional makes sure the functions are on a new line after the first function
                 replacement += replacement != "" ? "\n" : "" + functionTemplate.Replace("#", bot.robotID.ToString());
@@ -183,7 +183,7 @@ namespace CoreCodeGenerator
             #region Components Enum
             replacement = "";
             
-            foreach(mechanism mech in theRobotConfiguration.theRobotVariants.mechanism)
+            foreach(mechanism mech in theRobotConfiguration.theRobotVariants.Mechanisms)
             {
                 //this conditional makes sure the functions are on a new line after the first function
                 replacement += (replacement != "" ? "\n\t" : "") + mech.name + ",";
@@ -213,11 +213,11 @@ namespace CoreCodeGenerator
             #region Includes
             replacement = "";
 
-            foreach (mechanism mech in theRobotConfiguration.theRobotVariants.mechanism)
+            foreach (mechanism mech in theRobotConfiguration.theRobotVariants.Mechanisms)
             {
                 /// NOTE: We probably don't need to include mechanism and builder because builder should already have the mechanism included
                 //string mechIncludeString = "#include <" + getIncludePath(mech.name) + "/" + mech.name + ".h>";
-                string builderIncludeString = "#include <" + getIncludePath(mech.name) + "/" + mech.name + "Builder.h>";
+                string builderIncludeString = "#include <" + getIncludePath(mech.name.value__) + "/" + mech.name + "Builder.h>";
                 replacement += (replacement != "" ? "\n" : "") + builderIncludeString;
             }
 
@@ -231,7 +231,7 @@ namespace CoreCodeGenerator
             //# is robot id
             string caseTemplate = "\t\tcase #:\r\n\t\t\treturn Get#Definition();\n\t\t\tbreak;";
 
-            foreach (applicationData bot in theRobotConfiguration.theRobotVariants.robot)
+            foreach (applicationData bot in theRobotConfiguration.theRobotVariants.Robots)
             {
                 //this conditional makes sure the functions are on a new line after the first function
                 replacement += (replacement != "" ? "\n" : "") + caseTemplate.Replace("#", bot.robotID.ToString());
@@ -248,14 +248,14 @@ namespace CoreCodeGenerator
             string functionFooter = "\r\n\r\n\treturn new RobotDefinition(components);\n}";
             string mechanismTemplate = "\r\n\r\n\tMechanism *MECH = TYPEBuilder::GetBuilder()->CreateNewTYPE(args);\r\n\tmechs.emplace_back(std::make_pair(RobotDefinitions::Components::TYPE, MECH));";
 
-            foreach (applicationData bot in theRobotConfiguration.theRobotVariants.robot)
+            foreach (applicationData bot in theRobotConfiguration.theRobotVariants.Robots)
             {
                 replacement += (replacement != "" ? "\n\n" : "") + functionHeaderTemplate.Replace("#", bot.robotID.ToString());
                 replacement += vectorCreation;
 
                 foreach(mechanismInstance mechInstance in bot.mechanismInstance)
                 {
-                    replacement += mechanismTemplate.Replace("MECH", mechInstance.name).Replace("TYPE", mechInstance.mechanism.name);
+                    replacement += mechanismTemplate.Replace("MECH", mechInstance.name).Replace("TYPE", mechInstance.mechanism.name.value__);
                 }
 
                 //end with function footer

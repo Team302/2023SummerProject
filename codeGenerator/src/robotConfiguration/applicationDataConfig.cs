@@ -75,15 +75,15 @@ namespace applicationConfiguration
                 theRobotVariants = (topLevelAppDataElement)mySerializer.Deserialize(myFileStream);
             }
 
-            for (int m = 0; m < theRobotVariants.mechanism.Count; m++)
+            for (int m = 0; m < theRobotVariants.Mechanisms.Count; m++)
             {
-                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), theRobotVariants.mechanism[m].name + ".xml");
+                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), theRobotVariants.Mechanisms[m].name.value__ + ".xml");
 
                 addProgress("Loading mechanism configuration " + mechanismFullPath);
                 mySerializer = new XmlSerializer(typeof(mechanism));
                 using (var myFileStream = new FileStream(mechanismFullPath, FileMode.Open))
                 {
-                    theRobotVariants.mechanism[m] = (mechanism)mySerializer.Deserialize(myFileStream);
+                    theRobotVariants.Mechanisms[m] = (mechanism)mySerializer.Deserialize(myFileStream);
                 }
             }
 
@@ -91,7 +91,7 @@ namespace applicationConfiguration
             string[] files = Directory.GetFiles(Path.GetDirectoryName(fullPathName), "*.xml");
             foreach (string file in files)
             {
-                if (theRobotVariants.mechanism.Any(p => p.name == Path.GetFileNameWithoutExtension(file)))
+                if (theRobotVariants.Mechanisms.Any(p => p.name.value__ == Path.GetFileNameWithoutExtension(file)))
                 {
                     //if we have previously loaded the mechanism, don't load it again
                     continue;
@@ -115,22 +115,22 @@ namespace applicationConfiguration
                         }
 
                         //if we have two versions of a mechanism with the same name, append a number to the end of the newest one
-                        int numberOfSameNamedMechs = theRobotVariants.mechanism.Where(p => p.name == tempMech.name).Count();
+                        int numberOfSameNamedMechs = theRobotVariants.Mechanisms.Where(p => p.name.value__ == tempMech.name.value__).Count();
                         if (numberOfSameNamedMechs > 0)
                         {
-                            tempMech.name += numberOfSameNamedMechs;
+                            tempMech.name.value__ += numberOfSameNamedMechs;
                         }
 
-                        theRobotVariants.mechanism.Add(tempMech);
+                        theRobotVariants.Mechanisms.Add(tempMech);
                     }
                 }
             }
 
-            foreach (applicationData theRobot in theRobotVariants.robot)
+            foreach (applicationData theRobot in theRobotVariants.Robots)
             {
                 foreach (mechanismInstance mi in theRobot.mechanismInstance)
                 {
-                    MergeMechanismParametersIntoStructure(loadMechanism(fullPathName, mi.mechanism.name), mi.mechanism);
+                    MergeMechanismParametersIntoStructure(loadMechanism(fullPathName, mi.mechanism.name.value__), mi.mechanism);
                 }
 
                 helperFunctions.initializeNullProperties(theRobot, true);
@@ -299,9 +299,9 @@ namespace applicationConfiguration
             xmlWriterSettings.Indent = true;
 
 
-            foreach (mechanism mech in theRobotVariants.mechanism)
+            foreach (mechanism mech in theRobotVariants.Mechanisms)
             {
-                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
+                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name.value__ + ".xml");
 
                 addProgress("Writing mechanism file " + mechanismFullPath);
                 try
@@ -323,16 +323,16 @@ namespace applicationConfiguration
             // so that the mechanism xml is blank in the robot config file...will not lead to conflicts when  multiple people change
             // different mechanisms. Restore the list after saving to xml
             List<mechanism> tempList = new List<mechanism>();
-            foreach (mechanism mech in theRobotVariants.mechanism)
+            foreach (mechanism mech in theRobotVariants.Mechanisms)
                 tempList.Add(mech);
 
-            theRobotVariants.mechanism.Clear();
+            theRobotVariants.Mechanisms.Clear();
 
             foreach (mechanism mech in tempList)
             {
                 mechanism temp = new mechanism();
                 temp.name = mech.name;
-                theRobotVariants.mechanism.Add(temp);
+                theRobotVariants.Mechanisms.Add(temp);
             }
 
             var robotSerializer = new XmlSerializer(typeof(topLevelAppDataElement));
@@ -341,11 +341,11 @@ namespace applicationConfiguration
 
             tw.Close();
 
-            theRobotVariants.mechanism.Clear();
+            theRobotVariants.Mechanisms.Clear();
 
             foreach (mechanism mech in tempList)
             {
-                theRobotVariants.mechanism.Add(mech);
+                theRobotVariants.Mechanisms.Add(mech);
             }
         }
     }
