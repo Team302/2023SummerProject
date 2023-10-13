@@ -353,6 +353,35 @@ namespace ApplicationData
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     [Serializable()]
     public partial class CAN_ID
     {

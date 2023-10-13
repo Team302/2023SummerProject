@@ -191,7 +191,6 @@ namespace FRCrobotCodeGen302
             this.robotConfigurationFileComboBox.Name = "robotConfigurationFileComboBox";
             this.robotConfigurationFileComboBox.Size = new System.Drawing.Size(456, 24);
             this.robotConfigurationFileComboBox.TabIndex = 8;
-            this.robotConfigurationFileComboBox.SelectedIndexChanged += new System.EventHandler(this.robotConfigurationFileComboBox_SelectedIndexChanged);
             this.robotConfigurationFileComboBox.TextChanged += new System.EventHandler(this.robotConfigurationFileComboBox_TextChanged);
             // 
             // createNewRobotVariantsConfigButton

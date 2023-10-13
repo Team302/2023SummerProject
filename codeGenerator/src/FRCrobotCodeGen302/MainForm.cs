@@ -32,7 +32,7 @@ namespace FRCrobotCodeGen302
     public partial class MainForm : Form
     {
         toolConfiguration generatorConfig = new toolConfiguration();
-        applicationDataConfig theRobotConfiguration = new applicationDataConfig();
+        applicationDataConfig theAppDataConfiguration = new applicationDataConfig();
         codeGenerator_302Robotics codeGenerator = new codeGenerator_302Robotics();
         NTViewer viewer;
         bool needsSaving = false;
@@ -72,7 +72,7 @@ namespace FRCrobotCodeGen302
             }
 
             codeGenerator.setProgressCallback(addProgress);
-            theRobotConfiguration.setProgressCallback(addProgress);
+            theAppDataConfiguration.setProgressCallback(addProgress);
             clearNeedsSaving();
 
             splitContainer1.SplitterDistance = splitContainer1.Width - 180;
@@ -122,104 +122,6 @@ namespace FRCrobotCodeGen302
         {
             progressTextBox.AppendText(info + Environment.NewLine);
         }
-
-        private string getTreeNodeDisplayNameForNonLeafNode(object parentObject, object obj, string nodeName)
-        {
-            if (parentObject == null)
-            {
-
-            }
-            else if (DataConfiguration.baseDataConfiguration.isACollection(obj))
-            {
-                if (!nodeName.EndsWith("s"))
-                    nodeName += "s";
-            }
-            else
-            {
-                Type objType = obj.GetType();
-                PropertyInfo[] properties = objType.GetProperties();
-
-                string nodeValueString = "";
-                if ((properties.Length == 0) || (objType.FullName == "System.String") || (objType.FullName == "System.DateTime"))
-                {
-                    if (parentObject != null)
-                    {
-                        PropertyInfo prop = parentObject.GetType().GetProperty(nodeName, BindingFlags.Public | BindingFlags.Instance);
-                        object value = null;
-                        if (null != prop)
-                        {
-                            value = prop.GetValue(parentObject);
-                            nodeValueString = value.ToString();
-                        }
-                    }
-                }
-                //else if (isATunableParameterType(objType.FullName) || isAParameterType(objType.FullName))
-                //{
-                //    object value = null;
-                //    value = properties[0].GetValue(obj);
-                //    nodeValueString = value.ToString();
-                //}
-                else
-                {
-                    nodeName = "";
-                    foreach (string s in generatorConfig.treeviewParentNameExtensions)
-                    {
-                        PropertyInfo propertyInfo = properties.ToList().Find(p => p.Name == s);
-                        if (propertyInfo != null)
-                        {
-                            if (propertyInfo.Name == "pwmId")
-                            {
-                                nodeName += "ID: " + propertyInfo.GetValue(obj).ToString() + ", ";
-                            }
-                            else if (propertyInfo.Name == "canId")
-                            {
-                                //if ((propertyInfo.GetValue(obj) as Robot.CAN_ID) != null)
-                                //    nodeName += "ID: " + (propertyInfo.GetValue(obj) as Robot.CAN_ID).value__.ToString() + ", ";
-                            }
-                            else
-                            {
-                                if (propertyInfo.GetValue(obj) != null)
-                                {
-                                    nodeName += propertyInfo.GetValue(obj).ToString() + ", ";
-                                    break;
-                                }
-                                else
-                                    nodeName += "UNKOWN, ";
-                            }
-                        }
-                    }
-
-                    nodeName = nodeName.Trim();
-                    nodeName = nodeName.Trim(',');
-                    nodeName = nodeName.Trim();
-                }
-
-                if (String.IsNullOrEmpty(nodeName))
-                    nodeName = objType.Name;
-
-                if (objType == typeof(applicationData))
-                {
-                    applicationData tempBot = (applicationData)obj;
-                    nodeName = "Robot #" + tempBot.robotID;
-                }
-
-                nodeName = getTreeNodeDisplayName(nodeValueString, nodeName);
-            }
-
-            return nodeName;
-        }
-        private string getTreeNodeDisplayName(string nodeValueString, string nodeName)
-        {
-            nodeValueString = nodeValueString.Trim();
-            nodeValueString = nodeValueString.Trim(',');
-            nodeValueString = nodeValueString.Trim();
-
-            if (!string.IsNullOrEmpty(nodeValueString))
-                nodeName += " (" + nodeValueString + ")";
-
-            return nodeName;
-        }
-
 
         private TreeNode AddNode(TreeNode parent, object obj, string nodeName)
         {
@@ -398,23 +300,6 @@ namespace FRCrobotCodeGen302
             return instanceName + " (" + obj.ToString() + ")";
         }
 
-        private string getNonLeafNameModifier(object obj, PropertyInfo[] propertyInfos)
-        {
-            foreach (string s in generatorConfig.treeviewParentNameExtensions)
-            {
-                PropertyInfo propertyInfo = propertyInfos.ToList().Find(p => p.Name == s);
-                if (propertyInfo != null)
-                {
-                    if (propertyInfo.GetValue(obj) != null)
-                    {
-                        return propertyInfo.GetValue(obj).ToString();
-                    }
-                }
-            }
-
-            return "";
-        }
-
         private static physicalUnit.Family GetTheUnitsFamilyName(TreeNode parent, object obj, string originalNodeName)
         {
             physicalUnit.Family unitsFamily = physicalUnit.Family.unitless;
@@ -451,11 +336,11 @@ namespace FRCrobotCodeGen302
             return unitsAsString;
         }
 
-        private void populateTree(applicationDataConfig myRobot)
+        private void populateTree(applicationDataConfig theApplicationDataConfig)
         {
             robotTreeView.Nodes.Clear();
-            AddNode(null, myRobot.theRobotVariants, "Robot Variant");
-            if (myRobot.theRobotVariants.robot.Count > 0)
+            AddNode(null, theApplicationDataConfig.theRobotVariants, "Robot Variant");
+            if (theApplicationDataConfig.theRobotVariants.robot.Count > 0)
                 robotTreeView.Nodes[0].Expand();
         }
 
@@ -463,7 +348,7 @@ namespace FRCrobotCodeGen302
         {
             try
             {
-                generatorConfig = (toolConfiguration)generatorConfig.deserialize(configurationFullPathName);
+                generatorConfig = generatorConfig.deserialize(configurationFullPathName);
                 if (generatorConfig.robotConfigurations.Count == 0)
                 {
                     generatorConfig.robotConfigurations = new List<string>();
@@ -493,25 +378,12 @@ namespace FRCrobotCodeGen302
         {
             try
             {
-                codeGenerator.generate(theRobotConfiguration, generatorConfig);
+                codeGenerator.generate(theAppDataConfiguration, generatorConfig);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Something went wrong. See below. \r\n\r\n" + ex.Message, "Code generator error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-
-            // Construct an instance of the XmlSerializer with the type
-            // of object that is being deserialized.
-            var mySerializer = new XmlSerializer(typeof(applicationData));
-            // To read the file, create a FileStream.
-            var myFileStream = new FileStream(@"C:\GitRepos\2023SummerProject\codeGenerator\src\robotExample.xml", FileMode.Create);
-            applicationData myRobot = new applicationData();
-            // Call the Deserialize method and cast to the object type.
-            mySerializer.Serialize(myFileStream, myRobot);
         }
 
         private void configurationBrowseButton_Click(object sender, EventArgs e)
@@ -579,8 +451,8 @@ namespace FRCrobotCodeGen302
 
                     try
                     {
-                        theRobotConfiguration.collectionBaseTypes = generatorConfig.collectionBaseTypes;
-                        theRobotConfiguration.load(generatorConfig.robotConfiguration);
+                        theAppDataConfiguration.collectionBaseTypes = generatorConfig.collectionBaseTypes;
+                        theAppDataConfiguration.load(generatorConfig.robotConfiguration);
                     }
                     catch (Exception ex)
                     {
@@ -590,7 +462,7 @@ namespace FRCrobotCodeGen302
                     try
                     {
                         addProgress("Populating the robot configuration tree view.");
-                        populateTree(theRobotConfiguration);
+                        populateTree(theAppDataConfiguration);
                         addProgress("... Tree view populated.");
                     }
                     catch (Exception ex)
@@ -633,7 +505,7 @@ namespace FRCrobotCodeGen302
             else
                 obj = null;
 
-            if (theRobotConfiguration.isASubClassedCollection(obj))
+            if (theAppDataConfiguration.isASubClassedCollection(obj))
             {
                 Type elementType = obj.GetType().GetGenericArguments().Single();
                 List<Type> subTypes = Assembly.GetAssembly(elementType).GetTypes().Where(t => t.BaseType == elementType).ToList();
@@ -646,7 +518,7 @@ namespace FRCrobotCodeGen302
 
                 foreach (PropertyInfo propertyInfo in propertyInfos)
                 {
-                    if (theRobotConfiguration.isASubClassedCollection(propertyInfo.PropertyType))
+                    if (theAppDataConfiguration.isASubClassedCollection(propertyInfo.PropertyType))
                     {
                         ICollection ic = propertyInfo.GetValue(obj) as ICollection;
                         if (ic.Count == 0)
@@ -806,7 +678,7 @@ namespace FRCrobotCodeGen302
                         // Add the defined mechanisms as choices to add to a robot variant
                         if (elementType.Equals((new mechanismInstance()).GetType()))
                         {
-                            foreach (mechanism m in theRobotConfiguration.theRobotVariants.mechanism)
+                            foreach (mechanism m in theAppDataConfiguration.theRobotVariants.mechanism)
                             {
                                 robotElementType ret = new robotElementType(m.GetType(), m);
 
@@ -836,7 +708,7 @@ namespace FRCrobotCodeGen302
                 {
                     // do nothing
                 }   */
-                else if (e.Node.GetNodeCount(false) == 0)
+                else if ( (e.Node.GetNodeCount(false) == 0) && (e.Node.Parent != null))
                 {
                     lastSelectedValueNode = e.Node;
 
@@ -1307,7 +1179,7 @@ namespace FRCrobotCodeGen302
         {
             try
             {
-                theRobotConfiguration.save(generatorConfig.robotConfiguration);
+                theAppDataConfiguration.save(generatorConfig.robotConfiguration);
                 //MessageBox.Show("File saved");
                 addProgress("File saved");
                 clearNeedsSaving();
@@ -1331,7 +1203,7 @@ namespace FRCrobotCodeGen302
 
                     string name = "";
                     bool addToCollection = true;
-                    if (theRobotConfiguration.isDerivedFromGenericClass(((robotElementType)robotElementObj).t))
+                    if (theAppDataConfiguration.isDerivedFromGenericClass(((robotElementType)robotElementObj).t))
                     {
                         obj = Activator.CreateInstance(((robotElementType)robotElementObj).t);
 
@@ -1457,7 +1329,7 @@ namespace FRCrobotCodeGen302
                 {
                     // first create a new instance
 
-                    if (theRobotConfiguration.isASubClassedCollection(nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag).GetType()))
+                    if (theAppDataConfiguration.isASubClassedCollection(nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag).GetType()))
                     {
                         foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems)
                         {
@@ -1509,7 +1381,7 @@ namespace FRCrobotCodeGen302
 
         void updateMechInstancesFromMechTemplate(mechanism theMechanism)
         {
-            foreach (applicationData r in theRobotConfiguration.theRobotVariants.robot)
+            foreach (applicationData r in theAppDataConfiguration.theRobotVariants.robot)
             {
                 foreach (mechanismInstance mi in r.mechanismInstance)
                 {
@@ -1517,7 +1389,7 @@ namespace FRCrobotCodeGen302
                     {
                         mechanism m = applicationDataConfig.DeepClone(theMechanism);
 
-                        theRobotConfiguration.MergeMechanismParametersIntoStructure(m, mi.mechanism);
+                        theAppDataConfiguration.MergeMechanismParametersIntoStructure(m, mi.mechanism);
 
                         ((TreeNode)mi.mechanism.theTreeNode).Remove();
 
@@ -1587,48 +1459,6 @@ namespace FRCrobotCodeGen302
             }
 
             return false;
-        }
-
-        public static DialogResult InputBox(string title, string promptText, ref string value)
-        {
-            Form form = new Form();
-            Label label = new Label();
-            TextBox textBox = new TextBox();
-            Button buttonOk = new Button();
-            Button buttonCancel = new Button();
-
-            form.Text = title;
-            label.Text = promptText;
-            textBox.Text = value;
-
-            buttonOk.Text = "OK";
-            buttonCancel.Text = "Cancel";
-            buttonOk.DialogResult = DialogResult.OK;
-            buttonCancel.DialogResult = DialogResult.Cancel;
-
-            label.SetBounds(9, 20, 372, 13);
-            textBox.SetBounds(12, 36, 372, 20);
-            buttonOk.SetBounds(228, 72, 75, 23);
-            buttonCancel.SetBounds(309, 72, 75, 23);
-
-            label.AutoSize = true;
-            textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
-            buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-            form.ClientSize = new Size(396, 107);
-            form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
-            form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
-            form.FormBorderStyle = FormBorderStyle.FixedDialog;
-            form.StartPosition = FormStartPosition.CenterScreen;
-            form.MinimizeBox = false;
-            form.MaximizeBox = false;
-            form.AcceptButton = buttonOk;
-            form.CancelButton = buttonCancel;
-
-            DialogResult dialogResult = form.ShowDialog();
-            value = textBox.Text;
-            return dialogResult;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -1706,11 +1536,6 @@ namespace FRCrobotCodeGen302
             }
         }
 
-        private void robotConfigurationFileComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void createNewRobotVariantsConfigButton_Click(object sender, EventArgs e)
         {
             try
@@ -1735,7 +1560,6 @@ namespace FRCrobotCodeGen302
                     using (var myFileStream = new FileStream(dlg.FileName, FileMode.Create))
                     {
                         topLevelAppDataElement newRobotVariantsConfig = new topLevelAppDataElement();
-                        newRobotVariantsConfig.robot.Add(new applicationData());
 
                         var mySerializer = new XmlSerializer(typeof(topLevelAppDataElement));
                         mySerializer.Serialize(myFileStream, newRobotVariantsConfig);
