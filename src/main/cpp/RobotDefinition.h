@@ -21,23 +21,25 @@
 #include <any>
 #include <map>
 
-// Team 302 Includes
-#include <RobotDefinitions.h>
-
 class RobotDefinition
 {
+
 public:
+    enum Components
+    {
+    };
+
     /// strings will be used instead of mechanism and sensor parents classes until those are created
     // RobotDefinition(std::vector<Mechanism> mechs, std::vector<Sensor> sensors);
-    RobotDefinition(std::vector<std::pair<RobotDefinitions::Components, std::string>> components);
+    RobotDefinition(std::vector<std::pair<Components, std::string>> components);
     ~RobotDefinition() = default;
 
     /// NOTE: May create a component class to use instead of std::any
     /// @brief Get a component (mechanism, sensor, solenoid, etc.) from a robot definition
     /// @param component Which component to get from a definition
     /// @return Returns the specfied component
-    std::any GetComponent(RobotDefinitions::Components component) { return m_componentMap[component]; };
+    std::any GetComponent(Components component) { return m_componentMap[component]; };
 
 private:
-    std::map<RobotDefinitions::Components, std::any> m_componentMap;
+    std::map<Components, std::string> m_componentMap;
 };

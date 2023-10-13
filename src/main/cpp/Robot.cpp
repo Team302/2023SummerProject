@@ -29,7 +29,7 @@
 #include <utils/logging/LoggerEnums.h>
 #include <utils/WaypointXmlParser.h>
 #include <utils/BuildDetailsReader.h>
-#include <RobotDefinition.h>
+#include <RobotDefinitions.h>
 
 #include <AdjustableItemMgr.h>
 #include <mechanisms/SomeMech/SomeMech.h>
