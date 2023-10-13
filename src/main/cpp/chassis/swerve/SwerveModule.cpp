@@ -31,8 +31,8 @@
 #include "units/velocity.h"
 
 // Team 302 includes
-#include <chassis/PoseEstimatorEnum.h>
-#include <chassis/swerve/SwerveChassis.h>
+#include "chassis/PoseEstimatorEnum.h"
+#include "chassis/swerve/SwerveChassis.h"
 #include <chassis/swerve/SwerveModule.h>
 #include <hw/DragonCanCoder.h>
 #include "mechanisms/controllers/ControlData.h"

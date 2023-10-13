@@ -26,7 +26,6 @@
 #include <auton/drivePrimitives/IPrimitive.h>
 #include "configs/RobotConfig.h"
 #include "configs/RobotConfigMgr.h"
-#include <hw/factories/PigeonFactory.h>
 #include "utils/logging/Logger.h"
 #include <DragonVision/DragonVision.h>
 
@@ -43,9 +42,6 @@ void ResetPosition::Init(PrimitiveParams *params)
 {
 
     m_trajectory = DragonTrajectoryUtils::GetTrajectory(params);
-
-    // auto pigeon = PigeonFactory::GetFactory()->GetCenterPigeon();
-    //  pigeon->ReZeroPigeon(m_trajectory.InitialPose().Rotation().Degrees().to<double>());
 
     m_chassis->ResetPose(m_trajectory.InitialPose());
 

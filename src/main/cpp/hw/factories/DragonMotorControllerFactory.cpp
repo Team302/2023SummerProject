@@ -6,7 +6,7 @@
 #include "configs/usages/MotorControllerUsage.h"
 #include "hw/DistanceAngleCalcStruc.h"
 #include <hw/DragonTalonSRX.h>
-#include <hw/DragonFalcon.h>
+#include <hw/DragonTalonFX.h>
 #include "utils/logging/Logger.h"
 
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
@@ -113,7 +113,7 @@ shared_ptr<IDragonMotorController> DragonMotorControllerFactory::CreateMotorCont
     /**
     else if (type == MOTOR_TYPE::FALCON)
     {
-        auto talon = new DragonFalcon(networkTableName, MotorControllerUsage::GetInstance()->GetUsage(usage), canID, canBusName, pdpID, calsStruc, motorType);
+        auto talon = new DragonTalonFX(networkTableName, MotorControllerUsage::GetInstance()->GetUsage(usage), canID, canBusName, pdpID, calsStruc, motorType);
         talon->EnableBrakeMode(brakeMode);
         talon->Invert(inverted);
         talon->ConfigSelectedFeedbackSensor(feedbackDevice, 0, 50);

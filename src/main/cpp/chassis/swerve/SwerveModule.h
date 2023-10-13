@@ -36,9 +36,9 @@
 #include <units/voltage.h>
 
 // Team 302 Includes
-#include <chassis/PoseEstimatorEnum.h>
+#include "chassis/PoseEstimatorEnum.h"
 #include <hw/DragonCanCoder.h>
-#include <hw/DragonFalcon.h>
+#include <hw/DragonTalonFX.h>
 #include "hw/interfaces/IDragonMotorController.h"
 #include "mechanisms/controllers/ControlData.h"
 

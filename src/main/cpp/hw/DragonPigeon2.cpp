@@ -1,3 +1,4 @@
+
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -13,49 +14,49 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#pragma once
-
-// C++ Includes
-#include <map>
+#include <hw/DragonPigeon2.h>
 #include <memory>
-#include <string>
 
-// FRC includes
+using ctre::phoenixpro::configs::Pigeon2Configuration;
+using ctre::phoenixpro::hardware::Pigeon2;
+using std::string;
 
-// Team 302 includes
-
-// Third Party Includes
-
-class CanCoderUsage
+DragonPigeon2::DragonPigeon2(int canID,
+                             string canBusName,
+                             CanSensorUsage::CANSENSOR_USAGE usage,
+                             units::angle::degree_t initialYaw,
+                             units::angle::degree_t initialPitch,
+                             units::angle::degree_t initialRoll) : m_pigeon(Pigeon2(canID, canBusName)),
+                                                                   m_usage(usage)
 {
+    m_pigeon.Reset();
+    Pigeon2Configuration configs{};
+    m_pigeon.GetConfigurator().Refresh(configs);
+    configs.MountPose.MountPoseYaw = initialYaw.to<double>();
+    configs.MountPose.MountPosePitch = initialPitch.to<double>();
+    configs.MountPose.MountPoseRoll = initialRoll.to<double>();
+    m_pigeon.GetConfigurator().Apply(configs);
+}
 
-public:
-	/// @enum CANCODER_USAGE
-	/// @brief Defines CanCoder usages.  This should be modified for each robot.
-	enum CANCODER_USAGE
-	{
-		UNKNOWN_CANCODER_USAGE = -1,
+units::angle::degree_t DragonPigeon2::GetPitch()
+{
+    auto sig = m_pigeon.GetPitch();
+    return sig.GetValue();
+}
 
-		LEFT_FRONT_SWERVE_ANGLE,
-		RIGHT_FRONT_SWERVE_ANGLE,
-		LEFT_BACK_SWERVE_ANGLE,
-		RIGHT_BACK_SWERVE_ANGLE,
-		ARM_ANGLE,
+units::angle::degree_t DragonPigeon2::GetRoll()
+{
+    auto sig = m_pigeon.GetRoll();
+    return sig.GetValue();
+}
 
-		EXAMPLE_CANCODER,
+units::angle::degree_t DragonPigeon2::GetYaw()
+{
+    auto sig = m_pigeon.GetYaw();
+    return sig.GetValue();
+}
 
-		MAX_CANCODER_USAGES
-	};
-
-	static CanCoderUsage *GetInstance();
-
-	CANCODER_USAGE GetUsage(std::string usageString);
-	std::string GetUsage(CANCODER_USAGE usate);
-
-private:
-	static CanCoderUsage *m_instance;
-	CanCoderUsage();
-	~CanCoderUsage();
-
-	std::map<std::string, CANCODER_USAGE> m_usageMap;
-};
+void DragonPigeon2::ReZeroPigeon(units::angle::degree_t angle, int timeoutMs)
+{
+    m_pigeon.SetYaw(angle);
+}

@@ -27,7 +27,7 @@ namespace frc
     class ChassisSpeeds;
 }
 
-class DragonPigeon;
+class IDragonPigeon;
 
 class FieldDriveUtils
 {
@@ -39,7 +39,6 @@ public:
     /// @param [in] ChassisSpeeds the desired kinemetics of the chassis in a field oriented frame
     /// @param [in] DragonPigeon gyro which has the angle the robot is facing
     /// @returns ChassisSpeeds the converted speeds in the robot frame
-    static frc::ChassisSpeeds ConvertFieldOrientedToRobot(
-        frc::ChassisSpeeds input,
-        DragonPigeon *pigeon);
+    static frc::ChassisSpeeds ConvertFieldOrientedToRobot(frc::ChassisSpeeds input,
+                                                          IDragonPigeon *pigeon);
 };

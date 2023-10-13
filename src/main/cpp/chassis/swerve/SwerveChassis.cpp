@@ -37,8 +37,8 @@
 #include <frc/kinematics/SwerveDriveKinematics.h>
 
 // Team 302 includes
-#include <chassis/PoseEstimatorEnum.h>
-#include <chassis/swerve/SwerveChassis.h>
+#include "chassis/PoseEstimatorEnum.h"
+#include "chassis/swerve/SwerveChassis.h"
 
 #include <chassis/swerve/driveStates/AutoBalanceDrive.h>
 #include <chassis/swerve/driveStates/FieldDrive.h>
@@ -57,6 +57,10 @@
 #include <chassis/swerve/headingStates/MaintainHeading.h>
 #include <chassis/swerve/headingStates/SpecifiedHeading.h>
 #include <chassis/swerve/headingStates/IgnoreHeading.h>
+
+#include "configs/RobotConfigMgr.h"
+#include "configs/RobotConfig.h"
+#include "configs/usages/CanSensorUsage.h"
 
 #include <DragonVision/DragonLimelight.h>
 #include <DragonVision/LimelightFactory.h>
@@ -119,7 +123,7 @@ SwerveChassis::SwerveChassis(
                                m_maxAngularSpeed(maxAngularSpeed),
                                m_maxAcceleration(maxAcceleration),               // Not used at the moment
                                m_maxAngularAcceleration(maxAngularAcceleration), // Not used at the moment
-                               m_pigeon(PigeonFactory::GetFactory()->GetPigeon(DragonPigeon::PIGEON_USAGE::CENTER_OF_ROBOT)),
+                               m_pigeon(RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(CanSensorUsage::CANSENSOR_USAGE::PIGEON_ROBOT_CENTER)),
                                m_accel(BuiltInAccelerometer()),
                                m_runWPI(false),
                                m_poseOpt(PoseEstimatorEnum::WPI),
@@ -300,8 +304,7 @@ Pose2d SwerveChassis::GetPose() const
 
 units::angle::degree_t SwerveChassis::GetYaw() const
 {
-    units::degree_t yaw{m_pigeon->GetYaw()};
-    return yaw;
+    return m_pigeon->GetYaw();
 }
 
 units::angle::degree_t SwerveChassis::GetPitch() const
@@ -319,8 +322,7 @@ units::angle::degree_t SwerveChassis::GetRoll() const
 /// @brief update the chassis odometry based on current states of the swerve modules and the pigeon
 void SwerveChassis::UpdateOdometry()
 {
-    units::degree_t yaw{m_pigeon->GetYaw()};
-    Rotation2d rot2d{yaw};
+    Rotation2d rot2d{m_pigeon->GetYaw()};
 
     m_poseEstimator.Update(rot2d, wpi::array<frc::SwerveModulePosition, 4>{m_frontLeft->GetPosition(),
                                                                            m_frontRight->GetPosition(),
@@ -358,8 +360,7 @@ ChassisSpeeds SwerveChassis::GetChassisSpeeds() const
 
 void SwerveChassis::ResetPose(const Pose2d &pose)
 {
-    units::degree_t yaw{m_pigeon->GetYaw()};
-    Rotation2d rot2d{yaw};
+    Rotation2d rot2d{m_pigeon->GetYaw()};
 
     SetEncodersToZero();
 
@@ -370,18 +371,17 @@ void SwerveChassis::ResetPose(const Pose2d &pose)
 
 void SwerveChassis::ResetYaw()
 {
-    units::degree_t yaw{m_pigeon->GetYaw()};
-    Rotation2d rot2d{yaw};
+    Rotation2d rot2d{m_pigeon->GetYaw()};
 
     frc::DriverStation::Alliance alliance = FMSData::GetInstance()->GetAllianceColor();
 
     if (alliance == frc::DriverStation::Alliance::kBlue)
     {
-        m_pigeon->ReZeroPigeon(0.0, 0.0);
+        m_pigeon->ReZeroPigeon(units::angle::degree_t(0.0), 0.0);
     }
     else
     {
-        m_pigeon->ReZeroPigeon(180.0, 0.0);
+        m_pigeon->ReZeroPigeon(units::angle::degree_t(180.0), 0.0);
     }
 
     ZeroAlignSwerveModules();
@@ -392,7 +392,7 @@ ChassisSpeeds SwerveChassis::GetFieldRelativeSpeeds(
     units::meters_per_second_t ySpeed,
     units::radians_per_second_t rot)
 {
-    units::angle::radian_t yaw(ConversionUtils::DegreesToRadians(m_pigeon->GetYaw()));
+    units::angle::radian_t yaw(m_pigeon->GetYaw());
     auto temp = xSpeed * cos(yaw.to<double>()) + ySpeed * sin(yaw.to<double>());
     auto strafe = -1.0 * xSpeed * sin(yaw.to<double>()) + ySpeed * cos(yaw.to<double>());
     auto forward = temp;

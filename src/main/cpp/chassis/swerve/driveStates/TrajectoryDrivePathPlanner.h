@@ -20,7 +20,7 @@
 
 // Team302 Includes
 #include <chassis/swerve/driveStates/RobotDrive.h>
-#include <chassis/swerve/SwerveChassis.h>
+#include "chassis/swerve/SwerveChassis.h"
 
 // Third party includes
 #include <pathplanner/lib/PathPlannerTrajectory.h>

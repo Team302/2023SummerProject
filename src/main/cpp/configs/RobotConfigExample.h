@@ -16,7 +16,7 @@
 
 #pragma once
 #include "configs/RobotConfig.h"
-#include "hw/DragonFalcon.h"
+#include "hw/DragonTalonFX.h"
 #include "mechanisms/example/decoratormods/Example.h"
 
 class RobotConfigExample : public RobotConfig
@@ -27,7 +27,7 @@ public:
 
 protected:
     // actuators
-    void DefineMotors() override;
+    void DefineMotorControllers() override;
     void DefineSolenoids() override;
 
     // sensors
@@ -37,8 +37,8 @@ protected:
     void DefineMechanisms() override;
 
 private:
-    DragonFalcon *m_motor1 = nullptr;
-    DragonFalcon *m_motor2 = nullptr;
+    DragonTalonFX *m_motor1 = nullptr;
+    DragonTalonFX *m_motor2 = nullptr;
     DragonCanCoder *m_cancoder = nullptr;
     Example *m_example = nullptr;
 };

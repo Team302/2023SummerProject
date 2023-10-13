@@ -13,6 +13,8 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
+#pragma once
+
 // C++ Includes
 #include <map>
 #include <memory>
@@ -21,59 +23,41 @@
 // FRC includes
 
 // Team 302 includes
-#include "configs/usages/CanCoderUsage.h"
-#include "utils/logging/Logger.h"
 
 // Third Party Includes
 
-using namespace std;
-
-CanCoderUsage *CanCoderUsage::m_instance = nullptr;
-CanCoderUsage *CanCoderUsage::GetInstance()
+class CanSensorUsage
 {
-	if (m_instance == nullptr)
+
+public:
+	/// @enum CANSENSOR_USAGE
+	/// @brief Defines CanCoder usages.  This should be modified for each robot.
+	enum CANSENSOR_USAGE
 	{
-		m_instance = new CanCoderUsage();
-	}
-	return m_instance;
-}
+		UNKNOWN_CANSENSOR_USAGE = -1,
 
-CanCoderUsage::CanCoderUsage()
-{
+		LEFT_FRONT_SWERVE_ANGLE,
+		RIGHT_FRONT_SWERVE_ANGLE,
+		LEFT_BACK_SWERVE_ANGLE,
+		RIGHT_BACK_SWERVE_ANGLE,
+		ARM_ANGLE,
 
-	m_usageMap["LEFT_FRONT_SWERVE_ANGLE"] = CANCODER_USAGE::LEFT_FRONT_SWERVE_ANGLE;
-	m_usageMap["RIGHT_FRONT_SWERVE_ANGLE"] = CANCODER_USAGE::RIGHT_FRONT_SWERVE_ANGLE;
-	m_usageMap["LEFT_BACK_SWERVE_ANGLE"] = CANCODER_USAGE::LEFT_BACK_SWERVE_ANGLE;
-	m_usageMap["RIGHT_BACK_SWERVE_ANGLE"] = CANCODER_USAGE::RIGHT_BACK_SWERVE_ANGLE;
-	m_usageMap["ARM_ANGLE"] = CANCODER_USAGE::ARM_ANGLE;
-	m_usageMap["EXAMPLE_CANCODER"] = CANCODER_USAGE::EXAMPLE_CANCODER;
-}
+		PIGEON_ROBOT_CENTER,
 
-CanCoderUsage::~CanCoderUsage()
-{
-	m_usageMap.clear();
-}
+		EXAMPLE_CANCODER,
 
-CanCoderUsage::CANCODER_USAGE CanCoderUsage::GetUsage(
-	string usageString)
-{
-	auto it = m_usageMap.find(usageString);
-	if (it != m_usageMap.end())
-	{
-		return it->second;
-	}
-	Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("CanCoderUsage::GetUsage"), string("unknown usage"), usageString);
-	return CanCoderUsage::CANCODER_USAGE::UNKNOWN_CANCODER_USAGE;
-}
+		MAX_CANSENSOR_USAGES
+	};
 
-std::string CanCoderUsage::GetUsage(CanCoderUsage::CANCODER_USAGE usage)
-{
-	for (auto thisUsage : m_usageMap)
-	{
-		if (thisUsage.second == usage)
-		{
-			return thisUsage.first;
-		}
-	}
-	return string("");
-}
+	static CanSensorUsage *GetInstance();
+
+	CANSENSOR_USAGE GetUsage(std::string usageString);
+	std::string GetUsage(CANSENSOR_USAGE usate);
+
+private:
+	static CanSensorUsage *m_instance;
+	CanSensorUsage();
+	~CanSensorUsage();
+
+	std::map<std::string, CANSENSOR_USAGE> m_usageMap;
+};

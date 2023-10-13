@@ -29,7 +29,7 @@
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <frc/kinematics/SwerveModuleState.h>
 
-#include <units/acceleration.h>
+#include "units/acceleration.h"
 #include "units/angle.h"
 #include <units/angular_acceleration.h>
 #include "units/angular_velocity.h"
@@ -41,12 +41,11 @@
 #include <chassis/swerve/driveStates/ISwerveDriveState.h>
 #include <chassis/swerve/headingStates/ISwerveDriveOrientation.h>
 #include <chassis/IChassis.h>
-#include <chassis/PoseEstimatorEnum.h>
+#include "chassis/PoseEstimatorEnum.h"
 #include <chassis/swerve/SwerveModule.h>
 #include <chassis/ChassisMovement.h>
 #include <DragonVision/DragonVision.h>
-#include <hw/DragonPigeon.h>
-#include <hw/factories/PigeonFactory.h>
+#include "hw/interfaces/IDragonPigeon.h"
 
 class RobotDrive;
 
@@ -176,7 +175,7 @@ private:
     units::acceleration::meters_per_second_squared_t m_maxAcceleration;
     units::angular_acceleration::radians_per_second_squared_t m_maxAngularAcceleration;
 
-    DragonPigeon *m_pigeon;
+    IDragonPigeon *m_pigeon;
     frc::BuiltInAccelerometer m_accel;
     bool m_runWPI;
     PoseEstimatorEnum m_poseOpt;

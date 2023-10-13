@@ -29,8 +29,12 @@
 
 #include <chassis/holonomic/FieldDriveUtils.h>
 #include <chassis/ChassisMovement.h>
-#include <hw/factories/PigeonFactory.h>
-#include <hw/DragonPigeon.h>
+#include <hw/interfaces/IDragonPigeon.h>
+
+#include "configs/RobotConfigMgr.h"
+#include "configs/RobotConfig.h"
+#include "configs/usages/CanSensorUsage.h"
+
 #include "utils/ConversionUtils.h"
 #include "utils/logging/Logger.h"
 
@@ -58,7 +62,7 @@ MecanumChassis::MecanumChassis(
                                m_leftBackMotor(leftBackMotor),
                                m_rightFrontMotor(rightFrontMotor),
                                m_rightBackMotor(rightBackMotor),
-                               m_pigeon(PigeonFactory::GetFactory()->GetPigeon(DragonPigeon::PIGEON_USAGE::CENTER_OF_ROBOT)),
+                               m_pigeon(RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(CanSensorUsage::CANSENSOR_USAGE::PIGEON_ROBOT_CENTER)),
                                m_maxSpeed(maxSpeed),
                                m_maxAngSpeed(maxAngSpeed),
                                m_wheelDiameter(wheelDiameter),

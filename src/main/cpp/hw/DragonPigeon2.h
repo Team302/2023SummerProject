@@ -1,3 +1,4 @@
+
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -12,50 +13,32 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
-#pragma once
 
-// C++ Includes
+#pragma once
 #include <memory>
 
-// Team302 Includes
-#include <auton/PrimitiveParams.h>
-#include <auton/drivePrimitives/IPrimitive.h>
-#include "configs/RobotConfig.h"
-#include "configs/RobotConfigMgr.h"
-#include "chassis/swerve/SwerveChassis.h"
-#include <chassis/ChassisOptionEnums.h>
-#include <DragonVision/DragonVision.h>
+#include "ctre/phoenixpro/Pigeon2.hpp"
+#include "configs/usages/CanSensorUsage.h"
+#include "hw/interfaces/IDragonPigeon.h"
 
-// FRC,WPI Includes
-#include <frc/controller/HolonomicDriveController.h>
-#include <frc/controller/RamseteController.h>
-#include <frc/Filesystem.h>
-#include <frc/geometry/Pose2d.h>
-#include <frc/trajectory/TrajectoryConfig.h>
-#include <frc/trajectory/TrajectoryUtil.h>
-#include <wpi/SmallString.h>
-#include <frc/Timer.h>
-
-class VisionDrivePrimitive : public IPrimitive
+class DragonPigeon2 : public IDragonPigeon
 {
 public:
-    VisionDrivePrimitive();
+    DragonPigeon2(int canID,
+                  std::string canBusName,
+                  CanSensorUsage::CANSENSOR_USAGE usage,
+                  units::angle::degree_t initialYaw,
+                  units::angle::degree_t initialPitch,
+                  units::angle::degree_t initialRoll);
+    DragonPigeon2() = delete;
+    virtual ~DragonPigeon2() = default;
 
-    virtual ~VisionDrivePrimitive() = default;
-
-    void Init(PrimitiveParams *params) override;
-    void Run() override;
-    bool IsDone() override;
+    units::angle::degree_t GetPitch() override;
+    units::angle::degree_t GetRoll() override;
+    units::angle::degree_t GetYaw() override;
+    void ReZeroPigeon(units::angle::degree_t angle, int timeoutMs = 0) override;
 
 private:
-    SwerveChassis *m_chassis;
-    VisionDrive *m_visionDrive;
-    ChassisOptionEnums::HeadingOption m_headingOption;
-    std::string m_ntName;
-    DragonLimelight::PIPELINE_MODE m_pipelineMode;
-
-    frc::Timer *m_timer;
-    float m_timeout;
-
-    DragonVision *m_dragonVision;
+    ctre::phoenixpro::hardware::Pigeon2 m_pigeon;
+    CanSensorUsage::CANSENSOR_USAGE m_usage;
 };

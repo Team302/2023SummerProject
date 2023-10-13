@@ -27,8 +27,8 @@
 #include <auton/drivePrimitives/DragonTrajectoryUtils.h>
 #include <chassis/ChassisMovement.h>
 #include <chassis/ChassisOptionEnums.h>
-#include "configs/RobotConfig.h"
 #include "configs/RobotConfigMgr.h"
+#include "configs/RobotConfig.h"
 #include <chassis/IChassis.h>
 #include "utils/logging/Logger.h"
 #include <chassis/swerve/driveStates/TrajectoryDrivePathPlanner.h>

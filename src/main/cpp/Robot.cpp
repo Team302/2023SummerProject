@@ -11,7 +11,7 @@
 #include <auton/AutonPreviewer.h>
 #include <auton/CyclePrimitives.h>
 #include <chassis/holonomic/HolonomicDrive.h>
-#include <chassis/swerve/SwerveChassis.h>
+#include "chassis/swerve/SwerveChassis.h"
 #include <chassis/mecanum/MecanumChassis.h>
 #include "configs/RobotConfig.h"
 #include "configs/RobotConfigMgr.h"
@@ -33,7 +33,10 @@
 #include <mechanisms/SomeMech/SomeMech.h>
 
 /// DEBUGGING
-#include <hw/factories/PigeonFactory.h>
+
+#include "configs/RobotConfigMgr.h"
+#include "configs/RobotConfig.h"
+#include "configs/usages/CanSensorUsage.h"
 
 /* How to check robot variant
 #if ROBOT_VARIANT == 2024
@@ -166,16 +169,16 @@ void Robot::RobotPeriodic()
         feedback->UpdateFeedback();
     }
 
-    auto pigeon = PigeonFactory::GetFactory()->GetCenterPigeon();
+    auto pigeon = RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(CanSensorUsage::CANSENSOR_USAGE::PIGEON_ROBOT_CENTER);
     if (pigeon == nullptr)
     {
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("DEUBGGING"), string("Pigeon Nullptr?"), "true");
     }
     else
     {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Yaw"), pigeon->GetYaw());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Pitch"), pigeon->GetPitch());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Roll"), pigeon->GetRoll());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Yaw"), pigeon->GetYaw().to<double>());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Pitch"), pigeon->GetPitch().to<double>());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Roll"), pigeon->GetRoll().to<double>());
     }
 }
 

@@ -16,10 +16,10 @@
 #include <string>
 
 #include "configs/RobotConfigExample.h"
-#include "configs/usages/CanCoderUsage.h"
+#include "configs/usages/CanSensorUsage.h"
 #include "configs/usages/MotorControllerUsage.h"
 #include "hw/DragonCanCoder.h"
-#include "hw/DragonFalcon.h"
+#include "hw/DragonTalonFX.h"
 #include "mechanisms/example/decoratormods/Example.h"
 #include "mechanisms/example/generated/ExampleGen.h"
 
@@ -27,10 +27,10 @@ constexpr char canBusName[] = "Canivore";
 
 using std::string;
 
-void RobotConfigExample::DefineMotors()
+void RobotConfigExample::DefineMotorControllers()
 {
 
-    m_motor1 = new DragonFalcon(string("ExampleMech_Motor1"),
+    m_motor1 = new DragonTalonFX(string("ExampleMech_Motor1"),
                                 MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR1,
                                 1,
                                 string(canBusName),
@@ -45,7 +45,7 @@ void RobotConfigExample::DefineMotors()
                                   ctre::phoenixpro::signals::NeutralModeValue::Brake,
                                   0.01, -1, 1);
 
-    m_motor2 = new DragonFalcon(string("ExampleMech_Motor2"),
+    m_motor2 = new DragonTalonFX(string("ExampleMech_Motor2"),
                                 MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR2,
                                 2,
                                 string(canBusName),
@@ -78,7 +78,7 @@ void RobotConfigExample::DefineMechanisms()
 void RobotConfigExample::DefineCANSensors()
 {
     m_cancoder = new DragonCanCoder(string("ExampleMech_Motor1"),
-                                    CanCoderUsage::CANCODER_USAGE::EXAMPLE_CANCODER,
+                                    CanSensorUsage::CANSENSOR_USAGE::EXAMPLE_CANCODER,
                                     0,
                                     string(canBusName),
                                     35.0,

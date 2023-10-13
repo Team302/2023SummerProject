@@ -28,14 +28,12 @@
 #include <chassis/ChassisOptionEnums.h>
 #include <chassis/holonomic/HolonomicDrive.h>
 #include <chassis/IChassis.h>
-#include <hw/DragonPigeon.h>
 #include <gamepad/IDragonGamePad.h>
 #include "teleopcontrol/TeleopControl.h"
 #include <teleopcontrol/TeleopControlFunctions.h>
 #include "State.h"
 #include "configs/RobotConfig.h"
 #include "configs/RobotConfigMgr.h"
-#include <hw/factories/PigeonFactory.h>
 #include "utils/logging/Logger.h"
 #include <chassis/swerve/driveStates/DragonTrajectoryGenerator.h>
 #include <utils/DragonField.h>

@@ -18,7 +18,7 @@
 
 // Team302 Includes
 #include <chassis/swerve/driveStates/AutoBalanceDrive.h>
-#include <chassis/swerve/SwerveChassis.h>
+#include "chassis/swerve/SwerveChassis.h"
 #include "configs/RobotConfig.h"
 #include "configs/RobotConfigMgr.h"
 

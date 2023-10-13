@@ -20,7 +20,7 @@
 
 // Team 302 Includes
 #include <chassis/holonomic/FieldDriveUtils.h>
-#include <hw/DragonPigeon.h>
+#include "hw/interfaces/IDragonPigeon.h"
 #include "utils/ConversionUtils.h"
 
 // frc Includes
@@ -34,16 +34,14 @@ using namespace frc;
 /// @param [in] ChassisSpeeds the desired kinemetics of the chassis in a field oriented frame
 /// @param [in] DragonPigeon gyro which has the angle the robot is facing
 /// @returns ChassisSpeeds the converted speeds in the robot frame
-ChassisSpeeds FieldDriveUtils::ConvertFieldOrientedToRobot(
-    ChassisSpeeds input,
-    DragonPigeon *pigeon)
+ChassisSpeeds FieldDriveUtils::ConvertFieldOrientedToRobot(ChassisSpeeds input,
+                                                           IDragonPigeon *pigeon)
 {
-    auto heading = pigeon != nullptr ? pigeon->GetYaw() : 0.0;
-    heading = ConversionUtils::DegreesToRadians(heading);
+    auto heading = pigeon != nullptr ? pigeon->GetYaw() : units::angle::degree_t(0.0);
 
     ChassisSpeeds output;
-    output.vx = input.vx * cos(heading) - input.vy * sin(heading);
-    output.vy = input.vx * sin(heading) + input.vy * cos(heading);
+    output.vx = input.vx * cos(heading.to<double>()) - input.vy * sin(heading.to<double>());
+    output.vy = input.vx * sin(heading.to<double>()) + input.vy * cos(heading.to<double>());
     output.omega = input.omega;
 
     return output;

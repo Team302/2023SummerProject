@@ -27,14 +27,14 @@
 
 #include "configs/usages/MotorControllerUsage.h"
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/DragonFalcon.h"
+#include "hw/DragonTalonFX.h"
 #include "hw/interfaces/IDragonMotorController.h"
 
 class FalconBuilder
 {
 public:
     FalconBuilder() = default;
-    // FalconBuilder(DragonFalcon* existingFalcon);
+    // FalconBuilder(DragonTalonFX* existingFalcon);
     ~FalconBuilder() = default;
 
     void SetNetworkTableName(std::string networkTableName);
@@ -71,7 +71,7 @@ public:
 
     bool IsValid() const;
 
-    DragonFalcon *Commit();
+    DragonTalonFX *Commit();
 
 private:
     bool m_voltageSet = false;

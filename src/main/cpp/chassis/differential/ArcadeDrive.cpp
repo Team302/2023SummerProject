@@ -31,7 +31,6 @@
 #include "State.h"
 #include "configs/RobotConfig.h"
 #include "configs/RobotConfigMgr.h"
-#include <hw/factories/PigeonFactory.h>
 #include "utils/logging/Logger.h"
 
 using namespace std;

@@ -29,7 +29,7 @@ void RobotConfig::BuildRobot()
     DefineCANSensors();
     DefineI2CSensors();
     DefinePWMIO();
-    DefineMotors();
+    DefineMotorControllers();
     DefineSolenoids();
     DefineServos();
 
@@ -45,7 +45,7 @@ void RobotConfig::DefineBuiltInControlItems()
 {
 }
 
-void RobotConfig::DefineMotors()
+void RobotConfig::DefineMotorControllers()
 {
 }
 
@@ -101,6 +101,31 @@ MecanumChassis *RobotConfig::GetMecanumChassis() const
     return nullptr;
 }
 IChassis *RobotConfig::GetIChassis() const
+{
+    return nullptr;
+}
+
+IDragonMotorController *RobotConfig::GetMotorController(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage)
+{
+    return nullptr;
+}
+
+DragonSolenoid *RobotConfig::GetSolenoid(SolenoidUsage::SOLENOID_USAGE usage)
+{
+    return nullptr;
+}
+
+DragonServo *RobotConfig::GetServo(ServoUsage::SERVO_USAGE usage)
+{
+    return nullptr;
+}
+
+DragonCanCoder *RobotConfig::GetCanCoder(CanSensorUsage::CANSENSOR_USAGE usage)
+{
+    return nullptr;
+}
+
+IDragonPigeon *RobotConfig::GetPigeon(CanSensorUsage::CANSENSOR_USAGE usage)
 {
     return nullptr;
 }

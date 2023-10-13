@@ -21,6 +21,20 @@
 #include "chassis/mecanum/MecanumChassis.h"
 #include "chassis/IChassis.h"
 
+#include "configs/usages/CanSensorUsage.h"
+#include "configs/usages/DigitalInputUsage.h"
+#include "configs/usages/MotorControllerUsage.h"
+#include "configs/usages/ServoUsage.h"
+#include "configs/usages/SolenoidUsage.h"
+
+#include "hw/interfaces/IDragonMotorController.h"
+#include "hw/interfaces/IDragonPigeon.h"
+#include "hw/DragonAnalogInput.h"
+#include "hw/DragonCanCoder.h"
+#include "hw/DragonDigitalInput.h"
+#include "hw/DragonServo.h"
+#include "hw/DragonSolenoid.h"
+
 class RobotConfig
 {
 public:
@@ -34,13 +48,20 @@ public:
     virtual MecanumChassis *GetMecanumChassis() const;
     virtual IChassis *GetIChassis() const;
 
+    virtual IDragonMotorController *GetMotorController(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage);
+    virtual DragonSolenoid *GetSolenoid(SolenoidUsage::SOLENOID_USAGE usage);
+    virtual DragonServo *GetServo(ServoUsage::SERVO_USAGE usage);
+
+    virtual DragonCanCoder *GetCanCoder(CanSensorUsage::CANSENSOR_USAGE usage);
+    virtual IDragonPigeon *GetPigeon(CanSensorUsage::CANSENSOR_USAGE usage);
+
     // TODO:  add methods to access mechanisms and hardware as necessary
 
 protected:
     virtual void DefineBuiltInControlItems();
 
     // actuators
-    virtual void DefineMotors();
+    virtual void DefineMotorControllers();
     virtual void DefineSolenoids();
     virtual void DefineServos();
 

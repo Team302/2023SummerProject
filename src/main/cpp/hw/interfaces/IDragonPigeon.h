@@ -16,36 +16,16 @@
 
 #pragma once
 
-#include <hw/DragonPigeon.h>
+#include "units/angle.h"
 
-/// @class PigeonFactory
-/// @brief This controls the creation of analog inputs
-class PigeonFactory
+class IDragonPigeon
 {
 public:
-	/// @brief  Find or create the analog input factory
-	/// @return PigeonFactory* pointer to the factory
-	static PigeonFactory *GetFactory();
+    IDragonPigeon() = default;
+    ~IDragonPigeon() = default;
 
-	DragonPigeon *GetPigeon(
-		DragonPigeon::PIGEON_USAGE usage) const;
-
-	DragonPigeon *GetCenterPigeon() const { return m_centerPigeon; };
-	DragonPigeon *GetShooterPigeon() const { return m_shooterPigeon; };
-
-	DragonPigeon *CreatePigeon(
-		int canID,
-		std::string canBusName,
-		DragonPigeon::PIGEON_TYPE type,
-		DragonPigeon::PIGEON_USAGE usage,
-		double rotation);
-
-private:
-	PigeonFactory();
-	virtual ~PigeonFactory() = default;
-
-	DragonPigeon *m_centerPigeon;
-	DragonPigeon *m_shooterPigeon;
-
-	static PigeonFactory *m_factory;
+    virtual units::angle::degree_t GetPitch() = 0;
+    virtual units::angle::degree_t GetRoll() = 0;
+    virtual units::angle::degree_t GetYaw() = 0;
+    virtual void ReZeroPigeon(units::angle::degree_t angle, int timeoutMs = 0) = 0;
 };

@@ -15,7 +15,7 @@
 //====================================================================================================================================================
 
 #include "hw/builders/FalconBuilder.h"
-#include "hw/DragonFalcon.h"
+#include "hw/DragonTalonFX.h"
 
 #include "ctre/phoenixpro/TalonFX.hpp"
 
@@ -30,7 +30,7 @@ using ctre::phoenixpro::signals::InvertedValue;
 using ctre::phoenixpro::signals::NeutralModeValue;
 using std::string;
 
-// FalconBuilder::FalconBuilder(DragonFalcon* existingFalcon)
+// FalconBuilder::FalconBuilder(DragonTalonFX* existingFalcon)
 //{
 //     m_networkTableName =
 // }
@@ -175,12 +175,12 @@ bool FalconBuilder::IsValid() const
     return true;
 }
 
-DragonFalcon *FalconBuilder::Commit()
+DragonTalonFX *FalconBuilder::Commit()
 {
     if (IsValid())
     {
         // auto falcon = new ctre::phoenixpro::hardware::TalonFX(m_canID, m_canBusName);
-        auto falcon = new DragonFalcon(m_networkTableName,
+        auto falcon = new DragonTalonFX(m_networkTableName,
                                        m_usage,
                                        m_canID,
                                        m_canBusName,
