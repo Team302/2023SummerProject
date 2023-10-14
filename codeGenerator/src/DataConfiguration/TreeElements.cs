@@ -62,7 +62,7 @@ namespace DataConfiguration
         }
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
-            refresh = helperFunctions.RefreshLevel.none;
+            refresh = helperFunctions.RefreshLevel.parentHeader;
 
             return string.Format("{0} ({1})", instanceName, value__);
         }
@@ -82,7 +82,7 @@ namespace DataConfiguration
         }
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
-            refresh = helperFunctions.RefreshLevel.none;
+            refresh = helperFunctions.RefreshLevel.parentHeader;
 
             return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
         }
@@ -161,7 +161,7 @@ namespace DataConfiguration
         }
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
-            refresh = helperFunctions.RefreshLevel.none;
+            refresh = helperFunctions.RefreshLevel.parentHeader;
 
             return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
         }
@@ -240,7 +240,7 @@ namespace DataConfiguration
         }
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
-            refresh = helperFunctions.RefreshLevel.none;
+            refresh = helperFunctions.RefreshLevel.parentHeader;
 
             return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
         }
@@ -319,7 +319,7 @@ namespace DataConfiguration
         }
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
-            refresh = helperFunctions.RefreshLevel.none;
+            refresh = helperFunctions.RefreshLevel.parentHeader;
 
             return string.Format("{0} ({1})", instanceName, value__);
         }
@@ -436,18 +436,42 @@ namespace DataConfiguration
                 DefaultValueAttribute dva = pi.GetCustomAttribute<DefaultValueAttribute>();
                 if (dva != null)
                 {
-                    if (pi.PropertyType.FullName.StartsWith("System."))
-                        pi.SetValue(obj, Convert.ChangeType(dva.Value, pi.PropertyType));
-                    else
+                    object nestedObj = pi.GetValue(obj);
+                    if (nestedObj != null)
                     {
-                        object nestedObj = pi.GetValue(obj);
-                        if (nestedObj == null)
-                        {
-                            nestedObj = Activator.CreateInstance(pi.PropertyType);
-                            pi.SetValue(obj, nestedObj);
-                        }
+                        PropertyInfo piValue__ = nestedObj.GetType().GetProperty("value__");
+                        if (piValue__ != null)
+                            piValue__.SetValue(nestedObj, Convert.ChangeType(dva.Value, piValue__.PropertyType));
+                        else
+                            pi.SetValue(obj, Convert.ChangeType(dva.Value, pi.PropertyType));
                         initializeDefaultValues(nestedObj);
                     }
+                    else //if (pi.PropertyType.FullName.StartsWith("System."))
+                        pi.SetValue(obj, Convert.ChangeType(dva.Value, pi.PropertyType));
+
+
+
+                    //if (pi.PropertyType.FullName.StartsWith("System."))
+                    //    pi.SetValue(obj, Convert.ChangeType(dva.Value, pi.PropertyType));
+                    //else
+                    //{
+                    //    object nestedObj = pi.GetValue(obj);
+                    //    if(nestedObj != null)
+                    //    {
+                    //        PropertyInfo piValue__ = nestedObj.GetType().GetProperty("value__");
+                    //        if (piValue__ != null)
+                    //        {
+                    //            piValue__.SetValue(nestedObj, Convert.ChangeType(dva.Value, piValue__.PropertyType));
+                    //        }
+                    //        initializeDefaultValues(nestedObj);
+                    //    }
+                    //    //if (nestedObj == null)
+                    //    //{
+                    //    //    nestedObj = Activator.CreateInstance(pi.PropertyType);
+                    //    //    pi.SetValue(obj, nestedObj);
+                    //    //}
+                    //    //initializeDefaultValues(nestedObj);
+                    //}
                 }
                 //else
                 //{

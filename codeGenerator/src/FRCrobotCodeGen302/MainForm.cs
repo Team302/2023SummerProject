@@ -698,7 +698,7 @@ namespace FRCrobotCodeGen302
                 {
                     // do nothing
                 }   */
-                else if ( (e.Node.GetNodeCount(false) == 0) && (e.Node.Parent != null))
+                else if ((e.Node.GetNodeCount(false) == 0) && (e.Node.Parent != null))
                 {
                     lastSelectedValueNode = e.Node;
 
@@ -1246,7 +1246,9 @@ namespace FRCrobotCodeGen302
                             try
                             {
                                 string nameStr = getDisplayName(obj, "");
-                                obj.GetType().GetProperty("name").SetValue(obj, nameStr);
+                                PropertyInfo thisPi = obj.GetType().GetProperty("name");
+                                if (thisPi != null)
+                                    thisPi.SetValue(obj, nameStr);
                             }
                             catch { }
 
