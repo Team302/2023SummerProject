@@ -37,8 +37,27 @@ namespace ApplicationData
     }
 
     [Serializable()]
-    public class applicationData
+    public class mechanismInstance
     {
+        [XmlIgnore]
+        public object theTreeNode = null;
+
+        public string name { get; set; }
+
+        public mechanism mechanism { get; set; }
+
+        public mechanismInstance()
+        {
+            name = "mechanismInstanceName";
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+    }
+
+    [Serializable()]
+    public partial class applicationData
+    {
+#if !enableTestAutomation
         public testClass testClass { get; set; }
         public List<parameter> parameter { get; set; }
         public List<motor> motor { get; set; }
@@ -75,10 +94,11 @@ namespace ApplicationData
 
             return "robot class - incomplete getDisplayName";
         }
+#endif
     }
 
     [Serializable()]
-    public class mechanism
+    public partial class mechanism
     {
         [XmlIgnore]
         public object theTreeNode = null;
@@ -89,6 +109,7 @@ namespace ApplicationData
         {
             return name.value__;
         }
+#if !enableTestAutomation
         public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
         public List<motor> motor { get; set; }
 
@@ -114,8 +135,10 @@ namespace ApplicationData
         {
             return string.Format("{0}", name.value__);
         }
+#endif
     }
 
+    #if !enableTestAutomation
     [Serializable()]
     public class closedLoopControlParameters
     {
@@ -519,34 +542,6 @@ namespace ApplicationData
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     [Serializable()]
     public class controlData
     {
@@ -866,23 +861,7 @@ namespace ApplicationData
         }
     }
 
-    [Serializable()]
-    public class mechanismInstance
-    {
-        [XmlIgnore]
-        public object theTreeNode = null;
 
-        public string name { get; set; }
-
-        public mechanism mechanism { get; set; }
-
-        public mechanismInstance()
-        {
-            name = "mechanismInstanceName";
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
 
 
 
@@ -1113,110 +1092,5 @@ namespace ApplicationData
             helperFunctions.initializeDefaultValues(this);
         }
     }
-
-    [Serializable()]
-    public class testClass
-    {
-        public stringParameter name { get; set; }
-
-        [DefaultValue(-4)]
-        [Range(typeof(double), "-10", "10")]
-        [PhysicalUnitsFamily(physicalUnit.Family.length)]
-        [TunableParameter()]
-        public doubleParameter aDouble { get; set; }
-
-        [PhysicalUnitsFamily(physicalUnit.Family.mass)]
-        [TunableParameter()]
-        public doubleParameter anotherDouble { get; set; }
-
-        public List<doubleParameterUserDefinedNonTunable> aListOfDoubles { get; set; }
-
-        [TunableParameter()]
-        public List<doubleParameterUserDefinedTunable> aListOfTunableDoubles { get; set; }
-
-
-        [DefaultValue(-40)]
-        [Range(typeof(int), "-100", "10")]
-        [PhysicalUnitsFamily(physicalUnit.Family.mass)]
-        [TunableParameter()]
-        public intParameter anInt { get; set; }
-
-        [PhysicalUnitsFamily(physicalUnit.Family.voltage)]
-        [TunableParameter()]
-        public intParameter anotherInt { get; set; }
-
-        public List<intParameterUserDefinedNonTunable> aListOfInts { get; set; }
-
-        [TunableParameter()]
-        public List<intParameterUserDefinedTunable> aListOfTunableInts { get; set; }
-
-        [DefaultValue(40)]
-        [Range(typeof(int), "0", "43")]
-        [PhysicalUnitsFamily(physicalUnit.Family.mass)]
-        [TunableParameter()]
-        public uintParameter aUint { get; set; }
-
-        [PhysicalUnitsFamily(physicalUnit.Family.current)]
-        [TunableParameter()]
-        public uintParameter anotherUint { get; set; }
-
-        public List<uintParameterUserDefinedNonTunable> aListOfUints { get; set; }
-
-        public List<uintParameterUserDefinedTunable> aListOfTunableUints { get; set; }
-
-        public boolParameter aBool { get; set; }
-
-        [TunableParameter]
-        public boolParameter aTunableBool { get; set; }
-
-        public List<boolParameterUserDefinedNonTunable> aListOfNonTunableBools { get; set; }
-        public List<boolParameterUserDefinedTunable> aListOfTunableBools { get; set; }
-
-
-        public testClass()
-        {
-            name = new stringParameter();
-            aDouble = new doubleParameter();
-            anotherDouble = new doubleParameter();
-            aListOfDoubles = new List<doubleParameterUserDefinedNonTunable>();
-            aListOfTunableDoubles = new List<doubleParameterUserDefinedTunable>();
-
-            anInt = new intParameter();
-            anotherInt = new intParameter();
-            aListOfInts = new List<intParameterUserDefinedNonTunable>();
-            aListOfTunableInts = new List<intParameterUserDefinedTunable>();
-
-            aUint = new uintParameter();
-            anotherUint = new uintParameter();
-            aListOfUints = new List<uintParameterUserDefinedNonTunable>();
-            aListOfTunableUints = new List<uintParameterUserDefinedTunable>();
-
-            aBool = new boolParameter();
-            aTunableBool = new boolParameter();
-            aListOfNonTunableBools = new List<boolParameterUserDefinedNonTunable>();
-            aListOfTunableBools = new List<boolParameterUserDefinedTunable>();
-
-            name.value__ = this.GetType().Name;
-            helperFunctions.initializeDefaultValues(this);
-        }
-
-        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
-        {
-            refresh = helperFunctions.RefreshLevel.none;
-
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                return name.value__;
-            }
-            else if (propertyName == "aDouble")
-            {
-                return aDouble.getDisplayName(propertyName, out refresh);
-            }
-            else
-            {
-                return propertyName;
-            }
-        }
-    }
-
+#endif
 }

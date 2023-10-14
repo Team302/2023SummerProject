@@ -2,32 +2,14 @@
 <toolConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <rootOutputFolder>..\..\src\main\cpp</rootOutputFolder>
   <robotConfiguration></robotConfiguration>
-  <robotConfigurations>
-  </robotConfigurations>
-  <treeviewParentNameExtensions>
-    <string>name</string>
-    <string>type</string>
-    <string>canId</string>
-    <string>pwmId</string>
-    <string>stateIdentifier</string>
-    <string>identifier</string>
-    <string>robotID</string>
-  </treeviewParentNameExtensions>
+  <appDataConfigurations>
+
+  </appDataConfigurations>
   <collectionBaseTypes>
-    <string>Robot.motor</string>
-    <string>Robot.PriceChange</string>
-    <string>Robot.parameter</string>
+    <string>ApplicationData.testMotor</string>
+    <string>ApplicationData.PriceChange</string>
+    <string>ApplicationData.parameter</string>
   </collectionBaseTypes>
-  <tunableParameterTypes>
-    <string>Robot.doubleParameter</string>
-    <string>Robot.doubleParameter_</string>
-    <string>Robot.attDoubleParameter</string>
-    <string>Robot.doubleRestrictedParameter</string>
-  </tunableParameterTypes>
-  <parameterTypes>
-    <string>Robot.CAN_ID</string>
-  </parameterTypes>
-  
   <physicalUnits>
     <physicalUnit>
       <shortName>%</shortName>
@@ -35,108 +17,85 @@
       <family>percent</family>
       <wpiClassName>Unit.percent</wpiClassName>
     </physicalUnit>
-	
     <physicalUnit>
       <shortName>s</shortName>
       <longName>Seconds</longName>
       <family>time</family>
       <wpiClassName>Units.seconds</wpiClassName>
-    </physicalUnit>    
-	
-	<physicalUnit>
+    </physicalUnit>
+    <physicalUnit>
       <shortName>W</shortName>
       <longName>Watts</longName>
       <family>power</family>
       <wpiClassName>Units.watts</wpiClassName>
-    </physicalUnit>	
-	
+    </physicalUnit>
     <physicalUnit>
       <shortName>V</shortName>
       <longName>Volts</longName>
       <family>voltage</family>
       <wpiClassName>Units.voltage</wpiClassName>
     </physicalUnit>
-	
     <physicalUnit>
       <shortName>A</shortName>
       <longName>Amperes</longName>
       <family>current</family>
       <wpiClassName>Units.Amps</wpiClassName>
     </physicalUnit>
-	
-	<physicalUnit>
+    <physicalUnit>
       <shortName>g</shortName>
       <longName>Grams</longName>
       <family>mass</family>
       <wpiClassName>Units.grams</wpiClassName>
     </physicalUnit>
-	
     <physicalUnit>
       <shortName>m</shortName>
       <longName>meters</longName>
       <family>length</family>
       <wpiClassName>Units.meters</wpiClassName>
     </physicalUnit>
-	<physicalUnit>
+    <physicalUnit>
       <shortName>in</shortName>
       <longName>inches</longName>
       <family>length</family>
       <wpiClassName>Units.inches</wpiClassName>
     </physicalUnit>
-		
     <physicalUnit>
       <shortName>m/s</shortName>
       <longName>metersPerSecond</longName>
       <family>velocity</family>
       <wpiClassName>Units.metersPerSecond</wpiClassName>
     </physicalUnit>
-	<physicalUnit>
+    <physicalUnit>
       <shortName>in/s</shortName>
       <longName>inchesPerSecond</longName>
       <family>velocity</family>
       <wpiClassName>Units.inchesPerSecond</wpiClassName>
     </physicalUnit>
-		
     <physicalUnit>
-      <shortName>rad/s</shortName>
-      <longName>radiansPerSec</longName>
-      <family>angularVelocity</family>
-      <wpiClassName>Units.radiansPerSec</wpiClassName>
-    </physicalUnit> 
-	<physicalUnit>
-      <shortName>deg/s</shortName>
-      <longName>degreePerSec</longName>
-      <family>angularVelocity</family>
-      <wpiClassName>Units.degrees_per_second</wpiClassName>
+      <shortName>deg</shortName>
+      <longName>degree</longName>
+      <family>angle</family>
+      <wpiClassName>Units.degrees</wpiClassName>
     </physicalUnit>
-	
+    <physicalUnit>
+      <shortName>rad</shortName>
+      <longName>radians</longName>
+      <family>angle</family>
+      <wpiClassName>Units.radians</wpiClassName>
+    </physicalUnit>
     <physicalUnit>
       <shortName>rad/s^2</shortName>
       <longName>radiansPerSecSquared</longName>
       <family>angularAcceleration</family>
       <wpiClassName>Units.radiansPerSecSquared</wpiClassName>
-    </physicalUnit> 
-	<physicalUnit>
+    </physicalUnit>
+    <physicalUnit>
       <shortName>deg/s^2</shortName>
       <longName>degreePerSecSquared</longName>
       <family>angularAcceleration</family>
       <wpiClassName>Units.degreePerSecSquared</wpiClassName>
-    </physicalUnit> 
-	
-	<physicalUnit>
-      <shortName>deg</shortName>
-      <longName>degree</longName>
-      <family>angle</family>
-      <wpiClassName>Units.degrees</wpiClassName>
-    </physicalUnit>    
-		<physicalUnit>
-      <shortName>rad</shortName>
-      <longName>radians</longName>
-      <family>angle</family>
-      <wpiClassName>Units.radians</wpiClassName>
-    </physicalUnit> 
-	
-	<physicalUnit>
+    </physicalUnit>
+    <physicalUnit>
       <shortName>m/s^2</shortName>
       <longName>meters per second squared</longName>
       <family>acceleration</family>
@@ -148,7 +107,18 @@
       <family>acceleration</family>
       <wpiClassName>Units.feet_per_second_squared</wpiClassName>
     </physicalUnit>
-
+    <physicalUnit>
+      <shortName>rad/s</shortName>
+      <longName>radians per second</longName>
+      <family>angularVelocity</family>
+      <wpiClassName>Units.radians_per_second</wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>deg/s</shortName>
+      <longName>degrees per second</longName>
+      <family>angularVelocity</family>
+      <wpiClassName>Units.degrees_per_second</wpiClassName>
+    </physicalUnit>
   </physicalUnits>
   <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
   <templateMechanismHPath>..\templates\MECHANISM_NAME.h</templateMechanismHPath>
