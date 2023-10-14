@@ -203,7 +203,7 @@ namespace FRCrobotCodeGen302
             this.createNewRobotVariantsConfigButton.TabIndex = 3;
             this.createNewRobotVariantsConfigButton.Text = "Create new robot variants configuration";
             this.createNewRobotVariantsConfigButton.UseVisualStyleBackColor = true;
-            this.createNewRobotVariantsConfigButton.Click += new System.EventHandler(this.createNewRobotVariantsConfigButton_Click);
+            this.createNewRobotVariantsConfigButton.Click += new System.EventHandler(this.createNewAppDataConfigButton_Click);
             // 
             // progressTextBox
             // 

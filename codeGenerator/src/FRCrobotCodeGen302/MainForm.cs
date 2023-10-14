@@ -339,11 +339,11 @@ namespace FRCrobotCodeGen302
             try
             {
                 generatorConfig = generatorConfig.deserialize(configurationFullPathName);
-                if (generatorConfig.robotConfigurations.Count == 0)
+                if (generatorConfig.appDataConfigurations.Count == 0)
                 {
-                    generatorConfig.robotConfigurations = new List<string>();
+                    generatorConfig.appDataConfigurations = new List<string>();
                     if (!string.IsNullOrEmpty(generatorConfig.robotConfiguration.Trim()))
-                        generatorConfig.robotConfigurations.Add(generatorConfig.robotConfiguration.Trim());
+                        generatorConfig.appDataConfigurations.Add(generatorConfig.robotConfiguration.Trim());
                 }
             }
             catch (Exception ex)
@@ -414,7 +414,7 @@ namespace FRCrobotCodeGen302
             loadRobotConfig = false;
             #region Load the Combobox with the robot configuration file list
             robotConfigurationFileComboBox.Items.Clear();
-            foreach (string f in generatorConfig.robotConfigurations)
+            foreach (string f in generatorConfig.appDataConfigurations)
             {
                 string fullfilePath = Path.Combine(Path.GetDirectoryName(filePathName), f);
                 fullfilePath = Path.GetFullPath(fullfilePath);
@@ -1528,7 +1528,7 @@ namespace FRCrobotCodeGen302
             }
         }
 
-        private void createNewRobotVariantsConfigButton_Click(object sender, EventArgs e)
+        private void createNewAppDataConfigButton_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1551,17 +1551,17 @@ namespace FRCrobotCodeGen302
                 {
                     using (var myFileStream = new FileStream(dlg.FileName, FileMode.Create))
                     {
-                        topLevelAppDataElement newRobotVariantsConfig = new topLevelAppDataElement();
+                        topLevelAppDataElement newAppDataConfig = new topLevelAppDataElement();
 
                         var mySerializer = new XmlSerializer(typeof(topLevelAppDataElement));
-                        mySerializer.Serialize(myFileStream, newRobotVariantsConfig);
+                        mySerializer.Serialize(myFileStream, newAppDataConfig);
                     }
 
                     Uri uriNewFile = new Uri(dlg.FileName);
                     Uri uriConfigFilePath = new Uri(configurationFilePathNameTextBox.Text);
                     string realtivePath = uriConfigFilePath.MakeRelativeUri(uriNewFile).ToString();
-                    if (!generatorConfig.robotConfigurations.Contains(realtivePath))
-                        generatorConfig.robotConfigurations.Add(realtivePath);
+                    if (!generatorConfig.appDataConfigurations.Contains(realtivePath))
+                        generatorConfig.appDataConfigurations.Add(realtivePath);
 
                     int index = robotConfigurationFileComboBox.Items.IndexOf(dlg.FileName);
                     if (index == -1)

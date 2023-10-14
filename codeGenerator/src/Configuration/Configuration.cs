@@ -16,7 +16,7 @@ namespace Configuration
 
         public string rootOutputFolder = "";
         public string robotConfiguration = "";
-        public List<string> robotConfigurations = new List<string>();
+        public List<string> appDataConfigurations = new List<string>();
 
         public List<string> collectionBaseTypes = new List<string>();
 
