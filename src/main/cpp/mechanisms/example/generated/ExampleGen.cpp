@@ -57,6 +57,22 @@ void ExampleGen::AddSolenoid(DragonSolenoid &solenoid)
     m_solenoidMap[solenoid.GetType()] = new BaseMechSolenoid(GetNetworkTableName(), solenoid);
 }
 
+void ExampleGen::AddServo(DragonServo &servo)
+{
+}
+
+void ExampleGen::AddCanCoder(DragonCanCoder &cancoder)
+{
+}
+
+void ExampleGen::AddDigitalInput(DragonDigitalInput &digital)
+{
+}
+
+void ExampleGen::AddAnalogInput(DragonAnalogInput &analog)
+{
+}
+
 /// @brief  Set the control constants (e.g. PIDF values).
 /// @param [in] ControlData*                                   pid:  the control constants
 /// @return void

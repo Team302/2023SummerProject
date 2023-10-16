@@ -31,10 +31,15 @@
 #include "configs/usages/MotorControllerUsage.h"
 #include "configs/usages/ServoUsage.h"
 #include "configs/usages/SolenoidUsage.h"
+#include "hw/DragonAnalogInput.h"
+#include "hw/DragonCanCoder.h"
+#include "hw/DragonDigitalInput.h"
+#include "hw/DragonServo.h"
+#include "hw/DragonSolenoid.h"
 #include "mechanisms/base/BaseMech.h"
 #include "mechanisms/base/BaseMechMotor.h"
-#include "mechanisms/base/BaseMechSolenoid.h"
 #include "mechanisms/base/BaseMechServo.h"
+#include "mechanisms/base/BaseMechSolenoid.h"
 #include "mechanisms/base/StateMgr.h"
 
 // forward declares
@@ -51,8 +56,12 @@ public:
     ExampleGen();
     ~ExampleGen() = default;
 
-    virtual void AddMotor(IDragonMotorController &motor);
-    virtual void AddSolenoid(DragonSolenoid &solenoid);
+    void AddMotor(IDragonMotorController &motor);
+    void AddSolenoid(DragonSolenoid &solenoid);
+    void AddServo(DragonServo &servo);
+    void AddDigitalInput(DragonDigitalInput &digital);
+    void AddAnalogInput(DragonAnalogInput &analog);
+    void AddCanCoder(DragonCanCoder &cancoder);
 
     /// @brief Set the control constants (e.g. PIDF values).
     /// @param indentifier the motor controller usage to identify the motor
