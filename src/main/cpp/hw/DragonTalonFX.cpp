@@ -60,7 +60,19 @@ using ctre::phoenixpro::configs::Slot0Configs;
 using ctre::phoenixpro::configs::Slot1Configs;
 using ctre::phoenixpro::configs::Slot2Configs;
 using ctre::phoenixpro::configs::VoltageConfigs;
+using ctre::phoenixpro::controls::DutyCycleOut;
+using ctre::phoenixpro::controls::EmptyControl;
 using ctre::phoenixpro::controls::Follower;
+using ctre::phoenixpro::controls::MotionMagicDutyCycle;
+using ctre::phoenixpro::controls::MotionMagicTorqueCurrentFOC;
+using ctre::phoenixpro::controls::MotionMagicVoltage;
+using ctre::phoenixpro::controls::PositionDutyCycle;
+using ctre::phoenixpro::controls::PositionTorqueCurrentFOC;
+using ctre::phoenixpro::controls::PositionVoltage;
+using ctre::phoenixpro::controls::TorqueCurrentFOC;
+using ctre::phoenixpro::controls::VelocityDutyCycle;
+using ctre::phoenixpro::controls::VelocityTorqueCurrentFOC;
+using ctre::phoenixpro::controls::VelocityVoltage;
 using ctre::phoenixpro::signals::AbsoluteSensorRangeValue;
 using ctre::phoenixpro::signals::FeedbackSensorSourceValue;
 using ctre::phoenixpro::signals::ForwardLimitSourceValue;
@@ -80,34 +92,33 @@ using std::string;
 using std::to_string;
 
 DragonTalonFX::DragonTalonFX(string networkTableName,
-						   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
-						   int deviceID,
-						   string canBusName,
-						   int pdpID) : m_networkTableName(networkTableName),
-										m_talon(new TalonFX(deviceID, canBusName)),
-										m_controller(),
-										m_type(deviceType),
-										m_id(deviceID),
-										m_pdp(pdpID),
-										m_calcStruc(),
-										m_motorType(MOTOR_TYPE::FALCON500),
-										m_inverted(false)
+							 MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
+							 int deviceID,
+							 string canBusName) : m_networkTableName(networkTableName),
+												  m_type(deviceType),
+												  m_talon(new TalonFX(deviceID, canBusName)),
+												  slot0Control(new EmptyControl()),
+												  slot1Control(new EmptyControl()),
+												  slot2Control(new EmptyControl()),
+												  slot3Control(new EmptyControl()),
+												  m_calcStruc(),
+												  m_inverted(false)
 {
 	m_talon->GetConfigurator().Apply(TalonFXConfiguration{}); // reset to factory default
 }
 
 void DragonTalonFX::ConfigHWLimitSW(bool enableForward,
-								   int remoteForwardSensorID,
-								   bool forwardResetPosition,
-								   double forwardPosition,
-								   ForwardLimitSourceValue forwardType,
-								   ForwardLimitTypeValue forwardOpenClose,
-								   bool enableReverse,
-								   int remoteReverseSensorID,
-								   bool reverseResetPosition,
-								   double reversePosition,
-								   ReverseLimitSourceValue revType,
-								   ReverseLimitTypeValue revOpenClose)
+									int remoteForwardSensorID,
+									bool forwardResetPosition,
+									double forwardPosition,
+									ForwardLimitSourceValue forwardType,
+									ForwardLimitTypeValue forwardOpenClose,
+									bool enableReverse,
+									int remoteReverseSensorID,
+									bool reverseResetPosition,
+									double reversePosition,
+									ReverseLimitSourceValue revType,
+									ReverseLimitTypeValue revOpenClose)
 {
 	if (m_talon != nullptr)
 	{
@@ -130,10 +141,10 @@ void DragonTalonFX::ConfigHWLimitSW(bool enableForward,
 }
 
 void DragonTalonFX::ConfigMotorSettings(InvertedValue inverted,
-									   NeutralModeValue mode,
-									   double deadbandPercent,
-									   double peakForwardDutyCycle,
-									   double peakReverseDutyCycle)
+										NeutralModeValue mode,
+										double deadbandPercent,
+										double peakForwardDutyCycle,
+										double peakReverseDutyCycle)
 {
 	if (m_talon != nullptr)
 	{
@@ -205,10 +216,9 @@ MotorController *DragonTalonFX::GetSpeedController() const
 
 double DragonTalonFX::GetCurrent() const
 {
-	auto pdp = PDPFactory::GetFactory()->GetPDP();
-	if (pdp != nullptr)
+	if (m_talon != nullptr)
 	{
-		return pdp->GetCurrent(m_pdp);
+		return m_talon->GetSupplyCurrent().GetValue().to<double>();
 	}
 	return 0.0;
 }
@@ -283,7 +293,10 @@ void DragonTalonFX::SetFramePeriodPriority(MOTOR_PRIORITY priority)
 
 void DragonTalonFX::Set(double value)
 {
-	m_controller[0]->Set(value);
+	if (m_talon != nullptr)
+	{
+		m_talon->SetControl(*slot0Control);
+	}
 }
 
 void DragonTalonFX::SetRotationOffset(double rotations)
@@ -346,15 +359,19 @@ MotorControllerUsage::MOTOR_CONTROLLER_USAGE DragonTalonFX::GetType() const
 
 int DragonTalonFX::GetID() const
 {
-	return m_id;
+	if (m_talon != nullptr)
+	{
+		return m_talon->GetDeviceID();
+	}
+	return -1;
 }
 
 void DragonTalonFX::SetCurrentLimits(bool enableStatorCurrentLimit,
-									units::current::ampere_t statorCurrentLimit,
-									bool enableSupplyCurrentLimit,
-									units::current::ampere_t supplyCurrentLimit,
-									units::current::ampere_t supplyCurrentThreshold,
-									units::time::second_t supplyTimeThreshold)
+									 units::current::ampere_t statorCurrentLimit,
+									 bool enableSupplyCurrentLimit,
+									 units::current::ampere_t supplyCurrentLimit,
+									 units::current::ampere_t supplyCurrentThreshold,
+									 units::time::second_t supplyTimeThreshold)
 {
 	if (m_talon != nullptr)
 	{
@@ -396,15 +413,13 @@ void DragonTalonFX::SetControlConstants(int slot, ControlData *controlInfo)
 {
 	if (m_talon != nullptr)
 	{
-		// SetPeakAndNominalValues(m_networkTableName, controlInfo);
-		// SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);
+		// TODO:  delete the existing control and create the
+		//        new control for the slot
 	}
-	// delete m_controller[slot];
-	// m_controller[slot] = DragonControlToCTREAdapterFactory::GetFactory()->CreateAdapter(m_networkTableName, slot, controlInfo, m_calcStruc, m_talon);
 }
 
 void DragonTalonFX::SetRemoteSensor(int canID,
-								   ctre::phoenix::motorcontrol::RemoteSensorSource deviceType)
+									ctre::phoenix::motorcontrol::RemoteSensorSource deviceType)
 {
 	if (m_talon != nullptr)
 	{
@@ -416,8 +431,8 @@ void DragonTalonFX::SetRemoteSensor(int canID,
 	}
 }
 void DragonTalonFX::FuseCancoder(DragonCanCoder &cancoder,
-								double sensorToMechanismRatio,
-								double rotorToSensorRatio)
+								 double sensorToMechanismRatio,
+								 double rotorToSensorRatio)
 {
 	if (m_talon != nullptr)
 	{
@@ -521,5 +536,5 @@ double DragonTalonFX::GetCounts() const
 
 IDragonMotorController::MOTOR_TYPE DragonTalonFX::GetMotorType() const
 {
-	return m_motorType;
+	return MOTOR_TYPE::FALCON500;
 }

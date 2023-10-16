@@ -68,12 +68,11 @@ public:
                  double countsOnTurnEncoderPerDegreesOnAngleSensor,
                  units::length::inch_t wheelDiameter);
 
-    void Init(
-        units::velocity::meters_per_second_t maxVelocity,
-        units::angular_velocity::radians_per_second_t maxAngularVelocity,
-        units::acceleration::meters_per_second_squared_t maxAcceleration,
-        units::angular_acceleration::radians_per_second_squared_t maxAngularAcceleration,
-        frc::Translation2d offsetFromRobotCenter);
+    void Init(units::velocity::meters_per_second_t maxVelocity,
+              units::angular_velocity::radians_per_second_t maxAngularVelocity,
+              units::acceleration::meters_per_second_squared_t maxAcceleration,
+              units::angular_acceleration::radians_per_second_squared_t maxAngularAcceleration,
+              frc::Translation2d offsetFromRobotCenter);
 
     /// @brief Turn all of the wheel to zero degrees yaw according to the pigeon
     /// @returns void
@@ -115,9 +114,8 @@ public:
 private:
     // Note:  the following was taken from the WPI code and tweaked because we were seeing some weird
     //        reversals that we believe was due to not using a tolerance
-    frc::SwerveModuleState Optimize(
-        const frc::SwerveModuleState &desiredState,
-        const frc::Rotation2d &currentAngle);
+    frc::SwerveModuleState Optimize(const frc::SwerveModuleState &desiredState,
+                                    const frc::Rotation2d &currentAngle);
 
     void SetDriveSpeed(units::velocity::meters_per_second_t speed);
     void SetTurnAngle(units::angle::degree_t angle);

@@ -31,6 +31,7 @@
 
 // Third Party Includes
 #include "ctre/phoenixpro/TalonFX.hpp"
+#include "ctre/phoenixpro/controls/ControlRequest.hpp"
 // #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
 // #include <ctre/phoenix/motorcontrol/RemoteSensorSource.h>
 
@@ -44,8 +45,7 @@ public:
     DragonTalonFX(std::string networkTableName,
                   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
                   int deviceID,
-                  std::string canBusName,
-                  int pdpID);
+                  std::string canBusName);
     virtual ~DragonTalonFX() = default;
     ctre::phoenixpro::hardware::TalonFX *GetTalonFX() const { return m_talon; }
 
@@ -150,12 +150,13 @@ public:
 
 private:
     std::string m_networkTableName;
-    ctre::phoenixpro::hardware::TalonFX *m_talon;
-    IDragonControlToVendorControlAdapter *m_controller[4];
     MotorControllerUsage::MOTOR_CONTROLLER_USAGE m_type;
-    int m_id;
-    int m_pdp;
+    ctre::phoenixpro::hardware::TalonFX *m_talon;
+    ctre::phoenixpro::controls::ControlRequest *slot0Control;
+    ctre::phoenixpro::controls::ControlRequest *slot1Control;
+    ctre::phoenixpro::controls::ControlRequest *slot2Control;
+    ctre::phoenixpro::controls::ControlRequest *slot3Control;
+    // IDragonControlToVendorControlAdapter *m_controller[4];
     DistanceAngleCalcStruc m_calcStruc;
-    IDragonMotorController::MOTOR_TYPE m_motorType;
     bool m_inverted;
 };

@@ -146,12 +146,11 @@ SwerveModule::SwerveModule(ModuleID type,
 /// @param [in] units::acceleration::meters_per_second_squared_t - maxAcceleration: maximum linear acceleration of the chassis
 /// @param [in] units::angular_acceleration::radians_per_second_squared_t - maxAngularAcceleration: maximum angular acceleration of the chassis
 
-void SwerveModule::Init(
-    units::velocity::meters_per_second_t maxVelocity,
-    units::angular_velocity::radians_per_second_t maxAngularVelocity,
-    units::acceleration::meters_per_second_squared_t maxAcceleration,
-    units::angular_acceleration::radians_per_second_squared_t maxAngularAcceleration,
-    Translation2d offsetFromCenterOfRobot)
+void SwerveModule::Init(units::velocity::meters_per_second_t maxVelocity,
+                        units::angular_velocity::radians_per_second_t maxAngularVelocity,
+                        units::acceleration::meters_per_second_squared_t maxAcceleration,
+                        units::angular_acceleration::radians_per_second_squared_t maxAngularAcceleration,
+                        Translation2d offsetFromCenterOfRobot)
 {
     m_maxVelocity = maxVelocity;
     delete m_driveVelocityControlData;

@@ -43,30 +43,26 @@ class DragonControlToCTREAdapter : public IDragonControlToVendorControlAdapter
 {
 public:
     DragonControlToCTREAdapter() = delete;
-    DragonControlToCTREAdapter(
-        std::string networkTableName,
-        int controllerSlot,
-        ControlData *controlInfo,
-        DistanceAngleCalcStruc calcStruc,
-        ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
+    DragonControlToCTREAdapter(std::string networkTableName,
+                               int controllerSlot,
+                               ControlData *controlInfo,
+                               DistanceAngleCalcStruc calcStruc,
+                               ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
     ~DragonControlToCTREAdapter() = default;
 
     void InitializeDefaults() override;
     std::string GetErrorPrompt() const;
 
 protected:
-    void SetPeakAndNominalValues(
-        std::string networkTableName,
-        ControlData *controlInfo);
+    void SetPeakAndNominalValues(std::string networkTableName,
+                                 ControlData *controlInfo);
 
-    void SetMaxVelocityAcceleration(
-        std::string networkTableName,
-        ControlData *controlInfo);
+    void SetMaxVelocityAcceleration(std::string networkTableName,
+                                    ControlData *controlInfo);
 
-    void SetPIDConstants(
-        std::string networkTableName,
-        int controllerSlot,
-        ControlData *controlInfo);
+    void SetPIDConstants(std::string networkTableName,
+                         int controllerSlot,
+                         ControlData *controlInfo);
 
     std::string m_networkTableName;
     int m_controllerSlot;

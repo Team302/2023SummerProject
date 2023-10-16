@@ -31,10 +31,9 @@ void RobotConfigExample::DefineMotorControllers()
 {
 
     m_motor1 = new DragonTalonFX(string("ExampleMech_Motor1"),
-                                MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR1,
-                                1,
-                                string(canBusName),
-                                1);
+                                 MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR1,
+                                 1,
+                                 string(canBusName));
     m_motor1->SetCurrentLimits(true,
                                units::current::ampere_t(25.0),
                                true,
@@ -46,10 +45,9 @@ void RobotConfigExample::DefineMotorControllers()
                                   0.01, -1, 1);
 
     m_motor2 = new DragonTalonFX(string("ExampleMech_Motor2"),
-                                MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR2,
-                                2,
-                                string(canBusName),
-                                2);
+                                 MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR2,
+                                 2,
+                                 string(canBusName));
     m_motor2->SetCurrentLimits(true,
                                units::current::ampere_t(25.0),
                                true,
