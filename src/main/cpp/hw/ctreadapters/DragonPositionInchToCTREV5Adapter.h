@@ -13,42 +13,46 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
+#pragma once
+
 // C++ Includes
 #include <string>
 
-// FRC includes
-
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/DragonControlToCTREAdapter.h"
-#include <hw/ctreadapters/DragonTicksToCTREAdapter.h>
-#include "mechanisms/controllers/ControlData.h"
-#include <mechanisms/controllers/ControlModes.h>
-#include "utils/ConversionUtils.h"
+#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
 
-// Third Party Includes
-#include <ctre/phoenix/motorcontrol/ControlMode.h>
-#include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
-
-DragonTicksToCTREAdapter::DragonTicksToCTREAdapter(
-    std::string networkTableName,
-    int controllerSlot,
-    ControlData *controlInfo,
-    DistanceAngleCalcStruc calcStruc,
-    ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+namespace ctre
 {
+    namespace phoenix
+    {
+        namespace motorcontrol
+        {
+            namespace can
+            {
+                class WPI_BaseMotorController;
+            }
+        }
+    }
 }
+class ControlData;
 
-void DragonTicksToCTREAdapter::Set(
-    double value)
+class DragonPositionInchToCtreV5Adapter : public DragonControlToCtreV5Adapter
 {
-    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, value);
-}
+public:
+    DragonPositionInchToCtreV5Adapter() = delete;
+    DragonPositionInchToCtreV5Adapter(std::string networkTableName,
+                                      int controllerSlot,
+                                      ControlData *controlInfo,
+                                      DistanceAngleCalcStruc calcStruc,
+                                      ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
 
-void DragonTicksToCTREAdapter::SetControlConstants(
-    int controlSlot,
-    ControlData *controlInfo)
-{
-    SetPeakAndNominalValues(m_networkTableName, controlInfo);
-    SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);
-}
+    ~DragonPositionInchToCtreV5Adapter() = default;
+
+    void Set(
+        double value) override;
+
+    void SetControlConstants(
+        int controlSlot,
+        ControlData *controlInfo) override;
+};

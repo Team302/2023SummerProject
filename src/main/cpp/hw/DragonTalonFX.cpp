@@ -30,11 +30,11 @@
 #include "hw/interfaces/IDragonMotorController.h"
 #include <hw/DragonTalonFX.h>
 #include <hw/factories/PDPFactory.h>
-#include "hw/factories/DragonControlToCTREAdapterFactory.h"
+#include "hw/factories/DragonControlToCtreV5AdapterFactory.h"
 #include "configs/usages/MotorControllerUsage.h"
 #include "utils/logging/Logger.h"
 #include "utils/ConversionUtils.h"
-#include "hw/ctreadapters/DragonControlToCTREAdapter.h"
+#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
 
 // Third Party Includes
 #include "ctre/phoenixpro/TalonFX.hpp"
