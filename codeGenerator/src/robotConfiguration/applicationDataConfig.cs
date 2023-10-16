@@ -1,13 +1,16 @@
 ﻿using ApplicationData;
+using Configuration;
 using DataConfiguration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -126,6 +129,9 @@ namespace applicationConfiguration
                 }
             }
 
+            // if the units string is empty for a non unitless item, set the units to the first unit available in the family
+            initializeUnits(theRobotVariants, physicalUnit.Family.unitless );
+
             foreach (applicationData theRobot in theRobotVariants.Robots)
             {
                 foreach (mechanismInstance mi in theRobot.mechanismInstance)
@@ -155,6 +161,51 @@ namespace applicationConfiguration
             //    }
             //}
             return theRobotVariants;
+        }
+
+        public void initializeUnits(object obj, physicalUnit.Family family)
+        {
+            PropertyInfo unitsInfo = obj.GetType().GetProperty("__units__");
+
+            physicalUnit.Family theUnitFamily = physicalUnit.Family.unitless;
+            PropertyInfo unitFamilyInfo = obj.GetType().GetProperty("unitsFamily");
+            if (unitFamilyInfo != null)
+                theUnitFamily = (physicalUnit.Family)unitFamilyInfo.GetValue(obj);
+
+            if (unitsInfo != null)
+            {
+                string theUnits = (string)unitsInfo.GetValue(obj);
+                
+                theUnitFamily = family != physicalUnit.Family.unitless ? family : theUnitFamily;
+
+                if (string.IsNullOrEmpty(theUnits) && (theUnitFamily != physicalUnit.Family.unitless))
+                {
+                    physicalUnit pu = physicalUnits.Find(u => u.family == theUnitFamily);
+                    unitsInfo.SetValue(obj, pu.shortName, null);
+                }
+            }
+            else
+            {
+                PropertyInfo[] PIs = obj.GetType().GetProperties();
+                foreach (PropertyInfo pi in PIs)
+                {
+                    if (isACollection(pi.PropertyType))
+                    { 
+                        ICollection listObject = pi.GetValue(obj) as ICollection;
+                        foreach(object o in listObject)
+                            initializeUnits(o, physicalUnit.Family.unitless);
+                    }
+                    else
+                    {
+                        if (pi.PropertyType != typeof(string))
+                        {
+                            PhysicalUnitsFamilyAttribute theFamily = pi.GetCustomAttribute<PhysicalUnitsFamilyAttribute>();
+                            object theObj = pi.GetValue(obj);
+                            initializeUnits(theObj, theFamily==null ? physicalUnit.Family.unitless : theFamily.family);
+                        }
+                    }
+                }
+            }
         }
 
         private mechanism loadMechanism(string fullPathName, string mechanismName)

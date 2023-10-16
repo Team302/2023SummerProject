@@ -43,7 +43,7 @@ namespace ApplicationData
             if (string.IsNullOrEmpty(propertyName))
                 return string.Format("Robot #{0}", robotID.value__);
             else if (propertyName == "testClass")
-                return string.Format("{0} ({1}))", propertyName, testClass.name);
+                return string.Format("{0} ({1})", propertyName, testClass.name);
             else if (propertyName == "pdp")
                 return string.Format("{0} ({1})", propertyName, pdp.type);
 

@@ -84,7 +84,10 @@ namespace DataConfiguration
         {
             refresh = helperFunctions.RefreshLevel.parentHeader;
 
-            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+            if (string.IsNullOrEmpty(__units__))
+                return string.Format("{0} ({1})", instanceName, value__);
+            else
+                return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
         }
     }
 
@@ -163,7 +166,10 @@ namespace DataConfiguration
         {
             refresh = helperFunctions.RefreshLevel.parentHeader;
 
-            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+            if (string.IsNullOrEmpty(__units__))
+                return string.Format("{0} ({1})", instanceName, value__);
+            else
+                return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
         }
     }
 
@@ -242,7 +248,10 @@ namespace DataConfiguration
         {
             refresh = helperFunctions.RefreshLevel.parentHeader;
 
-            return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+            if (string.IsNullOrEmpty(__units__))
+                return string.Format("{0} ({1})", instanceName, value__);
+            else
+                return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
         }
     }
 
@@ -499,7 +508,7 @@ namespace DataConfiguration
                 //}
             }
         }
-    
+
         public static void initializeNullProperties(object obj)
         {
             initializeNullProperties(obj, false);

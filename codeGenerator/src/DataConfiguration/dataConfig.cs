@@ -7,12 +7,14 @@ using System.IO;
 using System.Reflection;
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
+using Configuration;
 
 namespace DataConfiguration
 {
     public class baseDataConfiguration : baseReportingClass
     {
         public List<string> collectionBaseTypes = new List<string>(); 
+        public List<physicalUnit> physicalUnits = new List<physicalUnit>();
 
         static public bool isACollection(object obj)
         {

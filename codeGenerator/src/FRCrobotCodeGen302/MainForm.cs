@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using static Configuration.physicalUnit;
 
 namespace FRCrobotCodeGen302
 {
@@ -156,6 +157,11 @@ namespace FRCrobotCodeGen302
                     {
                         unitsAsString = GetUnitsShortName(nonLeafNodeTag.getObject(parent.Tag));
                         unitsFamily = GetTheUnitsFamilyName(parent, obj, nodeName);
+
+                        if(unitsFamily != physicalUnit.Family.unitless)
+                        {
+                            unitsAsString = generatorConfig.physicalUnits.Find(p => p.family == unitsFamily).shortName;
+                        }
                     }
 
                     #region Record the TreeNode in the actual object so that we do not have to back search for mechanisms
@@ -442,6 +448,7 @@ namespace FRCrobotCodeGen302
                     try
                     {
                         theAppDataConfiguration.collectionBaseTypes = generatorConfig.collectionBaseTypes;
+                        theAppDataConfiguration.physicalUnits = generatorConfig.physicalUnits;
                         theAppDataConfiguration.load(generatorConfig.robotConfiguration);
                     }
                     catch (Exception ex)
@@ -1233,6 +1240,8 @@ namespace FRCrobotCodeGen302
 
                     if (obj != null)
                     {
+                        theAppDataConfiguration.initializeUnits(obj, Family.unitless);
+
                         PropertyInfo[] pis = nonLeafNodeTag.getObject(lastSelectedValueNode.Tag).GetType().GetProperties();
                         PropertyInfo pi = nonLeafNodeTag.getObject(lastSelectedValueNode.Tag).GetType().GetProperty(name);
 
@@ -1313,6 +1322,7 @@ namespace FRCrobotCodeGen302
                             nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag).GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
                             int count = (int)nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag).GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
 
+                            theAppDataConfiguration.initializeUnits(obj, Family.unitless);
                             AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                         }
                     }
@@ -1340,6 +1350,7 @@ namespace FRCrobotCodeGen302
                             }
                             catch { }
 
+                            theAppDataConfiguration.initializeUnits(obj, Family.unitless);
                             AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                         }
                     }
@@ -1359,6 +1370,7 @@ namespace FRCrobotCodeGen302
                         }
                         catch { }
 
+                        theAppDataConfiguration.initializeUnits(obj, Family.unitless);
                         AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                     }
                 }
@@ -1635,9 +1647,20 @@ namespace FRCrobotCodeGen302
         private void getCheckBoxListItemsButton_Click(object sender, EventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            foreach (robotElementType ret in robotElementCheckedListBox.Items)
+
+            if (infoIOtextBox.Text == "ComboBox")
             {
-                sb.Append("#" + ret.name);
+                foreach (object obj in valueComboBox.Items)
+                {
+                    sb.Append("#" + obj.ToString());
+                }
+            }
+            else if (infoIOtextBox.Text == "CheckListBox")
+            {
+                foreach (robotElementType ret in robotElementCheckedListBox.Items)
+                {
+                    sb.Append("#" + ret.name);
+                }
             }
 
             infoIOtextBox.Text = sb.ToString();
@@ -1648,14 +1671,22 @@ namespace FRCrobotCodeGen302
         }
         private void checkCheckBoxListItemButton_Click(object sender, EventArgs e)
         {
-            try
+            string text = infoIOtextBox.Text.Trim();
+            string[] list = text.Split(':');
+            if (list.Length == 2)
             {
-                int index = Convert.ToInt32(infoIOtextBox.Text);
-                robotElementCheckedListBox.SetItemChecked(index, true);
-            }
-            catch
-            {
+                try
+                {
+                    int index = Convert.ToInt32(list[1]);
 
+                    if (list[0] == "ComboBox")
+                        valueComboBox.SelectedIndex = index;
+                    if (list[0] == "CheckListBox")
+                        robotElementCheckedListBox.SetItemChecked(index, true);
+                }
+                catch
+                {
+                }
             }
         }
 
