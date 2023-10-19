@@ -25,8 +25,9 @@ namespace Configuration
 
         public string templateMechanismCppPath = "";
         public string templateMechanismHPath = "";
-        public string templateRobotDefinitionsCppPath = "";
-        public string templateRobotDefinitionsHPath = "";
+        public string templateRobotConfigurationCppPath = "";
+        public string templateRobotConfigurationHPath = "";
+        public string snippetsPath = "";
 
 
         public string CopyrightNotice = "";

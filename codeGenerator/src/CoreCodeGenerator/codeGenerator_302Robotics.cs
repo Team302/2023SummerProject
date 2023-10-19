@@ -2,6 +2,7 @@
 using DataConfiguration;
 using Robot;
 using robotConfiguration;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -49,8 +50,138 @@ namespace CoreCodeGenerator
                 addProgress("Output directory " + rootFolder + " already exists");
             }
 
+            generateRobotConfigs();
             //generateMechanismFiles();
             //generateRobotDefinitionFiles();
+        }
+
+        private void generateRobotConfigs()
+        {
+            addProgress("Writing robot configuration files...");
+
+            foreach (robot theRobot in theRobotConfiguration.theRobotVariants.robot)
+            {
+
+                string configFolderPath = getPathInRoot("configs");
+                string resultString = loadTemplate(theToolConfiguration.templateRobotConfigurationCppPath);
+                string filePath = Path.Combine(configFolderPath, "RobotConfig" + theRobot.robotID.ToString() + ".cpp");
+
+
+                #region Generate Cpp file
+                resultString = resultString.Replace("$$COPYRIGHT$$", theToolConfiguration.CopyrightNotice);
+                resultString = resultString.Replace("$$GENERATION_NOTICE$$", theToolConfiguration.GenerationNotice);
+
+                resultString = resultString.Replace("$$ROBOT_ID$$", theRobot.robotID.ToString());
+
+                string motorDefinition = "";
+                string snippet = loadTemplate(theToolConfiguration.snippetsPath + "MOTOR_DEFINITION.txt");
+                
+                //snippet
+                foreach (motor m in theRobot.chassis.motor)
+                {
+                    motorDefinition += snippet.Replace("$$NAME$$", m.name);
+                }
+
+                foreach(mechanismInstance mechanism in theRobot.mechanismInstance)
+                {
+                    foreach(motor m in mechanism.mechanism.motor)
+                    {
+                        motorDefinition += snippet.Replace("$$NAME$$", m.name);
+                    }
+                }
+
+                resultString = resultString.Replace("$$MOTOR_DEFINITION$$", motorDefinition);
+
+                File.WriteAllText(filePath, resultString);
+                
+                #endregion
+
+                #region Generate H file
+                resultString = loadTemplate(theToolConfiguration.templateRobotConfigurationHPath);
+                filePath = Path.Combine(configFolderPath, "RobotConfig" + theRobot.robotID.ToString() + ".h");
+
+                resultString = resultString.Replace("$$COPYRIGHT$$", theToolConfiguration.CopyrightNotice);
+                resultString = resultString.Replace("$$GENERATION_NOTICE$$", theToolConfiguration.GenerationNotice);
+
+                resultString = resultString.Replace("$$ROBOT_ID$$", theRobot.robotID.ToString());
+
+                #region Mechanism Includes
+                string tempString = "";
+                string mechanismTemplate = "#include \"INCLUDE/decoratormods/NAME.h\"";
+                foreach (mechanismInstance mech in theRobot.mechanismInstance)
+                {
+                    tempString += mechanismTemplate.Replace("INCLUDE", getIncludePath(mech.name)).Replace("NAME", mech.name);
+                }
+
+                resultString = resultString.Replace("$$MECH_INCLUDES$$", tempString);
+                #endregion
+
+                #region Motor Init
+                string motorTemplate = "MOTOR_TYPE *m_motor-NAME = nullptr;" + Environment.NewLine;
+                tempString = "";
+
+                
+                foreach(motor m in theRobot.chassis.motor)
+                {
+                    tempString += motorTemplate.Replace("MOTOR_TYPE", m.motorType).Replace("NAME", m.name);
+                }
+
+                foreach (mechanismInstance mech in theRobot.mechanismInstance)
+                {
+                    foreach (motor m in mech.mechanism.motor)
+                    {
+                        tempString += motorTemplate.Replace("MOTOR_TYPE", m.motorType).Replace("NAME", m.name);
+                    }
+                }
+
+                resultString = resultString.Replace("$$MOTOR_INIT$$", tempString);
+                #endregion
+
+                #region Solenoid Init
+                string solenoidTemplate = "DragonSolenoid m_solenoid-NAME = nullptr;" + Environment.NewLine;
+                tempString = "";
+
+                foreach (mechanismInstance mech in theRobot.mechanismInstance)
+                {
+                    foreach (solenoid s in mech.mechanism.solenoid)
+                    {
+                        tempString += solenoidTemplate.Replace("NAME", s.name);
+                    }
+                }
+
+                resultString = resultString.Replace("$$SOLENOID_INIT$$", tempString);
+                #endregion
+
+                #region Cancoder Init
+                string cancoderTemplate = "DragonCanCoder *m_cancoder-ID = nullptr;" + Environment.NewLine;
+                tempString = "";
+
+                foreach (mechanismInstance mechanism in theRobot.mechanismInstance)
+                {
+                    foreach(cancoder cancoder in mechanism.mechanism.cancoder)
+                    {
+                        tempString += cancoderTemplate.Replace("ID", cancoder.canId.ToString());
+                    }
+                }
+
+                resultString = resultString.Replace("$$CANCODER_INIT$$", tempString);
+                #endregion
+
+                #region Mechanism Init
+                string mechanismInitTemplate = "MECHANISM_TYPE *m_NAME = nullptr;" + Environment.NewLine;
+                tempString = "";
+
+                foreach(mechanismInstance mechanism in theRobot.mechanismInstance)
+                {
+                    tempString += mechanismInitTemplate.Replace("MECHANISM_TYPE", mechanism.mechanism.name).Replace("NAME", mechanism.name.ToLower());
+                }
+
+                resultString = resultString.Replace("$$MECHANISM_INIT$$", tempString);
+                #endregion
+
+                File.WriteAllText(filePath, resultString);
+                #endregion 
+            }
         }
 
         private void generateMechanismFiles()
@@ -61,6 +192,20 @@ namespace CoreCodeGenerator
             List<string> mechStateMgrFiles = new List<string>();
             foreach (robot theRobot in theRobotConfiguration.theRobotVariants.robot)
             {
+                foreach(mechanismInstance mech in theRobot.mechanismInstance)
+                {
+                    string filePath;
+                    string resultString;
+
+                    string mechanismName = mech.name;
+
+                    createMechanismFolder(mechanismName);
+
+                    #region Generate 
+                    #endregion
+                }
+
+
                 /*
                 foreach (mechanism mech in theRobot.mechanism)
                 {
@@ -155,6 +300,7 @@ namespace CoreCodeGenerator
 
         private void generateRobotDefinitionFiles()
         {
+            /*
             #region H File
             addProgress("Writing robot definition files...");
             string contents = loadTemplate(theToolConfiguration.templateRobotDefinitionsHPath);
@@ -200,6 +346,7 @@ namespace CoreCodeGenerator
             addProgress("Finished writing RobotDefinitions.h...");
             #endregion
 
+            
             #region Cpp File
             contents = loadTemplate(theToolConfiguration.templateRobotDefinitionsCppPath);
             filePathName = getRobotDefinitionFilePath(Path.GetFileName(theToolConfiguration.templateRobotDefinitionsCppPath));
@@ -271,16 +418,18 @@ namespace CoreCodeGenerator
             File.WriteAllText(filePathName, contents);
             addProgress("Finished writing RobotDefinitions.cpp...");
             #endregion
+            */
         }
 
         private string getIncludePath(string mechanismName)
         {
-            return getMechanismOutputPath(mechanismName).Replace(theToolConfiguration.rootOutputFolder, "").Replace(@"\", "/").TrimStart('/');
+            return getMechanismOutputPath(mechanismName).ToLower().Replace(theToolConfiguration.rootOutputFolder, "").Replace(@"\", "/").TrimStart('/');
         }
 
         private void createMechanismFolder(string mechanismName)
         {
-            Directory.CreateDirectory(getMechanismOutputPath(mechanismName));
+            Directory.CreateDirectory(Path.Combine(getMechanismOutputPath(mechanismName), "generated"));
+            Directory.CreateDirectory(Path.Combine(getMechanismOutputPath(mechanismName), "decoratormods"));
         }
 
         private string getMechanismFullFilePathName(string mechanismName, string templateFilePath)
@@ -294,7 +443,12 @@ namespace CoreCodeGenerator
 
         private string getMechanismOutputPath(string mechanismName)
         {
-            return Path.Combine(theToolConfiguration.rootOutputFolder, "mechanisms", mechanismName);
+            return Path.Combine("mechanisms", mechanismName);
+        }
+
+        private string getPathInRoot(string path)
+        {
+            return Path.Combine(theToolConfiguration.rootOutputFolder, path);
         }
 
         private string getRobotDefinitionFilePath(string filename)

@@ -1,0 +1,45 @@
+m_motor-$$NAME$$ = new $$MOTOR_TYPE$$(string("$$MOTOR_NAME$$"),
+                                        MotorControllerUsage::MOTOR_CONTROLLER_USAGE::$$MOTOR_NAME$$,
+                                        m_motor-$$NAME$$$$CAN_ID$$,
+                                        string(canBusName));
+
+m_motor-$$NAME$$->SetSensorInverted($$SENSOR_INVERTED$$);
+
+m_motor-$$NAME$$->SetControlConstants(0, $$CONTROL_DATA$$);
+
+m_motor-$$NAME$$->SetCurrentLimits($$ENABLE_STATOR_CURRENT_LIMIT$$,
+                               $$STATOR_CURRENT_LIMIT$$,
+                               $$ENABLE_SUPPLY_CURRENT_LIMIT$$,
+                               $$SUPPLY_CURRENT_LIMIT$$,
+                               $$SUPPLY_CURRENT_THRESHOLD$$,
+                               $$SUPPLY_TIME_THRESHOLD$$);
+
+m_motor-$$NAME$$->SetPIDConstants(0, $$KP$$, $$KI$$, $$KD$$, $$KF$$);
+
+m_motor-$$NAME$$->ConfigHWLimitSW($$ENABLE_FORWARD$$,
+                                $$REMOTE_FORWARD_ID$$,
+                                $$FORWARD_RESET_POSITION$$,
+                                $$FORWARD_POSITION$$,
+                                $$FORWARD_TYPE$$,
+                                $$FORWARD_OPEN_CLOSE$$,
+                                $$ENABLE_RESERVE$$,
+                                $$REMOTE_REVERSE_ID$$,
+                                $$REVERSE_RESET_POSITION$$,
+                                $$REVERSE_POSITION$$,
+                                $$REVERSE_TYPE$$,
+                                $$REVERSE_OPEN_CLOSE$$);
+
+m_motor-$$NAME$$->ConfigMotorSettings($$INVERTED$$,
+                                    $$MODE$$,
+                                    $$DEADBAND_PERCENT$$,
+                                    $$PEAK_FORWARD_DUTY_CYCLE$$,
+                                    $$PEAK_REVERSE_DUTY_CYCLE$$);
+
+//check if follower motor
+//m_motor-$$NAME$$->SetAsFollowerMotor($$MASTER_CANID$$);
+
+//check for remote sensor
+//m_motor-$$NAME$$->SetRemoteSensor($$REMOTE_CANID$$, $$DEVICE_TYPE$$);
+
+//fuse cancoder
+//m_motor-$$NAME$$->FuseCancoder();

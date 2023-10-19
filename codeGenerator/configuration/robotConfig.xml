@@ -1,16 +1,61 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <robotVariants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <robot>
     <robot>
       <parameter />
       <motor />
       <pcm />
+      <pdp />
       <pigeon />
       <limelight />
-      <mechanismInstance />
+      <chassis>
+        <motor />
+        <swervemodule />
+        <wheelDiameter>0</wheelDiameter>
+        <wheelBase>0</wheelBase>
+        <track>0</track>
+        <maxVelocity>0</maxVelocity>
+        <maxAngularVelocity>0</maxAngularVelocity>
+        <maxAcceleration>0</maxAcceleration>
+        <maxAngularAcceleration>0</maxAngularAcceleration>
+      </chassis>
+      <mechanismInstance>
+        <mechanismInstance>
+          <name>Intake</name>
+          <mechanism>
+            <state />
+            <motor>
+              <motor
+                xsi:type="Falcon_Motor">
+                <name>IntakeMotor</name>
+                <CAN_ID />
+              </motor>
+            </motor>
+            <solenoid />
+            <servo />
+            <analogInput />
+            <digitalInput />
+            <cancoder />
+            <closedLoopControlParameters />
+            <name>Intake</name>
+          </mechanism>
+        </mechanismInstance>
+      </mechanismInstance>
       <camera />
       <roborio />
     </robot>
   </robot>
-  <mechanism />
+  <mechanism>
+    <mechanism>
+      <state />
+      <motor />
+      <solenoid />
+      <servo />
+      <analogInput />
+      <digitalInput />
+      <cancoder />
+      <closedLoopControlParameters />
+      <name>Intake</name>
+    </mechanism>
+  </mechanism>
 </robotVariants>
