@@ -44,8 +44,8 @@ namespace ApplicationData
                 return string.Format("Robot #{0}", robotID.value__);
             else if (propertyName == "testClass")
                 return string.Format("{0} ({1})", propertyName, testClass.name);
-            else if (propertyName == "pdp")
-                return string.Format("{0} ({1})", propertyName, pdp.type);
+            //else if (propertyName == "pdp")
+            //    return string.Format("{0} ({1})", propertyName, pdp.type);
 
             return "robot class - incomplete getDisplayName";
         }

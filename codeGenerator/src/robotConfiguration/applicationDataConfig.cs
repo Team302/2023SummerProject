@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
@@ -129,8 +130,10 @@ namespace applicationConfiguration
                 }
             }
 
+            initializeData(theRobotVariants, new List<Attribute>());
+
             // if the units string is empty for a non unitless item, set the units to the first unit available in the family
-            initializeUnits(theRobotVariants, physicalUnit.Family.unitless );
+         //   initializeUnits(theRobotVariants, physicalUnit.Family.unitless );
 
             foreach (applicationData theRobot in theRobotVariants.Robots)
             {
@@ -163,49 +166,124 @@ namespace applicationConfiguration
             return theRobotVariants;
         }
 
-        public void initializeUnits(object obj, physicalUnit.Family family)
+        public void initializeData(object obj, List<Attribute> attributes)
         {
-            PropertyInfo unitsInfo = obj.GetType().GetProperty("__units__");
+            if (obj == null)
+                return;
 
-            physicalUnit.Family theUnitFamily = physicalUnit.Family.unitless;
-            PropertyInfo unitFamilyInfo = obj.GetType().GetProperty("unitsFamily");
-            if (unitFamilyInfo != null)
-                theUnitFamily = (physicalUnit.Family)unitFamilyInfo.GetValue(obj);
-
-            if (unitsInfo != null)
+            PropertyInfo[] PIs = obj.GetType().GetProperties();
+            
+            foreach (PropertyInfo pi in PIs)
             {
-                string theUnits = (string)unitsInfo.GetValue(obj);
-                
-                theUnitFamily = family != physicalUnit.Family.unitless ? family : theUnitFamily;
-
-                if (string.IsNullOrEmpty(theUnits) && (theUnitFamily != physicalUnit.Family.unitless))
+                if (isACollection(pi.PropertyType))
                 {
-                    physicalUnit pu = physicalUnits.Find(u => u.family == theUnitFamily);
-                    unitsInfo.SetValue(obj, pu.shortName, null);
+                    ICollection listObject = pi.GetValue(obj) as ICollection;
+                    foreach (object o in listObject)
+                        initializeData(o, null);
                 }
-            }
-            else
-            {
-                PropertyInfo[] PIs = obj.GetType().GetProperties();
-                foreach (PropertyInfo pi in PIs)
+                else
                 {
-                    if (isACollection(pi.PropertyType))
-                    { 
-                        ICollection listObject = pi.GetValue(obj) as ICollection;
-                        foreach(object o in listObject)
-                            initializeUnits(o, physicalUnit.Family.unitless);
+                    if (obj is baseElement)
+                    {
+                        if (attributes != null)
+                        {
+                            ((baseElement)obj).isTunable = attributes.Find(a => a.GetType() == typeof(TunableParameterAttribute)) != null;
+                            ((baseElement)obj).isConstant = attributes.Find(a => a.GetType() == typeof(ConstantAttribute)) != null;
+
+                            PhysicalUnitsFamilyAttribute phyUnitsFamilyAttr = (PhysicalUnitsFamilyAttribute)attributes.Find(a => a.GetType() == typeof(PhysicalUnitsFamilyAttribute));
+                            if (phyUnitsFamilyAttr != null)
+                            {
+                                ((baseElement)obj).unitsFamily = phyUnitsFamilyAttr.family;
+                                ((baseElement)obj).unitsFamilyDefinedByAttribute = true;
+                            }
+
+                            RangeAttribute rangeAttr = (RangeAttribute)attributes.Find(a => a.GetType() == typeof(RangeAttribute));
+                            if (rangeAttr != null)
+                            {
+                                ((baseElement)obj).range.maxRange = Convert.ToDouble(rangeAttr.Maximum);
+                                ((baseElement)obj).range.minRange = Convert.ToDouble(rangeAttr.Minimum);
+                            }
+
+                            DefaultValueAttribute defaultValueAttr = (DefaultValueAttribute)attributes.Find(a => a.GetType() == typeof(DefaultValueAttribute));
+                            if (defaultValueAttr != null)
+                                ((baseElement)obj).theDefault.value = defaultValueAttr.Value;
+
+                            DataDescriptionAttribute descriptionAttr = (DataDescriptionAttribute)attributes.Find(a => a.GetType() == typeof(DataDescriptionAttribute));
+                            if (descriptionAttr != null)
+                                ((baseElement)obj).description = descriptionAttr.description;
+                        }
+
+                        if (((baseElement)obj).unitsFamily != physicalUnit.Family.none)
+                        {
+                            PropertyInfo unitsInfo = obj.GetType().GetProperty("__units__");
+
+                            if(unitsInfo != null)
+                            {
+                                object unitsObj = unitsInfo.GetValue(obj);
+                                if((unitsObj == null) || (unitsObj.ToString()== ""))
+                                {
+                                    physicalUnit pu = physicalUnits.Find(u => u.family == ((baseElement)obj).unitsFamily);
+                                    unitsInfo.SetValue(obj, pu.shortName);
+                                }
+                            }
+                        }
+
+                        break;
                     }
                     else
+                    //if (pi.PropertyType != typeof(string))
                     {
-                        if (pi.PropertyType != typeof(string))
-                        {
-                            PhysicalUnitsFamilyAttribute theFamily = pi.GetCustomAttribute<PhysicalUnitsFamilyAttribute>();
-                            object theObj = pi.GetValue(obj);
-                            initializeUnits(theObj, theFamily==null ? physicalUnit.Family.unitless : theFamily.family);
-                        }
+                        List<Attribute> theAttributes = pi.GetCustomAttributes().ToList();
+                        object theObj = pi.GetValue(obj);
+                        initializeData(theObj, theAttributes);
                     }
                 }
             }
+        }
+
+        public void initializeUnits(object obj, physicalUnit.Family family)
+        {
+            //PropertyInfo unitsInfo = obj.GetType().GetProperty("__units__");
+
+            //physicalUnit.Family theUnitFamily = physicalUnit.Family.unitless;
+            //PropertyInfo unitFamilyInfo = obj.GetType().GetProperty("unitsFamily");
+            //if (unitFamilyInfo != null)
+            //    theUnitFamily = (physicalUnit.Family)unitFamilyInfo.GetValue(obj);
+
+            //if (unitsInfo != null)
+            //{
+            //    string theUnits = (string)unitsInfo.GetValue(obj);
+                
+            //    theUnitFamily = family != physicalUnit.Family.unitless ? family : theUnitFamily;
+
+            //    if (string.IsNullOrEmpty(theUnits) && (theUnitFamily != physicalUnit.Family.unitless))
+            //    {
+            //        physicalUnit pu = physicalUnits.Find(u => u.family == theUnitFamily);
+            //        unitsInfo.SetValue(obj, pu.shortName, null);
+            //    }
+            //}
+            //else
+            //{
+            //    PropertyInfo[] PIs = obj.GetType().GetProperties();
+            //    foreach (PropertyInfo pi in PIs)
+            //    {
+            //        if (isACollection(pi.PropertyType))
+            //        { 
+            //            ICollection listObject = pi.GetValue(obj) as ICollection;
+            //            foreach(object o in listObject)
+            //                initializeUnits(o, physicalUnit.Family.unitless);
+            //        }
+            //        else
+            //        {
+            //            if (pi.PropertyType != typeof(string))
+            //            {
+            //                PhysicalUnitsFamilyAttribute theFamily = pi.GetCustomAttribute<PhysicalUnitsFamilyAttribute>();
+            //                object theObj = pi.GetValue(obj);
+            //                initializeUnits(theObj, theFamily==null ? physicalUnit.Family.unitless : theFamily.family);
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private mechanism loadMechanism(string fullPathName, string mechanismName)

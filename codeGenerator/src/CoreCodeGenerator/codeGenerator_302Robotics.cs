@@ -255,7 +255,7 @@ namespace CoreCodeGenerator
 
                 foreach(mechanismInstance mechInstance in bot.mechanismInstance)
                 {
-                    replacement += mechanismTemplate.Replace("MECH", mechInstance.name).Replace("TYPE", mechInstance.mechanism.name.value__);
+                    replacement += mechanismTemplate.Replace("MECH", mechInstance.name.value__).Replace("TYPE", mechInstance.mechanism.name.value__);
                 }
 
                 //end with function footer

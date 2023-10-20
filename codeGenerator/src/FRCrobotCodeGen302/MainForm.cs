@@ -151,14 +151,14 @@ namespace FRCrobotCodeGen302
                     PropertyInfo piToDisplay = null;
 
                     string unitsAsString = "";
-                    physicalUnit.Family unitsFamily = physicalUnit.Family.unitless;
+                    physicalUnit.Family unitsFamily = physicalUnit.Family.none;
 
                     if (parent != null)
                     {
                         unitsAsString = GetUnitsShortName(nonLeafNodeTag.getObject(parent.Tag));
                         unitsFamily = GetTheUnitsFamilyName(parent, obj, nodeName);
 
-                        if(unitsFamily != physicalUnit.Family.unitless)
+                        if (unitsFamily != physicalUnit.Family.none)
                         {
                             unitsAsString = generatorConfig.physicalUnits.Find(p => p.family == unitsFamily).shortName;
                         }
@@ -195,10 +195,10 @@ namespace FRCrobotCodeGen302
 
                     if (piToDisplay != null)
                     {
-                        if (unitsFamily == physicalUnit.Family.unitless)
+                        if (unitsFamily == physicalUnit.Family.none)
                         {
                             PhysicalUnitsFamilyAttribute units = piToDisplay.GetCustomAttribute<PhysicalUnitsFamilyAttribute>(true);
-                            unitsFamily = units == null ? physicalUnit.Family.unitless : units.family;
+                            unitsFamily = units == null ? physicalUnit.Family.none : units.family;
                         }
 
                         range = piToDisplay.GetCustomAttribute<RangeAttribute>();
@@ -220,10 +220,13 @@ namespace FRCrobotCodeGen302
                         {
                             if (!(pi.Name.StartsWith("__") && pi.Name.EndsWith("__")))
                             {
-                                object theObj = pi.GetValue(obj);
+                                if (!isHiddenPartOfbaseElement(pi.Name))
+                                {
+                                    object theObj = pi.GetValue(obj);
 
-                                if (theObj != null)
-                                    AddNode(tn, theObj, pi.Name);
+                                    if (theObj != null)
+                                        AddNode(tn, theObj, pi.Name);
+                                }
                             }
                         }
 
@@ -264,6 +267,13 @@ namespace FRCrobotCodeGen302
             return tn;
         }
 
+        bool isHiddenPartOfbaseElement(string name)
+        {
+            if (name == "unitsFamily")
+                return false;
+
+            return typeof(baseElement).GetProperty(name) != null;
+        }
 
         private string getDisplayName(object obj, string instanceName)
         {
@@ -298,7 +308,7 @@ namespace FRCrobotCodeGen302
 
         private static physicalUnit.Family GetTheUnitsFamilyName(TreeNode parent, object obj, string originalNodeName)
         {
-            physicalUnit.Family unitsFamily = physicalUnit.Family.unitless;
+            physicalUnit.Family unitsFamily = physicalUnit.Family.none;
             PropertyInfo unitsFamilyPi = nonLeafNodeTag.getObject(parent.Tag).GetType().GetProperty("unitsFamily");
             if (unitsFamilyPi != null)
                 unitsFamily = (physicalUnit.Family)unitsFamilyPi.GetValue(nonLeafNodeTag.getObject(parent.Tag)); // the units family is defined in a property as part of the class
@@ -589,7 +599,7 @@ namespace FRCrobotCodeGen302
             string updatedUnits = null;
 
             physicalUnitsComboBox.Items.Clear();
-            physicalUnitsComboBox.Visible = unitsFamily != physicalUnit.Family.unitless;
+            physicalUnitsComboBox.Visible = unitsFamily != physicalUnit.Family.none;
             if (physicalUnitsComboBox.Visible)
             {
                 List<physicalUnit> unitsList = generatorConfig.physicalUnits.FindAll(p => p.family == unitsFamily);
@@ -1240,7 +1250,7 @@ namespace FRCrobotCodeGen302
 
                     if (obj != null)
                     {
-                        theAppDataConfiguration.initializeUnits(obj, Family.unitless);
+                        theAppDataConfiguration.initializeData(obj, null);
 
                         PropertyInfo[] pis = nonLeafNodeTag.getObject(lastSelectedValueNode.Tag).GetType().GetProperties();
                         PropertyInfo pi = nonLeafNodeTag.getObject(lastSelectedValueNode.Tag).GetType().GetProperty(name);
@@ -1249,6 +1259,10 @@ namespace FRCrobotCodeGen302
 
                         if (addToCollection)
                         {
+                            PropertyInfo objPi = obj.GetType().GetProperty("parent");
+                            if(objPi != null)
+                                objPi.SetValue(obj, theObj);
+
                             // then add it to the collection
                             theObj.GetType().GetMethod("Add").Invoke(theObj, new object[] { obj });
                             int count = (int)theObj.GetType().GetProperty("Count").GetValue(theObj);
@@ -1322,7 +1336,6 @@ namespace FRCrobotCodeGen302
                             nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag).GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
                             int count = (int)nonLeafNodeTag.getObject(lastSelectedArrayNode.Tag).GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
 
-                            theAppDataConfiguration.initializeUnits(obj, Family.unitless);
                             AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                         }
                     }
@@ -1350,7 +1363,6 @@ namespace FRCrobotCodeGen302
                             }
                             catch { }
 
-                            theAppDataConfiguration.initializeUnits(obj, Family.unitless);
                             AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                         }
                     }
@@ -1370,7 +1382,7 @@ namespace FRCrobotCodeGen302
                         }
                         catch { }
 
-                        theAppDataConfiguration.initializeUnits(obj, Family.unitless);
+                        theAppDataConfiguration.initializeData(obj, null);
                         AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                     }
                 }

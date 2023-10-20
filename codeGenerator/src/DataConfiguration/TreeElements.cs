@@ -12,6 +12,48 @@ namespace DataConfiguration
     // Attributes are only allowed on the standard types (uint, int, double, bool) and on doubleParameter, unitParameter, intParameter, boolParameter
     // The attribute PhysicalUnitsFamily can only be applied on doubleParameter, uintParameter, intParameter, boolParameter
     // A class can only contain one List of a particular type
+    [Serializable]
+    abstract public class baseElement
+    {
+        [XmlIgnore]
+        public object parent { get;set; } = null;
+        [XmlIgnore]
+        public bool isConstant { get; set; } = false; // Defined by an attribute
+        [XmlIgnore]
+        public bool isTunable { get; set; } = false; // Defined by an attribute
+        [XmlIgnore]
+        public physicalUnit.Family unitsFamily { get; set; } = physicalUnit.Family.none; // Defined by an attribute or through the GUI
+        [XmlIgnore]
+        public bool unitsFamilyDefinedByAttribute { get; set; } = false; // true if an attribute defines the unitsFamily
+        [XmlIgnore]
+        public string physicalUnits { get; set; } = ""; // Defined by the GUI
+        [XmlIgnore]
+        public valueRange range { get; set; } // Defined by an attribute
+        [XmlIgnore]
+        public defaultValue theDefault { get; set; } // Defined by an attribute
+        [XmlIgnore]
+        public string description { get; set; } = "";
+
+        public baseElement() 
+        {
+            range = new valueRange();
+            theDefault = new defaultValue();
+        }
+    }
+
+    [Serializable]
+    public class valueRange
+    {
+        public double minRange { get; set; } = double.MinValue;
+        public double maxRange { get; set; } = double.MaxValue;
+    }
+
+    [Serializable]
+    public class defaultValue
+    {
+        public object value { get; set; } = null;
+    }
+
 
     [Serializable()]
     [NotUserAddable]
@@ -22,7 +64,7 @@ namespace DataConfiguration
     [XmlInclude(typeof(doubleParameter))]
     [XmlInclude(typeof(boolParameter))]
 
-    public partial class parameter
+    public partial class parameter : baseElement
     {
         public string name { get; set; }
         public string __units__ { get; set; } = "";
@@ -94,8 +136,6 @@ namespace DataConfiguration
     [Serializable()]
     public partial class doubleParameterUserDefinedBase : parameter
     {
-        public physicalUnit.Family unitsFamily { get; set; } = physicalUnit.Family.unitless;
-
         protected string getDisplayName(string propertyName, double value, out helperFunctions.RefreshLevel refresh)
         {
             refresh = helperFunctions.RefreshLevel.none;
@@ -176,8 +216,6 @@ namespace DataConfiguration
     [Serializable()]
     public partial class intParameterUserDefinedBase : parameter
     {
-        public physicalUnit.Family unitsFamily { get; set; } = physicalUnit.Family.unitless;
-
         protected string getDisplayName(string propertyName, double value, out helperFunctions.RefreshLevel refresh)
         {
             refresh = helperFunctions.RefreshLevel.none;
@@ -258,7 +296,6 @@ namespace DataConfiguration
     [Serializable()]
     public partial class uintParameterUserDefinedBase : parameter
     {
-        public physicalUnit.Family unitsFamily { get; set; } = physicalUnit.Family.unitless;
 
         protected string getDisplayName(string propertyName, double value, out helperFunctions.RefreshLevel refresh)
         {
@@ -414,10 +451,10 @@ namespace DataConfiguration
     }
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public class DescriptionAttribute : Attribute
+    public class DataDescriptionAttribute : Attribute
     {
         public string description { get; set; }
-        public DescriptionAttribute(string description)
+        public DataDescriptionAttribute(string description)
         {
             this.description = description;
         }

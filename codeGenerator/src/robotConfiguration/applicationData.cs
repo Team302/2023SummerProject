@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 // =================================== Rules =====================================
@@ -42,13 +43,14 @@ namespace ApplicationData
         [XmlIgnore]
         public object theTreeNode = null;
 
-        public string name { get; set; }
+        public stringParameter name { get; set; }
 
         public mechanism mechanism { get; set; }
 
         public mechanismInstance()
         {
-            name = "mechanismInstanceName";
+            name = new stringParameter();
+            name.value__ = "mechanismInstanceName";
 
             helperFunctions.initializeDefaultValues(this);
         }
