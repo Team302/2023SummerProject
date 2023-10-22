@@ -41,7 +41,7 @@ namespace ApplicationData
             refresh = helperFunctions.RefreshLevel.none;
 
             if (string.IsNullOrEmpty(propertyName))
-                return string.Format("Robot #{0}", robotID.value__);
+                return string.Format("Robot #{0}", robotID.value);
             else if (propertyName == "testClass")
                 return string.Format("{0} ({1})", propertyName, testClass.name);
             //else if (propertyName == "pdp")
@@ -230,7 +230,9 @@ namespace ApplicationData
    [Serializable()]
     public class testClass
     {
-        public stringParameter name { get; set; }
+        public string name { get; set; }
+
+        public doubleParameterUserDefinedTunable doubleParameterUserDefinedTunable { get; set; }
 
         [DefaultValue(-4)]
         [Range(typeof(double), "-10", "10")]
@@ -288,11 +290,11 @@ namespace ApplicationData
 
         public testClass()
         {
-            name = new stringParameter();
             aDouble = new doubleParameter();
             anotherDouble = new doubleParameter();
             aListOfDoubles = new List<doubleParameterUserDefinedNonTunable>();
             aListOfTunableDoubles = new List<doubleParameterUserDefinedTunable>();
+            doubleParameterUserDefinedTunable = new doubleParameterUserDefinedTunable();
 
             anInt = new intParameter();
             anotherInt = new intParameter();
@@ -309,7 +311,7 @@ namespace ApplicationData
             aListOfNonTunableBools = new List<boolParameterUserDefinedNonTunable>();
             aListOfTunableBools = new List<boolParameterUserDefinedTunable>();
 
-            name.value__ = this.GetType().Name;
+            name = this.GetType().Name;
             helperFunctions.initializeDefaultValues(this);
         }
 
@@ -319,7 +321,7 @@ namespace ApplicationData
 
             if (string.IsNullOrEmpty(propertyName))
             {
-                return name.value__;
+                return name;
             }
             else if (propertyName == "aDouble")
             {

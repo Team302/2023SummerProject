@@ -11,17 +11,18 @@ namespace DataConfiguration
     // A property named value__ will not be shown in the tree directly. Its value is shown in the parent node
     // Attributes are only allowed on the standard types (uint, int, double, bool) and on doubleParameter, unitParameter, intParameter, boolParameter
     // The attribute PhysicalUnitsFamily can only be applied on doubleParameter, uintParameter, intParameter, boolParameter
-    // A class can only contain one List of a particular type
+    //
+    // 
+
     [Serializable]
     abstract public class baseElement
     {
         [XmlIgnore]
-        public object parent { get;set; } = null;
+        public object parent { get; set; } = null;
         [XmlIgnore]
         public bool isConstant { get; set; } = false; // Defined by an attribute
         [XmlIgnore]
         public bool isTunable { get; set; } = false; // Defined by an attribute
-        [XmlIgnore]
         public physicalUnit.Family unitsFamily { get; set; } = physicalUnit.Family.none; // Defined by an attribute or through the GUI
         [XmlIgnore]
         public bool unitsFamilyDefinedByAttribute { get; set; } = false; // true if an attribute defines the unitsFamily
@@ -33,8 +34,12 @@ namespace DataConfiguration
         public defaultValue theDefault { get; set; } // Defined by an attribute
         [XmlIgnore]
         public string description { get; set; } = "";
+        [XmlIgnore]
+        public bool showExpanded { get; set; } = true;
 
-        public baseElement() 
+        public string name { get; set; }
+
+        public baseElement()
         {
             range = new valueRange();
             theDefault = new defaultValue();
@@ -44,8 +49,8 @@ namespace DataConfiguration
     [Serializable]
     public class valueRange
     {
-        public double minRange { get; set; } = double.MinValue;
-        public double maxRange { get; set; } = double.MaxValue;
+        public double minRange { get; set; } = Int32.MinValue;
+        public double maxRange { get; set; } = Int32.MaxValue;
     }
 
     [Serializable]
@@ -66,7 +71,7 @@ namespace DataConfiguration
 
     public partial class parameter : baseElement
     {
-        public string name { get; set; }
+        
         public string __units__ { get; set; } = "";
 
         [Constant()]
@@ -116,20 +121,23 @@ namespace DataConfiguration
     [NotUserAddable]
     public partial class doubleParameter : parameter
     {
-        public double value__ { get; set; }
+        public double value { get; set; }
 
         public doubleParameter()
         {
-            type = value__.GetType().Name;
+            range.minRange = Convert.ToDouble(decimal.MinValue/2);
+            range.maxRange = Convert.ToDouble(decimal.MaxValue/2);
+            showExpanded = false;
+            type = value.GetType().Name;
         }
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
             refresh = helperFunctions.RefreshLevel.parentHeader;
 
             if (string.IsNullOrEmpty(__units__))
-                return string.Format("{0} ({1})", instanceName, value__);
+                return string.Format("{0} ({1})", instanceName, value);
             else
-                return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+                return string.Format("{0} ({1} {2})", instanceName, value, __units__);
         }
     }
 
@@ -161,7 +169,7 @@ namespace DataConfiguration
     public partial class doubleParameterUserDefinedNonTunable : doubleParameterUserDefinedBase
     {
         [DefaultValue(0u)]
-        public double value { get; set; } = 0;
+        public double value { get; set; }
         public doubleParameterUserDefinedNonTunable()
         {
             type = value.GetType().Name;
@@ -178,7 +186,7 @@ namespace DataConfiguration
     {
         [DefaultValue(0u)]
         [TunableParameter()]
-        public double value { get; set; } = 0;
+        public double value { get; set; }
         public doubleParameterUserDefinedTunable()
         {
             type = value.GetType().Name;
@@ -196,20 +204,23 @@ namespace DataConfiguration
     [NotUserAddable]
     public partial class intParameter : parameter
     {
-        public int value__ { get; set; }
+        public int value { get; set; }
 
         public intParameter()
         {
-            type = value__.GetType().Name;
+            range.minRange = Convert.ToDouble(int.MinValue);
+            range.maxRange = Convert.ToDouble(int.MaxValue);
+            showExpanded = false;
+            type = value.GetType().Name;
         }
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
             refresh = helperFunctions.RefreshLevel.parentHeader;
 
             if (string.IsNullOrEmpty(__units__))
-                return string.Format("{0} ({1})", instanceName, value__);
+                return string.Format("{0} ({1})", instanceName, value);
             else
-                return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+                return string.Format("{0} ({1} {2})", instanceName, value, __units__);
         }
     }
 
@@ -276,20 +287,23 @@ namespace DataConfiguration
     [NotUserAddable]
     public partial class uintParameter : parameter
     {
-        public uint value__ { get; set; }
+        public uint value { get; set; }
 
         public uintParameter()
         {
-            type = value__.GetType().Name;
+            range.minRange = Convert.ToDouble(uint.MinValue);
+            range.maxRange = Convert.ToDouble(uint.MaxValue);
+            showExpanded = false;
+            type = value.GetType().Name;
         }
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
             refresh = helperFunctions.RefreshLevel.parentHeader;
 
             if (string.IsNullOrEmpty(__units__))
-                return string.Format("{0} ({1})", instanceName, value__);
+                return string.Format("{0} ({1})", instanceName, value);
             else
-                return string.Format("{0} ({1} {2})", instanceName, value__, __units__);
+                return string.Format("{0} ({1} {2})", instanceName, value, __units__);
         }
     }
 
@@ -357,17 +371,18 @@ namespace DataConfiguration
     [NotUserAddable]
     public partial class boolParameter : parameter
     {
-        public bool value__ { get; set; }
+        public bool value { get; set; }
 
         public boolParameter()
         {
-            type = value__.GetType().Name;
+            showExpanded = false;
+            type = value.GetType().Name;
         }
         override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
         {
             refresh = helperFunctions.RefreshLevel.parentHeader;
 
-            return string.Format("{0} ({1})", instanceName, value__);
+            return string.Format("{0} ({1})", instanceName, value);
         }
     }
 
@@ -426,7 +441,7 @@ namespace DataConfiguration
 
     #region ====================== Attribute definitions
     // if applied to a property, it means that live tuning over network tables is enabled
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false)]
     public class TunableParameterAttribute : Attribute
     {
         public TunableParameterAttribute()
@@ -485,7 +500,7 @@ namespace DataConfiguration
                     object nestedObj = pi.GetValue(obj);
                     if (nestedObj != null)
                     {
-                        PropertyInfo piValue__ = nestedObj.GetType().GetProperty("value__");
+                        PropertyInfo piValue__ = nestedObj.GetType().GetProperty("value");
                         if (piValue__ != null)
                             piValue__.SetValue(nestedObj, Convert.ChangeType(dva.Value, piValue__.PropertyType));
                         else

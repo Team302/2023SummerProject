@@ -130,11 +130,6 @@ namespace applicationConfiguration
                 }
             }
 
-            initializeData(theRobotVariants, new List<Attribute>());
-
-            // if the units string is empty for a non unitless item, set the units to the first unit available in the family
-         //   initializeUnits(theRobotVariants, physicalUnit.Family.unitless );
-
             foreach (applicationData theRobot in theRobotVariants.Robots)
             {
                 foreach (mechanismInstance mi in theRobot.mechanismInstance)
@@ -145,6 +140,7 @@ namespace applicationConfiguration
                 helperFunctions.initializeNullProperties(theRobot, true);
             }
 
+            initializeData(null, theRobotVariants, "theRobotVariants", new List<Attribute>());
 
 
             //foreach (robot theRobot in theRobotVariants.robot)
@@ -166,7 +162,7 @@ namespace applicationConfiguration
             return theRobotVariants;
         }
 
-        public void initializeData(object obj, List<Attribute> attributes)
+        public void initializeData(object parent, object obj, string objectName, List<Attribute> attributes)
         {
             if (obj == null)
                 return;
@@ -175,45 +171,59 @@ namespace applicationConfiguration
             
             foreach (PropertyInfo pi in PIs)
             {
-                if (isACollection(pi.PropertyType))
+                if(pi.Name == "name")
+                {
+                    pi.SetValue(obj, objectName);
+                }
+                else if (isACollection(pi.PropertyType))
                 {
                     ICollection listObject = pi.GetValue(obj) as ICollection;
+                    int index = 0;
                     foreach (object o in listObject)
-                        initializeData(o, null);
+                    {
+                        initializeData(listObject, o, string.Format("{0}[{1}]",pi.Name, index), null);
+                    }
                 }
                 else
                 {
                     if (obj is baseElement)
                     {
+                        baseElement beObj = (baseElement) obj;
+                        beObj.parent = parent;
+                        
+                        PropertyInfo namePI = obj.GetType().GetProperty("name");
+                        if (namePI != null)
+                            namePI.SetValue(obj, objectName);
+
                         if (attributes != null)
                         {
-                            ((baseElement)obj).isTunable = attributes.Find(a => a.GetType() == typeof(TunableParameterAttribute)) != null;
-                            ((baseElement)obj).isConstant = attributes.Find(a => a.GetType() == typeof(ConstantAttribute)) != null;
+                            beObj.isTunable = attributes.Find(a => a.GetType() == typeof(TunableParameterAttribute)) != null;
+                            beObj.isConstant = attributes.Find(a => a.GetType() == typeof(ConstantAttribute)) != null;
 
                             PhysicalUnitsFamilyAttribute phyUnitsFamilyAttr = (PhysicalUnitsFamilyAttribute)attributes.Find(a => a.GetType() == typeof(PhysicalUnitsFamilyAttribute));
                             if (phyUnitsFamilyAttr != null)
                             {
-                                ((baseElement)obj).unitsFamily = phyUnitsFamilyAttr.family;
-                                ((baseElement)obj).unitsFamilyDefinedByAttribute = true;
+                                beObj.unitsFamily = phyUnitsFamilyAttr.family;
+                                beObj.unitsFamilyDefinedByAttribute = true;
                             }
 
                             RangeAttribute rangeAttr = (RangeAttribute)attributes.Find(a => a.GetType() == typeof(RangeAttribute));
                             if (rangeAttr != null)
                             {
-                                ((baseElement)obj).range.maxRange = Convert.ToDouble(rangeAttr.Maximum);
-                                ((baseElement)obj).range.minRange = Convert.ToDouble(rangeAttr.Minimum);
+                                beObj.range.maxRange = Convert.ToDouble(rangeAttr.Maximum);
+                                beObj.range.minRange = Convert.ToDouble(rangeAttr.Minimum);
                             }
 
                             DefaultValueAttribute defaultValueAttr = (DefaultValueAttribute)attributes.Find(a => a.GetType() == typeof(DefaultValueAttribute));
                             if (defaultValueAttr != null)
-                                ((baseElement)obj).theDefault.value = defaultValueAttr.Value;
+                                beObj.theDefault.value = defaultValueAttr.Value;
 
                             DataDescriptionAttribute descriptionAttr = (DataDescriptionAttribute)attributes.Find(a => a.GetType() == typeof(DataDescriptionAttribute));
                             if (descriptionAttr != null)
-                                ((baseElement)obj).description = descriptionAttr.description;
+                                beObj.description = descriptionAttr.description;
                         }
 
-                        if (((baseElement)obj).unitsFamily != physicalUnit.Family.none)
+                        if (beObj.unitsFamily != physicalUnit.Family.none)
                         {
                             PropertyInfo unitsInfo = obj.GetType().GetProperty("__units__");
 
@@ -222,7 +232,7 @@ namespace applicationConfiguration
                                 object unitsObj = unitsInfo.GetValue(obj);
                                 if((unitsObj == null) || (unitsObj.ToString()== ""))
                                 {
-                                    physicalUnit pu = physicalUnits.Find(u => u.family == ((baseElement)obj).unitsFamily);
+                                    physicalUnit pu = physicalUnits.Find(u => u.family == beObj.unitsFamily);
                                     unitsInfo.SetValue(obj, pu.shortName);
                                 }
                             }
@@ -235,7 +245,7 @@ namespace applicationConfiguration
                     {
                         List<Attribute> theAttributes = pi.GetCustomAttributes().ToList();
                         object theObj = pi.GetValue(obj);
-                        initializeData(theObj, theAttributes);
+                        initializeData(obj, theObj, pi.Name, theAttributes);
                     }
                 }
             }
