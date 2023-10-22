@@ -136,7 +136,8 @@ namespace FRCrobotCodeGen302
 
             if (tn != null) // if a node has been added
             {
-                tn.Tag = new nodeTag(nodeName, obj);
+                nodeTag nt = new nodeTag(nodeName, obj);
+                tn.Tag = nt;
 
                 if (baseDataConfiguration.isACollection(obj)) // if it is a collection, add an entry for each item
                 {
@@ -156,7 +157,6 @@ namespace FRCrobotCodeGen302
                     string unitsAsString = "";
                     Family unitsFamily = Family.none;
                     DataConfiguration.valueRange range = null;
-                    DefaultValueAttribute defaultValue = null;
                     bool isConstant = false;
                     bool isTunable = false;
                     bool treatAsLeafNode = false;
@@ -171,16 +171,68 @@ namespace FRCrobotCodeGen302
                         isConstant = beObj.isConstant;
                         isTunable = beObj.isTunable;
                     }
+                    else if (isABasicSystemType(obj))
+                    {
+                        treatAsLeafNode = true;
+
+                        // everything inside baseElement is always editable, except for the name and type properties
+                        if (tn.Parent != null)
+                        {
+                            nodeTag parentNt = (nodeTag)(tn.Parent.Tag);
+                            if (parentNt != null)
+                            {
+                                if (parentNt.obj is baseElement)
+                                {
+                                    #region handle the name property
+                                    if (nodeName == "name")
+                                    {
+                                        PropertyInfo nameProp = nodeTag.getType(parentNt).GetProperty("name", BindingFlags.Public | BindingFlags.Instance);
+                                        if (nameProp != null)
+                                        {
+                                            isConstant = true;
+
+                                            // if the parent of nt.obj is inside a collection, then the name will be editable, otherwise not
+                                            TreeNode grandParentNode = tn.Parent.Parent;
+                                            if ((grandParentNode != null) &&
+                                                (baseDataConfiguration.isACollection(((nodeTag)grandParentNode.Tag).obj)))
+                                                isConstant = false;
+                                        }
+                                    }
+                                    #endregion
+
+                                    #region handle the type property
+                                    if (nodeName == "type")
+                                    {
+                                        PropertyInfo typeProp = nodeTag.getType(parentNt).GetProperty("type", BindingFlags.Public | BindingFlags.Instance);
+                                        if (typeProp != null)
+                                        {
+                                            isConstant = true;
+                                        }
+                                    }
+                                    #endregion
+
+                                    #region handle the value property
+                                    if (nodeName == "value")
+                                    {
+                                        PropertyInfo valueProp = nodeTag.getType(parentNt).GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                                        if (valueProp != null)
+                                        {
+                                            if (valueProp.GetCustomAttribute<TunableParameterAttribute>() != null)
+                                                isTunable = true;
+                                        }
+                                    }
+                                    #endregion
+                                }
+                                else
+                                {
+
+                                }
+                            }
+                        }
+                    }
 
                     Type objType = obj.GetType();
 
-                    if ((objType.FullName == "System.String") ||
-                        (objType == typeof(double)) ||
-                        (objType == typeof(int)) ||
-                        (objType == typeof(uint)) ||
-                        (objType == typeof(bool)) ||
-                        (objType.FullName == "System.DateTime")) // these types need to be treated like a leaf node
-                        treatAsLeafNode = true;
 
                     PropertyInfo[] propertyInfos = objType.GetProperties();
                     if (!treatAsLeafNode && (propertyInfos.Length > 0))
@@ -729,42 +781,6 @@ namespace FRCrobotCodeGen302
                         }
                         else
                             physicalUnitsComboBox.Visible = false;
-                    }
-                    else if ((parentNt != null) && nodeTag.getObject(parentNt) is baseElement && false)
-                    {
-                        baseElement beObj = ((baseElement)parentNt.obj);
-                        if (!beObj.isConstant)
-                        {
-                            if (!beObj.showExpanded)
-                            {
-                                showUnits = true;
-                                PropertyInfo valueProp = nodeTag.getType(parentNt).GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
-                                value = valueProp.GetValue(parentNt.obj);
-                            }
-                            else
-                                value = nt.obj;
-
-                            allowEdit = beObj.isTunable ? true : !isInaMechanismInstance;
-                        }
-
-                        enableCallback = false;
-                        if ((beObj.name == "value") || showUnits)
-                        {
-                            string updatedUnits = setPhysicalUnitsComboBox(beObj.unitsFamily, beObj.physicalUnits);
-                            if (!String.IsNullOrEmpty(updatedUnits))
-                            {
-                                PropertyInfo valueProp = nodeTag.getType(parentNt).GetProperty("__units__", BindingFlags.Public | BindingFlags.Instance);
-                                if (valueProp != null)
-                                {
-                                    valueProp.SetValue(parentNt.obj, updatedUnits);
-                                    beObj.physicalUnits = updatedUnits;
-                                    setNeedsSaving();
-                                }
-                            }
-                        }
-                        else
-                            physicalUnitsComboBox.Visible = false;
-
                     }
                     else if (isABasicSystemType(nt.obj))
                     {
