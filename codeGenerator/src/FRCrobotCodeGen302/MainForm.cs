@@ -810,6 +810,25 @@ namespace FRCrobotCodeGen302
                             if (theTypeObject == nt.obj) // means that the nt.obj is the type property as opposed to some other string in the class
                                 allowEdit = false;
                             #endregion
+
+                            baseElement beParentObj = (baseElement)parentNt.obj;
+                            enableCallback = false;
+                            if ((nt.name == "value") || showUnits)
+                            {
+                                string updatedUnits = setPhysicalUnitsComboBox(beParentObj.unitsFamily, beParentObj.physicalUnits);
+                                if (!String.IsNullOrEmpty(updatedUnits))
+                                {
+                                    PropertyInfo valueProp = nodeTag.getType(parentNt).GetProperty("__units__", BindingFlags.Public | BindingFlags.Instance);
+                                    if (valueProp != null)
+                                    {
+                                        valueProp.SetValue(beParentObj, updatedUnits);
+                                        beParentObj.physicalUnits = updatedUnits;
+                                        setNeedsSaving();
+                                    }
+                                }
+                            }
+                            else
+                                physicalUnitsComboBox.Visible = false;
                         }
 
                         value = nt.obj;
@@ -969,29 +988,28 @@ namespace FRCrobotCodeGen302
                 {
                     try
                     {
-                        nodeTag lnt = (nodeTag)(lastSelectedValueNode.Tag);
+                        nodeTag nt = (nodeTag)(lastSelectedValueNode.Tag);
 
-                        object obj = nodeTag.getObject(lastSelectedValueNode.Parent.Tag);
+                        object obj = nodeTag.getObject(nt);
+                        object parentObj = nodeTag.getObject(lastSelectedValueNode.Parent.Tag);
 
                         PropertyInfo prop = null;
                         PropertyInfo valueStringList = null;
 
-                        bool isValue__ = true;
-                        if (DataConfiguration.baseDataConfiguration.isACollection(obj))
+                        bool isValue = true;
+                        if (baseDataConfiguration.isACollection(parentObj))
                         {
-                            Type elementType = obj.GetType().GetGenericArguments().Single();
-                            prop = elementType.GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
+                            Type elementType = parentObj.GetType().GetGenericArguments().Single();
+                            prop = elementType.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                             valueStringList = elementType.GetProperty("value_strings", BindingFlags.NonPublic | BindingFlags.Instance);
                         }
                         else
                         {
-                            obj = lnt.obj;
-                            prop = nodeTag.getType(lnt).GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
+                            prop = nodeTag.getType(nt).GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                             if (prop == null)
                             {
-                                isValue__ = false;
-                                obj = nodeTag.getObject(lastSelectedValueNode.Parent.Tag);
-                                prop = obj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                                isValue = false;
+                                prop = parentObj.GetType().GetProperty(nt.name, BindingFlags.Public | BindingFlags.Instance);
                             }
                         }
 
@@ -999,26 +1017,26 @@ namespace FRCrobotCodeGen302
                         if ((prop != null) && (prop.CanWrite))
                         {
                             if (valueStringList == null)
-                                if (isValue__)
-                                    prop.SetValue(lnt.obj, valueComboBox.Text == "True");
+                                if (isValue)
+                                    prop.SetValue(nt.obj, valueComboBox.Text == "True");
                                 else
                                 {
                                     if (prop.PropertyType == typeof(boolParameter))
-                                        prop.SetValue(obj, valueComboBox.Text == "True");
+                                        prop.SetValue(parentObj, valueComboBox.Text == "True");
                                     else
-                                        prop.SetValue(obj, Enum.Parse(obj.GetType(), valueComboBox.Text));
+                                        prop.SetValue(parentObj, Enum.Parse(obj.GetType(), valueComboBox.Text));
                                 }
                             else
                             {
-                                prop.SetValue(lnt.obj, valueComboBox.Text);
+                                prop.SetValue(nt.obj, valueComboBox.Text);
                             }
-                            if (!isValue__)
+                            if (!isValue)
                             {
-                                lnt.obj = prop.GetValue(obj);
+                                nt.obj = prop.GetValue(parentObj);
 
                                 if (prop.Name == "unitsFamily")
                                 {
-                                    physicalUnit.Family family = (physicalUnit.Family)Enum.Parse(typeof(physicalUnit.Family), lnt.obj.ToString());
+                                    physicalUnit.Family family = (physicalUnit.Family)Enum.Parse(typeof(physicalUnit.Family), nt.obj.ToString());
                                     physicalUnit firstUnit = generatorConfig.physicalUnits.Find(p => p.family == family);
 
                                     // update the leafNodeTags
@@ -1041,10 +1059,10 @@ namespace FRCrobotCodeGen302
                         }
 
                         helperFunctions.RefreshLevel refresh;
-                        if (isValue__)
-                            lastSelectedValueNode.Text = getDisplayName(obj, lnt.name, out refresh);
+                        if (isValue)
+                            lastSelectedValueNode.Text = getDisplayName(parentObj, nt.name, out refresh);
                         else
-                            lastSelectedValueNode.Text = getDisplayName(obj, prop.Name, out refresh);
+                            lastSelectedValueNode.Text = getDisplayName(parentObj, prop.Name, out refresh);
 
                         if (lastSelectedValueNode.Parent != null)
                         {
@@ -1170,50 +1188,43 @@ namespace FRCrobotCodeGen302
                 {
                     try
                     {
-                        nodeTag lnt = (nodeTag)(lastSelectedValueNode.Tag);
+                        nodeTag nt = (nodeTag)(lastSelectedValueNode.Tag);
 
-                        if ((lnt != null) && (lnt.obj != null))
+                        if ((nt != null) && (nt.obj != null))
                         {
                             bool showExpanded = true;
                             object objToOperateOn = null;
                             PropertyInfo prop = null;
-                            if (lnt.obj is baseElement)
+                            if (nt.obj is baseElement)
                             {
-                                baseElement beObj = (baseElement)lnt.obj;
+                                baseElement beObj = (baseElement)nt.obj;
                                 showExpanded = beObj.showExpanded;
-                                objToOperateOn = lnt.obj;
-                                prop = nodeTag.getType(lnt).GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                                objToOperateOn = nt.obj;
+                                prop = nodeTag.getType(nt).GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                             }
-                            else
+                            else if (((nodeTag)lastSelectedValueNode.Parent.Tag).obj is baseElement) // todo what if the parent or Tag or obj are null
                             {
-
+                                nodeTag parentNT = (nodeTag)lastSelectedValueNode.Parent.Tag;
+                                objToOperateOn = parentNT.obj;
+                                prop = nodeTag.getType(parentNT).GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
                             }
-                            //if (lnt.obj is baseElement)
-                            //{
-
-                            //    if (prop == null)
-                            //    {
-                            //        isValue__ = false;
-                            //        obj = nodeTag.getObject(lastSelectedValueNode.Parent.Tag);
-                            //        prop = obj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
-                            //    }
-                            //}
 
                             if ((prop != null) && (prop.CanWrite))
                             {
                                 if (prop.PropertyType.Name == "UInt")
-                                    prop.SetValue(lnt.obj, (uint)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
+                                    prop.SetValue(objToOperateOn, (uint)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
                                 else if (prop.PropertyType.Name == "UInt32")
-                                    prop.SetValue(lnt.obj, (UInt32)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
+                                    prop.SetValue(objToOperateOn, (UInt32)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
                                 else if (prop.PropertyType.Name == "Int")
-                                    prop.SetValue(lnt.obj, (int)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
+                                    prop.SetValue(objToOperateOn, (int)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
                                 else if (prop.PropertyType.Name == "Int32")
-                                    prop.SetValue(lnt.obj, (Int32)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
+                                    prop.SetValue(objToOperateOn, (Int32)Math.Round(valueNumericUpDown.Value, valueNumericUpDown.DecimalPlaces, MidpointRounding.AwayFromZero));
                                 else if (prop.PropertyType.Name == "Double")
                                 {
-                                    prop.SetValue(lnt.obj, (double)valueNumericUpDown.Value);
+                                    prop.SetValue(objToOperateOn, (double)valueNumericUpDown.Value);
                                 }
 
+                                nt.obj = (double)valueNumericUpDown.Value;
                                 //if (lnt.isTunable)
                                 //{
                                 //    if (viewer != null)
@@ -1223,9 +1234,9 @@ namespace FRCrobotCodeGen302
 
                             helperFunctions.RefreshLevel refresh;
                             if (!showExpanded)
-                                lastSelectedValueNode.Text = getDisplayName(lnt.obj, lnt.name, out refresh);
+                                lastSelectedValueNode.Text = getDisplayName(objToOperateOn, nt.name, out refresh);
                             else
-                                lastSelectedValueNode.Text = getDisplayName(lnt.obj, prop.Name, out refresh);
+                                lastSelectedValueNode.Text = getDisplayName(objToOperateOn, prop.Name, out refresh);
 
                             if (lastSelectedValueNode.Parent != null)
                             {

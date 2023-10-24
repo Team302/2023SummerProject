@@ -232,7 +232,7 @@ namespace ApplicationData
     {
         public string name { get; set; }
 
-        public doubleParameterUserDefinedTunable doubleParameterUserDefinedTunable { get; set; }
+        public doubleParameterUserDefinedTunable myDoubleTunable { get; set; }
 
         [DefaultValue(-4)]
         [Range(typeof(double), "-10", "10")]
@@ -294,7 +294,7 @@ namespace ApplicationData
             anotherDouble = new doubleParameter();
             aListOfDoubles = new List<doubleParameterUserDefinedNonTunable>();
             aListOfTunableDoubles = new List<doubleParameterUserDefinedTunable>();
-            doubleParameterUserDefinedTunable = new doubleParameterUserDefinedTunable();
+            myDoubleTunable = new doubleParameterUserDefinedTunable();
 
             anInt = new intParameter();
             anotherInt = new intParameter();
