@@ -62,14 +62,14 @@ namespace ApplicationData
         {
             helperFunctions.initializeNullProperties(this);
 
-            name.value__ = GetType().Name;
+            name = GetType().Name;
 
             helperFunctions.initializeDefaultValues(this);
         }
 
         public string getDisplayName()
         {
-            return string.Format("{0}", name.value__);
+            return string.Format("{0}", name);
         }
 #endif
     }
@@ -77,7 +77,8 @@ namespace ApplicationData
     [Serializable()]
     public class testClosedLoopControlParameters
     {
-        public stringParameter name { get; set; }
+        [ConstantInMechInstance]
+        public string name { get; set; }
 
         [DefaultValue(0D)]
         [System.ComponentModel.Description("The proportional gain of the PID controller.")]
@@ -108,13 +109,13 @@ namespace ApplicationData
             helperFunctions.initializeNullProperties(this);
             helperFunctions.initializeDefaultValues(this);
 
-            name.value__ = GetType().Name;
+            name = GetType().Name;
 
         }
 
         public string getDisplayName()
         {
-            return string.Format("{0}", name.value__);
+            return string.Format("{0}", name);
         }
     }
 
@@ -148,9 +149,10 @@ namespace ApplicationData
     {
         [XmlIgnore]
         [Constant()]
-        public stringParameter motorType { get; protected set; }
+        public string motorType { get; protected set; }
 
-        public stringParameter name { get; set; }
+        [ConstantInMechInstance]
+        public string name { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
@@ -161,14 +163,14 @@ namespace ApplicationData
             helperFunctions.initializeNullProperties(this);
 
             string temp = this.GetType().Name;
-            motorType.value__ = temp.Substring(0, temp.LastIndexOf('_'));
-            name.value__ = motorType.value__;
+            motorType = temp.Substring(0, temp.LastIndexOf('_'));
+            name = motorType;
 
             helperFunctions.initializeDefaultValues(this);
         }
         public string getDisplayName()
         {
-            return name.value__;
+            return name;
         }
     }
 

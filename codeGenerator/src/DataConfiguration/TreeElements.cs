@@ -63,7 +63,6 @@ namespace DataConfiguration
     [Serializable()]
     [NotUserAddable]
     [XmlInclude(typeof(parameter))]
-    [XmlInclude(typeof(stringParameter))]
     [XmlInclude(typeof(uintParameter))]
     [XmlInclude(typeof(intParameter))]
     [XmlInclude(typeof(doubleParameter))]
@@ -95,26 +94,26 @@ namespace DataConfiguration
         }
     }
 
-    #region string parameter
-    [Serializable()]
-    [NotUserAddable]
-    public partial class stringParameter : parameter
-    {
-        [DefaultValue(0u)]
-        public string value__ { get; set; }
+    //#region string parameter
+    //[Serializable()]
+    //[NotUserAddable]
+    //public partial class stringParameter : parameter
+    //{
+    //    [DefaultValue(0u)]
+    //    public string value__ { get; set; }
 
-        public stringParameter()
-        {
-            type = value__.GetType().Name;
-        }
-        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
-        {
-            refresh = helperFunctions.RefreshLevel.parentHeader;
+    //    public stringParameter()
+    //    {
+    //        type = value__.GetType().Name;
+    //    }
+    //    override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+    //    {
+    //        refresh = helperFunctions.RefreshLevel.parentHeader;
 
-            return string.Format("{0} ({1})", instanceName, value__);
-        }
-    }
-    #endregion
+    //        return string.Format("{0} ({1})", instanceName, value__);
+    //    }
+    //}
+    //#endregion
 
     #region double definitions
     [Serializable()]
@@ -453,6 +452,14 @@ namespace DataConfiguration
     public class ConstantAttribute : Attribute
     {
         public ConstantAttribute()
+        {
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    public class ConstantInMechInstanceAttribute : Attribute
+    {
+        public ConstantInMechInstanceAttribute()
         {
         }
     }

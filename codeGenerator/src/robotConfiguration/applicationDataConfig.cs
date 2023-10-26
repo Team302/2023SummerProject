@@ -81,7 +81,7 @@ namespace applicationConfiguration
 
             for (int m = 0; m < theRobotVariants.Mechanisms.Count; m++)
             {
-                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), theRobotVariants.Mechanisms[m].name.value__ + ".xml");
+                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), theRobotVariants.Mechanisms[m].name + ".xml");
 
                 addProgress("Loading mechanism configuration " + mechanismFullPath);
                 mySerializer = new XmlSerializer(typeof(mechanism));
@@ -95,7 +95,7 @@ namespace applicationConfiguration
             string[] files = Directory.GetFiles(Path.GetDirectoryName(fullPathName), "*.xml");
             foreach (string file in files)
             {
-                if (theRobotVariants.Mechanisms.Any(p => p.name.value__ == Path.GetFileNameWithoutExtension(file)))
+                if (theRobotVariants.Mechanisms.Any(p => p.name == Path.GetFileNameWithoutExtension(file)))
                 {
                     //if we have previously loaded the mechanism, don't load it again
                     continue;
@@ -119,10 +119,10 @@ namespace applicationConfiguration
                         }
 
                         //if we have two versions of a mechanism with the same name, append a number to the end of the newest one
-                        int numberOfSameNamedMechs = theRobotVariants.Mechanisms.Where(p => p.name.value__ == tempMech.name.value__).Count();
+                        int numberOfSameNamedMechs = theRobotVariants.Mechanisms.Where(p => p.name == tempMech.name).Count();
                         if (numberOfSameNamedMechs > 0)
                         {
-                            tempMech.name.value__ += numberOfSameNamedMechs;
+                            tempMech.name += numberOfSameNamedMechs;
                         }
 
                         theRobotVariants.Mechanisms.Add(tempMech);
@@ -134,7 +134,7 @@ namespace applicationConfiguration
             {
                 foreach (mechanismInstance mi in theRobot.mechanismInstance)
                 {
-                    MergeMechanismParametersIntoStructure(loadMechanism(fullPathName, mi.mechanism.name.value__), mi.mechanism);
+                    MergeMechanismParametersIntoStructure(loadMechanism(fullPathName, mi.mechanism.name), mi.mechanism);
                 }
 
                 helperFunctions.initializeNullProperties(theRobot, true);
@@ -168,10 +168,10 @@ namespace applicationConfiguration
                 return;
 
             PropertyInfo[] PIs = obj.GetType().GetProperties();
-            
+
             foreach (PropertyInfo pi in PIs)
             {
-                if(pi.Name == "name")
+                if (pi.Name == "name")
                 {
                     pi.SetValue(obj, objectName);
                 }
@@ -181,16 +181,16 @@ namespace applicationConfiguration
                     int index = 0;
                     foreach (object o in listObject)
                     {
-                        initializeData(listObject, o, string.Format("{0}[{1}]",pi.Name, index), null);
+                        initializeData(listObject, o, string.Format("{0}[{1}]", pi.Name, index), null);
                     }
                 }
                 else
                 {
                     if (obj is baseElement)
                     {
-                        baseElement beObj = (baseElement) obj;
+                        baseElement beObj = (baseElement)obj;
                         beObj.parent = parent;
-                        
+
                         PropertyInfo namePI = obj.GetType().GetProperty("name");
                         if (namePI != null)
                             namePI.SetValue(obj, objectName);
@@ -198,7 +198,8 @@ namespace applicationConfiguration
                         if (attributes != null)
                         {
                             beObj.isTunable = attributes.Find(a => a.GetType() == typeof(TunableParameterAttribute)) != null;
-                            beObj.isConstant = attributes.Find(a => a.GetType() == typeof(ConstantAttribute)) != null;
+                            beObj.isConstant = (attributes.Find(a => a.GetType() == typeof(ConstantAttribute)) != null) ||
+                                attributes.Find(a => a.GetType() == typeof(ConstantInMechInstanceAttribute)) != null;
 
                             PhysicalUnitsFamilyAttribute phyUnitsFamilyAttr = (PhysicalUnitsFamilyAttribute)attributes.Find(a => a.GetType() == typeof(PhysicalUnitsFamilyAttribute));
                             if (phyUnitsFamilyAttr != null)
@@ -227,10 +228,10 @@ namespace applicationConfiguration
                         {
                             PropertyInfo unitsInfo = obj.GetType().GetProperty("__units__");
 
-                            if(unitsInfo != null)
+                            if (unitsInfo != null)
                             {
                                 object unitsObj = unitsInfo.GetValue(obj);
-                                if((unitsObj == null) || (unitsObj.ToString()== ""))
+                                if ((unitsObj == null) || (unitsObj.ToString() == ""))
                                 {
                                     physicalUnit pu = physicalUnits.Find(u => u.family == beObj.unitsFamily);
                                     unitsInfo.SetValue(obj, pu.shortName);
@@ -240,12 +241,15 @@ namespace applicationConfiguration
 
                         break;
                     }
-                    else
-                    //if (pi.PropertyType != typeof(string))
+                    else if (pi.PropertyType != typeof(string))
                     {
                         List<Attribute> theAttributes = pi.GetCustomAttributes().ToList();
                         object theObj = pi.GetValue(obj);
                         initializeData(obj, theObj, pi.Name, theAttributes);
+                    }
+                    else
+                    {
+
                     }
                 }
             }
@@ -263,7 +267,7 @@ namespace applicationConfiguration
             //if (unitsInfo != null)
             //{
             //    string theUnits = (string)unitsInfo.GetValue(obj);
-                
+
             //    theUnitFamily = family != physicalUnit.Family.unitless ? family : theUnitFamily;
 
             //    if (string.IsNullOrEmpty(theUnits) && (theUnitFamily != physicalUnit.Family.unitless))
@@ -309,7 +313,7 @@ namespace applicationConfiguration
             }
         }
 
- 
+
 
         /// <summary>
         /// Merges the structure and default values from structureSource to parametersSource
@@ -370,16 +374,23 @@ namespace applicationConfiguration
                     {
 
                     }
+                    else if (isABasicSystemType(structureSource))
+                    {
+                        structureSource = parametersSource;
+                    }
                     else
                     {
                         foreach (PropertyInfo pi in propertyInfos)
                         {
-                            object theStructureObj = pi.GetValue(structureSource);
-                            object theParametersObj = pi.GetValue(parametersSource);
-
-                            if ((theStructureObj != null) && (theParametersObj != null))
+                            if (pi.Name != "parent")
                             {
-                                MergeMechanismParametersIntoStructure(theStructureObj, theParametersObj);
+                                object theStructureObj = pi.GetValue(structureSource);
+                                object theParametersObj = pi.GetValue(parametersSource);
+
+                                if ((theStructureObj != null) && (theParametersObj != null))
+                                {
+                                    MergeMechanismParametersIntoStructure(theStructureObj, theParametersObj);
+                                }
                             }
                         }
                     }
@@ -419,6 +430,19 @@ namespace applicationConfiguration
             }
         }
 
+        bool isABasicSystemType(object obj)
+        {
+            if (obj is double) return true;
+            if (obj is float) return true;
+            if (obj is int) return true;
+            if (obj is uint) return true;
+            if (obj is bool) return true;
+            if (obj is Enum) return true;
+            if (obj is string) return true;
+            if (obj is DateTime) return true;
+
+            return false;
+        }
         public static mechanism DeepClone(mechanism obj)
         {
             using (var ms = new MemoryStream())
@@ -440,7 +464,7 @@ namespace applicationConfiguration
 
             foreach (mechanism mech in theRobotVariants.Mechanisms)
             {
-                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name.value__ + ".xml");
+                string mechanismFullPath = Path.Combine(Path.GetDirectoryName(fullPathName), mech.name + ".xml");
 
                 addProgress("Writing mechanism file " + mechanismFullPath);
                 try
@@ -451,7 +475,7 @@ namespace applicationConfiguration
                         mechSerializer.Serialize(mechtw, mech);
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     addProgress("Problem encountered while writing mechanism file " + mechanismFullPath);
                     addProgress(ex.ToString());

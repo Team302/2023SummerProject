@@ -217,7 +217,7 @@ namespace CoreCodeGenerator
             {
                 /// NOTE: We probably don't need to include mechanism and builder because builder should already have the mechanism included
                 //string mechIncludeString = "#include <" + getIncludePath(mech.name) + "/" + mech.name + ".h>";
-                string builderIncludeString = "#include <" + getIncludePath(mech.name.value__) + "/" + mech.name + "Builder.h>";
+                string builderIncludeString = "#include <" + getIncludePath(mech.name) + "/" + mech.name + "Builder.h>";
                 replacement += (replacement != "" ? "\n" : "") + builderIncludeString;
             }
 
@@ -255,7 +255,7 @@ namespace CoreCodeGenerator
 
                 foreach(mechanismInstance mechInstance in bot.mechanismInstance)
                 {
-                    replacement += mechanismTemplate.Replace("MECH", mechInstance.name.value__).Replace("TYPE", mechInstance.mechanism.name.value__);
+                    replacement += mechanismTemplate.Replace("MECH", mechInstance.name).Replace("TYPE", mechInstance.mechanism.name);
                 }
 
                 //end with function footer

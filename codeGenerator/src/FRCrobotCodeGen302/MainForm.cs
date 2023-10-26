@@ -225,7 +225,14 @@ namespace FRCrobotCodeGen302
                                 }
                                 else
                                 {
-
+                                    PropertyInfo prop = nodeTag.getType(parentNt).GetProperty(nodeName, BindingFlags.Public | BindingFlags.Instance);
+                                    if (prop != null)
+                                    {
+                                        if ((prop.GetCustomAttribute<ConstantAttribute>() != null) ||
+                                            ((prop.GetCustomAttribute<ConstantInMechInstanceAttribute>() != null) && isPartOfAMechanismInaMechInstance(tn))
+                                            )
+                                            isConstant = true;
+                                    }
                                 }
                             }
                         }
@@ -261,8 +268,8 @@ namespace FRCrobotCodeGen302
                             imageIndex = treeIconIndex_lockedPadlock;
                         else if (isTunable)
                             imageIndex = treeIconIndex_wrench;
-                        else if (isPartOfAMechanismInaMechInstance(tn))
-                            imageIndex = treeIconIndex_lockedPadlock;
+                        //else if (isPartOfAMechanismInaMechInstance(tn))
+                        //    imageIndex = treeIconIndex_lockedPadlock;
 
                         tn.ImageIndex = imageIndex;
                         tn.SelectedImageIndex = imageIndex;
@@ -761,7 +768,7 @@ namespace FRCrobotCodeGen302
                                 value = valueProp.GetValue(nt.obj);
                             }
 
-                            allowEdit = beObj.isTunable ? true : !isInaMechanismInstance && !beObj.showExpanded;
+                            allowEdit = beObj.isTunable ? true : !beObj.showExpanded;
                         }
 
                         enableCallback = false;
@@ -829,6 +836,16 @@ namespace FRCrobotCodeGen302
                             }
                             else
                                 physicalUnitsComboBox.Visible = false;
+                        }
+                        else
+                        {
+                            // we need to check if the object is marked constant or constantInAMechanismInstance
+                            PropertyInfo pi = parentNt.obj.GetType().GetProperty(nt.name);
+                            if (pi != null)
+                            {
+                                allowEdit = !((pi.GetCustomAttribute<ConstantAttribute>() != null) ||
+                                    ((pi.GetCustomAttribute<ConstantInMechInstanceAttribute>() != null) && isInaMechanismInstance));
+                            }
                         }
 
                         value = nt.obj;
@@ -1224,12 +1241,15 @@ namespace FRCrobotCodeGen302
                                     prop.SetValue(objToOperateOn, (double)valueNumericUpDown.Value);
                                 }
 
-                                nt.obj = (double)valueNumericUpDown.Value;
                                 //if (lnt.isTunable)
                                 //{
                                 //    if (viewer != null)
                                 //        viewer.PushValue((double)valueNumericUpDown.Value, NTViewer.ConvertFullNameToTuningKey(lnt.name));
                                 //}
+                            }
+                            else if (isABasicSystemType(nt.obj))
+                            {
+                                nt.obj = (double)valueNumericUpDown.Value;
                             }
 
                             helperFunctions.RefreshLevel refresh;
@@ -1341,7 +1361,8 @@ namespace FRCrobotCodeGen302
                         PropertyInfo pi = nodeTag.getObject(lastSelectedValueNode.Tag).GetType().GetProperty(name);
                         object theObj = pi.GetValue(nodeTag.getObject(lastSelectedValueNode.Tag), null);
 
-                        theAppDataConfiguration.initializeData(theObj, obj, "here1", null);
+                        if (name != "mechanismInstance")
+                            theAppDataConfiguration.initializeData(theObj, obj, "here1", null);
 
                         if (addToCollection)
                         {
@@ -1437,6 +1458,7 @@ namespace FRCrobotCodeGen302
                             Type elementType = ((robotElementType)robotElementObj).t;
 
                             object obj = Activator.CreateInstance(elementType);
+                            theAppDataConfiguration.initializeData(obj, obj, "here3", null);
 
                             // then add it to the collection
                             nodeTag.getType(lastSelectedArrayNode.Tag).GetMethod("Add").Invoke(nodeTag.getObject(lastSelectedArrayNode.Tag), new object[] { obj });
@@ -1456,6 +1478,7 @@ namespace FRCrobotCodeGen302
                     {
                         Type elementType = nodeTag.getType(lastSelectedArrayNode.Tag).GetGenericArguments().Single();
                         object obj = Activator.CreateInstance(elementType);
+                        theAppDataConfiguration.initializeData(obj, obj, elementType.Name, null);
 
                         // then add it to the collection
                         nodeTag.getType(lastSelectedArrayNode.Tag).GetMethod("Add").Invoke(nodeTag.getObject(lastSelectedArrayNode.Tag), new object[] { obj });
@@ -1496,7 +1519,7 @@ namespace FRCrobotCodeGen302
                         ((TreeNode)mi.mechanism.theTreeNode).Remove();
 
                         mi.mechanism = m;
-                        mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name.value__);
+                        mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name);
                     }
                 }
             }
@@ -1505,28 +1528,28 @@ namespace FRCrobotCodeGen302
 
         bool isPartOfAMechanismTemplate(TreeNode tn, out mechanism theTemplateMechanism)
         {
-            List<object> lineage = new List<object>();
+            List<nodeTag> lineage = new List<nodeTag>();
             string fullPath = tn.FullPath;
 
             if (tn != null)
             {
-                lineage.Add(tn.Tag);
+                lineage.Add((nodeTag)tn.Tag);
                 while (tn.Parent != null)
                 {
                     tn = tn.Parent;
-                    lineage.Add(tn.Tag);
+                    lineage.Add((nodeTag)tn.Tag);
                 }
 
                 //this finds the index of the "closest" parent mechanism
-                int indexOfMechanism = lineage.IndexOf(lineage.Where(x => x.GetType() == typeof(mechanism)).FirstOrDefault());
+                int indexOfMechanism = lineage.IndexOf(lineage.Where(x => x.obj.GetType() == typeof(mechanism)).FirstOrDefault());
 
                 if (indexOfMechanism != -1)
                 {
-                    theTemplateMechanism = (mechanism)lineage[indexOfMechanism];
+                    theTemplateMechanism = (mechanism)lineage[indexOfMechanism].obj;
 
                     //checks if the selected node is underneath the mechanisms collection.
                     //uses "EndsWith" function to make sure that the mechanisms collection is not considered part of a template
-                    return fullPath.Contains("mechanisms") && !fullPath.EndsWith("mechanisms"); //this may be able to just return true, we should know that we are a child of a mechanism if index isn't -1
+                    return fullPath.Contains("Mechanisms") && !fullPath.EndsWith("Mechanisms"); //this may be able to just return true, we should know that we are a child of a mechanism if index isn't -1
                 }
             }
 
@@ -1540,7 +1563,7 @@ namespace FRCrobotCodeGen302
             {
                 string fullPath = tn.FullPath;
 
-                string mechInstancesName = @"\mechanismInstances\";
+                string mechInstancesName = @"\mechanismInstance\";
                 int index = fullPath.IndexOf(mechInstancesName);
                 if (index == -1)
                     return false;
@@ -1867,7 +1890,7 @@ namespace FRCrobotCodeGen302
         public robotElementType(Type t, mechanism m)
         {
             this.t = t;
-            this.name = m.name.value__;
+            this.name = m.name;
             theObject = m;
         }
 

@@ -43,14 +43,13 @@ namespace ApplicationData
         [XmlIgnore]
         public object theTreeNode = null;
 
-        public stringParameter name { get; set; }
+        public string name { get; set; }
 
         public mechanism mechanism { get; set; }
 
         public mechanismInstance()
         {
-            name = new stringParameter();
-            name.value__ = "mechanismInstanceName";
+            name = "mechanismInstanceName";
 
             helperFunctions.initializeDefaultValues(this);
         }
@@ -105,11 +104,12 @@ namespace ApplicationData
         [XmlIgnore]
         public object theTreeNode = null;
 
-        public stringParameter name { get; set; }
+        [ConstantInMechInstance]
+        public string name { get; set; }
 
         public override string ToString()
         {
-            return name.value__;
+            return name;
         }
 #if !enableTestAutomation
         public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
