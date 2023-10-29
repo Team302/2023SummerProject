@@ -1510,7 +1510,7 @@ namespace FRCrobotCodeGen302
             {
                 foreach (mechanismInstance mi in r.mechanismInstance)
                 {
-                    if (mi.mechanism.name == theMechanism.name)
+                    if (mi.mechanism.GUID == theMechanism.GUID)
                     {
                         mechanism m = applicationDataConfig.DeepClone(theMechanism);
 

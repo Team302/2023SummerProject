@@ -104,6 +104,8 @@ namespace ApplicationData
         [XmlIgnore]
         public object theTreeNode = null;
 
+        public Guid GUID;
+
         [ConstantInMechInstance]
         public string name { get; set; }
 
@@ -126,6 +128,9 @@ namespace ApplicationData
 
         public mechanism()
         {
+            if (GUID == null)
+                GUID = Guid.NewGuid();
+
             helperFunctions.initializeNullProperties(this);
 
             name.value__ = GetType().Name;
@@ -140,7 +145,7 @@ namespace ApplicationData
 #endif
     }
 
-    #if !enableTestAutomation
+#if !enableTestAutomation
     [Serializable()]
     public class closedLoopControlParameters
     {

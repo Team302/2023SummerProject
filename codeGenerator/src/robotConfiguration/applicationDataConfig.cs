@@ -387,7 +387,12 @@ namespace applicationConfiguration
                                 object theStructureObj = pi.GetValue(structureSource);
                                 object theParametersObj = pi.GetValue(parametersSource);
 
-                                if ((theStructureObj != null) && (theParametersObj != null))
+                                if (isABasicSystemType(theStructureObj))
+                                {
+                                    if (pi.GetCustomAttribute<ConstantInMechInstanceAttribute>() == null)
+                                        pi.SetValue(structureSource, pi.GetValue(parametersSource));
+                                }
+                                else if ((theStructureObj != null) && (theParametersObj != null))
                                 {
                                     MergeMechanismParametersIntoStructure(theStructureObj, theParametersObj);
                                 }

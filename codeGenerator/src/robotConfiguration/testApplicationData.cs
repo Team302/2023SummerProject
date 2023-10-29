@@ -60,6 +60,8 @@ namespace ApplicationData
 
         public mechanism()
         {
+            GUID = Guid.NewGuid();
+
             helperFunctions.initializeNullProperties(this);
 
             name = GetType().Name;
@@ -229,7 +231,7 @@ namespace ApplicationData
 
 
 
-   [Serializable()]
+    [Serializable()]
     public class testClass
     {
         public string name { get; set; }
