@@ -1362,7 +1362,7 @@ namespace FRCrobotCodeGen302
                         object theObj = pi.GetValue(nodeTag.getObject(lastSelectedValueNode.Tag), null);
 
                         if (name != "mechanismInstance")
-                            theAppDataConfiguration.initializeData(theObj, obj, "here1", null);
+                            theAppDataConfiguration.initializeData(theObj, obj, name, null);
 
                         if (addToCollection)
                         {
@@ -1373,9 +1373,12 @@ namespace FRCrobotCodeGen302
                             // then add it to the collection
                             theObj.GetType().GetMethod("Add").Invoke(theObj, new object[] { obj });
                             int count = (int)theObj.GetType().GetProperty("Count").GetValue(theObj);
+                            
+                            string nameStr = "here5";
                             try
                             {
-                                string nameStr = getDisplayName(obj, "");
+                                nameStr = obj.GetType().GetProperty("name").GetValue(obj).ToString();
+                                nameStr += "_" + count;
                                 PropertyInfo thisPi = obj.GetType().GetProperty("name");
                                 if (thisPi != null)
                                     thisPi.SetValue(obj, nameStr);
@@ -1484,14 +1487,16 @@ namespace FRCrobotCodeGen302
                         nodeTag.getType(lastSelectedArrayNode.Tag).GetMethod("Add").Invoke(nodeTag.getObject(lastSelectedArrayNode.Tag), new object[] { obj });
                         int count = (int)nodeTag.getType(lastSelectedArrayNode.Tag).GetProperty("Count").GetValue(nodeTag.getObject(lastSelectedArrayNode.Tag));
 
+                        string nameStr = "here2";
                         try
                         {
-                            string nameStr = obj.GetType().GetProperty("name").GetValue(obj).ToString();
-                            obj.GetType().GetProperty("name").SetValue(obj, nameStr + "_" + count);
+                            nameStr = obj.GetType().GetProperty("name").GetValue(obj).ToString();
+                            nameStr += "_" + count;
+                            obj.GetType().GetProperty("name").SetValue(obj, nameStr);
                         }
                         catch { }
 
-                        theAppDataConfiguration.initializeData(nodeTag.getObject(lastSelectedArrayNode.Tag), obj, "here2", null);
+                        theAppDataConfiguration.initializeData(nodeTag.getObject(lastSelectedArrayNode.Tag), obj, nameStr, null);
                         AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                     }
                 }
