@@ -29,10 +29,22 @@ namespace DataConfiguration
             return (isaCollection || isaList);
         }
 
+        static public bool isACollectionOfType(Type theCollection, Type t)
+        {
+            if (isACollection(theCollection))
+            {
+                Type elementType = theCollection.GetGenericArguments().Single();
+                return t.FullName == elementType.FullName;
+            }
+
+            return false;
+        }
+
         public bool isASubClassedCollection(object obj)
         {
             return isASubClassedCollection(obj.GetType());
         }
+
 
         public bool isASubClassedCollection(Type t)
         {

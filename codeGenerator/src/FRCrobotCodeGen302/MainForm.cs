@@ -1323,6 +1323,16 @@ namespace FRCrobotCodeGen302
 
                         Type baseType = (((robotElementType)robotElementObj).t).BaseType;
                         name = baseType.Name;
+
+                        Type t = nodeTag.getType(lastSelectedValueNode.Tag);
+                        PropertyInfo[] PIs = t.GetProperties();
+                        List<PropertyInfo> thePIs = PIs.ToList().FindAll(p => baseDataConfiguration.isACollectionOfType(p.PropertyType, baseType));
+                        if (thePIs.Count == 0)
+                            addProgress("Could not find a List of " + baseType.Name);
+                        else if (thePIs.Count == 1)
+                            name = thePIs[0].Name;
+                        else
+                            addProgress("Found more than one List of " + baseType.Name);
                     }
                     else if (((robotElementType)robotElementObj).t == typeof(mechanism))
                     {
@@ -1357,7 +1367,7 @@ namespace FRCrobotCodeGen302
 
                     if (obj != null)
                     {
-
+                        
                         PropertyInfo pi = nodeTag.getObject(lastSelectedValueNode.Tag).GetType().GetProperty(name);
                         object theObj = pi.GetValue(nodeTag.getObject(lastSelectedValueNode.Tag), null);
 
