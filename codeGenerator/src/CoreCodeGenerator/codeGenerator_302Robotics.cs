@@ -70,12 +70,13 @@ namespace CoreCodeGenerator
             List<string> mechStateMgrFiles = new List<string>();
             foreach (robot theRobot in theRobotConfiguration.theRobotVariants.robot)
             {
+                /*
                 foreach (mechanism mech in theRobot.mechanism)
                 {
                     string filePathName;
                     string resultString;
 
-                    string mechanismName = mech.mechanismName;
+                    string mechanismName = mech.name;
 
                     createMechanismFolder(mechanismName);
 
@@ -157,6 +158,7 @@ namespace CoreCodeGenerator
                     File.WriteAllText(filePathName, resultString);
                     #endregion
                 }
+                */
             }
         }
 

@@ -1,16 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<robotVariants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<robotVariants xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://team302.org/robot">
   <robot>
-    <pdp
-      canId="0"
-      type="CTRE" />
+    <pdp />
     <chassis
-      type="TANK"
       wheelDiameter=""
       wheelBase=""
       track=""
-      wheelSpeedCalcOption="ETHER"
-      poseEstimationOption="EULERCHASSIS"
       maxVelocity=""
       maxAngularVelocity=""
       maxAcceleration=""
@@ -18,37 +13,12 @@
       networkTable=""
       controlFile="" />
     <mechanism>
-      <servo
-        usage=""
-        pwmId="4"
-        minAngle="0.0"
-        maxAngle="360.0" />
-      <closedLoopControlParameters>
-        <name>FirstGains</name>
-      </closedLoopControlParameters>
-      <closedLoopControlParameters>
-        <name>SecondGains</name>
-      </closedLoopControlParameters>
-      <mechanismName>SomeMech</mechanismName>
-    </mechanism>
-    <mechanism>
       <motor
-        peakCurrentDuration=""
-        continuousCurrentLimit=""
-        peakCurrentLimit=""
-        currentLimiting="false"
-        forwardlimitswitch="false"
-        forwardlimitswitchopen="true"
-        reverselimitswitch="false"
-        reverselimitswitchopen="true"
-        voltageCompensationSaturation="12.0"
-        voltageCompensationEnable="false"
-        countsPerInch="0"
-        countsPerDegree="0">
+        name="AMotor">
         <motorType>TALONSRX</motorType>
         <controller>TALONSRX</controller>
         <canBusName>rio</canBusName>
-        <canId>0</canId>
+        <canId>59</canId>
         <pdpID />
         <inverted>false</inverted>
         <sensorInverted>false</sensorInverted>
@@ -58,8 +28,29 @@
         <brakeMode>false</brakeMode>
         <motorIDtoFollow>-1</motorIDtoFollow>
       </motor>
-      <mechanismName>WitzMech</mechanismName>
+      <servo />
+      <name>SomeMech</name>
     </mechanism>
-    <robotID>3</robotID>
+    <mechanism>
+      <name>AnotherName</name>
+    </mechanism>
+    <mechanism>
+      <motor
+        name="ExampleMotor">
+        <motorType>TALONSRX</motorType>
+        <controller>TALONSRX</controller>
+        <canBusName>rio</canBusName>
+        <canId>59</canId>
+        <pdpID />
+        <inverted>false</inverted>
+        <sensorInverted>false</sensorInverted>
+        <feedbackDevice>NONE</feedbackDevice>
+        <countsPerRev>0</countsPerRev>
+        <gearRatio>1</gearRatio>
+        <brakeMode>false</brakeMode>
+        <motorIDtoFollow>-1</motorIDtoFollow>
+      </motor>
+      <name>MuscatMech</name>
+    </mechanism>
   </robot>
 </robotVariants>

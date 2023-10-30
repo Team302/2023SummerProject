@@ -15,6 +15,11 @@ using System.Collections.ObjectModel;
 using System.Web;
 using System.Drawing;
 using System.Deployment.Application;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Eventing.Reader;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Linq;
 
 namespace FRCrobotCodeGen302
 {
@@ -25,6 +30,7 @@ namespace FRCrobotCodeGen302
         codeGenerator_302Robotics codeGenerator = new codeGenerator_302Robotics();
         bool needsSaving = false;
         bool loadRobotConfig = false;
+        readonly string configurationCacheFile = Path.GetTempPath() + "DragonsCodeGeneratorCache.txt";
 
         public MainForm()
         {
@@ -39,17 +45,47 @@ namespace FRCrobotCodeGen302
             valueTextBox.Location = valueNumericUpDown.Location;
 
             this.Text += " Version " + ProductVersion;
+
+            //try to load cached configuration.xml
+            addProgress("Trying to load cached configuration.xml");
+            try
+            {
+                if (File.Exists(configurationCacheFile))
+                {
+                    configurationFilePathNameTextBox.Text = File.ReadAllText(configurationCacheFile);
+                    loadConfiguration(configurationFilePathNameTextBox.Text);
+                    addProgress("Loaded cached configuration.xml");
+                    robotConfigurationFileComboBox_TextChanged(null, null);
+                }
+                else
+                {
+                    addProgress("Cached configuration.xml does not exist, robot configuration will not be automatically loaded");
+                }
+            }
+            catch (Exception ex)
+            {
+                addProgress("Issue encountered while loading the cached generator configuration file\r\n" + ex.ToString());
+            }
+
+            robotTreeView.ImageList = treeViewIcons;
         }
 
         private void addProgress(string info)
         {
-            progressTextBox.AppendText(info + "\r\n");
+            progressTextBox.AppendText(info + Environment.NewLine);
         }
 
         private string getTreeNodeDisplayName(object parentObject, object obj, string nodeName)
         {
-            if (isACollection(obj))
-                nodeName += "s";
+            if (parentObject == null)
+            {
+
+            }
+            else if (isACollection(obj))
+            {
+                if (!nodeName.EndsWith("s"))
+                    nodeName += "s";
+            }
             else
             {
                 Type objType = obj.GetType();
@@ -58,7 +94,7 @@ namespace FRCrobotCodeGen302
                 string nodeValueString = "";
                 if ((properties.Length == 0) || (objType.FullName == "System.String"))
                 {
-                    if(parentObject != null)
+                    if (parentObject != null)
                     {
                         PropertyInfo prop = parentObject.GetType().GetProperty(nodeName, BindingFlags.Public | BindingFlags.Instance);
                         object value = null;
@@ -69,17 +105,42 @@ namespace FRCrobotCodeGen302
                         }
                     }
                 }
+                else if (isAParameterType(objType.FullName))
+                {
+                    object value = null;
+                    value = properties[0].GetValue(obj);
+                    nodeValueString = value.ToString();
+                }
                 else
                 {
+                    nodeName = "";
                     foreach (string s in generatorConfig.treeviewParentNameExtensions)
                     {
                         PropertyInfo propertyInfo = properties.ToList().Find(p => p.Name == s);
                         if (propertyInfo != null)
-                            nodeValueString += propertyInfo.GetValue(obj) + ", ";
+                        {
+                            if (propertyInfo.Name == "canId" || propertyInfo.Name == "pwmId")
+                            {
+                                nodeName += "ID: " + propertyInfo.GetValue(obj).ToString() + ", ";
+                            }
+                            else
+                            {
+                                if (propertyInfo.GetValue(obj) != null)
+                                {
+                                    nodeName += propertyInfo.GetValue(obj).ToString() + ", ";
+                                }
+                                else
+                                    nodeName += "UNKOWN_, ";
+                            }
+                        }
                     }
+
+                    nodeName = nodeName.Trim();
+                    nodeName = nodeName.Trim(',');
+                    nodeName = nodeName.Trim();
                 }
 
-                if(objType == new robot().GetType())
+                if (objType == typeof(robot))
                 {
                     robot tempBot = (robot)obj;
                     nodeName = "Robot #" + tempBot.robotID;
@@ -106,7 +167,7 @@ namespace FRCrobotCodeGen302
         private TreeNode AddNode(TreeNode parent, object obj, string nodeName)
         {
             // add this object to the tree
-            string extendedNodeName = getTreeNodeDisplayName(parent==null?null:parent.Tag, obj, nodeName);
+            string extendedNodeName = getTreeNodeDisplayName(parent == null ? null : parent.Tag, obj, nodeName);
 
             TreeNode tn = null;
             if (parent == null)
@@ -157,7 +218,16 @@ namespace FRCrobotCodeGen302
 
                     PropertyInfo[] propertyInfos = objType.GetProperties();
 
-                    if ((objType.FullName != "System.String") && (propertyInfos.Length > 0))
+                    if (obj is mechanismInstance)
+                    {
+                        ((mechanismInstance)obj).theTreeNode = tn;
+                    }
+                    else if (obj is mechanism)
+                    {
+                        ((mechanism)obj).theTreeNode = tn;
+                    }
+
+                    if (!isAParameterType(objType.FullName) && (objType.FullName != "System.String") && (propertyInfos.Length > 0))
                     {
                         // add its children
                         string previousName = "";
@@ -190,6 +260,17 @@ namespace FRCrobotCodeGen302
                         // this means that this is a leaf node
                         leafNodeTag lnt = new leafNodeTag(obj.GetType(), nodeName, obj);
                         tn.Tag = lnt;
+
+                        int imageIndex = 1;
+                        if (isAParameterType(objType.FullName))
+                            imageIndex = 2;
+                        else if(isPartOfAMechanismInstance(tn))
+                            imageIndex = 0;
+
+                        tn.ImageIndex = imageIndex;
+                        tn.SelectedImageIndex = imageIndex;
+
+
                     }
                 }
             }
@@ -200,29 +281,32 @@ namespace FRCrobotCodeGen302
         private void populateTree(robotConfig myRobot)
         {
             robotTreeView.Nodes.Clear();
-            AddNode(null, myRobot.theRobotVariants.robot, "Robot Variant");
+            AddNode(null, myRobot.theRobotVariants, "Robot Variant");
             if (myRobot.theRobotVariants.robot.Count > 0)
                 robotTreeView.Nodes[0].Expand();
         }
 
+        private void repopulateMechanisms(mechanismInstance theMechanismInstance)
+        {
+
+
+        }
+
+        bool isAParameterType(string typeName)
+        {
+            return generatorConfig.parameterTypes.Contains(typeName);
+        }
 
         public void loadGeneratorConfig(string configurationFullPathName)
         {
             try
             {
                 generatorConfig = (toolConfiguration)generatorConfig.deserialize(configurationFullPathName);
-                if(generatorConfig.robotConfigurations.Count == 0)
+                if (generatorConfig.robotConfigurations.Count == 0)
                 {
                     generatorConfig.robotConfigurations = new List<string>();
-                    if(!string.IsNullOrEmpty(generatorConfig.robotConfiguration.Trim()))
+                    if (!string.IsNullOrEmpty(generatorConfig.robotConfiguration.Trim()))
                         generatorConfig.robotConfigurations.Add(generatorConfig.robotConfiguration.Trim());
-                }
-                if(generatorConfig.treeviewParentNameExtensions.Count == 0)
-                {
-                    generatorConfig.treeviewParentNameExtensions.Add("usage");
-                    generatorConfig.treeviewParentNameExtensions.Add("type");
-                    generatorConfig.treeviewParentNameExtensions.Add("stateIdentifier");
-                    generatorConfig.treeviewParentNameExtensions.Add("identifier");
                 }
             }
             catch (Exception ex)
@@ -230,13 +314,26 @@ namespace FRCrobotCodeGen302
                 throw new Exception("Cannot load the generator configuration. " + ex.Message);
             }
         }
+
+        public void saveGeneratorConfig(string configurationFullPathName)
+        {
+            try
+            {
+                generatorConfig.serialize(configurationFullPathName);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Cannot save the generator configuration. " + ex.Message);
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
-                codeGenerator.generate(theRobotConfiguration,generatorConfig);
+                codeGenerator.generate(theRobotConfiguration, generatorConfig);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Something went wrong. See below. \r\n\r\n" + ex.Message, "Code generator error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -272,35 +369,45 @@ namespace FRCrobotCodeGen302
                     {
                         configurationFilePathNameTextBox.Text = dlg.FileName;
 
-                        addProgress("Loading the generator configuration file " + configurationFilePathNameTextBox.Text);
-                        loadGeneratorConfig(configurationFilePathNameTextBox.Text);
-                        addProgress("Configuration file loaded.");
+                        loadConfiguration(configurationFilePathNameTextBox.Text);
 
-                        loadRobotConfig = false;
-                        #region Load the Combobox with the robot configuration file list and select the first one
-                        robotConfigurationFileComboBox.Items.Clear();
-                        foreach (string f in generatorConfig.robotConfigurations)
-                        {
-                            string fullfilePath = Path.Combine(Path.GetDirectoryName(configurationFilePathNameTextBox.Text), f);
-                            fullfilePath = Path.GetFullPath(fullfilePath);
-                            robotConfigurationFileComboBox.Items.Add(fullfilePath);
-                        }
-                        if (robotConfigurationFileComboBox.Items.Count > 0)
-                            robotConfigurationFileComboBox.SelectedIndex = 0;
-                        #endregion
+                        //now that generator config has loaded succesfully, save to a temp file to save the desired config for future uses
 
-                        generatorConfig.rootOutputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(configurationFilePathNameTextBox.Text), generatorConfig.rootOutputFolder));
-                        generatorConfig.robotConfiguration = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(configurationFilePathNameTextBox.Text), robotConfigurationFileComboBox.Text));
-                        loadRobotConfig = true;
+                        File.WriteAllText(configurationCacheFile, configurationFilePathNameTextBox.Text);
+                        addProgress("Wrote cached configuration.xml to: " + configurationCacheFile);
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                addProgress("Issue encountered while loading the generator configuration file\r\n" + ex.ToString());   
+                addProgress("Issue encountered while loading the generator configuration file\r\n" + ex.ToString());
             }
 
             robotConfigurationFileComboBox_TextChanged(null, null);
+        }
+
+        private void loadConfiguration(string filePathName)
+        {
+            addProgress("Loading the generator configuration file " + filePathName);
+            loadGeneratorConfig(filePathName);
+            addProgress("Configuration file loaded.");
+
+            loadRobotConfig = false;
+            #region Load the Combobox with the robot configuration file list and select the first one
+            robotConfigurationFileComboBox.Items.Clear();
+            foreach (string f in generatorConfig.robotConfigurations)
+            {
+                string fullfilePath = Path.Combine(Path.GetDirectoryName(filePathName), f);
+                fullfilePath = Path.GetFullPath(fullfilePath);
+                robotConfigurationFileComboBox.Items.Add(fullfilePath);
+            }
+            if (robotConfigurationFileComboBox.Items.Count > 0)
+                robotConfigurationFileComboBox.SelectedIndex = 0;
+            #endregion
+
+            generatorConfig.rootOutputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), generatorConfig.rootOutputFolder));
+            generatorConfig.robotConfiguration = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), robotConfigurationFileComboBox.Text));
+            loadRobotConfig = true;
         }
 
         private void robotConfigurationFileComboBox_TextChanged(object sender, EventArgs e)
@@ -313,6 +420,7 @@ namespace FRCrobotCodeGen302
 
                     try
                     {
+                        theRobotConfiguration.parameterTypes = generatorConfig.parameterTypes;
                         theRobotConfiguration.load(generatorConfig.robotConfiguration);
                     }
                     catch (Exception ex)
@@ -360,13 +468,17 @@ namespace FRCrobotCodeGen302
             List<robotElementType> types = new List<robotElementType>();
 
             PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
-            foreach(PropertyInfo propertyInfo in propertyInfos)
+            foreach (PropertyInfo propertyInfo in propertyInfos)
             {
-                if( isACollection(propertyInfo.PropertyType))
+                if (isACollection(propertyInfo.PropertyType))
                 {
                     ICollection ic = propertyInfo.GetValue(obj) as ICollection;
-                    if(ic.Count == 0)
-                        types.Add(new robotElementType( propertyInfo.PropertyType));
+                    if (ic.Count == 0)
+                        types.Add(new robotElementType(propertyInfo.PropertyType));
+                }
+                else if (propertyInfo.PropertyType == typeof(mechanismInstance))
+                {
+                    types.Add(new robotElementType(propertyInfo.PropertyType));
                 }
             }
             return types;
@@ -385,7 +497,7 @@ namespace FRCrobotCodeGen302
             hideAllValueEntryBoxes();
             valueComboBox.Visible = true;
         }
-        
+
         void showValueNumericUpDown()
         {
             hideAllValueEntryBoxes();
@@ -411,23 +523,41 @@ namespace FRCrobotCodeGen302
             addTreeElementButton.Enabled = false;
 
             lastSelectedArrayNode = null;
-            lastSelectedValueNode= null;
+            lastSelectedValueNode = null;
 
-            deleteTreeElementButton.Enabled = isDeletable(e.Node);
+            bool isInaMechanismInstance = isPartOfAMechanismInstance(e.Node);
+            deleteTreeElementButton.Enabled = isDeletable(e.Node) && !isInaMechanismInstance;
 
             if (e.Node.Tag != null)
             {
                 bool visible_And_or_Enabled = false;
 
                 theCurrentElementPossibilities = getEmptyPossibleCollectionSubTypes(e.Node.Tag);
-                if (theCurrentElementPossibilities.Count > 0)
+                if ((theCurrentElementPossibilities.Count > 0) && (!isPartOfAMechanismInstance(e.Node)) )
                 {
                     visible_And_or_Enabled = true;
 
                     robotElementCheckedListBox.Items.Clear();
                     foreach (robotElementType t in theCurrentElementPossibilities)
                     {
-                        robotElementCheckedListBox.Items.Add(t);
+                        Type elementType;
+                        if (isACollection(t.t))
+                            elementType = t.t.GetGenericArguments().Single();
+                        else
+                            elementType = t.t;
+
+                        // Add the defined mechanisms as choices to add to a robot variant
+                        if (elementType.Equals((new mechanismInstance()).GetType()))
+                        {
+                            foreach (mechanism m in theRobotConfiguration.theRobotVariants.mechanism)
+                            {
+                                robotElementCheckedListBox.Items.Add(m);
+                            }
+                        }
+                        else
+                        {
+                            robotElementCheckedListBox.Items.Add(t);
+                        }
                     }
                 }
 
@@ -435,72 +565,118 @@ namespace FRCrobotCodeGen302
                 addRobotElementLabel.Visible = visible_And_or_Enabled;
                 addTreeElementButton.Enabled = visible_And_or_Enabled;
 
-                if (isACollection( e.Node.Tag))
+
+                if (isACollection(e.Node.Tag))
                 {
                     lastSelectedArrayNode = e.Node;
-                    addTreeElementButton.Enabled = true;
+                    addTreeElementButton.Enabled = !isInaMechanismInstance;
                 }
                 /*
                 else if ((e.Node.Parent!=null) && (e.Node.Parent.Tag is robot))
                 {
                     // do nothing
-                }   */             
+                }   */
                 else if (e.Node.GetNodeCount(false) == 0)
                 {
                     lastSelectedValueNode = e.Node;
 
                     leafNodeTag lnt = (leafNodeTag)(e.Node.Tag);
 
-                    PropertyInfo prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
                     object value = null;
-                    if (null != prop)
+                    PropertyInfo prop = null;
+                    bool allowEdit = false;
+                    if (isAParameterType(lnt.type.FullName))
                     {
-                        value = prop.GetValue(lastSelectedValueNode.Parent.Tag);
-                    }
-
-                    enableCallback = false;
-                    if (lnt.type.IsEnum)
-                    {
-                        showValueComboBox();
-                        valueComboBox.Items.Clear();
-
-                        string[] enumList = Enum.GetNames(lnt.type);
-                        foreach (string en in enumList)
-                            valueComboBox.Items.Add(en);
-
-                        valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
-                    }
-                    else if (value is uint || value is UInt32)
-                    {
-                        valueNumericUpDown.DecimalPlaces = 0;
-                        valueNumericUpDown.Value = (uint)value;
-                        showValueNumericUpDown();
-                    }
-                    else if (value is double)
-                    {
-                        valueNumericUpDown.DecimalPlaces = 5;
-                        valueNumericUpDown.Value = Convert.ToDecimal(value);
-                        showValueNumericUpDown();
-                    }
-                    else if (lastSelectedValueNode.Text == "controlFile")
-                    {
-                        showValueComboBox();
-                        valueComboBox.Items.Clear();
-
-                        string stateDataFilesPath = Path.Combine(Path.GetDirectoryName(generatorConfig.robotConfiguration), "states");
-
-                        string[] files = Directory.GetFiles(stateDataFilesPath, "*.xml");
-                        foreach(string f in files)
-                            valueComboBox.Items.Add(Path.GetFileName(f));
-
-                        valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
+                        prop = ((leafNodeTag)lastSelectedValueNode.Tag).type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        if (null != prop)
+                        {
+                            value = prop.GetValue(((leafNodeTag)lastSelectedValueNode.Tag).obj);
+                        }
+                        allowEdit = isInaMechanismInstance;
                     }
                     else
                     {
-                        showValueTextBox();
-                        valueTextBox.Text = value.ToString();
+                        prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                        if (null != prop)
+                        {
+                            value = prop.GetValue(lastSelectedValueNode.Parent.Tag);
+                        }
+
+
+                        allowEdit = !isInaMechanismInstance;
                     }
-                    enableCallback = true;
+
+                    if (allowEdit)
+                    {
+                        enableCallback = false;
+                        if (lnt.type.IsEnum)
+                        {
+                            showValueComboBox();
+                            valueComboBox.Items.Clear();
+
+                            string[] enumList = Enum.GetNames(lnt.type);
+                            foreach (string en in enumList)
+                                valueComboBox.Items.Add(en);
+
+                            valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
+                        }
+                        else if (value is uint || value is UInt32)
+                        {
+                            RangeAttribute ra = prop.GetCustomAttribute<RangeAttribute>();
+                            if (ra == null)
+                            {
+                                valueNumericUpDown.Minimum = 0;
+                                valueNumericUpDown.Maximum = 5000;
+                            }
+                            else
+                            {
+                                valueNumericUpDown.Minimum = Convert.ToInt32(ra.Minimum);
+                                valueNumericUpDown.Maximum = Convert.ToInt32(ra.Maximum);
+                            }
+
+
+                            valueNumericUpDown.DecimalPlaces = 0;
+                            valueNumericUpDown.Value = (uint)value;
+                            showValueNumericUpDown();
+                        }
+                        else if (value is double)
+                        {
+                            RangeAttribute ra = prop.GetCustomAttribute<RangeAttribute>();
+                            if (ra == null)
+                            {
+                                valueNumericUpDown.Minimum = Decimal.MinValue;
+                                valueNumericUpDown.Maximum = Decimal.MaxValue;
+                            }
+                            else
+                            {
+                                valueNumericUpDown.Minimum = Convert.ToDecimal(ra.Minimum);
+                                valueNumericUpDown.Maximum = Convert.ToDecimal(ra.Maximum);
+                            }
+
+                            valueNumericUpDown.DecimalPlaces = 5;
+                            valueNumericUpDown.Value = Convert.ToDecimal(value);
+                            showValueNumericUpDown();
+                        }
+                        else if (lastSelectedValueNode.Text == "controlFile")
+                        {
+                            showValueComboBox();
+                            valueComboBox.Items.Clear();
+
+                            string stateDataFilesPath = Path.Combine(Path.GetDirectoryName(generatorConfig.robotConfiguration), "states");
+
+                            string[] files = Directory.GetFiles(stateDataFilesPath, "*.xml");
+                            foreach (string f in files)
+                                valueComboBox.Items.Add(Path.GetFileName(f));
+
+                            valueComboBox.SelectedIndex = valueComboBox.FindStringExact(value.ToString());
+                        }
+                        else
+                        {
+                            showValueTextBox();
+                            valueTextBox.Text = value.ToString();
+                        }
+                        enableCallback = true;
+                    }
                 }
                 else
                 {
@@ -528,10 +704,21 @@ namespace FRCrobotCodeGen302
                             else
                             {
                                 prop.SetValue(lastSelectedValueNode.Parent.Tag, Enum.Parse(lnt.type, valueComboBox.Text));
-                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(null, lastSelectedValueNode.Parent.Tag, lastSelectedValueNode.Parent.Tag.GetType().Name);
+                                //  lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(null, lastSelectedValueNode.Parent.Tag, lastSelectedValueNode.Parent.Tag.GetType().Name);
                             }
 
                             lastSelectedValueNode.Text = getTreeNodeDisplayName(valueComboBox.Text, lnt.name);
+
+                            if (lastSelectedValueNode.Parent != null)
+                            {
+                                if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
+                                    lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+                            }
+
+                            mechanism theMechanism;
+                            if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                                updateMechInstancesFromMechTemplate(theMechanism);
+
                             setNeedsSaving();
                         }
                     }
@@ -561,6 +748,18 @@ namespace FRCrobotCodeGen302
                         }
 
                         lastSelectedValueNode.Text = getTreeNodeDisplayName(valueTextBox.Text, lnt.name);
+
+                        if (lastSelectedValueNode.Parent != null)
+                        {
+                            if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
+                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+                        }
+
+
+                        mechanism theMechanism;
+                        if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                            updateMechInstancesFromMechTemplate(theMechanism);
+
                         setNeedsSaving();
                     }
                     catch (Exception)
@@ -580,18 +779,46 @@ namespace FRCrobotCodeGen302
                     {
                         leafNodeTag lnt = (leafNodeTag)(lastSelectedValueNode.Tag);
 
-                        Type t = lastSelectedValueNode.Tag.GetType();
-                        PropertyInfo prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
-                        if (null != prop && prop.CanWrite)
+                        PropertyInfo prop;
+                        if (isAParameterType(lnt.type.FullName))
                         {
-                            if (lnt.obj is uint)
-                                prop.SetValue(lastSelectedValueNode.Parent.Tag, (uint)valueNumericUpDown.Value);
-                            else if (lnt.obj is double)
-                                prop.SetValue(lastSelectedValueNode.Parent.Tag, (double)valueNumericUpDown.Value);
+                            prop = lnt.type.GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                            if (null != prop && prop.CanWrite)
+                            {
+
+                                if (prop.PropertyType.Name == "UInt")
+                                    prop.SetValue(lnt.obj, (uint)valueNumericUpDown.Value);
+                                else if (prop.PropertyType.Name == "Double")
+                                    prop.SetValue(lnt.obj, (double)valueNumericUpDown.Value);
+                            }
+                        }
+                        else
+                        {
+                            Type t = lastSelectedValueNode.Tag.GetType();
+                            prop = lastSelectedValueNode.Parent.Tag.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                            if (null != prop && prop.CanWrite)
+                            {
+                                if (lnt.obj is uint)
+                                    prop.SetValue(lastSelectedValueNode.Parent.Tag, (uint)valueNumericUpDown.Value);
+                                else if (lnt.obj is double)
+                                    prop.SetValue(lastSelectedValueNode.Parent.Tag, (double)valueNumericUpDown.Value);
+                            }
                         }
 
+
                         lastSelectedValueNode.Text = getTreeNodeDisplayName(valueNumericUpDown.Value.ToString(), lnt.name);
-                        setNeedsSaving() ;
+
+                        if (lastSelectedValueNode.Parent != null)
+                        {
+                            if (generatorConfig.treeviewParentNameExtensions.IndexOf(lnt.name) != -1)
+                                lastSelectedValueNode.Parent.Text = getTreeNodeDisplayName(lastSelectedValueNode.Parent.Parent.Tag, lastSelectedValueNode.Parent.Tag, valueTextBox.Text);
+                        }
+
+                        mechanism theMechanism;
+                        if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                            updateMechInstancesFromMechTemplate(theMechanism);
+
+                        setNeedsSaving();
                     }
                     catch (Exception)
                     {
@@ -623,27 +850,53 @@ namespace FRCrobotCodeGen302
                 TreeNode tn = null;
                 foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems)
                 {
+                    Type elementType;
+
                     // first create a new element instance
-                    Type elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
-                    object obj = Activator.CreateInstance(elementType);
+                    if (robotElementObj is mechanism)
+                        elementType = ((mechanism)robotElementObj).GetType();
+                    else
+                        elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
+                
+                    object obj;
 
                     // then find the collection of type robotElementObj.t within lastSelectedValueNode
-                    string name = ((robotElementType)robotElementObj).ToString();
-                    PropertyInfo pi =  lastSelectedValueNode.Tag.GetType().GetProperty(name);
-                    
-                    object theCollectionObj = pi.GetValue(lastSelectedValueNode.Tag, null);
+                    PropertyInfo pi;
+                    string name;
+                    if (robotElementObj is mechanism)
+                    {
+                        obj = Activator.CreateInstance((new mechanismInstance()).GetType());
+
+                        name = "mechanismInstance";
+                        pi = lastSelectedValueNode.Tag.GetType().GetProperty(name);
+                        ((mechanismInstance)obj).mechanism = robotConfig.DeepClone((mechanism)robotElementObj);
+                    }
+                    else
+                    {
+                        elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
+                        obj = Activator.CreateInstance(elementType);
+
+                        name = ((robotElementType)robotElementObj).ToString();
+                        pi = lastSelectedValueNode.Tag.GetType().GetProperty(name);
+                    }
+                        object theCollectionObj = pi.GetValue(lastSelectedValueNode.Tag, null);
 
 
-                    // then add it to the collection
-                    theCollectionObj.GetType().GetMethod("Add").Invoke(theCollectionObj, new object[] { obj });
-                    int count = (int)theCollectionObj.GetType().GetProperty("Count").GetValue(theCollectionObj);
+                        // then add it to the collection
+                        theCollectionObj.GetType().GetMethod("Add").Invoke(theCollectionObj, new object[] { obj });
+                        int count = (int)theCollectionObj.GetType().GetProperty("Count").GetValue(theCollectionObj);
 
-                    tn = AddNode(lastSelectedValueNode, theCollectionObj, name);
-                    tn.EnsureVisible();
-                    tn.Expand();
+                        tn = AddNode(lastSelectedValueNode, theCollectionObj, name);
+                        tn.EnsureVisible();
+                        tn.Expand();
+
+
+                    mechanism theMechanism;
+                    if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
+                        updateMechInstancesFromMechTemplate(theMechanism);
                 }
 
-                if(tn != null)
+                if (tn != null)
                     robotTreeView.SelectedNode = tn;
 
                 setNeedsSaving();
@@ -651,18 +904,126 @@ namespace FRCrobotCodeGen302
 
             else if (lastSelectedArrayNode != null)
             {
-                // first create a new instance
-                Type elementType = lastSelectedArrayNode.Tag.GetType().GetGenericArguments().Single();
-                object obj = Activator.CreateInstance(elementType);
+                if (lastSelectedArrayNode.Text == "mechanismInstances")
+                {
+                    TreeNode tn = null;
+                    foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems) // there should only be mechanisms in the checkedItems list 
+                    {
+                        // first create a new element instance
+                        if (robotElementObj is mechanism)
+                        {
+                            Type elementType = ((mechanism)robotElementObj).GetType();
 
-                // then add it to the collection
-                lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
-                int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+                            object obj = Activator.CreateInstance((new mechanismInstance()).GetType());
+                            ((mechanismInstance)obj).mechanism = robotConfig.DeepClone((mechanism)robotElementObj);
 
-                AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+                            // then add it to the collection
+                            lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
+                            int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+
+                            AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+                        }
+                    }
+                }
+                else
+                {
+                    // first create a new instance
+                    Type elementType = lastSelectedArrayNode.Tag.GetType().GetGenericArguments().Single();
+                    object obj = Activator.CreateInstance(elementType);
+
+                    // then add it to the collection
+                    lastSelectedArrayNode.Tag.GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
+                    int count = (int)lastSelectedArrayNode.Tag.GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+
+                    AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+                }
 
                 setNeedsSaving();
+
+                mechanism theMechanism;
+                if (isPartOfAMechanismTemplate(lastSelectedArrayNode, out theMechanism))
+                    updateMechInstancesFromMechTemplate(theMechanism);
             }
+        }
+
+        void updateMechInstancesFromMechTemplate(mechanism theMechanism)
+        {
+            foreach (robot r in theRobotConfiguration.theRobotVariants.robot)
+            {
+                foreach (mechanismInstance mi in r.mechanismInstance)
+                {
+                    if (mi.mechanism.name == theMechanism.name)
+                    {
+                        mechanism m = robotConfig.DeepClone(theMechanism);
+
+                        theRobotConfiguration.MergeMechanismParametersIntoStructure(m, mi.mechanism);
+
+                        ((TreeNode)mi.mechanism.theTreeNode).Remove();
+
+                        mi.mechanism = m;
+                        mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name);
+                    }
+                }
+            }
+        }
+
+
+        bool isPartOfAMechanismTemplate(TreeNode tn, out mechanism theTemplateMechanism)
+        {
+            List<object> lineage = new List<object>();
+
+            if (tn != null)
+            {
+                lineage.Add(tn.Tag);
+                while (tn.Parent != null)
+                {
+                    tn = tn.Parent;
+                    lineage.Add(tn.Tag);
+                }
+
+                if (lineage.Count >= 3)
+                {
+                    if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
+                        (isACollection(lineage[lineage.Count - 2])) &&
+                        (lineage[lineage.Count - 2].GetType().GetGenericArguments().Single().FullName == "Robot.mechanism"))
+                    {
+                        theTemplateMechanism = (mechanism)lineage[lineage.Count - 3];
+                        return true;
+                    }
+                }
+
+            }
+
+            theTemplateMechanism = null;
+            return false;
+        }
+
+        bool isPartOfAMechanismInstance(TreeNode tn)
+        {
+            List<object> lineage = new List<object>();
+
+            if (tn != null)
+            {
+                lineage.Add(tn.Tag);
+                while (tn.Parent != null)
+                {
+                    tn = tn.Parent;
+                    lineage.Add(tn.Tag);
+                }
+
+                if (lineage.Count >= 5)
+                {
+                    if ((lineage.Last().GetType().FullName == "Robot.robotVariants") &&
+                        (isACollection(lineage[lineage.Count - 2])) &&
+                        (lineage[lineage.Count - 5].GetType().FullName == "Robot.mechanismInstance"))
+                    {
+                        return true;
+                    }
+                }
+
+            }
+
+            return false;
         }
 
         private bool isACollection(object obj)
@@ -732,15 +1093,15 @@ namespace FRCrobotCodeGen302
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(needsSaving)
+            if (needsSaving)
             {
                 DialogResult dlgRes = MessageBox.Show("Do you want to save changes?", "302 Code Generator", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                if(dlgRes == DialogResult.Yes)
+                if (dlgRes == DialogResult.Yes)
                 {
                     saveConfigBbutton_Click(null, null);
                     clearNeedsSaving();
                 }
-                else if(dlgRes == DialogResult.Cancel) 
+                else if (dlgRes == DialogResult.Cancel)
                 {
                     e.Cancel = true;
                 }
@@ -756,7 +1117,7 @@ namespace FRCrobotCodeGen302
             TreeNode parent = tn.Parent;
             if (parent != null)
             {
-                if(parent.Tag != null)
+                if (parent.Tag != null)
                     return isACollection(parent.Tag);
             }
             return false;
@@ -766,12 +1127,12 @@ namespace FRCrobotCodeGen302
             // The delete button will be disabled if the highlighted tree item cannot be deleted
             // Only a member of a collection can be deleted
             TreeNode tn = robotTreeView.SelectedNode;
-            if(isDeletable(tn))
+            if (isDeletable(tn))
             {
                 TreeNode parent = tn.Parent;
                 if (parent != null)
                 {
-                    if( (parent.Tag != null) && (tn.Tag != null) )
+                    if ((parent.Tag != null) && (tn.Tag != null))
                     {
 
                         object theObjectToDelete = tn.Tag;
@@ -780,14 +1141,23 @@ namespace FRCrobotCodeGen302
 
                         if (theObjectToDelete != null)
                         {
+                            bool updateMechanismInstances = false;
+                            mechanism theMechanism;
+                            if (isPartOfAMechanismTemplate(tn, out theMechanism))
+                                updateMechanismInstances = true;
+
                             parent.Tag.GetType().GetMethod("Remove").Invoke(parent.Tag, new object[] { theObjectToDelete });
                             tn.Remove();
                             setNeedsSaving();
-                           
-                            if((int)parent.Tag.GetType().GetProperty("Count").GetValue(parent.Tag) == 0)
+
+                            if ((int)parent.Tag.GetType().GetProperty("Count").GetValue(parent.Tag) == 0)
                             {
                                 parent.Remove();
                             }
+
+                            if (updateMechanismInstances == true)
+                                updateMechInstancesFromMechTemplate(theMechanism);
+
                         }
                     }
                 }
@@ -797,6 +1167,52 @@ namespace FRCrobotCodeGen302
         private void robotConfigurationFileComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void createNewRobotVariantsConfigButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (generatorConfig == null)
+                    throw new Exception("Please load a configuration file before creating a new robot variants file");
+
+                SaveFileDialog dlg = new SaveFileDialog();
+                dlg.AddExtension = true;
+                dlg.DefaultExt = "xml";
+                dlg.Filter = "Robot Variants Files | *.xml";
+
+                if (!string.IsNullOrEmpty(generatorConfig.robotConfiguration))
+                {
+                    string path = Path.GetDirectoryName(configurationFilePathNameTextBox.Text);
+                    if (Directory.Exists(path))
+                        dlg.InitialDirectory = path;
+                }
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    using (var myFileStream = new FileStream(dlg.FileName, FileMode.Create))
+                    {
+                        robotVariants newRobotVariantsConfig = new robotVariants();
+                        newRobotVariantsConfig.robot.Add(new robot());
+
+                        var mySerializer = new XmlSerializer(typeof(robotVariants));
+                        mySerializer.Serialize(myFileStream, newRobotVariantsConfig);
+                    }
+
+                    Uri uriNewFile = new Uri(dlg.FileName);
+                    Uri uriConfigFilePath = new Uri(configurationFilePathNameTextBox.Text);
+                    string realtivePath = uriConfigFilePath.MakeRelativeUri(uriNewFile).ToString();
+                    generatorConfig.robotConfigurations.Add(realtivePath);
+                    robotConfigurationFileComboBox.Items.Add(dlg.FileName);
+                    robotConfigurationFileComboBox.SelectedIndex = robotConfigurationFileComboBox.Items.Count - 1;
+
+                    saveGeneratorConfig(Path.GetDirectoryName(configurationFilePathNameTextBox.Text));
+                }
+            }
+            catch (Exception ex)
+            {
+                addProgress(ex.Message);
+            }
         }
     }
 
