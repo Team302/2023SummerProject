@@ -21,7 +21,7 @@
 
 // Team 302 includes
 #include "hw/DragonDigitalInput.h"
-#include <hw/factories/DigitalInputFactory.h>
+#include "hw/factories/DigitalInputFactory.h"
 #include "configs/usages/DigitalInputUsage.h"
 
 // Third Party Includes

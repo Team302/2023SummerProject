@@ -14,7 +14,7 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#include <hw/MotorData.h>
+#include "hw/MotorData.h"
 #include "hw/interfaces/IDragonMotorController.h"
 
 MotorData *MotorData::m_instance = nullptr;

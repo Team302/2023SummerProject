@@ -20,7 +20,7 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include <hw/interfaces/IDragonControlToVendorControlAdapter.h>
+#include "hw/interfaces/IDragonControlToVendorControlAdapter.h"
 
 namespace ctre
 {

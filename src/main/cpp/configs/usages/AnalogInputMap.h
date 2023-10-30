@@ -18,6 +18,6 @@
 #include <memory>
 #include <map>
 
-#include <hw/DragonAnalogInput.h>
+#include "hw/DragonAnalogInput.h"
 
 typedef std::map<DragonAnalogInput::ANALOG_SENSOR_TYPE, DragonAnalogInput *> AnalogInputMap;

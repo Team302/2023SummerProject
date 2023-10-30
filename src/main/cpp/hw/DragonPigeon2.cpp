@@ -14,7 +14,7 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#include <hw/DragonPigeon2.h>
+#include "hw/DragonPigeon2.h"
 #include <memory>
 
 using ctre::phoenixpro::configs::Pigeon2Configuration;

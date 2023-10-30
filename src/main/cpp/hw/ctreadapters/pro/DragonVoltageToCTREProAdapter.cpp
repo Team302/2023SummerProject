@@ -20,13 +20,13 @@
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
 #include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
-#include <hw/ctreadapters/pro/DragonVoltageToCTREProAdapter.h>
+#include "hw/ctreadapters/pro/DragonVoltageToCTREProAdapter.h"
 #include "mechanisms/controllers/ControlData.h"
-#include <mechanisms/controllers/ControlModes.h>
+#include "mechanisms/controllers/ControlModes.h"
 
 // Third Party Includes
-#include <ctre/phoenix/motorcontrol/ControlMode.h>
-#include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
+#include "ctre/phoenix/motorcontrol/ControlMode.h"
+#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
 DragonVoltageToCTREProAdapter::DragonVoltageToCTREProAdapter(std::string networkTableName,
                                                              int controllerSlot,

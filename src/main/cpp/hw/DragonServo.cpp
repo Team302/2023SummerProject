@@ -16,8 +16,8 @@
 
 #include <string>
 
-#include <hw/DragonServo.h>
-#include <configs/usages/ServoUsage.h>
+#include "hw/DragonServo.h"
+#include "configs/usages/ServoUsage.h"
 #include "utils/logging/Logger.h"
 
 #include <frc/Servo.h>

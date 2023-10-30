@@ -27,18 +27,18 @@
 #include "utils/logging/Logger.h"
 
 #include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
-#include <hw/ctreadapters/v5/DragonPercentOutputToCTREV5Adapter.h>
-#include <hw/ctreadapters/v5/DragonPositionDegreeToCTREV5Adapter.h>
-#include <hw/ctreadapters/v5/DragonPositionInchToCTREV5Adapter.h>
-#include <hw/ctreadapters/v5/DragonTicksToCTREV5Adapter.h>
-#include <hw/ctreadapters/v5/DragonTrapezoidToCTREV5Adapter.h>
-#include <hw/ctreadapters/v5/DragonVelocityDegreeToCTREV5Adapter.h>
-#include <hw/ctreadapters/v5/DragonVelocityInchToCTREV5Adapter.h>
-#include <hw/ctreadapters/v5/DragonVelocityRPSToCTREV5Adapter.h>
-#include <hw/ctreadapters/v5/DragonVoltageToCTREV5Adapter.h>
+#include "hw/ctreadapters/v5/DragonPercentOutputToCTREV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonPositionDegreeToCTREV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonPositionInchToCTREV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonTicksToCTREV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonTrapezoidToCTREV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonVelocityDegreeToCTREV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonVelocityInchToCTREV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonVelocityRPSToCTREV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonVoltageToCTREV5Adapter.h"
 
 // Third Party Includes
-#include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
+#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
 using namespace std;
 

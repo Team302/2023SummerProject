@@ -2,16 +2,16 @@
 #include <map>
 #include <string>
 
-#include <hw/factories/DragonMotorControllerFactory.h>
+#include "hw/factories/DragonMotorControllerFactory.h"
 #include "configs/usages/MotorControllerUsage.h"
 #include "hw/DistanceAngleCalcStruc.h"
-#include <hw/DragonTalonSRX.h>
-#include <hw/DragonTalonFX.h>
+#include "hw/DragonTalonSRX.h"
+#include "hw/DragonTalonFX.h"
 #include "utils/logging/Logger.h"
 
-#include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
-#include <ctre/phoenix/motorcontrol/can/TalonFX.h>
-#include <ctre/phoenix/motorcontrol/FeedbackDevice.h>
+#include "ctre/phoenix/motorcontrol/can/TalonSRX.h"
+#include "ctre/phoenix/motorcontrol/can/TalonFX.h"
+#include "ctre/phoenix/motorcontrol/FeedbackDevice.h"
 
 using namespace std;
 using namespace ctre::phoenix::motorcontrol;
@@ -42,30 +42,29 @@ DragonMotorControllerFactory::DragonMotorControllerFactory()
 // Description:     Create a motor controller from the inputs
 // Returns:         Void
 //=======================================================================================
-shared_ptr<IDragonMotorController> DragonMotorControllerFactory::CreateMotorController(
-    string networkTableName,
-    string mtype,
-    int canID,
-    string canBusName,
-    int pdpID,
-    string usage,
-    bool inverted,
-    bool sensorInverted,
-    FeedbackDevice feedbackDevice,
-    DistanceAngleCalcStruc calsStruc,
-    bool brakeMode,
-    int followMotor,
-    int peakCurrentDuration,
-    int continuousCurrentLimit,
-    int peakCurrentLimit,
-    bool enableCurrentLimit,
-    bool forwardLimitSwitch,
-    bool forwardLimitSwitchNormallyOpen,
-    bool reverseLimitSwitch,
-    bool reverseLimitSwitchNormallyOpen,
-    double voltageCompensationSaturation,
-    bool enableVoltageCompensation,
-    IDragonMotorController::MOTOR_TYPE motorType
+shared_ptr<IDragonMotorController> DragonMotorControllerFactory::CreateMotorController(string networkTableName,
+                                                                                       string mtype,
+                                                                                       int canID,
+                                                                                       string canBusName,
+                                                                                       int pdpID,
+                                                                                       string usage,
+                                                                                       bool inverted,
+                                                                                       bool sensorInverted,
+                                                                                       FeedbackDevice feedbackDevice,
+                                                                                       DistanceAngleCalcStruc calsStruc,
+                                                                                       bool brakeMode,
+                                                                                       int followMotor,
+                                                                                       int peakCurrentDuration,
+                                                                                       int continuousCurrentLimit,
+                                                                                       int peakCurrentLimit,
+                                                                                       bool enableCurrentLimit,
+                                                                                       bool forwardLimitSwitch,
+                                                                                       bool forwardLimitSwitchNormallyOpen,
+                                                                                       bool reverseLimitSwitch,
+                                                                                       bool reverseLimitSwitchNormallyOpen,
+                                                                                       double voltageCompensationSaturation,
+                                                                                       bool enableVoltageCompensation,
+                                                                                       IDragonMotorController::MOTOR_TYPE motorType
 
 )
 {

@@ -28,8 +28,8 @@
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
 #include "hw/interfaces/IDragonMotorController.h"
-#include <hw/DragonTalonFX.h>
-#include <hw/factories/PDPFactory.h>
+#include "hw/DragonTalonFX.h"
+#include "hw/factories/PDPFactory.h"
 #include "hw/factories/DragonControlToCTREV5AdapterFactory.h"
 #include "configs/usages/MotorControllerUsage.h"
 #include "utils/logging/Logger.h"
@@ -40,16 +40,9 @@
 #include "ctre/phoenixpro/TalonFX.hpp"
 #include "ctre/phoenixpro/controls/Follower.hpp"
 #include "ctre/phoenixpro/configs/Configs.hpp"
-// #include <ctre/phoenix/motorcontrol/can/TalonFX.h>
-// #include <ctre/phoenix/motorcontrol/SupplyCurrentLimitConfiguration.h>
 
 using namespace frc;
 using ctre::phoenixpro::configs::CurrentLimitsConfigs;
-
-// using namespace std;
-// using namespace ctre::phoenix;
-// using namespace ctre::phoenix::motorcontrol;
-// using namespace ctre::phoenix::motorcontrol::can;
 
 using ctre::phoenixpro::configs::CANcoderConfiguration;
 using ctre::phoenixpro::configs::ClosedLoopRampsConfigs;

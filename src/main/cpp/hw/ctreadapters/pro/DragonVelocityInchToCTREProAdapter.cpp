@@ -22,14 +22,14 @@
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
 #include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
-#include <hw/ctreadapters/pro/DragonVelocityInchToCTREProAdapter.h>
+#include "hw/ctreadapters/pro/DragonVelocityInchToCTREProAdapter.h"
 #include "mechanisms/controllers/ControlData.h"
-#include <mechanisms/controllers/ControlModes.h>
+#include "mechanisms/controllers/ControlModes.h"
 #include "utils/ConversionUtils.h"
 
 // Third Party Includes
-#include <ctre/phoenix/motorcontrol/ControlMode.h>
-#include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
+#include "ctre/phoenix/motorcontrol/ControlMode.h"
+#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
 DragonVelocityInchToCTREProAdapter::DragonVelocityInchToCTREProAdapter(std::string networkTableName,
                                                                        int controllerSlot,

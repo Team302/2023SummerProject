@@ -20,14 +20,12 @@
 #include "mechanisms/base/BaseMech.h"
 #include "mechanisms/base/StateMgr.h"
 #include "mechanisms/controllers/MechanismTargetData.h"
-#include <mechanisms/MechanismFactory.h>
 #include "mechanisms/MechanismTypes.h"
 #include <mechanisms/StateMgrHelper.h>
 #include <mechanisms/StateStruc.h>
 #include "utils/logging/Logger.h"
 
 //@ADDMech Add includes for mech states and mech state mgr
-
 
 using namespace std;
 

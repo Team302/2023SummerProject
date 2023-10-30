@@ -23,28 +23,27 @@
 #include <frc/motorcontrol/MotorController.h>
 
 #include "hw/DistanceAngleCalcStruc.h"
-#include <hw/interfaces/IDragonControlToVendorControlAdapter.h>
+#include "hw/interfaces/IDragonControlToVendorControlAdapter.h"
 #include "hw/interfaces/IDragonMotorController.h"
 #include "configs/usages/MotorControllerUsage.h"
-#include <mechanisms/controllers/ControlModes.h>
+#include "mechanisms/controllers/ControlModes.h"
 
 // Third Party Includes
-#include <ctre/phoenix/ErrorCode.h>
-#include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
-#include <ctre/phoenix/motorcontrol/RemoteSensorSource.h>
+#include "ctre/phoenix/ErrorCode.h"
+#include "ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h"
+#include "ctre/phoenix/motorcontrol/RemoteSensorSource.h"
 
 class DragonTalonSRX : public IDragonMotorController
 {
 public:
     // Constructors
     DragonTalonSRX() = delete;
-    DragonTalonSRX(
-        std::string networkTableName,
-        MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
-        int deviceID,
-        int pdpID,
-        DistanceAngleCalcStruc calcStruc,
-        IDragonMotorController::MOTOR_TYPE motortype
+    DragonTalonSRX(std::string networkTableName,
+                   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
+                   int deviceID,
+                   int pdpID,
+                   DistanceAngleCalcStruc calcStruc,
+                   IDragonMotorController::MOTOR_TYPE motortype
 
     );
     virtual ~DragonTalonSRX() = default;

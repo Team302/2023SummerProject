@@ -22,24 +22,24 @@
 #include <networktables/NetworkTableInstance.h>
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
-#include <frc/PowerDistribution.h>
-#include <frc/motorcontrol/MotorController.h>
+#include "frc/PowerDistribution.h"
+#include "frc/motorcontrol/MotorController.h"
 
 // Team 302 includes
 #include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
 #include "hw/factories/DragonControlToCTREV5AdapterFactory.h"
 #include "hw/interfaces/IDragonMotorController.h"
-#include <hw/DragonTalonSRX.h>
-#include <hw/factories/PDPFactory.h>
+#include "hw/DragonTalonSRX.h"
+#include "hw/factories/PDPFactory.h"
 #include "configs/usages/MotorControllerUsage.h"
 #include "hw/DistanceAngleCalcStruc.h"
 #include "utils/ConversionUtils.h"
 #include "utils/logging/Logger.h"
 
 // Third Party Includes
-#include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
-#include <ctre/phoenix/motorcontrol/SupplyCurrentLimitConfiguration.h>
-#include <ctre/phoenix/motorcontrol/LimitSwitchType.h>
+#include "ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h"
+#include "ctre/phoenix/motorcontrol/SupplyCurrentLimitConfiguration.h"
+#include "ctre/phoenix/motorcontrol/LimitSwitchType.h"
 
 using namespace frc;
 using namespace std;
@@ -47,21 +47,20 @@ using namespace ctre::phoenix;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
-DragonTalonSRX::DragonTalonSRX(
-	string networkTableName,
-	MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
-	int deviceID,
-	int pdpID,
-	DistanceAngleCalcStruc calcStruc,
-	MOTOR_TYPE motorType) : m_networkTableName(networkTableName),
-							m_talon(make_shared<WPI_TalonSRX>(deviceID)),
-							m_controller(),
-							m_type(deviceType),
-							m_id(deviceID),
-							m_pdp(pdpID),
-							m_calcStruc(calcStruc),
-							m_motorType(motorType),
-							m_inverted(false)
+DragonTalonSRX::DragonTalonSRX(string networkTableName,
+							   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
+							   int deviceID,
+							   int pdpID,
+							   DistanceAngleCalcStruc calcStruc,
+							   MOTOR_TYPE motorType) : m_networkTableName(networkTableName),
+													   m_talon(make_shared<WPI_TalonSRX>(deviceID)),
+													   m_controller(),
+													   m_type(deviceType),
+													   m_id(deviceID),
+													   m_pdp(pdpID),
+													   m_calcStruc(calcStruc),
+													   m_motorType(motorType),
+													   m_inverted(false)
 {
 	m_networkTableName += string(" - motor ");
 	m_networkTableName += to_string(deviceID);

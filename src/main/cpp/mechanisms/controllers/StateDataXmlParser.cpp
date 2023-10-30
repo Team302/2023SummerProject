@@ -40,7 +40,6 @@
 // Team 302 includes
 #include "mechanisms/controllers/ControlData.h"
 #include "mechanisms/controllers/MechanismTargetData.h"
-#include <mechanisms/MechanismFactory.h>
 #include "mechanisms/MechanismTypes.h"
 #include "utils/logging/Logger.h"
 #include <mechanisms/controllers/ControlDataXmlParser.h>
@@ -64,6 +63,7 @@ vector<MechanismTargetData *> StateDataXmlParser::ParseXML(MechanismTypes::MECHA
     // set the file to parse
     auto filename = frc::filesystem::GetDeployDirectory();
     filename += string("/states/");
+    /**
     auto mech = MechanismFactory::GetMechanismFactory()->GetMechanism(mechanism);
     if (mech == nullptr)
     {
@@ -146,5 +146,6 @@ vector<MechanismTargetData *> StateDataXmlParser::ParseXML(MechanismTypes::MECHA
             }
         }
     }
+    **/
     return targetDataVector;
 }

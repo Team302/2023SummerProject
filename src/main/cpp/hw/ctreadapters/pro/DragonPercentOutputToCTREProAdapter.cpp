@@ -20,13 +20,13 @@
 
 // Team 302 includes
 #include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
-#include <hw/ctreadapters/pro/DragonPercentOutputToCTREProAdapter.h>
+#include "hw/ctreadapters/pro/DragonPercentOutputToCTREProAdapter.h"
 #include "mechanisms/controllers/ControlData.h"
-#include <mechanisms/controllers/ControlModes.h>
+#include "mechanisms/controllers/ControlModes.h"
 
 // Third Party Includes
-#include <ctre/phoenix/motorcontrol/ControlMode.h>
-#include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
+#include "ctre/phoenix/motorcontrol/ControlMode.h"
+#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
 DragonPercentOutputToCTREProAdapter::DragonPercentOutputToCTREProAdapter(std::string networkTableName,
                                                                          int controllerSlot,
