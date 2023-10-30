@@ -21,44 +21,44 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
-#include "hw/factories/DragonControlToCtreV5AdapterFactory.h"
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
+#include "hw/factories/DragonControlToCTREV5AdapterFactory.h"
 #include "mechanisms/controllers/ControlData.h"
 #include "utils/logging/Logger.h"
 
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
-#include <hw/ctreadapters/DragonPercentOutputToCtreV5Adapter.h>
-#include <hw/ctreadapters/DragonPositionDegreeToCtreV5Adapter.h>
-#include <hw/ctreadapters/DragonPositionInchToCtreV5Adapter.h>
-#include <hw/ctreadapters/DragonTicksToCtreV5Adapter.h>
-#include <hw/ctreadapters/DragonTrapezoidToCtreV5Adapter.h>
-#include <hw/ctreadapters/DragonVelocityDegreeToCtreV5Adapter.h>
-#include <hw/ctreadapters/DragonVelocityInchToCtreV5Adapter.h>
-#include <hw/ctreadapters/DragonVelocityRPSToCtreV5Adapter.h>
-#include <hw/ctreadapters/DragonVoltageToCtreV5Adapter.h>
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
+#include <hw/ctreadapters/v5/DragonPercentOutputToCTREV5Adapter.h>
+#include <hw/ctreadapters/v5/DragonPositionDegreeToCTREV5Adapter.h>
+#include <hw/ctreadapters/v5/DragonPositionInchToCTREV5Adapter.h>
+#include <hw/ctreadapters/v5/DragonTicksToCTREV5Adapter.h>
+#include <hw/ctreadapters/v5/DragonTrapezoidToCTREV5Adapter.h>
+#include <hw/ctreadapters/v5/DragonVelocityDegreeToCTREV5Adapter.h>
+#include <hw/ctreadapters/v5/DragonVelocityInchToCTREV5Adapter.h>
+#include <hw/ctreadapters/v5/DragonVelocityRPSToCTREV5Adapter.h>
+#include <hw/ctreadapters/v5/DragonVoltageToCTREV5Adapter.h>
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
 
 using namespace std;
 
-DragonControlToCtreV5AdapterFactory *DragonControlToCtreV5AdapterFactory::m_factory = nullptr;
+DragonControlToCTREV5AdapterFactory *DragonControlToCTREV5AdapterFactory::m_factory = nullptr;
 
 //=======================================================================================
 /// Method: GetInstance
 /// @brief  Get the factory singleton
 /// @return DragonServoFactory*    pointer to the factory
 //=======================================================================================
-DragonControlToCtreV5AdapterFactory *DragonControlToCtreV5AdapterFactory::GetFactory()
+DragonControlToCTREV5AdapterFactory *DragonControlToCTREV5AdapterFactory::GetFactory()
 {
-    if (DragonControlToCtreV5AdapterFactory::m_factory == nullptr)
+    if (DragonControlToCTREV5AdapterFactory::m_factory == nullptr)
     {
-        DragonControlToCtreV5AdapterFactory::m_factory = new DragonControlToCtreV5AdapterFactory();
+        DragonControlToCTREV5AdapterFactory::m_factory = new DragonControlToCTREV5AdapterFactory();
     }
-    return DragonControlToCtreV5AdapterFactory::m_factory;
+    return DragonControlToCTREV5AdapterFactory::m_factory;
 }
 
-DragonControlToCtreV5Adapter *DragonControlToCtreV5AdapterFactory::CreatePercentOuptutAdapter(std::string networkTableName,
+DragonControlToCTREV5Adapter *DragonControlToCTREV5AdapterFactory::CreatePercentOuptutAdapter(std::string networkTableName,
                                                                                               ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller)
 {
 
@@ -66,7 +66,7 @@ DragonControlToCtreV5Adapter *DragonControlToCtreV5AdapterFactory::CreatePercent
     DistanceAngleCalcStruc calcStruc;
     return CreateAdapter(networkTableName, 0, &controlInfo, calcStruc, controller);
 }
-DragonControlToCtreV5Adapter *DragonControlToCtreV5AdapterFactory::CreateAdapter(std::string networkTableName,
+DragonControlToCTREV5Adapter *DragonControlToCTREV5AdapterFactory::CreateAdapter(std::string networkTableName,
                                                                                  int controllerSlot,
                                                                                  ControlData *controlInfo,
                                                                                  DistanceAngleCalcStruc calcStruc,
@@ -77,39 +77,39 @@ DragonControlToCtreV5Adapter *DragonControlToCtreV5AdapterFactory::CreateAdapter
         switch (controlInfo->GetMode())
         {
         case ControlModes::CONTROL_TYPE::PERCENT_OUTPUT:
-            return new DragonPercentOutputToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonPercentOutputToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         case ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS:
-            return new DragonTicksToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonTicksToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         case ControlModes::CONTROL_TYPE::POSITION_DEGREES:
-            return new DragonPositionDegreeToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonPositionDegreeToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         case ControlModes::CONTROL_TYPE::POSITION_INCH:
-            return new DragonPositionInchToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonPositionInchToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         case ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE:
-            return new DragonPercentOutputToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonPercentOutputToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         case ControlModes::CONTROL_TYPE::TRAPEZOID:
-            return new DragonTrapezoidToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonTrapezoidToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         case ControlModes::CONTROL_TYPE::VELOCITY_DEGREES:
-            return new DragonVelocityDegreeToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonVelocityDegreeToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         case ControlModes::CONTROL_TYPE::VELOCITY_INCH:
-            return new DragonVelocityInchToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonVelocityInchToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         case ControlModes::CONTROL_TYPE::VELOCITY_RPS:
-            return new DragonVelocityRPSToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonVelocityRPSToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         case ControlModes::CONTROL_TYPE::CURRENT:
@@ -122,18 +122,18 @@ DragonControlToCtreV5Adapter *DragonControlToCtreV5AdapterFactory::CreateAdapter
             break;
 
         case ControlModes::CONTROL_TYPE::VOLTAGE:
-            return new DragonVoltageToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            return new DragonVoltageToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
         default:
             string msg{"Invalid control data "};
             msg += to_string(controller->GetDeviceID());
-            Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonControlToCtreV5AdapterFactory"), string("CreateAdapter"), msg);
-            return new DragonPercentOutputToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonControlToCTREV5AdapterFactory"), string("CreateAdapter"), msg);
+            return new DragonPercentOutputToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
         }
     }
     string msg{"Invalid contrrol information "};
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonControlToCtreV5AdapterFactory"), string("CreateAdapter"), msg);
-    return new DragonPercentOutputToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonControlToCTREV5AdapterFactory"), string("CreateAdapter"), msg);
+    return new DragonPercentOutputToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
 }

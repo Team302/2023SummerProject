@@ -61,6 +61,7 @@ public:
     // Setters (override)
     // void SetControlMode(ControlModes::CONTROL_TYPE mode) override; //:D
     void Set(double value) override;
+    void Set(int slot, double value);
     void SetRotationOffset(double rotations) override;
     void SetVoltageRamping(double ramping, double rampingClosedLoop = -1) override; // seconds 0 to full, set to 0 to disable
     void EnableCurrentLimiting(bool enabled) override;

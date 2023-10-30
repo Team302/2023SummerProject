@@ -1,4 +1,3 @@
-
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -21,8 +20,8 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
-#include <hw/ctreadapters/DragonTrapezoidToCtreV5Adapter.h>
+#include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
+#include <hw/ctreadapters/pro/DragonPositionDegreeToCTREProAdapter.h>
 #include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
 #include "utils/ConversionUtils.h"
@@ -31,26 +30,27 @@
 #include <ctre/phoenix/motorcontrol/ControlMode.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
 
-DragonTrapezoidToCtreV5Adapter::DragonTrapezoidToCtreV5Adapter(std::string networkTableName,
-                                                               int controllerSlot,
-                                                               ControlData *controlInfo,
-                                                               DistanceAngleCalcStruc calcStruc,
-                                                               ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+DragonPositionDegreeToCTREProAdapter::DragonPositionDegreeToCTREProAdapter(std::string networkTableName,
+                                                                           int controllerSlot,
+                                                                           ControlData *controlInfo,
+                                                                           DistanceAngleCalcStruc calcStruc,
+                                                                           ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
-void DragonTrapezoidToCtreV5Adapter::Set(
+void DragonPositionDegreeToCTREProAdapter::Set(
     double value)
 {
-    auto output = (m_calcStruc.countsPerInch > 0.01) ? m_calcStruc.countsPerInch * value : (ConversionUtils::InchesToCounts(value, m_calcStruc.countsPerRev, m_calcStruc.diameter) * m_calcStruc.gearRatio);
+    auto output = (m_calcStruc.countsPerDegree > 0.01) ? m_calcStruc.countsPerDegree * value : (ConversionUtils::DegreesToCounts(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
     m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
+
+    // m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, 0.1);
 }
 
-void DragonTrapezoidToCtreV5Adapter::SetControlConstants(
+void DragonPositionDegreeToCTREProAdapter::SetControlConstants(
     int controlSlot,
     ControlData *controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);
-    SetMaxVelocityAcceleration(m_networkTableName, m_controlData);
 }

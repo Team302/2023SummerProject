@@ -1,4 +1,3 @@
-
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -15,35 +14,43 @@
 //====================================================================================================================================================
 
 // C++ Includes
+#include <string>
 
 // FRC includes
 
 // Team 302 includes
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
-#include <hw/ctreadapters/DragonPercentOutputToCtreV5Adapter.h>
+#include "hw/DistanceAngleCalcStruc.h"
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
+#include <hw/ctreadapters/v5/DragonPositionDegreeToCTREV5Adapter.h>
 #include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
+#include "utils/ConversionUtils.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/ControlMode.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
 
-DragonPercentOutputToCtreV5Adapter::DragonPercentOutputToCtreV5Adapter(std::string networkTableName,
-                                                                       int controllerSlot,
-                                                                       ControlData *controlInfo,
-                                                                       DistanceAngleCalcStruc calcStruc,
-                                                                       ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+DragonPositionDegreeToCTREV5Adapter::DragonPositionDegreeToCTREV5Adapter(std::string networkTableName,
+                                                                         int controllerSlot,
+                                                                         ControlData *controlInfo,
+                                                                         DistanceAngleCalcStruc calcStruc,
+                                                                         ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
-}
-void DragonPercentOutputToCtreV5Adapter::Set(
-    double value)
-{
-    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, value);
 }
 
-void DragonPercentOutputToCtreV5Adapter::SetControlConstants(
+void DragonPositionDegreeToCTREV5Adapter::Set(
+    double value)
+{
+    auto output = (m_calcStruc.countsPerDegree > 0.01) ? m_calcStruc.countsPerDegree * value : (ConversionUtils::DegreesToCounts(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
+    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
+
+    // m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, 0.1);
+}
+
+void DragonPositionDegreeToCTREV5Adapter::SetControlConstants(
     int controlSlot,
     ControlData *controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
+    SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);
 }

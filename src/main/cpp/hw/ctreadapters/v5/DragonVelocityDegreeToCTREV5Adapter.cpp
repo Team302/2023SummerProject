@@ -14,49 +14,42 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#pragma once
-
 // C++ Includes
 #include <string>
 
+// FRC includes
+
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
+#include <hw/ctreadapters/v5/DragonVelocityDegreeToCTREV5Adapter.h>
+#include "mechanisms/controllers/ControlData.h"
+#include <mechanisms/controllers/ControlModes.h>
+#include "utils/ConversionUtils.h"
 
 // Third Party Includes
+#include <ctre/phoenix/motorcontrol/ControlMode.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
 
-namespace ctre
+DragonVelocityDegreeToCTREV5Adapter::DragonVelocityDegreeToCTREV5Adapter(std::string networkTableName,
+                                                                         int controllerSlot,
+                                                                         ControlData *controlInfo,
+                                                                         DistanceAngleCalcStruc calcStruc,
+                                                                         ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
-    namespace phoenix
-    {
-        namespace motorcontrol
-        {
-            namespace can
-            {
-                class WPI_BaseMotorController;
-            }
-        }
-    }
 }
-class ControlData;
 
-class DragonTrapezoidToCtreV5Adapter : public DragonControlToCtreV5Adapter
+void DragonVelocityDegreeToCTREV5Adapter::Set(
+    double value)
 {
-public:
-    DragonTrapezoidToCtreV5Adapter() = delete;
-    DragonTrapezoidToCtreV5Adapter(std::string networkTableName,
-                                   int controllerSlot,
-                                   ControlData *controlInfo,
-                                   DistanceAngleCalcStruc calcStruc,
-                                   ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
+    auto output = (m_calcStruc.countsPerDegree > 0.01) ? m_calcStruc.countsPerDegree * value * 0.1 : (ConversionUtils::DegreesPerSecondToCounts100ms(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
+    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, output);
+}
 
-    ~DragonTrapezoidToCtreV5Adapter() = default;
-
-    void Set(
-        double value) override;
-
-    void SetControlConstants(
-        int controlSlot,
-        ControlData *controlInfo) override;
-};
+void DragonVelocityDegreeToCTREV5Adapter::SetControlConstants(
+    int controlSlot,
+    ControlData *controlInfo)
+{
+    SetPeakAndNominalValues(m_networkTableName, controlInfo);
+    SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);
+}

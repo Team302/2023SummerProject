@@ -30,11 +30,11 @@
 #include "hw/interfaces/IDragonMotorController.h"
 #include <hw/DragonTalonFX.h>
 #include <hw/factories/PDPFactory.h>
-#include "hw/factories/DragonControlToCtreV5AdapterFactory.h"
+#include "hw/factories/DragonControlToCTREV5AdapterFactory.h"
 #include "configs/usages/MotorControllerUsage.h"
 #include "utils/logging/Logger.h"
 #include "utils/ConversionUtils.h"
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
 
 // Third Party Includes
 #include "ctre/phoenixpro/TalonFX.hpp"
@@ -292,6 +292,10 @@ void DragonTalonFX::SetFramePeriodPriority(MOTOR_PRIORITY priority)
 }
 
 void DragonTalonFX::Set(double value)
+{
+	Set(0, value);
+}
+void DragonTalonFX::Set(int slot, double value)
 {
 	if (m_talon != nullptr)
 	{

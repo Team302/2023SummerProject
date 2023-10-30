@@ -1,3 +1,4 @@
+
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -13,46 +14,36 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#pragma once
-
 // C++ Includes
-#include <string>
+
+// FRC includes
 
 // Team 302 includes
-#include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
+#include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
+#include <hw/ctreadapters/pro/DragonPercentOutputToCTREProAdapter.h>
+#include "mechanisms/controllers/ControlData.h"
+#include <mechanisms/controllers/ControlModes.h>
 
-namespace ctre
+// Third Party Includes
+#include <ctre/phoenix/motorcontrol/ControlMode.h>
+#include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
+
+DragonPercentOutputToCTREProAdapter::DragonPercentOutputToCTREProAdapter(std::string networkTableName,
+                                                                         int controllerSlot,
+                                                                         ControlData *controlInfo,
+                                                                         DistanceAngleCalcStruc calcStruc,
+                                                                         ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
-    namespace phoenix
-    {
-        namespace motorcontrol
-        {
-            namespace can
-            {
-                class WPI_BaseMotorController;
-            }
-        }
-    }
 }
-class ControlData;
-
-class DragonPercentOutputToCtreV5Adapter : public DragonControlToCtreV5Adapter
+void DragonPercentOutputToCTREProAdapter::Set(
+    double value)
 {
-public:
-    DragonPercentOutputToCtreV5Adapter() = delete;
-    DragonPercentOutputToCtreV5Adapter(std::string networkTableName,
-                                       int controllerSlot,
-                                       ControlData *controlInfo,
-                                       DistanceAngleCalcStruc calcStruc,
-                                       ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
+    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, value);
+}
 
-    ~DragonPercentOutputToCtreV5Adapter() = default;
-
-    void Set(
-        double value) override;
-
-    void SetControlConstants(
-        int controlSlot,
-        ControlData *controlInfo) override;
-};
+void DragonPercentOutputToCTREProAdapter::SetControlConstants(
+    int controlSlot,
+    ControlData *controlInfo)
+{
+    SetPeakAndNominalValues(m_networkTableName, controlInfo);
+}

@@ -26,8 +26,8 @@
 #include <frc/motorcontrol/MotorController.h>
 
 // Team 302 includes
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
-#include "hw/factories/DragonControlToCtreV5AdapterFactory.h"
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
+#include "hw/factories/DragonControlToCTREV5AdapterFactory.h"
 #include "hw/interfaces/IDragonMotorController.h"
 #include <hw/DragonTalonSRX.h>
 #include <hw/factories/PDPFactory.h>
@@ -66,7 +66,7 @@ DragonTalonSRX::DragonTalonSRX(
 	m_networkTableName += string(" - motor ");
 	m_networkTableName += to_string(deviceID);
 
-	m_controller[0] = DragonControlToCtreV5AdapterFactory::GetFactory()->CreatePercentOuptutAdapter(networkTableName, m_talon.get());
+	m_controller[0] = DragonControlToCTREV5AdapterFactory::GetFactory()->CreatePercentOuptutAdapter(networkTableName, m_talon.get());
 	m_controller[0]->InitializeDefaults();
 	for (auto i = 1; i < 4; ++i)
 	{
@@ -408,7 +408,7 @@ void DragonTalonSRX::SetAsFollowerMotor(
 void DragonTalonSRX::SetControlConstants(int slot, ControlData *controlInfo)
 {
 	delete m_controller[slot];
-	m_controller[slot] = DragonControlToCtreV5AdapterFactory::GetFactory()->CreateAdapter(m_networkTableName, slot, controlInfo, m_calcStruc, m_talon.get());
+	m_controller[slot] = DragonControlToCTREV5AdapterFactory::GetFactory()->CreateAdapter(m_networkTableName, slot, controlInfo, m_calcStruc, m_talon.get());
 }
 
 void DragonTalonSRX::SetForwardLimitSwitch(

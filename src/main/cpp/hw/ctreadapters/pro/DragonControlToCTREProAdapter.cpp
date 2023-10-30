@@ -20,8 +20,7 @@
 
 // Team 302 includes
 #include <hw/interfaces/IDragonControlToVendorControlAdapter.h>
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
-#include <hw/ctreadapters/DragonPercentOutputToCtreV5Adapter.h>
+#include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
 #include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
 #include "utils/logging/Logger.h"
@@ -36,16 +35,16 @@ using namespace ctre::phoenix;
 using namespace ctre::phoenix::motorcontrol;
 using namespace ctre::phoenix::motorcontrol::can;
 
-DragonControlToCtreV5Adapter::DragonControlToCtreV5Adapter(std::string networkTableName,
-														   int controllerSlot,
-														   ControlData *controlInfo,
-														   DistanceAngleCalcStruc calcStruc,
-														   WPI_BaseMotorController *controller) : IDragonControlToVendorControlAdapter(),
-																								  m_networkTableName(networkTableName),
-																								  m_controllerSlot(controllerSlot),
-																								  m_controlData(controlInfo),
-																								  m_calcStruc(calcStruc),
-																								  m_controller(controller)
+DragonControlToCTREProAdapter::DragonControlToCTREProAdapter(std::string networkTableName,
+															 int controllerSlot,
+															 ControlData *controlInfo,
+															 DistanceAngleCalcStruc calcStruc,
+															 WPI_BaseMotorController *controller) : IDragonControlToVendorControlAdapter(),
+																									m_networkTableName(networkTableName),
+																									m_controllerSlot(controllerSlot),
+																									m_controlData(controlInfo),
+																									m_calcStruc(calcStruc),
+																									m_controller(controller)
 {
 	SetPeakAndNominalValues(networkTableName, controlInfo);
 
@@ -71,7 +70,7 @@ DragonControlToCtreV5Adapter::DragonControlToCtreV5Adapter(std::string networkTa
 	}
 }
 
-void DragonControlToCtreV5Adapter::InitializeDefaults()
+void DragonControlToCTREProAdapter::InitializeDefaults()
 {
 	if (m_controller != nullptr)
 	{
@@ -116,14 +115,14 @@ void DragonControlToCtreV5Adapter::InitializeDefaults()
 	}
 }
 
-string DragonControlToCtreV5Adapter::GetErrorPrompt() const
+string DragonControlToCTREProAdapter::GetErrorPrompt() const
 {
 	auto prompt = string("CTRE CAN motor controller ");
 	prompt += to_string(m_controller->GetDeviceID());
 	return prompt;
 }
 
-void DragonControlToCtreV5Adapter::SetPeakAndNominalValues(
+void DragonControlToCTREProAdapter::SetPeakAndNominalValues(
 	std::string networkTableName,
 	ControlData *controlInfo)
 {
@@ -152,7 +151,7 @@ void DragonControlToCtreV5Adapter::SetPeakAndNominalValues(
 	}
 }
 
-void DragonControlToCtreV5Adapter::SetMaxVelocityAcceleration(
+void DragonControlToCTREProAdapter::SetMaxVelocityAcceleration(
 	std::string networkTableName,
 	ControlData *controlInfo)
 {
@@ -168,7 +167,7 @@ void DragonControlToCtreV5Adapter::SetMaxVelocityAcceleration(
 	}
 }
 
-void DragonControlToCtreV5Adapter::SetPIDConstants(
+void DragonControlToCTREProAdapter::SetPIDConstants(
 	std::string networkTableName,
 	int controllerSlot,
 	ControlData *controlInfo)

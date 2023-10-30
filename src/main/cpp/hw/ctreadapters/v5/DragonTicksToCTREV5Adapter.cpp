@@ -1,4 +1,3 @@
-
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -14,46 +13,41 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#pragma once
-
 // C++ Includes
 #include <string>
 
+// FRC includes
+
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
+#include <hw/ctreadapters/v5/DragonTicksToCTREV5Adapter.h>
+#include "mechanisms/controllers/ControlData.h"
+#include <mechanisms/controllers/ControlModes.h>
+#include "utils/ConversionUtils.h"
 
-namespace ctre
+// Third Party Includes
+#include <ctre/phoenix/motorcontrol/ControlMode.h>
+#include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
+
+DragonTicksToCTREV5Adapter::DragonTicksToCTREV5Adapter(std::string networkTableName,
+                                                       int controllerSlot,
+                                                       ControlData *controlInfo,
+                                                       DistanceAngleCalcStruc calcStruc,
+                                                       ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
-    namespace phoenix
-    {
-        namespace motorcontrol
-        {
-            namespace can
-            {
-                class WPI_BaseMotorController;
-            }
-        }
-    }
 }
-class ControlData;
 
-class DragonTicksToCtreV5Adapter : public DragonControlToCtreV5Adapter
+void DragonTicksToCTREV5Adapter::Set(
+    double value)
 {
-public:
-    DragonTicksToCtreV5Adapter() = delete;
-    DragonTicksToCtreV5Adapter(std::string networkTableName,
-                               int controllerSlot,
-                               ControlData *controlInfo,
-                               DistanceAngleCalcStruc calcStruc,
-                               ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
+    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, value);
+}
 
-    ~DragonTicksToCtreV5Adapter() = default;
-
-    void Set(
-        double value) override;
-
-    void SetControlConstants(
-        int controlSlot,
-        ControlData *controlInfo) override;
-};
+void DragonTicksToCTREV5Adapter::SetControlConstants(
+    int controlSlot,
+    ControlData *controlInfo)
+{
+    SetPeakAndNominalValues(m_networkTableName, controlInfo);
+    SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);
+}

@@ -1,3 +1,4 @@
+
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -20,7 +21,7 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include <hw/interfaces/IDragonControlToVendorControlAdapter.h>
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
 
 namespace ctre
 {
@@ -37,34 +38,22 @@ namespace ctre
 }
 class ControlData;
 
-class DragonControlToCtreV5Adapter : public IDragonControlToVendorControlAdapter
+class DragonVelocityInchToCTREV5Adapter : public DragonControlToCTREV5Adapter
 {
 public:
-    DragonControlToCtreV5Adapter() = delete;
-    DragonControlToCtreV5Adapter(std::string networkTableName,
-                                 int controllerSlot,
-                                 ControlData *controlInfo,
-                                 DistanceAngleCalcStruc calcStruc,
-                                 ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
-    ~DragonControlToCtreV5Adapter() = default;
+    DragonVelocityInchToCTREV5Adapter() = delete;
+    DragonVelocityInchToCTREV5Adapter(std::string networkTableName,
+                                      int controllerSlot,
+                                      ControlData *controlInfo,
+                                      DistanceAngleCalcStruc calcStruc,
+                                      ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
 
-    void InitializeDefaults() override;
-    std::string GetErrorPrompt() const;
+    ~DragonVelocityInchToCTREV5Adapter() = default;
 
-protected:
-    void SetPeakAndNominalValues(std::string networkTableName,
-                                 ControlData *controlInfo);
+    void Set(
+        double value) override;
 
-    void SetMaxVelocityAcceleration(std::string networkTableName,
-                                    ControlData *controlInfo);
-
-    void SetPIDConstants(std::string networkTableName,
-                         int controllerSlot,
-                         ControlData *controlInfo);
-
-    std::string m_networkTableName;
-    int m_controllerSlot;
-    ControlData *m_controlData;
-    DistanceAngleCalcStruc m_calcStruc;
-    ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *m_controller;
+    void SetControlConstants(
+        int controlSlot,
+        ControlData *controlInfo) override;
 };

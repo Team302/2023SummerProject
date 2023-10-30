@@ -1,3 +1,4 @@
+
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -20,8 +21,8 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
-#include <hw/ctreadapters/DragonPositionInchToCtreV5Adapter.h>
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
+#include <hw/ctreadapters/v5/DragonVelocityInchToCTREV5Adapter.h>
 #include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
 #include "utils/ConversionUtils.h"
@@ -30,22 +31,24 @@
 #include <ctre/phoenix/motorcontrol/ControlMode.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
 
-DragonPositionInchToCtreV5Adapter::DragonPositionInchToCtreV5Adapter(std::string networkTableName,
+DragonVelocityInchToCTREV5Adapter::DragonVelocityInchToCTREV5Adapter(std::string networkTableName,
                                                                      int controllerSlot,
                                                                      ControlData *controlInfo,
                                                                      DistanceAngleCalcStruc calcStruc,
-                                                                     ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCtreV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                     ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
-void DragonPositionInchToCtreV5Adapter::Set(double value)
+void DragonVelocityInchToCTREV5Adapter::Set(
+    double value)
 {
-    auto output = (m_calcStruc.countsPerInch > 0.01) ? m_calcStruc.countsPerInch * value : (ConversionUtils::InchesToCounts(value, m_calcStruc.countsPerRev, m_calcStruc.diameter) * m_calcStruc.gearRatio);
-    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
+    auto output = (m_calcStruc.countsPerInch > 0.01) ? m_calcStruc.countsPerInch * value * 0.1 : (ConversionUtils::InchesPerSecondToCounts100ms(value, m_calcStruc.countsPerRev, m_calcStruc.diameter) * m_calcStruc.gearRatio);
+    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, output);
 }
 
-void DragonPositionInchToCtreV5Adapter::SetControlConstants(int controlSlot,
-                                                            ControlData *controlInfo)
+void DragonVelocityInchToCTREV5Adapter::SetControlConstants(
+    int controlSlot,
+    ControlData *controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);

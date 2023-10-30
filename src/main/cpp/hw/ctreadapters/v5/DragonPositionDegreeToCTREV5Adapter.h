@@ -21,7 +21,7 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
 
 namespace ctre
 {
@@ -38,17 +38,17 @@ namespace ctre
 }
 class ControlData;
 
-class DragonVelocityRPSToCtreV5Adapter : public DragonControlToCtreV5Adapter
+class DragonPositionDegreeToCTREV5Adapter : public DragonControlToCTREV5Adapter
 {
 public:
-    DragonVelocityRPSToCtreV5Adapter() = delete;
-    DragonVelocityRPSToCtreV5Adapter(std::string networkTableName,
-                                     int controllerSlot,
-                                     ControlData *controlInfo,
-                                     DistanceAngleCalcStruc calcStruc,
-                                     ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
+    DragonPositionDegreeToCTREV5Adapter() = delete;
+    DragonPositionDegreeToCTREV5Adapter(std::string networkTableName,
+                                        int controllerSlot,
+                                        ControlData *controlInfo,
+                                        DistanceAngleCalcStruc calcStruc,
+                                        ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
 
-    ~DragonVelocityRPSToCtreV5Adapter() = default;
+    ~DragonPositionDegreeToCTREV5Adapter() = default;
 
     void Set(
         double value) override;

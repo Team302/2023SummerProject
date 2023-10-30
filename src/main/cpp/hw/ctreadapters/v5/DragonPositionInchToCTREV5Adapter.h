@@ -1,4 +1,3 @@
-
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -21,7 +20,7 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/DragonControlToCtreV5Adapter.h"
+#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
 
 namespace ctre
 {
@@ -38,17 +37,17 @@ namespace ctre
 }
 class ControlData;
 
-class DragonVelocityInchToCtreV5Adapter : public DragonControlToCtreV5Adapter
+class DragonPositionInchToCTREV5Adapter : public DragonControlToCTREV5Adapter
 {
 public:
-    DragonVelocityInchToCtreV5Adapter() = delete;
-    DragonVelocityInchToCtreV5Adapter(std::string networkTableName,
+    DragonPositionInchToCTREV5Adapter() = delete;
+    DragonPositionInchToCTREV5Adapter(std::string networkTableName,
                                       int controllerSlot,
                                       ControlData *controlInfo,
                                       DistanceAngleCalcStruc calcStruc,
                                       ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
 
-    ~DragonVelocityInchToCtreV5Adapter() = default;
+    ~DragonPositionInchToCTREV5Adapter() = default;
 
     void Set(
         double value) override;

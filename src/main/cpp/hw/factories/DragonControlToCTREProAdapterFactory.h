@@ -21,39 +21,22 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
+#include "hw/DragonTalonFX.h"
 
-// forward declares
-namespace ctre
-{
-    namespace phoenix
-    {
-        namespace motorcontrol
-        {
-            namespace can
-            {
-                class WPI_BaseMotorController;
-            }
-        }
-    }
-}
-class DragonControlToCTREV5Adapter;
-class ControlData;
+#include "ctre/phoenixpro/controls/ControlRequest.hpp"
 
-class DragonControlToCTREV5AdapterFactory
+class DragonControlToCTREProAdapterFactory
 {
 public:
-    static DragonControlToCTREV5AdapterFactory *GetFactory();
-    DragonControlToCTREV5Adapter *CreateAdapter(std::string networkTableName,
-                                                int controllerSlot,
-                                                ControlData *controlInfo,
-                                                DistanceAngleCalcStruc calcStruc,
-                                                ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
-    DragonControlToCTREV5Adapter *CreatePercentOuptutAdapter(std::string networkTableName,
-                                                             ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
+    static DragonControlToCTREProAdapterFactory *GetFactory();
+    ctre::phoenixpro::controls::ControlRequest *CreateControlRequest(int controllerSlot,
+                                                                     ControlData *controlInfo,
+                                                                     DistanceAngleCalcStruc calcStruc,
+                                                                     ctre::phoenixpro::hardware::TalonFX *controller);
 
 private:
-    DragonControlToCTREV5AdapterFactory() = default;
-    ~DragonControlToCTREV5AdapterFactory() = default;
+    DragonControlToCTREProAdapterFactory() = default;
+    ~DragonControlToCTREProAdapterFactory() = default;
 
-    static DragonControlToCTREV5AdapterFactory *m_factory;
+    static DragonControlToCTREProAdapterFactory *m_factory;
 };
