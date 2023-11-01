@@ -16,12 +16,17 @@ namespace Configuration
 
         public string rootOutputFolder = "";
         public string robotConfiguration = "";
-        public List<string> robotConfigurations = new List<string>();
-        public List<string> treeviewParentNameExtensions = new List<string>();
-        public List<string> parameterTypes = new List<string>();
+        public List<string> appDataConfigurations = new List<string>();
+
+        public List<string> collectionBaseTypes = new List<string>();
+
+        public List<physicalUnit> physicalUnits = new List<physicalUnit>();
 
         public string templateMechanismCppPath = "";
         public string templateMechanismHPath = "";
+        public string templateRobotDefinitionsCppPath = "";
+        public string templateRobotDefinitionsHPath = "";
+
 
         public string CopyrightNotice = "";
         public string GenerationNotice = "";
@@ -34,17 +39,27 @@ namespace Configuration
             return "";
         }
 
+        string rootOutputFolder_temp;
+        string robotConfiguration_temp;
         private void preSerialize()
         {
             // make the paths relative to the configuration file
             string rootPath = Path.GetDirectoryName(configurationFullPath);
+
+            rootOutputFolder_temp = rootOutputFolder;
             rootOutputFolder = RelativePath(rootPath, rootOutputFolder);
+
+            robotConfiguration_temp = robotConfiguration;
             robotConfiguration = RelativePath(rootPath, robotConfiguration);
         }
 
         private void postSerialize()
         {
-
+            rootOutputFolder = rootOutputFolder_temp;
+            robotConfiguration = robotConfiguration_temp;
+        }
+        private void postDeSerialize()
+        {
         }
         public void serialize(string rootPath)
         {
@@ -55,6 +70,8 @@ namespace Configuration
             {
                 mySerializer.Serialize(myFileStream, this);
             }
+
+            postSerialize();
         }
         public toolConfiguration deserialize(string fullFilePathName)
         {
@@ -65,7 +82,7 @@ namespace Configuration
                 toolConfiguration tc = (toolConfiguration)mySerializer.Deserialize(myFileStream);
                 tc.configurationFullPath = fullFilePathName;
 
-                postSerialize();
+                postDeSerialize();
 
                 return tc;
             }
@@ -118,4 +135,18 @@ namespace Configuration
     }
 
 
+    [Serializable]
+    public class physicalUnit
+    {
+        public enum Family { none, all, angle, angularAcceleration, angularVelocity, length, mass, current, voltage, acceleration, percent, power, time, velocity }
+        public string shortName { get; set; }
+        public string longName { get; set; }
+        public Family family { get; set; }
+        public string wpiClassName { get; set; }
+
+        public override string ToString()
+        {
+            return shortName;
+        }
+    }
 }

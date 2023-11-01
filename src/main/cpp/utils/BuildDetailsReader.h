@@ -1,4 +1,3 @@
-
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -16,57 +15,37 @@
 
 #pragma once
 
-#include <frc/TimedRobot.h>
-#include <DragonVision/DragonVision.h>
-#include <utils/BuildDetailsReader.h>
+// C++ Includes
+#include <string>
+#include <vector>
 
-class ArcadeDrive;
-class CyclePrimitives;
-class DragonLimelight;
-class HolonomicDrive;
-class SwerveChassis;
-class TeleopControl;
-class AdjustableItemMgr;
-class FMSData;
-class DragonField;
-class AutonPreviewer;
-class RobotState;
-class SomeMech;
-class RobotDefinition;
+struct BuildDetails
+{
+    int teamNumber;
+    std::string dateFormatted;
+    std::string date;
+    std::string branch;
+    std::string author;
+    std::string commitHash;
 
-class Robot : public frc::TimedRobot
+    operator std::string() const { return "Team Number: " + std::to_string(teamNumber) +
+                                          "\nFormattedDate: " + dateFormatted +
+                                          "\nDate: " + date +
+                                          "\nBranch: " + branch +
+                                          "\nAuthor: " + author +
+                                          "\nCommit Hash: " + commitHash; }
+};
+
+class BuildDetailsReader
 {
 public:
-    Robot() = default;
-    ~Robot() = default;
+    BuildDetailsReader() = default;
+    ~BuildDetailsReader() = default;
 
-    void RobotInit() override;
-    void RobotPeriodic() override;
-    void AutonomousInit() override;
-    void AutonomousPeriodic() override;
-    void TeleopInit() override;
-    void TeleopPeriodic() override;
-    void DisabledInit() override;
-    void DisabledPeriodic() override;
-    void TestInit() override;
-    void TestPeriodic() override;
+    BuildDetails ReadBuildDetails();
 
 private:
-    TeleopControl *m_controller;
-    SwerveChassis *m_chassis;
-    CyclePrimitives *m_cyclePrims;
-    HolonomicDrive *m_holonomic;
-    ArcadeDrive *m_arcade;
-
-    DragonLimelight *m_dragonLimeLight;
-
-    AdjustableItemMgr *m_tuner;
-    FMSData *m_fmsData;
-    DragonField *m_field;
-    AutonPreviewer *m_previewer;
-    RobotState *m_robotState;
-    SomeMech *m_someMech;
-    BuildDetailsReader *m_detailsReader;
-    BuildDetails m_details;
-    RobotDefinition *m_robot;
+    std::string getStringBetweenMarkers(std::string string, std::string marker);
+    BuildDetails m_details{-1, "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"};
+    std::vector<std::string> m_markers{"(TN)", "(FD)", "(D)", "(B)", "(A)", "(H)"};
 };

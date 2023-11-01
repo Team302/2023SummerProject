@@ -1,4 +1,3 @@
-
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -14,59 +13,15 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#pragma once
+// Team 302 Includes
+#include <RobotDefinition.h>
 
-#include <frc/TimedRobot.h>
-#include <DragonVision/DragonVision.h>
-#include <utils/BuildDetailsReader.h>
-
-class ArcadeDrive;
-class CyclePrimitives;
-class DragonLimelight;
-class HolonomicDrive;
-class SwerveChassis;
-class TeleopControl;
-class AdjustableItemMgr;
-class FMSData;
-class DragonField;
-class AutonPreviewer;
-class RobotState;
-class SomeMech;
-class RobotDefinition;
-
-class Robot : public frc::TimedRobot
+/*RobotDefinition::RobotDefinition(std::vector<std::any> mechs, std::vector<std::any> other) : m_mechs(mechs),
+                                                                                             m_other(other)*/
+RobotDefinition::RobotDefinition(std::vector<std::pair<Components, std::string>> components)
 {
-public:
-    Robot() = default;
-    ~Robot() = default;
-
-    void RobotInit() override;
-    void RobotPeriodic() override;
-    void AutonomousInit() override;
-    void AutonomousPeriodic() override;
-    void TeleopInit() override;
-    void TeleopPeriodic() override;
-    void DisabledInit() override;
-    void DisabledPeriodic() override;
-    void TestInit() override;
-    void TestPeriodic() override;
-
-private:
-    TeleopControl *m_controller;
-    SwerveChassis *m_chassis;
-    CyclePrimitives *m_cyclePrims;
-    HolonomicDrive *m_holonomic;
-    ArcadeDrive *m_arcade;
-
-    DragonLimelight *m_dragonLimeLight;
-
-    AdjustableItemMgr *m_tuner;
-    FMSData *m_fmsData;
-    DragonField *m_field;
-    AutonPreviewer *m_previewer;
-    RobotState *m_robotState;
-    SomeMech *m_someMech;
-    BuildDetailsReader *m_detailsReader;
-    BuildDetails m_details;
-    RobotDefinition *m_robot;
-};
+    for (std::pair<Components, std::string> component : components)
+    {
+        m_componentMap.emplace(component.first, component.second);
+    }
+}
