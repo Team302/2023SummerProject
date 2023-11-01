@@ -69,7 +69,7 @@ namespace ApplicationData
     public partial class applicationData
     {
 #if !enableTestAutomation
-        public List<motor> motor { get; set; }
+        public List<Motor> motor { get; set; }
         public pdp pdp { get; set; }
         public List<mechanismInstance> mechanismInstance { get; set; }
 
@@ -124,10 +124,10 @@ namespace ApplicationData
             return name;
         }
 #if !enableTestAutomation
+        public List<Motor> Motor { get; set; }
+
+/*
         public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
-        public List<motor> motor { get; set; }
-
-
         public List<state> state { get; set; }
         public List<solenoid> solenoid { get; set; }
         public List<servo> servo { get; set; }
@@ -135,7 +135,7 @@ namespace ApplicationData
         public List<digitalInput> digitalInput { get; set; }
         public List<cancoder> cancoder { get; set; }
         public colorsensor colorsensor { get; set; }
-
+*/
         public mechanism()
         {
             if (GUID == null)
@@ -226,7 +226,7 @@ namespace ApplicationData
     [Serializable()]
     [XmlInclude(typeof(Falcon_Motor))]
     [XmlInclude(typeof(TalonSRX_Motor))]
-    public class motor
+    public class Motor
     {
         [XmlIgnore]
         [Constant()]
@@ -238,7 +238,7 @@ namespace ApplicationData
         [Range(typeof(uint), "0", "62")]
         public uintParameter CAN_ID { get; set; }
 
-        public motor()
+        public Motor()
         {
             helperFunctions.initializeNullProperties(this);
 
@@ -255,7 +255,7 @@ namespace ApplicationData
     }
 
     [Serializable()]
-    public class Falcon_Motor : motor
+    public class Falcon_Motor : Motor
     {
         [DefaultValue(1.15)]
         [Range(typeof(double), "0", "62")]
@@ -286,7 +286,7 @@ namespace ApplicationData
     }
 
     [Serializable()]
-    public class TalonSRX_Motor : motor
+    public class TalonSRX_Motor : Motor
     {
         [DefaultValue(1.1)]
         [Range(typeof(double), "0", "62")]
@@ -743,11 +743,11 @@ namespace ApplicationData
     [Serializable()]
     public class chassis
     {
-        public List<motor> motor { get; set; }
+        public List<Motor> motor { get; set; }
 
         public chassis()
         {
-            motor = new List<motor>();
+            motor = new List<Motor>();
             swervemodule = new List<swervemodule>();
 
             helperFunctions.initializeDefaultValues(this);
@@ -805,11 +805,11 @@ namespace ApplicationData
     [Serializable()]
     public class swervemodule
     {
-        public List<motor> motor { get; set; }
+        public List<Motor> motor { get; set; }
 
         public swervemodule()
         {
-            motor = new List<motor>();
+            motor = new List<Motor>();
 
             helperFunctions.initializeDefaultValues(this);
         }
