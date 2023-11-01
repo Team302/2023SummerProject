@@ -16,6 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 using static Configuration.physicalUnit;
 
@@ -1308,11 +1309,12 @@ namespace FRCrobotCodeGen302
         {
             if (lastSelectedValueNode != null)
             {
+                List<(string,object)> objectsToAddToCurrentNode = new List<(string,object)>();
+
                 TreeNode mechanismInstancesNode = null;
                 TreeNode tn = null;
                 foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems)
                 {
-                    tn = null;
                     object obj = null;
 
                     string name = "";
@@ -1341,7 +1343,7 @@ namespace FRCrobotCodeGen302
                         name = "mechanismInstance";
                         ((mechanismInstance)obj).mechanism = applicationDataConfig.DeepClone((mechanism)((robotElementType)robotElementObj).theObject);
                     }
-                    else if (DataConfiguration.baseDataConfiguration.isACollection(((robotElementType)robotElementObj).t))
+                    else if (baseDataConfiguration.isACollection(((robotElementType)robotElementObj).t))
                     {
                         Type elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
                         obj = Activator.CreateInstance(elementType);
@@ -1364,10 +1366,9 @@ namespace FRCrobotCodeGen302
                         name = ((robotElementType)robotElementObj).ToString();
                     }
 
-
                     if (obj != null)
                     {
-                        
+
                         PropertyInfo pi = nodeTag.getObject(lastSelectedValueNode.Tag).GetType().GetProperty(name);
                         object theObj = pi.GetValue(nodeTag.getObject(lastSelectedValueNode.Tag), null);
 
@@ -1383,7 +1384,7 @@ namespace FRCrobotCodeGen302
                             // then add it to the collection
                             theObj.GetType().GetMethod("Add").Invoke(theObj, new object[] { obj });
                             int count = (int)theObj.GetType().GetProperty("Count").GetValue(theObj);
-                            
+
                             string nameStr = "here5";
                             try
                             {
@@ -1407,7 +1408,13 @@ namespace FRCrobotCodeGen302
                             }
                             else
                             {
-                                tn = AddNode(lastSelectedValueNode, theObj, name);
+                                if (!objectsToAddToCurrentNode.Exists(o => o.Item2 == theObj))
+                                    objectsToAddToCurrentNode.Add((name,theObj));
+
+                                //if (tn == null)
+                                //    tn = AddNode(lastSelectedValueNode, theObj, name); // add the List containing an element
+                                //else
+                                //    tn = AddNode(tn, obj, nameStr);
                             }
                         }
                         else
@@ -1421,15 +1428,20 @@ namespace FRCrobotCodeGen302
                         }
                     }
 
-                    if (tn != null)
-                    {
-                        tn.EnsureVisible();
-                        tn.Expand();
-                    }
-
                     mechanism theMechanism;
                     if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
                         updateMechInstancesFromMechTemplate(theMechanism);
+                }
+
+                foreach ((string,object) newObj in objectsToAddToCurrentNode)
+                {
+                    tn = AddNode(lastSelectedValueNode, newObj.Item2, newObj.Item1);
+                }
+
+                if (tn != null)
+                {
+                    tn.EnsureVisible();
+                    tn.Expand();
                 }
 
                 if (tn != null)
