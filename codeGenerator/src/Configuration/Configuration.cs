@@ -16,12 +16,11 @@ namespace Configuration
 
         public string rootOutputFolder = "";
         public string robotConfiguration = "";
-        public List<string> robotConfigurations = new List<string>();
-        public List<string> treeviewParentNameExtensions = new List<string>();
+        public List<string> appDataConfigurations = new List<string>();
 
         public List<string> collectionBaseTypes = new List<string>();
-        public List<string> tunableParameterTypes = new List<string>();
-        public List<string> parameterTypes = new List<string>();
+
+        public List<physicalUnit> physicalUnits = new List<physicalUnit>();
 
         public string templateMechanismCppPath = "";
         public string templateMechanismHPath = "";
@@ -136,4 +135,18 @@ namespace Configuration
     }
 
 
+    [Serializable]
+    public class physicalUnit
+    {
+        public enum Family { none, all, angle, angularAcceleration, angularVelocity, length, mass, current, voltage, acceleration, percent, power, time, velocity }
+        public string shortName { get; set; }
+        public string longName { get; set; }
+        public Family family { get; set; }
+        public string wpiClassName { get; set; }
+
+        public override string ToString()
+        {
+            return shortName;
+        }
+    }
 }

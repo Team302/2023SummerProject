@@ -1,14 +1,315 @@
+using Configuration;
+using DataConfiguration;
 using System;
-
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 using System.Xml.Serialization;
-using System.Reflection;
 
+// =================================== Rules =====================================
+// A property named __units__ will be converted to the list of physical units
+// A property named value__ will not be shown in the tree directly. Its value is shown in the parent node
+// Attributes are only allowed on the standard types (uint, int, double, bool) and on doubleParameter, unitParameter, intParameter, boolParameter
+// The attribute PhysicalUnitsFamily can only be applied on doubleParameter, uintParameter, intParameter, boolParameter
+// A class can only contain one List of a particular type
 
-namespace Robot
+namespace ApplicationData
 {
+    [Serializable()]
+    public class topLevelAppDataElement
+    {
+        public List<applicationData> Robots { get; set; }
+
+        public List<mechanism> Mechanisms { get; set; }
+
+        public topLevelAppDataElement()
+        {
+            Robots = new List<applicationData>();
+            Mechanisms = new List<mechanism>();
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName()
+        {
+            return "robotBuildDefinition";
+        }
+    }
+
+    [Serializable()]
+    public class mechanismInstance
+    {
+        [XmlIgnore]
+        public object theTreeNode = null;
+
+        public string name { get; set; }
+
+        public mechanism mechanism { get; set; }
+
+        public mechanismInstance()
+        {
+            name = "mechanismInstanceName";
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        //public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        //{
+        //    refresh = helperFunctions.RefreshLevel.none;
+
+        //    if (propertyName == "name")
+        //        return string.Format("{0} ({1})", propertyName, name);
+
+        //    return null;
+        //}
+    }
+
+    [Serializable()]
+    public partial class applicationData
+    {
+#if !enableTestAutomation
+        public List<Motor> motor { get; set; }
+        public pdp pdp { get; set; }
+        public List<mechanismInstance> mechanismInstance { get; set; }
+
+/*        public List<pcm> pcm { get; set; }
+        public List<pigeon> pigeon { get; set; }
+        public List<limelight> limelight { get; set; }
+        public chassis chassis { get; set; }
+        public List<camera> camera { get; set; }
+        public List<roborio> roborio { get; set; }
+*/
+
+        [DefaultValue(1u)]
+        [Range(typeof(uint), "1", "9999")]
+        public uintParameter robotID { get; set; }
+
+        public applicationData()
+        {
+            helperFunctions.initializeNullProperties(this);
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (string.IsNullOrEmpty(propertyName))
+                return string.Format("Robot #{0}", robotID.value);
+            //else if (propertyName == "testClass")
+            //    return string.Format("{0} ({1}))", propertyName, testClass.name);
+            else if (propertyName == "pdp")
+                return string.Format("{0} ({1})", propertyName, pdp.type);
+
+            return "robot class - incomplete getDisplayName";
+        }
+#endif
+    }
+
+    [Serializable()]
+    public partial class mechanism
+    {
+        [XmlIgnore]
+        public object theTreeNode = null;
+
+        public Guid GUID;
+
+        [ConstantInMechInstance]
+        public string name { get; set; }
+
+        public override string ToString()
+        {
+            return name;
+        }
+#if !enableTestAutomation
+        public List<Motor> Motor { get; set; }
+
+/*
+        public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
+        public List<state> state { get; set; }
+        public List<solenoid> solenoid { get; set; }
+        public List<servo> servo { get; set; }
+        public List<analogInput> analogInput { get; set; }
+        public List<digitalInput> digitalInput { get; set; }
+        public List<cancoder> cancoder { get; set; }
+        public colorsensor colorsensor { get; set; }
+*/
+        public mechanism()
+        {
+            if (GUID == null)
+                GUID = Guid.NewGuid();
+
+            helperFunctions.initializeNullProperties(this);
+
+            name = GetType().Name;
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName()
+        {
+            return string.Format("{0}", name);
+        }
+#endif
+    }
+
+#if !enableTestAutomation
+    [Serializable()]
+    public class closedLoopControlParameters
+    {
+        public string name { get; set; }
+
+        [DefaultValue(0D)]
+        [System.ComponentModel.Description("The proportional gain of the PID controller.")]
+        [TunableParameter()]
+        public doubleParameter pGain { get; set; }
+
+        [DefaultValue(0D)]
+        [System.ComponentModel.Description("The integral gain of the PID controller.")]
+        [TunableParameter()]
+        public doubleParameter iGain { get; set; }
+
+        [DefaultValue(0D)]
+        [System.ComponentModel.Description("The differential gain of the PID controller.")]
+        [TunableParameter()]
+        public doubleParameter dGain { get; set; }
+
+        [DefaultValue(0D)]
+        [System.ComponentModel.Description("The feed forward gain of the PID controller.")]
+        [TunableParameter()]
+        public doubleParameter fGain { get; set; }
+
+        [DefaultValue(0D)]
+        [TunableParameter()]
+        public doubleParameter iZone { get; set; }
+
+        public closedLoopControlParameters()
+        {
+            helperFunctions.initializeNullProperties(this);
+            helperFunctions.initializeDefaultValues(this);
+
+            name = GetType().Name;
+
+        }
+
+        public string getDisplayName()
+        {
+            return string.Format("{0}", name);
+        }
+    }
+
+    [Serializable()]
+    public class pdp
+    {
+        public enum pdptype { CTRE, REV, }
+
+        [DefaultValue(pdptype.REV)]
+        public pdptype type { get; set; }
+
+        public pdp()
+        {
+            helperFunctions.initializeNullProperties(this);
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.parentHeader;
+            if (string.IsNullOrEmpty(propertyName))
+                refresh = helperFunctions.RefreshLevel.none;
+            return "Pdp (" + type.ToString() + ")";
+        }
+    }
+
+    [Serializable()]
+    [XmlInclude(typeof(Falcon_Motor))]
+    [XmlInclude(typeof(TalonSRX_Motor))]
+    public class Motor
+    {
+        [XmlIgnore]
+        [Constant()]
+        public string motorType { get; protected set; }
+
+        public string name { get; set; }
+
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter CAN_ID { get; set; }
+
+        public Motor()
+        {
+            helperFunctions.initializeNullProperties(this);
+
+            string temp = this.GetType().Name;
+            motorType = temp.Substring(0, temp.LastIndexOf('_'));
+            name = motorType;
+
+            helperFunctions.initializeDefaultValues(this);
+        }
+        public string getDisplayName()
+        {
+            return name;
+        }
+    }
+
+    [Serializable()]
+    public class Falcon_Motor : Motor
+    {
+        [DefaultValue(1.15)]
+        [Range(typeof(double), "0", "62")]
+        [PhysicalUnitsFamily(physicalUnit.Family.percent)]
+        [TunableParameter()]
+        public doubleParameter deadbandPercent { get; set; }
+
+        [DefaultValue(5.55)]
+        [Range(typeof(double), "0", "100")]
+        [PhysicalUnitsFamily(physicalUnit.Family.percent)]
+        [TunableParameter()]
+        public doubleParameter deadband { get; set; }
+
+        [DefaultValue(2.2)]
+        [Range(typeof(double), "-1.0", "3.0")]
+        [PhysicalUnitsFamily(physicalUnit.Family.current)]
+        [TunableParameter()]
+        public doubleParameter peakMin { get; set; }
+
+        [DefaultValue(4.4)]
+        [Range(typeof(double), "-10.0", "20.0")]
+        [PhysicalUnitsFamily(physicalUnit.Family.current)]
+        public doubleParameter peakMax { get; set; }
+
+        public Falcon_Motor()
+        {
+        }
+    }
+
+    [Serializable()]
+    public class TalonSRX_Motor : Motor
+    {
+        [DefaultValue(1.1)]
+        [Range(typeof(double), "0", "62")]
+        [TunableParameter()]
+        public doubleParameter deadbandPercent_ { get; set; }
+
+        [DefaultValue(2.2)]
+        [Range(typeof(double), "-1.0", "3.0")]
+        public doubleParameter peakMin_ { get; set; }
+
+        [DefaultValue(4.4)]
+        [Range(typeof(double), "-10.0", "20.0")]
+        [TunableParameter()]
+        public doubleParameter peakMax_ { get; set; }
+
+        public TalonSRX_Motor()
+        {
+        }
+    }
+
+
+
+
     #region enums
     [Serializable()]
     public enum CAN_BUS
@@ -16,12 +317,7 @@ namespace Robot
         rio,
     }
 
-    [Serializable()]
-    public enum pdptype
-    {
-        CTRE,
-        REV,
-    }
+
 
     [Serializable()]
     public enum analogInputType
@@ -261,188 +557,7 @@ namespace Robot
 
     #endregion
 
-    [Serializable()]
-    [XmlInclude(typeof(Falcon_Motor))]
-    [XmlInclude(typeof(TalonSRX_Motor))]
-    public class motor
-    {
-        [XmlIgnore]
-        [Constant()]
-        public string motorType { get; protected set; }
 
-        public string name { get; set; }
-
-        public CAN_ID CAN_ID { get; set; }
-
-        public motor()
-        {
-            CAN_ID = new CAN_ID();
-            motorType = this.GetType().Name;
-            motorType = motorType.Substring(0, motorType.LastIndexOf('_'));
-            name = motorType;
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
-
-    [Serializable()]
-    public class Falcon_Motor : motor
-    {
-        [DefaultValue(1.15)]
-        [Range(typeof(double), "0", "62")]
-        [PhysicalUnits("%")]
-        [TunableParameter()]
-        public double deadbandPercent { get; set; }
-
-        [DefaultValue(2.2)]
-        [Range(typeof(double), "-1.0", "3.0")]
-        [PhysicalUnits("A")]
-        [TunableParameter()]
-        public double peakMin { get; set; }
-
-        [DefaultValue(4.4)]
-        [Range(typeof(double), "-10.0", "20.0")]
-        public double peakMax { get; set; }
-
-        public Falcon_Motor()
-        {
-        }
-    }
-
-    [Serializable()]
-    public class TalonSRX_Motor : motor
-    {
-        [DefaultValue(1.1)]
-        [Range(typeof(double), "0", "62")]
-        [TunableParameter()]
-        public double deadbandPercent_ { get; set; }
-
-        [DefaultValue(2.2)]
-        [Range(typeof(double), "-1.0", "3.0")]
-        public double peakMin_ { get; set; }
-
-        [DefaultValue(4.4)]
-        [Range(typeof(double), "-10.0", "20.0")]
-        public double peakMax_ { get; set; }
-
-        public TalonSRX_Motor()
-        {
-        }
-    }
-
-
-    [Serializable()]
-    public partial class CAN_ID
-    {
-        [DefaultValue(0u)]
-        [Range(typeof(uint), "0", "62")]
-        public uint value__ { get; set; }
-
-        public CAN_ID()
-        {
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
-
-    [Serializable()]
-    [XmlInclude(typeof(uintParameter))]
-    [XmlInclude(typeof(intParameter))]
-    [XmlInclude(typeof(doubleParameter))]
-    [XmlInclude(typeof(boolParameter))]
-    public partial class parameter
-    {
-        public string name { get; set; }
-
-        [Constant()]
-        public string type { get; set; }
-
-        public parameter()
-        {
-            name = GetType().Name;
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
-
-    [Serializable()]
-    public partial class uintParameter : parameter
-    {
-        [DefaultValue(0u)]
-        public uint value { get; set; }
-
-        public uintParameter()
-        {
-            type = value.GetType().Name;
-        }
-    }
-
-    [Serializable()]
-    public partial class intParameter : parameter
-    {
-        [DefaultValue(0u)]
-        public int value { get; set; }
-
-        public intParameter()
-        {
-            type = value.GetType().Name;
-        }
-    }
-
-    [Serializable()]
-    public partial class doubleParameter : parameter
-    {
-        [DefaultValue(0u)]
-        public double value { get; set; }
-
-        public doubleParameter()
-        {
-            type = value.GetType().Name;
-        }
-    }
-
-    [Serializable()]
-    public partial class boolParameter : parameter
-    {
-        [DefaultValue(0u)]
-        public bool value { get; set; }
-
-        public boolParameter()
-        {
-            type = value.GetType().Name;
-        }
-    }
-
-    [Serializable()]
-    public partial class robot
-    {
-        public List<parameter> parameter { get; set; }
-        public List<motor> motor { get; set; }
-        public List<pcm> pcm { get; set; }
-        public pdp pdp { get; set; }
-        public List<pigeon> pigeon { get; set; }
-        public List<limelight> limelight { get; set; }
-        public chassis chassis { get; set; }
-        public List<mechanismInstance> mechanismInstance { get; set; }
-        public List<camera> camera { get; set; }
-        public List<roborio> roborio { get; set; }
-
-        [DefaultValueAttribute(1u)]
-        [RangeAttribute(typeof(uint), "1", "9999")]
-        public uint robotID { get; set; }
-
-        public robot()
-        {
-            parameter = new List<parameter>();
-            motor = new List<motor>();
-            pcm = new List<pcm>();
-            pigeon = new List<pigeon>();
-            limelight = new List<limelight>();
-            mechanismInstance = new List<mechanismInstance>();
-            camera = new List<camera>();
-            roborio = new List<roborio>();
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
 
     [Serializable()]
     public class controlData
@@ -487,23 +602,15 @@ namespace Robot
         }
     }
 
-    [Serializable()]
-    public partial class pdp
-    {
-        [DefaultValue(pdptype.CTRE)]
-        public pdptype type { get; set; }
 
-        public pdp()
-        {
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
 
     [Serializable()]
-    public partial class pcm
+    public class pcm
     {
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter CAN_ID { get; set; }
         public analogInput analogInput { get; set; }
-        public CAN_ID canId { get; set; }
 
         public pcm()
         {
@@ -512,7 +619,7 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class analogInput
+    public class analogInput
     {
         [DefaultValue(analogInputType.PRESSURE_GAUGE)]
         [TunableParameter()]
@@ -540,9 +647,11 @@ namespace Robot
 
 
     [Serializable()]
-    public partial class pigeon
+    public class pigeon
     {
-        public CAN_ID canId { get; set; }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter CAN_ID { get; set; }
 
         [DefaultValue(CAN_BUS.rio)]
         [TunableParameter()]
@@ -564,7 +673,7 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class limelight
+    public class limelight
     {
         public string name { get; set; }
 
@@ -632,13 +741,13 @@ namespace Robot
 
 
     [Serializable()]
-    public partial class chassis
+    public class chassis
     {
-        public List<motor> motor { get; set; }
+        public List<Motor> motor { get; set; }
 
         public chassis()
         {
-            motor = new List<motor>();
+            motor = new List<Motor>();
             swervemodule = new List<swervemodule>();
 
             helperFunctions.initializeDefaultValues(this);
@@ -646,7 +755,7 @@ namespace Robot
 
         public List<swervemodule> swervemodule { get; set; }
 
-        [DefaultValue(Robot.chassistype.TANK)]
+        [DefaultValue(ApplicationData.chassistype.TANK)]
         public chassistype type { get; set; }
 
         [TunableParameter()]
@@ -672,7 +781,7 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class digitalInput
+    public class digitalInput
     {
         public string name { get; set; }
 
@@ -694,13 +803,13 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class swervemodule
+    public class swervemodule
     {
-        public List<motor> motor { get; set; }
+        public List<Motor> motor { get; set; }
 
         public swervemodule()
         {
-            motor = new List<motor>();
+            motor = new List<Motor>();
 
             helperFunctions.initializeDefaultValues(this);
         }
@@ -748,9 +857,11 @@ namespace Robot
 
 
     [Serializable()]
-    public partial class cancoder
+    public class cancoder
     {
-        public CAN_ID canId { get; set; }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter CAN_ID { get; set; }
 
         [DefaultValue(CAN_BUS.rio)]
         public CAN_BUS canBusName { get; set; }
@@ -767,59 +878,16 @@ namespace Robot
         }
     }
 
-    [Serializable()]
-    public partial class mechanismInstance
-    {
-        public string name { get; set; }
 
-        public mechanism mechanism { get; set; }
 
-        public mechanismInstance()
-        {
-            name = "mechanismInstanceName";
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
 
 
     [Serializable()]
-    public partial class mechanism
+    public class solenoid
     {
-
-        public List<state> state { get; set; }
-        public List<motor> motor { get; set; }
-        public List<solenoid> solenoid { get; set; }
-        public List<servo> servo { get; set; }
-        public List<analogInput> analogInput { get; set; }
-        public List<digitalInput> digitalInput { get; set; }
-        public List<cancoder> cancoder { get; set; }
-        public colorsensor colorsensor { get; set; }
-        public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
-        public string name { get; set; }
-
-        public mechanism()
-        {
-            name = GetType().Name;
-
-            state = new List<state>();
-            motor = new List<motor>();
-            solenoid = new List<solenoid>();
-            servo = new List<servo>();
-            analogInput = new List<analogInput>();
-            digitalInput = new List<digitalInput>();
-            cancoder = new List<cancoder>();
-            closedLoopControlParameters = new List<closedLoopControlParameters>();
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
-
-
-    [Serializable()]
-    public partial class solenoid
-    {
-        public CAN_ID canId { get; set; }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter CAN_ID { get; set; }
 
         [TunableParameter()]
         public string name { get; set; }
@@ -847,7 +915,7 @@ namespace Robot
 
 
     [Serializable()]
-    public partial class servo
+    public class servo
     {
         public string name { get; set; }
 
@@ -871,7 +939,7 @@ namespace Robot
 
 
     [Serializable()]
-    public partial class colorsensor
+    public class colorsensor
     {
         [DefaultValue(colorsensorport.kOnboard)]
         public colorsensorport port { get; set; }
@@ -882,51 +950,15 @@ namespace Robot
         }
     }
 
-    [Serializable()]
-    public partial class closedLoopControlParameters
-    {
-        public string name { get; set; }
-
-        [DefaultValue(0D)]
-        [System.ComponentModel.Description("The proportional gain of the PID controller.")]
-        [TunableParameter()]
-        public double pGain { get; set; }
-
-        [DefaultValue(0D)]
-        [System.ComponentModel.Description("The integral gain of the PID controller.")]
-        [TunableParameter()]
-        public double iGain { get; set; }
-
-        [DefaultValue(0D)]
-        [System.ComponentModel.Description("The differential gain of the PID controller.")]
-        [TunableParameter()]
-        public double dGain { get; set; }
-
-        [DefaultValue(0D)]
-        [System.ComponentModel.Description("The feed forward gain of the PID controller.")]
-        [TunableParameter()]
-        public double fGain { get; set; }
-
-        [DefaultValue(0D)]
-        [TunableParameter()]
-        public double iZone { get; set; }
-
-        public closedLoopControlParameters()
-        {
-            name = GetType().Name;
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
 
 
     [Serializable()]
-    public partial class camera
+    public class camera
     {
         [DefaultValue("0")]
         public string id { get; set; }
 
-        [DefaultValue(Robot.cameraformat.KMJPEG)]
+        [DefaultValue(ApplicationData.cameraformat.KMJPEG)]
         public cameraformat format { get; set; }
 
         [DefaultValue(640u)]
@@ -948,9 +980,9 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class roborio
+    public class roborio
     {
-        [DefaultValue(Robot.roborioorientation.X_FORWARD_Y_LEFT)]
+        [DefaultValue(ApplicationData.roborioorientation.X_FORWARD_Y_LEFT)]
         [TunableParameter()]
         public roborioorientation orientation { get; set; }
 
@@ -960,25 +992,11 @@ namespace Robot
         }
     }
 
-    [Serializable()]
-    public partial class robotVariants
-    {
-        public List<robot> robot { get; set; }
 
-        public List<mechanism> mechanism { get; set; }
-
-        public robotVariants()
-        {
-            robot = new List<robot>();
-            mechanism = new List<mechanism>();
-
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
 
 
     [Serializable()]
-    public partial class pwmultrasonic
+    public class pwmultrasonic
     {
         [TunableParameter()]
         public string name { get; set; }
@@ -995,7 +1013,7 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class analogultrasonic
+    public class analogultrasonic
     {
         [TunableParameter()]
         public string name { get; set; }
@@ -1012,7 +1030,7 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class lidar
+    public class lidar
     {
         [TunableParameter()]
         public string name { get; set; }
@@ -1033,7 +1051,7 @@ namespace Robot
     }
 
     [Serializable()]
-    public partial class led
+    public class led
     {
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "19")]
@@ -1054,7 +1072,7 @@ namespace Robot
 
 
     [XmlRootAttribute("blinkin", Namespace = "http://team302.org/robot")]
-    public partial class blinkin
+    public class blinkin
     {
         public string name { get; set; }
 
@@ -1072,9 +1090,11 @@ namespace Robot
 
 
     [Serializable()]
-    public partial class talontach
+    public class talontach
     {
-        public CAN_ID canId { get; set; }
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter CAN_ID { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "6")]
@@ -1089,57 +1109,5 @@ namespace Robot
             helperFunctions.initializeDefaultValues(this);
         }
     }
-
-    #region ====================== Attribute definitions
-    // if applied to a property, it means that live tuning over network tables is enabled
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public class TunableParameterAttribute : Attribute
-    {
-        public TunableParameterAttribute()
-        {
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public class ConstantAttribute : Attribute
-    {
-        public ConstantAttribute()
-        {
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public class DescriptionAttribute : Attribute
-    {
-        public string description { get; set; }
-        public DescriptionAttribute(string description)
-        {
-            this.description = description;
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-    public class PhysicalUnitsAttribute : Attribute
-    {
-        public string units { get; set; }
-        public PhysicalUnitsAttribute(string units)
-        {
-            this.units = units;
-        }
-    }
-    #endregion
-
-    static class helperFunctions
-    {
-        static public void initializeDefaultValues(object obj)
-        {
-            PropertyInfo[] PIs = obj.GetType().GetProperties();
-            foreach (PropertyInfo pi in PIs)
-            {
-                DefaultValueAttribute dva = pi.GetCustomAttribute<DefaultValueAttribute>();
-                if (dva != null)
-                    pi.SetValue(obj, Convert.ChangeType(dva.Value, pi.PropertyType));
-            }
-        }
-    }
+#endif
 }

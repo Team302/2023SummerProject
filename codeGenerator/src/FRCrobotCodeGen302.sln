@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configuration", "Configurat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreCodeGenerator", "CoreCodeGenerator\CoreCodeGenerator.csproj", "{D8726625-5DBC-46E6-A6BC-816E6C9C3469}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "robotConfiguration", "robotConfiguration\robotConfiguration.csproj", "{301CAB4C-FF29-4111-8D59-B4E69F485BD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationData", "robotConfiguration\ApplicationData.csproj", "{301CAB4C-FF29-4111-8D59-B4E69F485BD8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{0428942B-E576-4B8C-85BB-6BA4F96BEFAF}"
 EndProject

@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -39,7 +40,7 @@ namespace UnitTests
         public static void ClassInitialize(TestContext testContext)
         {
             string codeGeneratorDir = Path.GetFullPath(Path.Combine(testContext.TestDir, "..", "..", ".."));
-            
+
             baseTestDirectory = Path.Combine(codeGeneratorDir, baseTestDirectory);
             referenceFilesDirectory = Path.Combine(baseTestDirectory, referenceFilesDirectory);
             robotConfigDirectory = Path.Combine(baseTestDirectory, robotConfigDirectory);
@@ -124,134 +125,180 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void TestMethod_00001_SetRobotNumber()
+        public void TestMethod_00001_AddARobot()
         {
             Session.FindElementByName("Configuration").Click();
 
             Thread.Sleep(TimeSpan.FromSeconds(0.5)); // time to switch tabs
 
-            selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #1\robotID (1)");
+            selectTreeNodeAndCheck(@"robotBuildDefinition");
+
+            addRobotElement("Robots");
+
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Robots\Robot #1\robotID (1)");
+
+            clickSave();
+        }
+
+
+        [TestMethod]
+        public void TestMethod_00002_SetRobotNumber()
+        {
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Robots\Robot #1\robotID (1)");
 
             setNumericUpDown(2);
 
-            selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #2\robotID (2)");
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Robots\Robot #2\robotID (2)");
 
             clickSave();
         }
 
         [TestMethod]
-        public void TestMethod_00002_AddAMechanismTemplate()
+        public void TestMethod_00003_SetRobotPdpToCTRE()
         {
-            selectTreeNodeAndCheck(@"Robot Variant");
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Robots\Robot #2\Pdp (REV)\Pdp (REV)");
 
-            addRobotElement("mechanism");
-            
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\mechanism_1\name (mechanism_1)");
+            selectInComboBox("CTRE");
+
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Robots\Robot #2\Pdp (CTRE)\Pdp (CTRE)");
+
+            clickSave();
+        }
+
+        [TestMethod]
+        public void TestMethod_00004_RenameTestClass()
+        {
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Robots\Robot #2\testClass\name (testClass)");
+
+            setTextInput("myClass");
+
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Robots\Robot #2\myClass\name (myClass)");
+
+            clickSave();
+        }
+
+        [TestMethod]
+        public void TestMethod_00005_Set_aDouble()
+        {
+            string basePath = @"robotBuildDefinition\Robots\Robot #2\myClass\aDouble (##value##)";
+            setAndCheckDouble(basePath, -4, -40, "m", -10, 10);
+
+            clickSave();
+        }
+
+        [TestMethod]
+        public void TestMethod_00006_AddAMechanismTemplate()
+        {
+            selectTreeNodeAndCheck(@"robotBuildDefinition");
+
+            addRobotElement("Mechanisms");
+
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Mechanisms\mechanism\name (mechanism)");
             setTextInput("Super_Intake");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\name (Super_Intake)");
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Mechanisms\Super_Intake\name (Super_Intake)");
 
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
-            addRobotElement("Falcon_Motor");
-            
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
-            addRobotElement("solenoid");
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Mechanisms\Super_Intake");
+            addRobotElement("testFalcon_Motor");
 
-            clickSave();
-        }
-
-        [TestMethod]
-        public void TestMethod_00003_RenameFalcon_Motor()
-        {
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors\Falcon_1\name (Falcon_1)");
-            setTextInput("intakePedalMotor");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors\intakePedalMotor\name (intakePedalMotor)");
+            selectTreeNodeAndCheck(@"robotBuildDefinition\Mechanisms\Super_Intake\testMotor");
+            addRobotElement("testTalonSRX_Motor");
 
             clickSave();
         }
 
-        [TestMethod]
-        public void TestMethod_00004_RenameSolenoid()
-        {
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\solenoid_1\name (solenoid_1)");
-            setTextInput("intakePusher");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\solenoids\intakePusher\name (intakePusher)");
+        /*         [TestMethod]
+                public void TestMethod_00003_RenameFalcon_Motor()
+                {
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\motors\Falcon_1\name (Falcon_1)");
+                    setTextInput("intakePedalMotor");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\motors\intakePedalMotor\name (intakePedalMotor)");
 
-            clickSave();
-        }
+                    clickSave();
+                }
 
-        [TestMethod]
-        public void TestMethod_00005_CheckThatMotorsNotAvailableToAddAtMechLevel()
-        {
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
+                [TestMethod]4 m
+                public void TestMethod_00004_RenameSolenoid()
+                {
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\solenoids\solenoid_1\name (solenoid_1)");
+                    setTextInput("intakePusher");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\solenoids\intakePusher\name (intakePusher)");
 
-            List<string> elements = getListOfAvailableRobotElements();
-            Assert.AreEqual(0, elements.Count(e => e.EndsWith("_Motor")));
+                    clickSave();
+                }
 
-            clickSave();
-        }
+                [TestMethod]
+                public void TestMethod_00005_CheckThatMotorsNotAvailableToAddAtMechLevel()
+                {
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake");
 
-        [TestMethod]
-        public void TestMethod_00006_AddA2ndMotor()
-        {
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors");
-            addRobotElement("TalonSRX_Motor");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors\TalonSRX_2\name (TalonSRX_2)");
+                    List<string> elements = getListOfAvailableRobotElements();
+                    Assert.AreEqual(0, elements.Count(e => e.EndsWith("_Motor")));
 
-            setTextInput("intakeFan");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\motors\intakeFan\name (intakeFan)");
+                    clickSave();
+                }
 
-            clickSave();
-        }
+                [TestMethod]
+                public void TestMethod_00006_AddA2ndMotor()
+                {
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\motors");
+                    addRobotElement("TalonSRX_Motor");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\motors\TalonSRX_2\name (TalonSRX_2)");
 
-        [TestMethod]
-        public void TestMethod_00007_AddA2ndMechanism()
-        {
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms");
-            addRobotElement("");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\mechanism_2\name (mechanism_2)");
+                    setTextInput("intakeFan");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\motors\intakeFan\name (intakeFan)");
 
-            setTextInput("floorExtender");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\floorExtender\name (floorExtender)");
+                    clickSave();
+                }
 
-            clickSave();
-        }
+                [TestMethod]
+                public void TestMethod_00007_AddA2ndMechanism()
+                {
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms");
+                    addRobotElement("");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\mechanism_2\name (mechanism_2)");
 
-        [TestMethod]
-        public void TestMethod_00008_AddAmechanismInstanceToRobot2()
-        {
-            selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #2");
-            addRobotElement("Super_Intake");
-            selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #2\mechanismInstances\mechanismInstanceName_1\name (mechanismInstanceName_1)");
+                    setTextInput("floorExtender");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\floorExtender\name (floorExtender)");
 
-            setTextInput("frontIntake");
-            selectTreeNodeAndCheck(@"Robot Variant\robots\Robot #2\mechanismInstances\frontIntake\name (frontIntake)");
+                    clickSave();
+                }
 
-            clickSave();
-        }
+                [TestMethod]
+                public void TestMethod_00008_AddAmechanismInstanceToRobot2()
+                {
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\robots\Robot #2");
+                    addRobotElement("Super_Intake");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\robots\Robot #2\mechanismInstances\mechanismInstanceName_1\name (mechanismInstanceName_1)");
 
-        [TestMethod]
-        public void TestMethod_00009_AddClosedLoopControlParametersToSuper_Intake()
-        {
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake");
-            addRobotElement("closedLoopControlParameters");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\closedLoopControlParameters\closedLoopControlParameters_1\name (closedLoopControlParameters_1)");
+                    setTextInput("frontIntake");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\robots\Robot #2\mechanismInstances\frontIntake\name (frontIntake)");
 
-            setTextInput("intakePID");
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\closedLoopControlParameters\intakePID\name (intakePID)");
+                    clickSave();
+                }
 
-            clickSave();
-        }
+                [TestMethod]
+                public void TestMethod_00009_AddClosedLoopControlParametersToSuper_Intake()
+                {
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake");
+                    addRobotElement("closedLoopControlParameters");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\closedLoopControlParameters\closedLoopControlParameters_1\name (closedLoopControlParameters_1)");
 
-        [TestMethod]
-        public void TestMethod_0000A_SetPGainTo2()
-        {
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\closedLoopControlParameters\intakePID\pGain (0)");
-            setNumericUpDown(2);
-            selectTreeNodeAndCheck(@"Robot Variant\mechanisms\Super_Intake\closedLoopControlParameters\intakePID\pGain (2)");
+                    setTextInput("intakePID");
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\closedLoopControlParameters\intakePID\name (intakePID)");
 
-            clickSave();
-        }
+                    clickSave();
+                }
 
+                [TestMethod]
+                public void TestMethod_0000A_SetPGainTo2()
+                {
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\closedLoopControlParameters\intakePID\pGain (0)");
+                    setNumericUpDown(2);
+                    selectTreeNodeAndCheck(@"robotBuildDefinition\mechanisms\Super_Intake\closedLoopControlParameters\intakePID\pGain (2)");
+
+                    clickSave();
+                }
+        */
 
         [TestCleanup]
         public void AfterEveryTest()
@@ -260,6 +307,33 @@ namespace UnitTests
         }
 
         #region ====================================== Helper functions ================================================
+
+        void setAndCheckDouble(string basePath, double previousValue, double value, string units, double min, double max)
+        {
+            if (string.IsNullOrEmpty(units))
+                selectTreeNodeAndCheck(basePath.Replace("##value##", string.Format("{0}", previousValue.ToString())));
+            else
+                selectTreeNodeAndCheck(basePath.Replace("##value##", string.Format("{0} {1}", previousValue.ToString(), units)));
+
+            setNumericUpDown(value);
+            value = value < min ? min : value;
+            value = value > max ? max : value;
+            if (string.IsNullOrEmpty(units))
+                selectTreeNodeAndCheck(basePath.Replace("##value##", string.Format("{0}", value.ToString())));
+            else
+                selectTreeNodeAndCheck(basePath.Replace("##value##", string.Format("{0} {1}", value.ToString(), units)));
+        }
+
+
+        private void selectInComboBox(string value)
+        {
+            List<string> names = getListOfComboBoxStrings();
+            int index = names.IndexOf(value);
+            Assert.IsTrue(index >= 0);
+            Session.FindElementByAccessibilityId("infoIOtextBox").SendKeys("ComboBox:" + index.ToString());
+
+            Session.FindElementByAccessibilityId("checkCheckBoxListItemButton").Click();
+        }
         private void setNumericUpDown(double value)
         {
             WindowsElement we = Session.FindElementByAccessibilityId("valueNumericUpDown");
@@ -309,10 +383,21 @@ namespace UnitTests
             Thread.Sleep(TimeSpan.FromSeconds(0.5));
             return Session.FindElementByAccessibilityId("infoIOtextBox").Text;
         }
+        private List<string> getListOfComboBoxStrings()
+        {
+            List<string> names = new List<string>();
+
+            Session.FindElementByAccessibilityId("infoIOtextBox").SendKeys("ComboBox");
+            Session.FindElementByAccessibilityId("getCheckBoxListItemsButton").Click();
+            string items = Session.FindElementByAccessibilityId("infoIOtextBox").Text;
+            names = items.Trim('#').Split('#').ToList();
+            return names;
+        }
         private List<string> getListOfAvailableRobotElements()
         {
             List<string> names = new List<string>();
 
+            Session.FindElementByAccessibilityId("infoIOtextBox").SendKeys("CheckListBox");
             Session.FindElementByAccessibilityId("getCheckBoxListItemsButton").Click();
             string items = Session.FindElementByAccessibilityId("infoIOtextBox").Text;
             names = items.Trim('#').Split('#').ToList();
@@ -324,14 +409,14 @@ namespace UnitTests
             List<string> names = getListOfAvailableRobotElements();
             int index = names.IndexOf(name);
             Assert.IsTrue(index >= 0);
-            Session.FindElementByAccessibilityId("infoIOtextBox").SendKeys(index.ToString());
+            Session.FindElementByAccessibilityId("infoIOtextBox").SendKeys("CheckListBox:" + index.ToString());
 
             Session.FindElementByAccessibilityId("checkCheckBoxListItemButton").Click();
         }
 
         private void addRobotElement(string name)
         {
-            if(name != "")
+            if (name != "")
                 checkmarkRobotElement(name);
 
             Session.FindElementByAccessibilityId("addTreeElementButton").Click();

@@ -7,19 +7,21 @@ using System.IO;
 using System.Reflection;
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
+using Configuration;
 
 namespace DataConfiguration
 {
     public class baseDataConfiguration : baseReportingClass
     {
         public List<string> collectionBaseTypes = new List<string>(); 
+        public List<physicalUnit> physicalUnits = new List<physicalUnit>();
 
-        public bool isACollection(object obj)
+        static public bool isACollection(object obj)
         {
             return isACollection(obj.GetType());
         }
 
-        public bool isACollection(Type t)
+        static public bool isACollection(Type t)
         {
 
             bool isaList = (t.Name == "List`1") && (t.Namespace == "System.Collections.Generic");
@@ -27,10 +29,22 @@ namespace DataConfiguration
             return (isaCollection || isaList);
         }
 
+        static public bool isACollectionOfType(Type theCollection, Type t)
+        {
+            if (isACollection(theCollection))
+            {
+                Type elementType = theCollection.GetGenericArguments().Single();
+                return t.FullName == elementType.FullName;
+            }
+
+            return false;
+        }
+
         public bool isASubClassedCollection(object obj)
         {
             return isASubClassedCollection(obj.GetType());
         }
+
 
         public bool isASubClassedCollection(Type t)
         {

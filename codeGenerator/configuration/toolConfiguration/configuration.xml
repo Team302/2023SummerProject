@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <toolConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <rootOutputFolder>..\..\src\main\cpp</rootOutputFolder>
-  <robotConfiguration></robotConfiguration>
+  <robotConfiguration>..\RobotConfigurations\testRobotConfig.xml</robotConfiguration>
   <appDataConfigurations>
-
+    <string>../RobotConfigurations/testRobotConfig.xml</string>
   </appDataConfigurations>
   <collectionBaseTypes>
-    <string>ApplicationData.testMotor</string>
+    <string>ApplicationData.Motor</string>
     <string>ApplicationData.PriceChange</string>
     <string>ApplicationData.parameter</string>
   </collectionBaseTypes>
