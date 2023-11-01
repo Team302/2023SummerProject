@@ -53,23 +53,33 @@ namespace ApplicationData
 
             helperFunctions.initializeDefaultValues(this);
         }
+
+        //public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        //{
+        //    refresh = helperFunctions.RefreshLevel.none;
+
+        //    if (propertyName == "name")
+        //        return string.Format("{0} ({1})", propertyName, name);
+
+        //    return null;
+        //}
     }
 
     [Serializable()]
     public partial class applicationData
     {
 #if !enableTestAutomation
-        public testClass testClass { get; set; }
-        public List<parameter> parameter { get; set; }
         public List<motor> motor { get; set; }
-        public List<pcm> pcm { get; set; }
         public pdp pdp { get; set; }
+        public List<mechanismInstance> mechanismInstance { get; set; }
+
+/*        public List<pcm> pcm { get; set; }
         public List<pigeon> pigeon { get; set; }
         public List<limelight> limelight { get; set; }
         public chassis chassis { get; set; }
-        public List<mechanismInstance> mechanismInstance { get; set; }
         public List<camera> camera { get; set; }
         public List<roborio> roborio { get; set; }
+*/
 
         [DefaultValue(1u)]
         [Range(typeof(uint), "1", "9999")]
@@ -87,9 +97,9 @@ namespace ApplicationData
             refresh = helperFunctions.RefreshLevel.none;
 
             if (string.IsNullOrEmpty(propertyName))
-                return string.Format("Robot #{0}", robotID.value__);
-            else if (propertyName == "testClass")
-                return string.Format("{0} ({1}))", propertyName, testClass.name);
+                return string.Format("Robot #{0}", robotID.value);
+            //else if (propertyName == "testClass")
+            //    return string.Format("{0} ({1}))", propertyName, testClass.name);
             else if (propertyName == "pdp")
                 return string.Format("{0} ({1})", propertyName, pdp.type);
 
@@ -133,14 +143,14 @@ namespace ApplicationData
 
             helperFunctions.initializeNullProperties(this);
 
-            name.value__ = GetType().Name;
+            name = GetType().Name;
 
             helperFunctions.initializeDefaultValues(this);
         }
 
         public string getDisplayName()
         {
-            return string.Format("{0}", name.value__);
+            return string.Format("{0}", name);
         }
 #endif
     }
@@ -149,7 +159,7 @@ namespace ApplicationData
     [Serializable()]
     public class closedLoopControlParameters
     {
-        public stringParameter name { get; set; }
+        public string name { get; set; }
 
         [DefaultValue(0D)]
         [System.ComponentModel.Description("The proportional gain of the PID controller.")]
@@ -180,13 +190,13 @@ namespace ApplicationData
             helperFunctions.initializeNullProperties(this);
             helperFunctions.initializeDefaultValues(this);
 
-            name.value__ = GetType().Name;
+            name = GetType().Name;
 
         }
 
         public string getDisplayName()
         {
-            return string.Format("{0}", name.value__);
+            return string.Format("{0}", name);
         }
     }
 
@@ -220,9 +230,9 @@ namespace ApplicationData
     {
         [XmlIgnore]
         [Constant()]
-        public stringParameter motorType { get; protected set; }
+        public string motorType { get; protected set; }
 
-        public stringParameter name { get; set; }
+        public string name { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
@@ -233,14 +243,14 @@ namespace ApplicationData
             helperFunctions.initializeNullProperties(this);
 
             string temp = this.GetType().Name;
-            motorType.value__ = temp.Substring(0, temp.LastIndexOf('_'));
-            name.value__ = motorType.value__;
+            motorType = temp.Substring(0, temp.LastIndexOf('_'));
+            name = motorType;
 
             helperFunctions.initializeDefaultValues(this);
         }
         public string getDisplayName()
         {
-            return name.value__;
+            return name;
         }
     }
 
