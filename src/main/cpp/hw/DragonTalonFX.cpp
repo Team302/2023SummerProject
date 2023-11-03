@@ -53,6 +53,7 @@ using ctre::phoenixpro::configs::Slot0Configs;
 using ctre::phoenixpro::configs::Slot1Configs;
 using ctre::phoenixpro::configs::Slot2Configs;
 using ctre::phoenixpro::configs::VoltageConfigs;
+using ctre::phoenixpro::controls::ControlRequest;
 using ctre::phoenixpro::controls::DutyCycleOut;
 using ctre::phoenixpro::controls::EmptyControl;
 using ctre::phoenixpro::controls::Follower;
@@ -272,11 +273,12 @@ void DragonTalonFX::SetFramePeriodPriority(MOTOR_PRIORITY priority)
 
 void DragonTalonFX::Set(double value)
 {
-	Set(0, value);
+	DutyCycleOut out{value};
+	Set(out);
 }
-void DragonTalonFX::Set(int slot, double value)
+void DragonTalonFX::Set(ControlRequest &control)
 {
-	m_talon.SetControl(*slot0Control);
+	m_talon.SetControl(control);
 }
 
 void DragonTalonFX::SetRotationOffset(double rotations)

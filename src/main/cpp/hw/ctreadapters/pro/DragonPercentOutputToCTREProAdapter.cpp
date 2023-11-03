@@ -26,6 +26,7 @@
 
 // Third Party Includes
 
+using ctre::phoenixpro::controls::DutyCycleOut;
 using ctre::phoenixpro::hardware::TalonFX;
 using std::string;
 
@@ -38,11 +39,12 @@ DragonPercentOutputToCTREProAdapter::DragonPercentOutputToCTREProAdapter(string 
 }
 void DragonPercentOutputToCTREProAdapter::Set(double value)
 {
-    // TODO  Add phoenix pro commands
+    DutyCycleOut out{value};
+    m_controller->Set(out);
 }
 
 void DragonPercentOutputToCTREProAdapter::SetControlConstants(int controlSlot,
                                                               const ControlData &controlInfo)
 {
-    SetPeakAndNominalValues(m_networkTableName, controlInfo);
+    // NO-OP
 }
