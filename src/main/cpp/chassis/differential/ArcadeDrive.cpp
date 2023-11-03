@@ -85,7 +85,7 @@ void ArcadeDrive::Exit()
 
 /// @brief indicates that we are not at our target
 /// @return bool
-bool ArcadeDrive::AtTarget() const
+bool ArcadeDrive::AtTarget()
 {
     return false;
 }

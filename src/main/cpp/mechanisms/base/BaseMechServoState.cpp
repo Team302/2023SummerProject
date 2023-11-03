@@ -68,7 +68,7 @@ void BaseMechServoState::Exit()
 { // No-Op nothing to do on exit
 }
 
-bool BaseMechServoState::AtTarget() const
+bool BaseMechServoState::AtTarget()
 {
     return false;
 }

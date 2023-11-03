@@ -62,6 +62,6 @@ units::angle::degree_t BaseMechServo::GetAngle() const
 }
 
 /// @brief log data to the network table if it is activated and time period has past
-void BaseMechServo::LogInformation() const
+void BaseMechServo::LogInformation()
 {
 }

@@ -89,7 +89,7 @@ DragonTalonFX::DragonTalonFX(string networkTableName,
 							 int deviceID,
 							 string canBusName) : m_networkTableName(networkTableName),
 												  m_type(deviceType),
-												  m_talon(new TalonFX(deviceID, canBusName)),
+												  m_talon(TalonFX(deviceID, canBusName)),
 												  slot0Control(new EmptyControl()),
 												  slot1Control(new EmptyControl()),
 												  slot2Control(new EmptyControl()),
@@ -97,9 +97,12 @@ DragonTalonFX::DragonTalonFX(string networkTableName,
 												  m_calcStruc(),
 												  m_inverted(false)
 {
-	m_talon->GetConfigurator().Apply(TalonFXConfiguration{}); // reset to factory default
+	ResetToDefaults();
 }
 
+// DragonTalonFX::DragonTalonFX(const DragonTalonFX &other)
+//{
+// }
 void DragonTalonFX::ConfigHWLimitSW(bool enableForward,
 									int remoteForwardSensorID,
 									bool forwardResetPosition,
@@ -113,24 +116,21 @@ void DragonTalonFX::ConfigHWLimitSW(bool enableForward,
 									ReverseLimitSourceValue revType,
 									ReverseLimitTypeValue revOpenClose)
 {
-	if (m_talon != nullptr)
-	{
-		HardwareLimitSwitchConfigs hwswitch{};
-		hwswitch.ForwardLimitEnable = enableForward;
-		hwswitch.ForwardLimitRemoteSensorID = remoteForwardSensorID;
-		hwswitch.ForwardLimitAutosetPositionEnable = forwardResetPosition;
-		hwswitch.ForwardLimitAutosetPositionValue = forwardPosition;
-		hwswitch.ForwardLimitSource = forwardType;
-		hwswitch.ForwardLimitType = forwardOpenClose;
+	HardwareLimitSwitchConfigs hwswitch{};
+	hwswitch.ForwardLimitEnable = enableForward;
+	hwswitch.ForwardLimitRemoteSensorID = remoteForwardSensorID;
+	hwswitch.ForwardLimitAutosetPositionEnable = forwardResetPosition;
+	hwswitch.ForwardLimitAutosetPositionValue = forwardPosition;
+	hwswitch.ForwardLimitSource = forwardType;
+	hwswitch.ForwardLimitType = forwardOpenClose;
 
-		hwswitch.ReverseLimitEnable = enableReverse;
-		hwswitch.ReverseLimitRemoteSensorID = remoteReverseSensorID;
-		hwswitch.ReverseLimitAutosetPositionEnable = reverseResetPosition;
-		hwswitch.ReverseLimitAutosetPositionValue = reversePosition;
-		hwswitch.ReverseLimitSource = revType;
-		hwswitch.ReverseLimitType = revOpenClose;
-		m_talon->GetConfigurator().Apply(hwswitch);
-	}
+	hwswitch.ReverseLimitEnable = enableReverse;
+	hwswitch.ReverseLimitRemoteSensorID = remoteReverseSensorID;
+	hwswitch.ReverseLimitAutosetPositionEnable = reverseResetPosition;
+	hwswitch.ReverseLimitAutosetPositionValue = reversePosition;
+	hwswitch.ReverseLimitSource = revType;
+	hwswitch.ReverseLimitType = revOpenClose;
+	m_talon.GetConfigurator().Apply(hwswitch);
 }
 
 void DragonTalonFX::ConfigMotorSettings(InvertedValue inverted,
@@ -139,81 +139,67 @@ void DragonTalonFX::ConfigMotorSettings(InvertedValue inverted,
 										double peakForwardDutyCycle,
 										double peakReverseDutyCycle)
 {
-	if (m_talon != nullptr)
-	{
-		MotorOutputConfigs motorconfig{};
-		motorconfig.Inverted = inverted;
-		motorconfig.NeutralMode = mode;
-		motorconfig.PeakForwardDutyCycle = peakForwardDutyCycle;
-		motorconfig.PeakReverseDutyCycle = peakReverseDutyCycle;
-		motorconfig.DutyCycleNeutralDeadband = deadbandPercent;
-		m_talon->GetConfigurator().Apply(motorconfig);
-	}
+	m_inverted = inverted == InvertedValue::CounterClockwise_Positive;
+	MotorOutputConfigs motorconfig{};
+	motorconfig.Inverted = inverted;
+	motorconfig.NeutralMode = mode;
+	motorconfig.PeakForwardDutyCycle = peakForwardDutyCycle;
+	motorconfig.PeakReverseDutyCycle = peakReverseDutyCycle;
+	motorconfig.DutyCycleNeutralDeadband = deadbandPercent;
+	m_talon.GetConfigurator().Apply(motorconfig);
 }
 void DragonTalonFX::SetPIDConstants(int slot, double p, double i, double d, double f)
 {
-	if (m_talon != nullptr)
+	if (slot == 0)
 	{
-		if (slot == 0)
-		{
-			Slot0Configs slot0;
-			slot0.kP = p;
-			slot0.kI = i;
-			slot0.kD = d;
-			slot0.kV = f;
-			m_talon->GetConfigurator().Apply(slot0);
-		}
-		else if (slot == 1)
-		{
-			Slot1Configs slot1;
-			slot1.kP = p;
-			slot1.kI = i;
-			slot1.kD = d;
-			slot1.kV = f;
-			m_talon->GetConfigurator().Apply(slot1);
-		}
-		else if (slot == 2)
-		{
-			Slot2Configs slot2;
-			slot2.kP = p;
-			slot2.kI = i;
-			slot2.kD = d;
-			slot2.kV = f;
-			m_talon->GetConfigurator().Apply(slot2);
-		}
+		Slot0Configs slot0;
+		slot0.kP = p;
+		slot0.kI = i;
+		slot0.kD = d;
+		slot0.kV = f;
+		m_talon.GetConfigurator().Apply(slot0);
+	}
+	else if (slot == 1)
+	{
+		Slot1Configs slot1;
+		slot1.kP = p;
+		slot1.kI = i;
+		slot1.kD = d;
+		slot1.kV = f;
+		m_talon.GetConfigurator().Apply(slot1);
+	}
+	else if (slot == 2)
+	{
+		Slot2Configs slot2;
+		slot2.kP = p;
+		slot2.kI = i;
+		slot2.kD = d;
+		slot2.kV = f;
+		m_talon.GetConfigurator().Apply(slot2);
 	}
 }
-double DragonTalonFX::GetRotations() const
+double DragonTalonFX::GetRotations()
 {
-	auto &possig = m_talon->GetPosition();
+	auto &possig = m_talon.GetPosition();
 	possig.Refresh();
 
-	auto &velsig = m_talon->GetVelocity();
+	auto &velsig = m_talon.GetVelocity();
 	auto turnsPerSec = velsig.GetValue();
 
 	auto rotations = possig.GetValue() + turnsPerSec * possig.GetTimestamp().GetLatency();
 	return rotations.to<double>();
 }
 
-double DragonTalonFX::GetRPS() const
+double DragonTalonFX::GetRPS()
 {
-	auto &velsig = m_talon->GetVelocity();
+	auto &velsig = m_talon.GetVelocity();
 	auto turnsPerSec = velsig.GetValue();
 	return turnsPerSec.to<double>();
 }
 
-MotorController *DragonTalonFX::GetSpeedController() const
+double DragonTalonFX::GetCurrent()
 {
-	return m_talon;
-}
-
-double DragonTalonFX::GetCurrent() const
-{
-	if (m_talon != nullptr)
-	{
-		return m_talon->GetSupplyCurrent().GetValue().to<double>();
-	}
-	return 0.0;
+	return m_talon.GetSupplyCurrent().GetValue().to<double>();
 }
 
 /**
@@ -223,7 +209,7 @@ void DragonTalonFX::UpdateFramePeriods
 	uint8_t												milliseconds
 )
 {
-	m_talon->SetStatusFramePeriod( frame, milliseconds, 0 );
+	m_talon.SetStatusFramePeriod( frame, milliseconds, 0 );
 }
 **/
 void DragonTalonFX::SetFramePeriodPriority(MOTOR_PRIORITY priority)
@@ -290,10 +276,7 @@ void DragonTalonFX::Set(double value)
 }
 void DragonTalonFX::Set(int slot, double value)
 {
-	if (m_talon != nullptr)
-	{
-		m_talon->SetControl(*slot0Control);
-	}
+	m_talon.SetControl(*slot0Control);
 }
 
 void DragonTalonFX::SetRotationOffset(double rotations)
@@ -304,45 +287,48 @@ void DragonTalonFX::SetRotationOffset(double rotations)
 
 void DragonTalonFX::SetVoltageRamping(double ramping, double rampingClosedLoop)
 {
-	if (m_talon != nullptr)
-	{
-		ClosedLoopRampsConfigs configs{};
-		m_talon->GetConfigurator().Refresh(configs);
-		configs.VoltageClosedLoopRampPeriod = rampingClosedLoop;
-		m_talon->GetConfigurator().Apply(configs);
+	ClosedLoopRampsConfigs configs{};
+	m_talon.GetConfigurator().Refresh(configs);
+	configs.VoltageClosedLoopRampPeriod = rampingClosedLoop;
+	m_talon.GetConfigurator().Apply(configs);
 
-		if (rampingClosedLoop > 0.0)
-		{
-			OpenLoopRampsConfigs oconfigs{};
-			m_talon->GetConfigurator().Refresh(oconfigs);
-			oconfigs.VoltageOpenLoopRampPeriod = ramping;
-			m_talon->GetConfigurator().Apply(oconfigs);
-		}
+	if (rampingClosedLoop > 0.0)
+	{
+		OpenLoopRampsConfigs oconfigs{};
+		m_talon.GetConfigurator().Refresh(oconfigs);
+		oconfigs.VoltageOpenLoopRampPeriod = ramping;
+		m_talon.GetConfigurator().Apply(oconfigs);
 	}
 }
 
 void DragonTalonFX::EnableBrakeMode(bool enabled)
 {
-	if (m_talon != nullptr)
+	MotorOutputConfigs motorconfig{};
+	m_talon.GetConfigurator().Refresh(motorconfig);
+	if (enabled)
 	{
-		MotorOutputConfigs motorconfig{};
-		m_talon->GetConfigurator().Refresh(motorconfig);
-		if (enabled)
-		{
-			motorconfig.NeutralMode = NeutralModeValue::Brake;
-		}
-		else
-		{
-			motorconfig.NeutralMode = NeutralModeValue::Coast;
-		}
-		m_talon->GetConfigurator().Apply(motorconfig);
+		motorconfig.NeutralMode = NeutralModeValue::Brake;
 	}
+	else
+	{
+		motorconfig.NeutralMode = NeutralModeValue::Coast;
+	}
+	m_talon.GetConfigurator().Apply(motorconfig);
+}
+
+void DragonTalonFX::ResetToDefaults()
+{
+	m_talon.GetConfigurator().Apply(TalonFXConfiguration{}); // reset to factory default
+	EnableBrakeMode(true);
+
+	auto invVal = m_inverted ? InvertedValue::Clockwise_Positive : InvertedValue::CounterClockwise_Positive;
+	ConfigMotorSettings(invVal, NeutralModeValue::Brake, 0.01, 1.0, -1.0);
 }
 
 void DragonTalonFX::Invert(bool inverted)
 {
 	m_inverted = inverted;
-	m_talon->SetInverted(inverted);
+	m_talon.SetInverted(inverted);
 }
 
 void DragonTalonFX::SetSensorInverted(bool inverted)
@@ -356,11 +342,7 @@ MotorControllerUsage::MOTOR_CONTROLLER_USAGE DragonTalonFX::GetType() const
 
 int DragonTalonFX::GetID() const
 {
-	if (m_talon != nullptr)
-	{
-		return m_talon->GetDeviceID();
-	}
-	return -1;
+	return m_talon.GetDeviceID();
 }
 
 void DragonTalonFX::SetCurrentLimits(bool enableStatorCurrentLimit,
@@ -370,82 +352,64 @@ void DragonTalonFX::SetCurrentLimits(bool enableStatorCurrentLimit,
 									 units::current::ampere_t supplyCurrentThreshold,
 									 units::time::second_t supplyTimeThreshold)
 {
-	if (m_talon != nullptr)
-	{
-		CurrentLimitsConfigs currconfigs{};
-		currconfigs.StatorCurrentLimit = statorCurrentLimit.to<double>();
-		currconfigs.StatorCurrentLimitEnable = enableSupplyCurrentLimit;
-		currconfigs.SupplyCurrentLimit = supplyCurrentLimit.to<double>();
-		currconfigs.SupplyCurrentLimitEnable = enableSupplyCurrentLimit;
-		m_talon->GetConfigurator().Apply(currconfigs);
-	}
+	CurrentLimitsConfigs currconfigs{};
+	currconfigs.StatorCurrentLimit = statorCurrentLimit.to<double>();
+	currconfigs.StatorCurrentLimitEnable = enableSupplyCurrentLimit;
+	currconfigs.SupplyCurrentLimit = supplyCurrentLimit.to<double>();
+	currconfigs.SupplyCurrentLimitEnable = enableSupplyCurrentLimit;
+	m_talon.GetConfigurator().Apply(currconfigs);
 }
 
 void DragonTalonFX::EnableCurrentLimiting(bool enabled)
 {
-	if (m_talon != nullptr)
-	{
-		CurrentLimitsConfigs configs{};
-		m_talon->GetConfigurator().Refresh(configs);
-		configs.StatorCurrentLimitEnable = enabled;
-		configs.SupplyCurrentLimitEnable = enabled;
-		m_talon->GetConfigurator().Apply(configs);
-	}
+	CurrentLimitsConfigs configs{};
+	m_talon.GetConfigurator().Refresh(configs);
+	configs.StatorCurrentLimitEnable = enabled;
+	configs.SupplyCurrentLimitEnable = enabled;
+	m_talon.GetConfigurator().Apply(configs);
 }
 
 void DragonTalonFX::SetAsFollowerMotor(int masterCANID // <I> - master motor
 )
 {
-	if (m_talon != nullptr)
-	{
-		m_talon->SetControl(Follower(masterCANID, false));
-	}
+	m_talon.SetControl(Follower(masterCANID, false));
 }
 
 /// @brief  Set the control constants (e.g. PIDF values).
 /// @param [in] int             slot - hardware slot to use
 /// @param [in] ControlData*    pid - the control constants
 /// @return void
-void DragonTalonFX::SetControlConstants(int slot, ControlData *controlInfo)
+void DragonTalonFX::SetControlConstants(int slot, const ControlData &controlInfo)
 {
-	if (m_talon != nullptr)
-	{
-		// TODO:  delete the existing control and create the
-		//        new control for the slot
-	}
+	// TODO:  delete the existing control and create the
+	//        new control for the slot
 }
 
 void DragonTalonFX::SetRemoteSensor(int canID,
 									ctre::phoenix::motorcontrol::RemoteSensorSource deviceType)
 {
-	if (m_talon != nullptr)
-	{
-		TalonFXConfiguration configs{};
-		configs.Feedback.FeedbackRemoteSensorID = canID;
-		configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue::FusedCANcoder;
+	TalonFXConfiguration configs{};
+	configs.Feedback.FeedbackRemoteSensorID = canID;
+	configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue::FusedCANcoder;
 
-		m_talon->GetConfigurator().Apply(configs);
-	}
+	m_talon.GetConfigurator().Apply(configs);
 }
 void DragonTalonFX::FuseCancoder(DragonCanCoder &cancoder,
 								 double sensorToMechanismRatio,
 								 double rotorToSensorRatio)
 {
-	if (m_talon != nullptr)
-	{
-		// update cancoder definition
-		cancoder.SetRange(AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
-		cancoder.SetDirection(SensorDirectionValue::CounterClockwise_Positive);
+	// update cancoder definition
+	cancoder.SetRange(AbsoluteSensorRangeValue::Signed_PlusMinusHalf);
+	cancoder.SetDirection(SensorDirectionValue::CounterClockwise_Positive);
 
-		TalonFXConfiguration configs{};
-		m_talon->GetConfigurator().Refresh(configs);
-		configs.Feedback.FeedbackRemoteSensorID = cancoder.GetCanId();
-		configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue::FusedCANcoder;
-		configs.Feedback.SensorToMechanismRatio = sensorToMechanismRatio;
-		configs.Feedback.RotorToSensorRatio = rotorToSensorRatio;
+	TalonFXConfiguration configs{};
+	m_talon.GetConfigurator().Refresh(configs);
+	configs.Feedback.FeedbackRemoteSensorID = cancoder.GetCanId();
+	configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue::FusedCANcoder;
+	configs.Feedback.SensorToMechanismRatio = sensorToMechanismRatio;
+	configs.Feedback.RotorToSensorRatio = rotorToSensorRatio;
 
-		m_talon->GetConfigurator().Apply(configs);
-	}
+	m_talon.GetConfigurator().Apply(configs);
 }
 
 void DragonTalonFX::SetDiameter(double diameter)
@@ -455,55 +419,38 @@ void DragonTalonFX::SetDiameter(double diameter)
 
 void DragonTalonFX::SetVoltage(units::volt_t output)
 {
-	if (m_talon != nullptr)
-	{
-		m_talon->SetVoltage(output);
-	}
+	m_talon.SetVoltage(output);
 }
 
-bool DragonTalonFX::IsForwardLimitSwitchClosed() const
+bool DragonTalonFX::IsForwardLimitSwitchClosed()
 {
-	if (m_talon != nullptr)
-	{
-		auto signal = m_talon->GetForwardLimit();
-		return signal.GetValue() == ForwardLimitValue::ClosedToGround;
-	}
-	return false;
+	auto signal = m_talon.GetForwardLimit();
+	return signal.GetValue() == ForwardLimitValue::ClosedToGround;
 }
 
-bool DragonTalonFX::IsReverseLimitSwitchClosed() const
+bool DragonTalonFX::IsReverseLimitSwitchClosed()
 {
-	if (m_talon != nullptr)
-	{
-		auto signal = m_talon->GetReverseLimit();
-		return signal.GetValue() == ReverseLimitValue::ClosedToGround;
-	}
-	return false;
+	auto signal = m_talon.GetReverseLimit();
+	return signal.GetValue() == ReverseLimitValue::ClosedToGround;
 }
 
 void DragonTalonFX::EnableDisableLimitSwitches(bool enable)
 {
-	if (m_talon != nullptr)
-	{
-		HardwareLimitSwitchConfigs hwswitch{};
-		m_talon->GetConfigurator().Refresh(hwswitch);
-		hwswitch.ForwardLimitEnable = enable;
-		m_talon->GetConfigurator().Apply(hwswitch);
-	}
+	HardwareLimitSwitchConfigs hwswitch{};
+	m_talon.GetConfigurator().Refresh(hwswitch);
+	hwswitch.ForwardLimitEnable = enable;
+	m_talon.GetConfigurator().Apply(hwswitch);
 }
 
 void DragonTalonFX::EnableVoltageCompensation(double fullvoltage)
 {
-	// m_talon->ConfigVoltageCompSaturation(fullvoltage);
-	// m_talon->EnableVoltageCompensation(true);
+	// m_talon.ConfigVoltageCompSaturation(fullvoltage);
+	// m_talon.EnableVoltageCompensation(true);
 }
 
 void DragonTalonFX::SetSelectedSensorPosition(double initialPosition)
 {
-	if (m_talon != nullptr)
-	{
-		m_talon->SetRotorPosition(units::angle::degree_t(initialPosition));
-	}
+	m_talon.SetRotorPosition(units::angle::degree_t(initialPosition));
 }
 
 double DragonTalonFX::GetCountsPerInch() const
@@ -522,13 +469,9 @@ ControlModes::CONTROL_TYPE DragonTalonFX::GetControlMode() const
 }
 **/
 
-double DragonTalonFX::GetCounts() const
+double DragonTalonFX::GetCounts()
 {
-	if (m_talon != nullptr)
-	{
-		return GetRotations() * 2048;
-	}
-	return 0.0;
+	return GetRotations() * 2048;
 }
 
 IDragonMotorController::MOTOR_TYPE DragonTalonFX::GetMotorType() const

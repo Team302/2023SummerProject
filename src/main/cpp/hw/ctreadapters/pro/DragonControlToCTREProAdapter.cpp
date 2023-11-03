@@ -24,47 +24,42 @@
 #include "mechanisms/controllers/ControlData.h"
 #include "mechanisms/controllers/ControlModes.h"
 #include "utils/logging/Logger.h"
+#include "hw/DragonTalonFX.h"
 
 // Third Party Includes
-#include "ctre/phoenix/motorcontrol/ControlMode.h"
-#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
-#include "ctre/phoenix/ErrorCode.h"
 
-using namespace std;
-using namespace ctre::phoenix;
-using namespace ctre::phoenix::motorcontrol;
-using namespace ctre::phoenix::motorcontrol::can;
+using std::string;
+using std::to_string;
 
-DragonControlToCTREProAdapter::DragonControlToCTREProAdapter(std::string networkTableName,
+DragonControlToCTREProAdapter::DragonControlToCTREProAdapter(string networkTableName,
 															 int controllerSlot,
-															 ControlData *controlInfo,
-															 DistanceAngleCalcStruc calcStruc,
-															 WPI_BaseMotorController *controller) : IDragonControlToVendorControlAdapter(),
-																									m_networkTableName(networkTableName),
-																									m_controllerSlot(controllerSlot),
-																									m_controlData(controlInfo),
-																									m_calcStruc(calcStruc),
-																									m_controller(controller)
+															 const ControlData &controlInfo,
+															 const DistanceAngleCalcStruc &calcStruc,
+															 DragonTalonFX &controller) : IDragonControlToVendorControlAdapter(), m_networkTableName(networkTableName),
+																						  m_controllerSlot(controllerSlot),
+																						  m_controlData(controlInfo),
+																						  m_calcStruc(calcStruc),
+																						  m_controller(&controller)
 {
 	SetPeakAndNominalValues(networkTableName, controlInfo);
 
-	if (controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_INCH ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_DEGREES ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_INCH ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_RPS ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::VOLTAGE ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::CURRENT ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
+	if (controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_INCH ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_DEGREES ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_INCH ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_RPS ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VOLTAGE ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::CURRENT ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
 	{
 		SetPIDConstants(networkTableName, controllerSlot, controlInfo);
 	}
 
-	if ( // controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
+	if ( // controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
 	{
 		SetMaxVelocityAcceleration(networkTableName, controlInfo);
 	}
@@ -72,133 +67,31 @@ DragonControlToCTREProAdapter::DragonControlToCTREProAdapter(std::string network
 
 void DragonControlToCTREProAdapter::InitializeDefaults()
 {
-	if (m_controller != nullptr)
-	{
-		auto error = m_controller->ConfigFactoryDefault();
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, GetErrorPrompt(), string("ConfigFactoryDefault"), string("error"));
-		}
-
-		m_controller->SetNeutralMode(NeutralMode::Brake);
-
-		error = m_controller->ConfigNeutralDeadband(0.01, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, GetErrorPrompt(), string("ConfigNeutralDeadband"), string("error"));
-		}
-		error = m_controller->ConfigNominalOutputForward(0.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, GetErrorPrompt(), string("ConfigNominalOutputForward"), string("error"));
-		}
-		error = m_controller->ConfigNominalOutputReverse(0.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, GetErrorPrompt(), string("ConfigNominalOutputReverse"), string("error"));
-		}
-		error = m_controller->ConfigOpenloopRamp(0.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, GetErrorPrompt(), string("ConfigOpenloopRamp"), string("error"));
-		}
-		error = m_controller->ConfigPeakOutputForward(1.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, GetErrorPrompt(), string("ConfigPeakOutputForward"), string("error"));
-		}
-		error = m_controller->ConfigPeakOutputReverse(-1.0, 0);
-		if (error != ErrorCode::OKAY)
-		{
-			Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, GetErrorPrompt(), string("ConfigPeakOutputReverse"), string("error"));
-		}
-	}
+	m_controller->ResetToDefaults();
 }
 
 string DragonControlToCTREProAdapter::GetErrorPrompt() const
 {
 	auto prompt = string("CTRE CAN motor controller ");
-	prompt += to_string(m_controller->GetDeviceID());
+	prompt += to_string(m_controller->GetID());
 	return prompt;
 }
 
-void DragonControlToCTREProAdapter::SetPeakAndNominalValues(
-	std::string networkTableName,
-	ControlData *controlInfo)
+void DragonControlToCTREProAdapter::SetPeakAndNominalValues(std::string networkTableName,
+															const ControlData &controlInfo)
 {
-	auto peak = controlInfo->GetPeakValue();
-	auto error = m_controller->ConfigPeakOutputForward(peak);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("ConfigPeakOutputForward error"));
-	}
-	error = m_controller->ConfigPeakOutputReverse(-1.0 * peak);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("ConfigPeakOutputReverse error"));
-	}
-
-	auto nominal = controlInfo->GetNominalValue();
-	error = m_controller->ConfigNominalOutputForward(nominal);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("ConfigNominalOutputForward error"));
-	}
-	error = m_controller->ConfigNominalOutputReverse(-1.0 * nominal);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("ConfigNominalOutputReverse error"));
-	}
+	// TODO:  Implement Phoenix Pro methods
 }
 
-void DragonControlToCTREProAdapter::SetMaxVelocityAcceleration(
-	std::string networkTableName,
-	ControlData *controlInfo)
+void DragonControlToCTREProAdapter::SetMaxVelocityAcceleration(string networkTableName,
+															   const ControlData &controlInfo)
 {
-	auto error = m_controller->ConfigMotionAcceleration(controlInfo->GetMaxAcceleration());
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("ConfigMotionAcceleration error"));
-	}
-	error = m_controller->ConfigMotionCruiseVelocity(controlInfo->GetCruiseVelocity(), 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("ConfigMotionCruiseVelocity error"));
-	}
+	// TODO:  Implement Phoenix Pro methods
 }
 
-void DragonControlToCTREProAdapter::SetPIDConstants(
-	std::string networkTableName,
-	int controllerSlot,
-	ControlData *controlInfo)
+void DragonControlToCTREProAdapter::SetPIDConstants(std::string networkTableName,
+													int controllerSlot,
+													const ControlData &controlInfo)
 {
-	auto error = m_controller->Config_kP(controllerSlot, controlInfo->GetP());
-	if (error != ErrorCode::OKAY)
-	{
-		m_controller->Config_kP(controllerSlot, controlInfo->GetP());
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("Config_kP error"));
-	}
-	error = m_controller->Config_kI(controllerSlot, controlInfo->GetI());
-	if (error != ErrorCode::OKAY)
-	{
-		m_controller->Config_kI(controllerSlot, controlInfo->GetI());
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("Config_kI error"));
-	}
-	error = m_controller->Config_kD(controllerSlot, controlInfo->GetD());
-	if (error != ErrorCode::OKAY)
-	{
-		m_controller->Config_kD(controllerSlot, controlInfo->GetD());
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("Config_kD error"));
-	}
-	error = m_controller->Config_kF(controllerSlot, controlInfo->GetF());
-	if (error != ErrorCode::OKAY)
-	{
-		m_controller->Config_kF(controllerSlot, controlInfo->GetF());
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("Config_kF error"));
-	}
-	error = m_controller->SelectProfileSlot(controllerSlot, 0);
-	if (error != ErrorCode::OKAY)
-	{
-		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("SelectProfileSlot error"));
-	}
+	// TODO:  Implement Phoenix Pro methods
 }

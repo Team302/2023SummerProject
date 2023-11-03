@@ -134,7 +134,7 @@ void BaseMechMotorState::Exit()
 { // NO-OP
 }
 
-bool BaseMechMotorState::AtTarget() const
+bool BaseMechMotorState::AtTarget()
 {
     auto pctError = 0.0;
     if (m_mode == motorMode::PERCENT)

@@ -87,7 +87,7 @@ public:
     virtual void ExitSolenoidStates();
     virtual void ExitServoStates();
 
-    bool AtTarget() const override;
+    bool AtTarget() override;
     virtual bool AtTargetMotorStates() const;
     virtual bool AtTargetSolenoidStates() const;
     virtual bool AtTargetServoStates() const;

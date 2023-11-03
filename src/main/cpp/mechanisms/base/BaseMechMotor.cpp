@@ -105,22 +105,22 @@ void BaseMechMotor::UpdateTarget(units::angular_velocity::revolutions_per_minute
     Update();
 }
 
-units::length::inch_t BaseMechMotor::GetPositionInches() const
+units::length::inch_t BaseMechMotor::GetPositionInches()
 {
     return units::length::inch_t(GetMotor().GetCounts() / GetMotor().GetCountsPerInch());
 }
 
-units::velocity::feet_per_second_t BaseMechMotor::GetFeetPerSec() const
+units::velocity::feet_per_second_t BaseMechMotor::GetFeetPerSec()
 {
     return units::velocity::feet_per_second_t(GetMotor().GetRPS() / GetMotor().GetCountsPerInch());
 }
 
-units::angle::degree_t BaseMechMotor::GetPositionDegrees() const
+units::angle::degree_t BaseMechMotor::GetPositionDegrees()
 {
     return units::angle::degree_t(GetMotor().GetCounts() / GetMotor().GetCountsPerDegree());
 }
 
-units::angular_velocity::revolutions_per_minute_t BaseMechMotor::GetRPM() const
+units::angular_velocity::revolutions_per_minute_t BaseMechMotor::GetRPM()
 {
     return units::angular_velocity::revolutions_per_minute_t(GetMotor().GetRPS() / 60.0);
 }
@@ -156,11 +156,11 @@ bool BaseMechMotor::IsAtMaxTravel() const
 /// @return void
 void BaseMechMotor::SetControlConstants(int slot, ControlData pid)
 {
-    m_motor.SetControlConstants(slot, &pid);
+    m_motor.SetControlConstants(slot, pid);
 }
 
 /// @brief log data to the network table if it is activated and time period has past
-void BaseMechMotor::LogInformation() const
+void BaseMechMotor::LogInformation()
 {
     auto usageMap = MotorControllerUsage::GetInstance();
     auto usage = usageMap->GetUsage(GetMotor().GetType());

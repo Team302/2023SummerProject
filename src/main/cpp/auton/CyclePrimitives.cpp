@@ -92,7 +92,7 @@ void CyclePrimitives::Exit()
 {
 }
 
-bool CyclePrimitives::AtTarget() const
+bool CyclePrimitives::AtTarget()
 {
 	return m_isDone;
 }

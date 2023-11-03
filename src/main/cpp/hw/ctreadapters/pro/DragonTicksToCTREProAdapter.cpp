@@ -30,23 +30,24 @@
 #include "ctre/phoenix/motorcontrol/ControlMode.h"
 #include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
-DragonTicksToCTREProAdapter::DragonTicksToCTREProAdapter(std::string networkTableName,
+using ctre::phoenixpro::hardware::TalonFX;
+using std::string;
+
+DragonTicksToCTREProAdapter::DragonTicksToCTREProAdapter(string networkTableName,
                                                          int controllerSlot,
-                                                         ControlData *controlInfo,
-                                                         DistanceAngleCalcStruc calcStruc,
-                                                         ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                         const ControlData &controlInfo,
+                                                         const DistanceAngleCalcStruc &calcStruc,
+                                                         DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
-void DragonTicksToCTREProAdapter::Set(
-    double value)
+void DragonTicksToCTREProAdapter::Set(double value)
 {
-    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, value);
+    // TODO  Add phoenix pro commands
 }
 
-void DragonTicksToCTREProAdapter::SetControlConstants(
-    int controlSlot,
-    ControlData *controlInfo)
+void DragonTicksToCTREProAdapter::SetControlConstants(int controlSlot,
+                                                      const ControlData &controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);

@@ -64,7 +64,7 @@ void BaseMechSolenoidState::Exit()
 { // No-Op nothing to do on exit
 }
 
-bool BaseMechSolenoidState::AtTarget() const
+bool BaseMechSolenoidState::AtTarget()
 {
     return true; // happens instantaneously
 }

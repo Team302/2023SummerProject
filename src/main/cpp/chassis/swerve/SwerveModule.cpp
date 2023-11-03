@@ -60,14 +60,14 @@ SwerveModule::SwerveModule(ModuleID type,
                            IDragonMotorController *driveMotor,
                            IDragonMotorController *turnMotor,
                            DragonCanCoder *canCoder,
-                           ControlData *controlData,
+                           const ControlData &controlData,
                            double countsOnTurnEncoderPerDegreesOnAngleSensor,
                            units::length::inch_t wheelDiameter) : m_type(type),
                                                                   m_driveMotor(driveMotor),
                                                                   m_turnMotor(turnMotor),
                                                                   m_turnSensor(canCoder),
-                                                                  m_driveVelocityControlData(new ControlData()),
-                                                                  m_drivePercentControlData(new ControlData()),
+                                                                  m_driveVelocityControlData(ControlData()),
+                                                                  m_drivePercentControlData(ControlData()),
                                                                   m_turnPositionControlData(controlData),
                                                                   m_wheelDiameter(wheelDiameter),
                                                                   m_nt(),
@@ -88,6 +88,8 @@ SwerveModule::SwerveModule(ModuleID type,
     m_activeState.speed = 0_mps;
 
     // Set up the Drive Motor
+    // TODO replace next block
+    /**
     auto motor = m_driveMotor->GetSpeedController();
     auto fx = dynamic_cast<WPI_TalonFX *>(motor);
 
@@ -98,19 +100,13 @@ SwerveModule::SwerveModule(ModuleID type,
     fx->ConfigIntegratedSensorInitializationStrategy(BootToZero);
     auto driveMotorSensors = fx->GetSensorCollection();
     driveMotorSensors.SetIntegratedSensorPosition(0, 0);
+    **/
 
     // Set up the Absolute Turn Sensor
     m_turnSensor->SetRange(AbsoluteSensorRange::Signed_PlusMinus180);
 
     // Set up the Turn Motor
-    motor = m_turnMotor->GetSpeedController();
-    fx = dynamic_cast<WPI_TalonFX *>(motor);
-    fx->ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::IntegratedSensor, 0, 10);
-    fx->ConfigIntegratedSensorInitializationStrategy(BootToZero);
-    auto turnMotorSensors = fx->GetSensorCollection();
-    turnMotorSensors.SetIntegratedSensorPosition(0, 0);
-
-    // m_turnMotor->SetControlConstants(0, m_turnPositionControlData);
+    // TODO: Add method to set encoder position to 0 and set it on the turn motor
 
     switch (GetType())
     {
@@ -153,20 +149,18 @@ void SwerveModule::Init(units::velocity::meters_per_second_t maxVelocity,
                         Translation2d offsetFromCenterOfRobot)
 {
     m_maxVelocity = maxVelocity;
-    delete m_driveVelocityControlData;
-
-    m_driveVelocityControlData = new ControlData(ControlModes::CONTROL_TYPE::VELOCITY_RPS,
-                                                 ControlModes::CONTROL_RUN_LOCS::MOTOR_CONTROLLER,
-                                                 string("DriveSpeed"),
-                                                 0.01, // 0.01
-                                                 0.0,
-                                                 0.0,
-                                                 0.5, // 0.5
-                                                 0.0,
-                                                 maxAcceleration.to<double>(),
-                                                 maxVelocity.to<double>(),
-                                                 maxVelocity.to<double>(),
-                                                 0.0);
+    m_driveVelocityControlData = ControlData(ControlModes::CONTROL_TYPE::VELOCITY_RPS,
+                                             ControlModes::CONTROL_RUN_LOCS::MOTOR_CONTROLLER,
+                                             string("DriveSpeed"),
+                                             0.01, // 0.01
+                                             0.0,
+                                             0.0,
+                                             0.5, // 0.5
+                                             0.0,
+                                             maxAcceleration.to<double>(),
+                                             maxVelocity.to<double>(),
+                                             maxVelocity.to<double>(),
+                                             0.0);
     m_driveMotor->SetControlConstants(0, m_runClosedLoopDrive ? m_driveVelocityControlData : m_drivePercentControlData);
     // auto trans = Transform2d(offsetFromCenterOfRobot, Rotation2d() );
     // m_currentPose = m_currentPose + trans;
@@ -176,20 +170,14 @@ void SwerveModule::Init(units::velocity::meters_per_second_t maxVelocity,
 /// @brief void
 void SwerveModule::SetEncodersToZero()
 {
-    auto motor = m_driveMotor->GetSpeedController();
-    auto fx = dynamic_cast<WPI_TalonFX *>(motor);
-    auto driveMotorSensors = fx->GetSensorCollection();
-    driveMotorSensors.SetIntegratedSensorPosition(0, 0);
+    // Add method to set position to 0 and add to drive motor
 }
 
 /// @brief Get the encoder values
 /// @returns double - the integrated sensor position
 double SwerveModule::GetEncoderValues()
 {
-    auto motor = m_driveMotor->GetSpeedController();
-    auto fx = dynamic_cast<WPI_TalonFX *>(motor);
-    auto driveMotorSensors = fx->GetSensorCollection();
-    return driveMotorSensors.GetIntegratedSensorPosition();
+    return m_driveMotor->GetCounts();
 }
 
 /// @brief Turn all of the wheel to zero degrees yaw according to the pigeon
@@ -304,9 +292,7 @@ void SwerveModule::RunCurrentState()
 {
     SetDriveSpeed(m_activeState.speed);
 
-    auto motor = m_turnMotor->GetSpeedController();
-    auto fx = dynamic_cast<WPI_TalonFX *>(motor);
-    fx->StopMotor();
+    // TODO: add method to stop motor and apply to turn motor
 }
 
 /// @brief run the drive motor at a specified speed
@@ -351,19 +337,22 @@ void SwerveModule::SetTurnAngle(units::angle::degree_t targetAngle)
 
     if (abs(deltaAngle.to<double>()) > 1.0)
     {
+        // TODO: re-work logic
+        /**
         auto motor = m_turnMotor->GetSpeedController();
         auto fx = dynamic_cast<WPI_TalonFX *>(motor);
         auto sensors = fx->GetSensorCollection();
+        **/
         auto deltaTicks = m_countsOnTurnEncoderPerDegreesOnAngleSensor * deltaAngle.to<double>();
 
-        double currentTicks = sensors.GetIntegratedSensorPosition();
-        double desiredTicks = currentTicks + deltaTicks;
+        // double currentTicks = sensors.GetIntegratedSensorPosition();
+        // double desiredTicks = currentTicks + deltaTicks;
 
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("currentTicks"), currentTicks);
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("deltaTicks"), deltaTicks);
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("desiredTicks"), desiredTicks);
+        // Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("currentTicks"), currentTicks);
+        // Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("deltaTicks"), deltaTicks);
+        // Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_nt, string("desiredTicks"), desiredTicks);
 
-        m_turnMotor->Set(desiredTicks);
+        // m_turnMotor->Set(desiredTicks);
     }
 }
 
@@ -371,8 +360,7 @@ void SwerveModule::SetTurnAngle(units::angle::degree_t targetAngle)
 /// @return void
 void SwerveModule::StopMotors()
 {
-    m_turnMotor->GetSpeedController()->StopMotor();
-    m_driveMotor->GetSpeedController()->StopMotor();
+    // TODO: add method to stop motor and do it for both turn and drive motors
 }
 
 frc::Pose2d SwerveModule::GetCurrentPose(PoseEstimatorEnum opt)

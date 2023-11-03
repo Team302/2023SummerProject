@@ -257,7 +257,7 @@ void HolonomicDrive::Exit()
 
 /// @brief indicates that we are not at our target
 /// @return bool
-bool HolonomicDrive::AtTarget() const
+bool HolonomicDrive::AtTarget()
 {
     return false;
 }

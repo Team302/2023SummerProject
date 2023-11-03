@@ -30,8 +30,8 @@ class DragonControlToCTREProAdapterFactory
 public:
     static DragonControlToCTREProAdapterFactory *GetFactory();
     ctre::phoenixpro::controls::ControlRequest *CreateControlRequest(int controllerSlot,
-                                                                     ControlData *controlInfo,
-                                                                     DistanceAngleCalcStruc calcStruc,
+                                                                     const ControlData &controlInfo,
+                                                                     const DistanceAngleCalcStruc &calcStruc,
                                                                      ctre::phoenixpro::hardware::TalonFX *controller);
 
 private:

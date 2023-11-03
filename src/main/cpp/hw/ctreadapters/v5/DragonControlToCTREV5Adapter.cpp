@@ -38,8 +38,8 @@ using namespace ctre::phoenix::motorcontrol::can;
 
 DragonControlToCTREV5Adapter::DragonControlToCTREV5Adapter(std::string networkTableName,
 														   int controllerSlot,
-														   ControlData *controlInfo,
-														   DistanceAngleCalcStruc calcStruc,
+														   const ControlData &controlInfo,
+														   const DistanceAngleCalcStruc &calcStruc,
 														   WPI_BaseMotorController *controller) : IDragonControlToVendorControlAdapter(),
 																								  m_networkTableName(networkTableName),
 																								  m_controllerSlot(controllerSlot),
@@ -49,23 +49,23 @@ DragonControlToCTREV5Adapter::DragonControlToCTREV5Adapter(std::string networkTa
 {
 	SetPeakAndNominalValues(networkTableName, controlInfo);
 
-	if (controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_INCH ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_DEGREES ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_INCH ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_RPS ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::VOLTAGE ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::CURRENT ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
+	if (controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_INCH ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_DEGREES ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_INCH ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_RPS ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VOLTAGE ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::CURRENT ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
 	{
 		SetPIDConstants(networkTableName, controllerSlot, controlInfo);
 	}
 
-	if ( // controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
-		controlInfo->GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
+	if ( // controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE ||
+		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
 	{
 		SetMaxVelocityAcceleration(networkTableName, controlInfo);
 	}
@@ -125,9 +125,9 @@ string DragonControlToCTREV5Adapter::GetErrorPrompt() const
 
 void DragonControlToCTREV5Adapter::SetPeakAndNominalValues(
 	std::string networkTableName,
-	ControlData *controlInfo)
+	const ControlData &controlInfo)
 {
-	auto peak = controlInfo->GetPeakValue();
+	auto peak = controlInfo.GetPeakValue();
 	auto error = m_controller->ConfigPeakOutputForward(peak);
 	if (error != ErrorCode::OKAY)
 	{
@@ -139,7 +139,7 @@ void DragonControlToCTREV5Adapter::SetPeakAndNominalValues(
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("ConfigPeakOutputReverse error"));
 	}
 
-	auto nominal = controlInfo->GetNominalValue();
+	auto nominal = controlInfo.GetNominalValue();
 	error = m_controller->ConfigNominalOutputForward(nominal);
 	if (error != ErrorCode::OKAY)
 	{
@@ -154,47 +154,46 @@ void DragonControlToCTREV5Adapter::SetPeakAndNominalValues(
 
 void DragonControlToCTREV5Adapter::SetMaxVelocityAcceleration(
 	std::string networkTableName,
-	ControlData *controlInfo)
+	const ControlData &controlInfo)
 {
-	auto error = m_controller->ConfigMotionAcceleration(controlInfo->GetMaxAcceleration());
+	auto error = m_controller->ConfigMotionAcceleration(controlInfo.GetMaxAcceleration());
 	if (error != ErrorCode::OKAY)
 	{
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("ConfigMotionAcceleration error"));
 	}
-	error = m_controller->ConfigMotionCruiseVelocity(controlInfo->GetCruiseVelocity(), 0);
+	error = m_controller->ConfigMotionCruiseVelocity(controlInfo.GetCruiseVelocity(), 0);
 	if (error != ErrorCode::OKAY)
 	{
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("ConfigMotionCruiseVelocity error"));
 	}
 }
 
-void DragonControlToCTREV5Adapter::SetPIDConstants(
-	std::string networkTableName,
-	int controllerSlot,
-	ControlData *controlInfo)
+void DragonControlToCTREV5Adapter::SetPIDConstants(std::string networkTableName,
+												   int controllerSlot,
+												   const ControlData &controlInfo)
 {
-	auto error = m_controller->Config_kP(controllerSlot, controlInfo->GetP());
+	auto error = m_controller->Config_kP(controllerSlot, controlInfo.GetP());
 	if (error != ErrorCode::OKAY)
 	{
-		m_controller->Config_kP(controllerSlot, controlInfo->GetP());
+		m_controller->Config_kP(controllerSlot, controlInfo.GetP());
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("Config_kP error"));
 	}
-	error = m_controller->Config_kI(controllerSlot, controlInfo->GetI());
+	error = m_controller->Config_kI(controllerSlot, controlInfo.GetI());
 	if (error != ErrorCode::OKAY)
 	{
-		m_controller->Config_kI(controllerSlot, controlInfo->GetI());
+		m_controller->Config_kI(controllerSlot, controlInfo.GetI());
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("Config_kI error"));
 	}
-	error = m_controller->Config_kD(controllerSlot, controlInfo->GetD());
+	error = m_controller->Config_kD(controllerSlot, controlInfo.GetD());
 	if (error != ErrorCode::OKAY)
 	{
-		m_controller->Config_kD(controllerSlot, controlInfo->GetD());
+		m_controller->Config_kD(controllerSlot, controlInfo.GetD());
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("Config_kD error"));
 	}
-	error = m_controller->Config_kF(controllerSlot, controlInfo->GetF());
+	error = m_controller->Config_kF(controllerSlot, controlInfo.GetF());
 	if (error != ErrorCode::OKAY)
 	{
-		m_controller->Config_kF(controllerSlot, controlInfo->GetF());
+		m_controller->Config_kF(controllerSlot, controlInfo.GetF());
 		Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, GetErrorPrompt(), string("Config_kF error"));
 	}
 	error = m_controller->SelectProfileSlot(controllerSlot, 0);

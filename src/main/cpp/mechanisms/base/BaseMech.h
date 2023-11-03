@@ -54,7 +54,7 @@ public:
     virtual std::string GetNetworkTableName() const;
 
     /// @brief log data to the network table if it is activated and time period has past
-    void LogInformation() const override;
+    void LogInformation() override;
 
     virtual StateMgr *GetStateMgr() const;
     virtual void AddStateMgr(StateMgr *mgr);

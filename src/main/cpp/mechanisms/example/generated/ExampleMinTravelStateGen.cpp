@@ -62,7 +62,7 @@ void ExampleMinTravelStateGen::Exit()
     ExampleBaseStateGen::Exit();
 }
 
-bool ExampleMinTravelStateGen::AtTarget() const
+bool ExampleMinTravelStateGen::AtTarget()
 {
     return ExampleBaseStateGen::AtTarget();
 }

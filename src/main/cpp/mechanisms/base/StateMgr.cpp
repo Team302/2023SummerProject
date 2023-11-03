@@ -193,7 +193,7 @@ int StateMgr::GetCurrentStateParam(PrimitiveParams *currentParams)
     return -1;
 }
 
-void StateMgr::LogInformation() const
+void StateMgr::LogInformation()
 {
     if (m_mech != nullptr)
     {

@@ -22,24 +22,10 @@
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
 #include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
+#include "hw/DragonTalonFX.h"
+#include "mechanisms/controllers/ControlData.h"
 
 // Third Party Includes
-#include <ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h>
-
-namespace ctre
-{
-    namespace phoenix
-    {
-        namespace motorcontrol
-        {
-            namespace can
-            {
-                class WPI_BaseMotorController;
-            }
-        }
-    }
-}
-class ControlData;
 
 class DragonTrapezoidToCTREProAdapter : public DragonControlToCTREProAdapter
 {
@@ -47,16 +33,14 @@ public:
     DragonTrapezoidToCTREProAdapter() = delete;
     DragonTrapezoidToCTREProAdapter(std::string networkTableName,
                                     int controllerSlot,
-                                    ControlData *controlInfo,
-                                    DistanceAngleCalcStruc calcStruc,
-                                    ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
+                                    const ControlData &controlInfo,
+                                    const DistanceAngleCalcStruc &calcStruc,
+                                    DragonTalonFX &controller);
 
     ~DragonTrapezoidToCTREProAdapter() = default;
 
-    void Set(
-        double value) override;
+    void Set(double value) override;
 
-    void SetControlConstants(
-        int controlSlot,
-        ControlData *controlInfo) override;
+    void SetControlConstants(int controlSlot,
+                             const ControlData &controlInfo) override;
 };

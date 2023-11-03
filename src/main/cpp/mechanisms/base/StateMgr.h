@@ -59,7 +59,7 @@ public:
     inline State *GetSpecifiedState(unsigned int stateID) const { return stateID < m_stateVector.size() ? m_stateVector[stateID] : nullptr; };
     inline State *GetCurrentStatePtr() const { return m_stateVector[m_currentStateID]; };
 
-    void LogInformation() const override;
+    void LogInformation() override;
 
     void SetAreGamepadTransitionsChecked(bool checkGamepadTransitions) { m_checkGamePadTransitions = checkGamepadTransitions; }
 

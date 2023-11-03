@@ -33,22 +33,20 @@
 
 DragonVelocityRPSToCTREV5Adapter::DragonVelocityRPSToCTREV5Adapter(std::string networkTableName,
                                                                    int controllerSlot,
-                                                                   ControlData *controlInfo,
-                                                                   DistanceAngleCalcStruc calcStruc,
+                                                                   const ControlData &controlInfo,
+                                                                   const DistanceAngleCalcStruc &calcStruc,
                                                                    ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
-void DragonVelocityRPSToCTREV5Adapter::Set(
-    double value)
+void DragonVelocityRPSToCTREV5Adapter::Set(double value)
 {
     auto output = (m_calcStruc.countsPerDegree > 0.01) ? value * 360.0 * m_calcStruc.countsPerDegree * 0.1 : (ConversionUtils::RPSToCounts100ms(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
     m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, output);
 }
 
-void DragonVelocityRPSToCTREV5Adapter::SetControlConstants(
-    int controlSlot,
-    ControlData *controlInfo)
+void DragonVelocityRPSToCTREV5Adapter::SetControlConstants(int controlSlot,
+                                                           const ControlData &controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);

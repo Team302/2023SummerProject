@@ -62,7 +62,7 @@ void ExampleMaxTravelStateGen::Exit()
     ExampleBaseStateGen::Exit();
 }
 
-bool ExampleMaxTravelStateGen::AtTarget() const
+bool ExampleMaxTravelStateGen::AtTarget()
 {
     return ExampleBaseStateGen::AtTarget();
 }

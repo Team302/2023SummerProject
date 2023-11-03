@@ -51,7 +51,7 @@ void ExampleForwardStateGen::Exit()
     ExampleBaseStateGen::Exit();
 }
 
-bool ExampleForwardStateGen::AtTarget() const
+bool ExampleForwardStateGen::AtTarget()
 {
     return ExampleBaseStateGen::AtTarget();
 }

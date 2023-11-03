@@ -27,29 +27,25 @@
 #include "utils/ConversionUtils.h"
 
 // Third Party Includes
-#include "ctre/phoenix/motorcontrol/ControlMode.h"
-#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
-DragonPositionDegreeToCTREProAdapter::DragonPositionDegreeToCTREProAdapter(std::string networkTableName,
+using ctre::phoenixpro::hardware::TalonFX;
+using std::string;
+
+DragonPositionDegreeToCTREProAdapter::DragonPositionDegreeToCTREProAdapter(string networkTableName,
                                                                            int controllerSlot,
-                                                                           ControlData *controlInfo,
-                                                                           DistanceAngleCalcStruc calcStruc,
-                                                                           ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                           const ControlData &controlInfo,
+                                                                           const DistanceAngleCalcStruc &calcStruc,
+                                                                           DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
-void DragonPositionDegreeToCTREProAdapter::Set(
-    double value)
+void DragonPositionDegreeToCTREProAdapter::Set(double value)
 {
-    auto output = (m_calcStruc.countsPerDegree > 0.01) ? m_calcStruc.countsPerDegree * value : (ConversionUtils::DegreesToCounts(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
-    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
-
-    // m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, 0.1);
+    // TODO  Add phoenix pro commands
 }
 
-void DragonPositionDegreeToCTREProAdapter::SetControlConstants(
-    int controlSlot,
-    ControlData *controlInfo)
+void DragonPositionDegreeToCTREProAdapter::SetControlConstants(int controlSlot,
+                                                               const ControlData &controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);

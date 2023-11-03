@@ -22,21 +22,8 @@
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
 #include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
-
-namespace ctre
-{
-    namespace phoenix
-    {
-        namespace motorcontrol
-        {
-            namespace can
-            {
-                class WPI_BaseMotorController;
-            }
-        }
-    }
-}
-class ControlData;
+#include "hw/DragonTalonFX.h"
+#include "mechanisms/controllers/ControlData.h"
 
 class DragonPositionDegreeToCTREProAdapter : public DragonControlToCTREProAdapter
 {
@@ -44,16 +31,14 @@ public:
     DragonPositionDegreeToCTREProAdapter() = delete;
     DragonPositionDegreeToCTREProAdapter(std::string networkTableName,
                                          int controllerSlot,
-                                         ControlData *controlInfo,
-                                         DistanceAngleCalcStruc calcStruc,
-                                         ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
+                                         const ControlData &controlInfo,
+                                         const DistanceAngleCalcStruc &calcStruc,
+                                         DragonTalonFX &controller);
 
     ~DragonPositionDegreeToCTREProAdapter() = default;
 
-    void Set(
-        double value) override;
+    void Set(double value) override;
 
-    void SetControlConstants(
-        int controlSlot,
-        ControlData *controlInfo) override;
+    void SetControlConstants(int controlSlot,
+                             const ControlData &controlInfo) override;
 };

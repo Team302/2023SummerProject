@@ -80,7 +80,7 @@ string BaseMech::GetNetworkTableName() const
 }
 
 /// @brief log data to the network table if it is activated and time period has past
-void BaseMech::LogInformation() const
+void BaseMech::LogInformation()
 {
     // NO-OP - subclasses override when necessary
 }

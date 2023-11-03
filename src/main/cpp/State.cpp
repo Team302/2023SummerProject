@@ -40,6 +40,6 @@ bool State::IsTransitionCondition(bool considerGamepadTransitions) const
 {
     return false;
 }
-void State::LogInformation() const
+void State::LogInformation()
 {
 }

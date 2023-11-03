@@ -56,7 +56,7 @@ void ExampleReverseState::Exit()
     m_genState->Exit();
 }
 
-bool ExampleReverseState::AtTarget() const
+bool ExampleReverseState::AtTarget()
 {
     auto attarget = m_genState->AtTarget();
     return attarget;

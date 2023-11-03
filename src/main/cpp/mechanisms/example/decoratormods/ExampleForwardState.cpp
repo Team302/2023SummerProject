@@ -53,7 +53,7 @@ void ExampleForwardState::Exit()
     m_genState->Exit();
 }
 
-bool ExampleForwardState::AtTarget() const
+bool ExampleForwardState::AtTarget()
 {
     auto attarget = m_genState->AtTarget();
     return attarget;

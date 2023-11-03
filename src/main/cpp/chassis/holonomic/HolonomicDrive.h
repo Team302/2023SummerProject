@@ -38,7 +38,7 @@ public:
     void Init() override;
     void Run() override;
     void Exit() override;
-    bool AtTarget() const override;
+    bool AtTarget() override;
 
     void Update(RobotStateChanges::StateChange change, int state) override;
 

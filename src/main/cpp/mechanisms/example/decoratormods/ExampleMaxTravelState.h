@@ -33,7 +33,7 @@ public:
     void Init() override;
     void Run() override;
     void Exit() override;
-    bool AtTarget() const override;
+    bool AtTarget() override;
     bool IsTransitionCondition(bool considerGamepadTransitions) const override;
 
 private:

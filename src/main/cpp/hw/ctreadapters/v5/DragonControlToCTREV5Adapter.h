@@ -43,8 +43,8 @@ public:
     DragonControlToCTREV5Adapter() = delete;
     DragonControlToCTREV5Adapter(std::string networkTableName,
                                  int controllerSlot,
-                                 ControlData *controlInfo,
-                                 DistanceAngleCalcStruc calcStruc,
+                                 const ControlData &controlInfo,
+                                 const DistanceAngleCalcStruc &calcStruc,
                                  ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
     ~DragonControlToCTREV5Adapter() = default;
 
@@ -53,18 +53,18 @@ public:
 
 protected:
     void SetPeakAndNominalValues(std::string networkTableName,
-                                 ControlData *controlInfo);
+                                 const ControlData &controlInfo);
 
     void SetMaxVelocityAcceleration(std::string networkTableName,
-                                    ControlData *controlInfo);
+                                    const ControlData &controlInfo);
 
     void SetPIDConstants(std::string networkTableName,
                          int controllerSlot,
-                         ControlData *controlInfo);
+                         const ControlData &controlInfo);
 
     std::string m_networkTableName;
     int m_controllerSlot;
-    ControlData *m_controlData;
+    const ControlData &m_controlData;
     DistanceAngleCalcStruc m_calcStruc;
     ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *m_controller;
 };

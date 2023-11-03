@@ -25,25 +25,24 @@
 #include "mechanisms/controllers/ControlModes.h"
 
 // Third Party Includes
-#include "ctre/phoenix/motorcontrol/ControlMode.h"
-#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
-DragonPercentOutputToCTREProAdapter::DragonPercentOutputToCTREProAdapter(std::string networkTableName,
+using ctre::phoenixpro::hardware::TalonFX;
+using std::string;
+
+DragonPercentOutputToCTREProAdapter::DragonPercentOutputToCTREProAdapter(string networkTableName,
                                                                          int controllerSlot,
-                                                                         ControlData *controlInfo,
-                                                                         DistanceAngleCalcStruc calcStruc,
-                                                                         ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                         const ControlData &controlInfo,
+                                                                         const DistanceAngleCalcStruc &calcStruc,
+                                                                         DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
-void DragonPercentOutputToCTREProAdapter::Set(
-    double value)
+void DragonPercentOutputToCTREProAdapter::Set(double value)
 {
-    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, value);
+    // TODO  Add phoenix pro commands
 }
 
-void DragonPercentOutputToCTREProAdapter::SetControlConstants(
-    int controlSlot,
-    ControlData *controlInfo)
+void DragonPercentOutputToCTREProAdapter::SetControlConstants(int controlSlot,
+                                                              const ControlData &controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
 }

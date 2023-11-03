@@ -160,10 +160,5 @@ void MecanumChassis::SetTargetHeading(units::angle::degree_t targetYaw)
 
 void MecanumChassis::ZeroEncoder(shared_ptr<IDragonMotorController> controller)
 {
-    if (controller.get() != nullptr)
-    {
-        auto motor = controller.get()->GetSpeedController();
-        auto talon = dynamic_cast<WPI_TalonSRX *>(motor);
-        talon->SetSelectedSensorPosition(0, 0);
-    }
+    // TODO: add methods to motors to reset encoders to zero
 }

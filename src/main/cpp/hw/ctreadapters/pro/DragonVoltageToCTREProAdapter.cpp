@@ -25,26 +25,25 @@
 #include "mechanisms/controllers/ControlModes.h"
 
 // Third Party Includes
-#include "ctre/phoenix/motorcontrol/ControlMode.h"
-#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
-DragonVoltageToCTREProAdapter::DragonVoltageToCTREProAdapter(std::string networkTableName,
+using ctre::phoenixpro::hardware::TalonFX;
+using std::string;
+
+DragonVoltageToCTREProAdapter::DragonVoltageToCTREProAdapter(string networkTableName,
                                                              int controllerSlot,
-                                                             ControlData *controlInfo,
-                                                             DistanceAngleCalcStruc calcStruc,
-                                                             ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                             const ControlData &controlInfo,
+                                                             const DistanceAngleCalcStruc &calcStruc,
+                                                             DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
-void DragonVoltageToCTREProAdapter::Set(
-    double value)
+void DragonVoltageToCTREProAdapter::Set(double value)
 {
     m_controller->SetVoltage(units::voltage::volt_t(value));
 }
 
-void DragonVoltageToCTREProAdapter::SetControlConstants(
-    int controlSlot,
-    ControlData *controlInfo)
+void DragonVoltageToCTREProAdapter::SetControlConstants(int controlSlot,
+                                                        const ControlData &controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);

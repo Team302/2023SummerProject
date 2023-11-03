@@ -68,7 +68,7 @@ SwerveModule *SwerveModuleBuilder::Commit()
                                   m_driveMotor,
                                   m_turnMotor,
                                   m_canCoder,
-                                  m_turnControlData,
+                                  *m_turnControlData,
                                   m_countsOnTurnEncoderPerDegreesOnAngleSensor,
                                   m_wheelDiameter);
     }

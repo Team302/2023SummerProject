@@ -47,16 +47,14 @@ public:
     DragonTrapezoidToCTREV5Adapter() = delete;
     DragonTrapezoidToCTREV5Adapter(std::string networkTableName,
                                    int controllerSlot,
-                                   ControlData *controlInfo,
-                                   DistanceAngleCalcStruc calcStruc,
+                                   const ControlData &controlInfo,
+                                   const DistanceAngleCalcStruc &calcStruc,
                                    ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
 
     ~DragonTrapezoidToCTREV5Adapter() = default;
 
-    void Set(
-        double value) override;
+    void Set(double value) override;
 
-    void SetControlConstants(
-        int controlSlot,
-        ControlData *controlInfo) override;
+    void SetControlConstants(int controlSlot,
+                             const ControlData &controlInfo) override;
 };

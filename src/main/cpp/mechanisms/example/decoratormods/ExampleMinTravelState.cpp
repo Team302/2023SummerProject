@@ -54,7 +54,7 @@ void ExampleMinTravelState::Exit()
     m_genState->Exit();
 }
 
-bool ExampleMinTravelState::AtTarget() const
+bool ExampleMinTravelState::AtTarget()
 {
     auto attarget = m_genState->AtTarget();
     return attarget;

@@ -21,21 +21,8 @@
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
 #include "hw/interfaces/IDragonControlToVendorControlAdapter.h"
-
-namespace ctre
-{
-    namespace phoenix
-    {
-        namespace motorcontrol
-        {
-            namespace can
-            {
-                class WPI_BaseMotorController;
-            }
-        }
-    }
-}
-class ControlData;
+#include "hw/DragonTalonFX.h"
+#include "mechanisms/controllers/ControlData.h"
 
 class DragonControlToCTREProAdapter : public IDragonControlToVendorControlAdapter
 {
@@ -43,28 +30,26 @@ public:
     DragonControlToCTREProAdapter() = delete;
     DragonControlToCTREProAdapter(std::string networkTableName,
                                   int controllerSlot,
-                                  ControlData *controlInfo,
-                                  DistanceAngleCalcStruc calcStruc,
-                                  ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
-    ~DragonControlToCTREProAdapter() = default;
-
+                                  const ControlData &controlInfo,
+                                  const DistanceAngleCalcStruc &calcStruc,
+                                  DragonTalonFX &controller);
     void InitializeDefaults() override;
     std::string GetErrorPrompt() const;
 
 protected:
     void SetPeakAndNominalValues(std::string networkTableName,
-                                 ControlData *controlInfo);
+                                 const ControlData &controlInfo);
 
     void SetMaxVelocityAcceleration(std::string networkTableName,
-                                    ControlData *controlInfo);
+                                    const ControlData &controlInfo);
 
     void SetPIDConstants(std::string networkTableName,
                          int controllerSlot,
-                         ControlData *controlInfo);
+                         const ControlData &controlInfo);
 
     std::string m_networkTableName;
     int m_controllerSlot;
-    ControlData *m_controlData;
+    ControlData m_controlData;
     DistanceAngleCalcStruc m_calcStruc;
-    ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *m_controller;
+    DragonTalonFX *m_controller;
 };

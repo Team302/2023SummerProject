@@ -45,11 +45,11 @@ public:
     static DragonControlToCTREV5AdapterFactory *GetFactory();
     DragonControlToCTREV5Adapter *CreateAdapter(std::string networkTableName,
                                                 int controllerSlot,
-                                                ControlData *controlInfo,
-                                                DistanceAngleCalcStruc calcStruc,
+                                                const ControlData &controlInfo,
+                                                const DistanceAngleCalcStruc &calcStruc,
                                                 ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
     DragonControlToCTREV5Adapter *CreatePercentOuptutAdapter(std::string networkTableName,
-                                                             ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
+                                                             ctre::phoenix::motorcontrol::can::WPI_BaseMotorController controller);
 
 private:
     DragonControlToCTREV5AdapterFactory() = default;

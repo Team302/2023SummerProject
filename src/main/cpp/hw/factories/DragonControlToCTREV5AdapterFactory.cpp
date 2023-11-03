@@ -61,20 +61,19 @@ DragonControlToCTREV5AdapterFactory *DragonControlToCTREV5AdapterFactory::GetFac
 DragonControlToCTREV5Adapter *DragonControlToCTREV5AdapterFactory::CreatePercentOuptutAdapter(std::string networkTableName,
                                                                                               ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller)
 {
-
     ControlData controlInfo;
     DistanceAngleCalcStruc calcStruc;
-    return CreateAdapter(networkTableName, 0, &controlInfo, calcStruc, controller);
+    return CreateAdapter(networkTableName, 0, controlInfo, calcStruc, controller);
 }
 DragonControlToCTREV5Adapter *DragonControlToCTREV5AdapterFactory::CreateAdapter(std::string networkTableName,
                                                                                  int controllerSlot,
-                                                                                 ControlData *controlInfo,
-                                                                                 DistanceAngleCalcStruc calcStruc,
+                                                                                 const ControlData &controlInfo,
+                                                                                 const DistanceAngleCalcStruc &calcStruc,
                                                                                  ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller)
 {
-    if (controlInfo != nullptr && controller != nullptr)
+    if (controller != nullptr)
     {
-        switch (controlInfo->GetMode())
+        switch (controlInfo.GetMode())
         {
         case ControlModes::CONTROL_TYPE::PERCENT_OUTPUT:
             return new DragonPercentOutputToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);

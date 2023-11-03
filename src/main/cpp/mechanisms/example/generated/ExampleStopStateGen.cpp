@@ -62,7 +62,7 @@ void ExampleStopStateGen::Exit()
     ExampleBaseStateGen::Exit();
 }
 
-bool ExampleStopStateGen::AtTarget() const
+bool ExampleStopStateGen::AtTarget()
 {
     return ExampleBaseStateGen::AtTarget();
 }

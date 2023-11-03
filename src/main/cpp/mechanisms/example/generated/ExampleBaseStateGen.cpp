@@ -283,7 +283,7 @@ void ExampleBaseStateGen::ExitServoStates()
     }
 }
 
-bool ExampleBaseStateGen::AtTarget() const
+bool ExampleBaseStateGen::AtTarget()
 {
     auto attarget = AtTargetMotorStates();
     if (attarget)

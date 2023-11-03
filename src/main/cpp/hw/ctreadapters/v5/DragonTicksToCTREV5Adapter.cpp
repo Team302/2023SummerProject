@@ -32,21 +32,19 @@
 
 DragonTicksToCTREV5Adapter::DragonTicksToCTREV5Adapter(std::string networkTableName,
                                                        int controllerSlot,
-                                                       ControlData *controlInfo,
-                                                       DistanceAngleCalcStruc calcStruc,
+                                                       const ControlData &controlInfo,
+                                                       const DistanceAngleCalcStruc &calcStruc,
                                                        ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
-void DragonTicksToCTREV5Adapter::Set(
-    double value)
+void DragonTicksToCTREV5Adapter::Set(double value)
 {
     m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, value);
 }
 
-void DragonTicksToCTREV5Adapter::SetControlConstants(
-    int controlSlot,
-    ControlData *controlInfo)
+void DragonTicksToCTREV5Adapter::SetControlConstants(int controlSlot,
+                                                     const ControlData &controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);

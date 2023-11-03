@@ -33,9 +33,7 @@ public:
     virtual ~IDragonControlToVendorControlAdapter() = default;
 
     virtual void InitializeDefaults() = 0;
-    virtual void Set(
-        double value) = 0;
-    virtual void SetControlConstants(
-        int controlSlot,
-        ControlData *controlInfo) = 0;
+    virtual void Set(double value) = 0;
+    virtual void SetControlConstants(int controlSlot,
+                                     const ControlData &controlInfo) = 0;
 };

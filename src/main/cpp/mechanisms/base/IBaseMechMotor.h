@@ -67,17 +67,17 @@ public:
 
     /// @brief  Return the current position of the mechanism.  The value is in inches.
     /// @return units::length::inch_t	position in inches
-    virtual units::length::inch_t GetPositionInches() const = 0;
+    virtual units::length::inch_t GetPositionInches() = 0;
 
     /// @brief  Get the current speed of the mechanism.
     /// @return units::velocity::feet_per_second_t
-    virtual units::velocity::feet_per_second_t GetFeetPerSec() const = 0;
+    virtual units::velocity::feet_per_second_t GetFeetPerSec() = 0;
 
     /// @brief  Return the current position of the mechanism in degrees
     /// @return units::angle::degree_t	position in degrees
-    virtual units::angle::degree_t GetPositionDegrees() const = 0;
+    virtual units::angle::degree_t GetPositionDegrees() = 0;
 
-    virtual units::angular_velocity::revolutions_per_minute_t GetRPM() const = 0;
+    virtual units::angular_velocity::revolutions_per_minute_t GetRPM() = 0;
 
     virtual bool IsAtMinTravel() const = 0;
     virtual bool IsAtMaxTravel() const = 0;

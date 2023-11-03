@@ -119,7 +119,7 @@ void TurnToAngle::Run()
     }
 }
 
-bool TurnToAngle::AtTarget() const
+bool TurnToAngle::AtTarget()
 {
 
     return m_atTarget;

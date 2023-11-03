@@ -47,7 +47,7 @@ public:
     units::angle::degree_t GetAngle() const;
 
     /// @brief log data to the network table if it is activated and time period has past
-    void LogInformation() const override;
+    void LogInformation() override;
 
 private:
     DragonServo *m_servo;

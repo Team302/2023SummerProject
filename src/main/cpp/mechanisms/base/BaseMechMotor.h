@@ -61,7 +61,7 @@ public:
     ~BaseMechMotor() override = default;
 
     /// @brief log data to the network table if it is activated and time period has past
-    void LogInformation() const override;
+    void LogInformation() override;
 
     /// @brief update the output to the mechanism using the current controller and target value(s)
     /// @return void
@@ -73,21 +73,21 @@ public:
     void UpdateTarget(units::angle::degree_t target) override;
     void UpdateTarget(units::angular_velocity::revolutions_per_minute_t target) override;
 
-    virtual double GetTarget() const override { return m_target; }
+    double GetTarget() const override { return m_target; }
 
     /// @brief  Return the current position of the mechanism.  The value is in inches.
     /// @return units::length::inch_t	position in inches
-    units::length::inch_t GetPositionInches() const override;
+    units::length::inch_t GetPositionInches() override;
 
     /// @brief  Get the current speed of the mechanism.
     /// @return units::velocity::feet_per_second_t
-    units::velocity::feet_per_second_t GetFeetPerSec() const override;
+    units::velocity::feet_per_second_t GetFeetPerSec() override;
 
     /// @brief  Return the current position of the mechanism in degrees
     /// @return units::angle::degree_t	position in degrees
-    virtual units::angle::degree_t GetPositionDegrees() const override;
+    units::angle::degree_t GetPositionDegrees() override;
 
-    virtual units::angular_velocity::revolutions_per_minute_t GetRPM() const override;
+    units::angular_velocity::revolutions_per_minute_t GetRPM() override;
 
     bool IsAtMinTravel() const override;
     bool IsAtMaxTravel() const override;

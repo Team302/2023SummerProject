@@ -37,7 +37,7 @@ public:
 
     void Init() override;
     void Run() override;
-    bool AtTarget() const override;
+    bool AtTarget() override;
 
 private:
     units::angle::degree_t m_targetAngle;

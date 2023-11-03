@@ -51,7 +51,7 @@ DragonTalonSRX::DragonTalonSRX(string networkTableName,
 							   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
 							   int deviceID,
 							   int pdpID,
-							   DistanceAngleCalcStruc calcStruc,
+							   const DistanceAngleCalcStruc &calcStruc,
 							   MOTOR_TYPE motorType) : m_networkTableName(networkTableName),
 													   m_talon(make_shared<WPI_TalonSRX>(deviceID)),
 													   m_controller(),
@@ -159,7 +159,7 @@ DragonTalonSRX::DragonTalonSRX(string networkTableName,
 	}
 }
 
-double DragonTalonSRX::GetRotations() const
+double DragonTalonSRX::GetRotations()
 {
 	if (m_calcStruc.countsPerDegree > 0.01)
 	{
@@ -168,7 +168,7 @@ double DragonTalonSRX::GetRotations() const
 	return (ConversionUtils::CountsToRevolutions((m_talon.get()->GetSelectedSensorPosition()), m_calcStruc.countsPerRev) / m_calcStruc.gearRatio);
 }
 
-double DragonTalonSRX::GetRPS() const
+double DragonTalonSRX::GetRPS()
 {
 	if (m_calcStruc.countsPerDegree > 0.01)
 	{
@@ -177,12 +177,7 @@ double DragonTalonSRX::GetRPS() const
 	return (ConversionUtils::CountsPer100msToRPS(m_talon.get()->GetSelectedSensorVelocity(), m_calcStruc.countsPerRev) / m_calcStruc.gearRatio);
 }
 
-MotorController *DragonTalonSRX::GetSpeedController() const
-{
-	return m_talon.get();
-}
-
-double DragonTalonSRX::GetCurrent() const
+double DragonTalonSRX::GetCurrent()
 {
 	auto pdp = PDPFactory::GetFactory()->GetPDP();
 	if (pdp != nullptr)
@@ -404,7 +399,7 @@ void DragonTalonSRX::SetAsFollowerMotor(
 /// @param [in] int             slot - hardware slot to use
 /// @param [in] ControlData*    pid - the control constants
 /// @return void
-void DragonTalonSRX::SetControlConstants(int slot, ControlData *controlInfo)
+void DragonTalonSRX::SetControlConstants(int slot, const ControlData &controlInfo)
 {
 	delete m_controller[slot];
 	m_controller[slot] = DragonControlToCTREV5AdapterFactory::GetFactory()->CreateAdapter(m_networkTableName, slot, controlInfo, m_calcStruc, m_talon.get());
@@ -446,14 +441,14 @@ void DragonTalonSRX::SetVoltage(
 	m_talon.get()->SetVoltage(output);
 }
 
-bool DragonTalonSRX::IsForwardLimitSwitchClosed() const
+bool DragonTalonSRX::IsForwardLimitSwitchClosed()
 {
 	auto sensors = m_talon.get()->GetSensorCollection();
 	auto closed = sensors.IsFwdLimitSwitchClosed();
 	return closed == 1;
 }
 
-bool DragonTalonSRX::IsReverseLimitSwitchClosed() const
+bool DragonTalonSRX::IsReverseLimitSwitchClosed()
 {
 	auto sensors = m_talon.get()->GetSensorCollection();
 	auto closed = sensors.IsRevLimitSwitchClosed();
@@ -488,7 +483,7 @@ ControlModes::CONTROL_TYPE DragonTalonSRX::GetControlMode() const
 }
 **/
 
-double DragonTalonSRX::GetCounts() const
+double DragonTalonSRX::GetCounts()
 {
 	return m_talon.get()->GetSelectedSensorPosition();
 }

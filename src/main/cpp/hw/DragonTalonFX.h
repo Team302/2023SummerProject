@@ -32,8 +32,6 @@
 // Third Party Includes
 #include "ctre/phoenixpro/TalonFX.hpp"
 #include "ctre/phoenixpro/controls/ControlRequest.hpp"
-// #include <ctre/phoenix/motorcontrol/can/WPI_TalonFX.h>
-// #include <ctre/phoenix/motorcontrol/RemoteSensorSource.h>
 
 class IDragonControlToVendorControlAdapter;
 
@@ -46,16 +44,15 @@ public:
                   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
                   int deviceID,
                   std::string canBusName);
+    // DragonTalonFX(const DragonTalonFX &other);
     virtual ~DragonTalonFX() = default;
-    ctre::phoenixpro::hardware::TalonFX *GetTalonFX() const { return m_talon; }
 
     // Getters (override)
-    double GetRotations() const override;
-    double GetRPS() const override;
+    double GetRotations() override;
+    double GetRPS() override;
     MotorControllerUsage::MOTOR_CONTROLLER_USAGE GetType() const override;
     int GetID() const override;
-    frc::MotorController *GetSpeedController() const override;
-    double GetCurrent() const override;
+    double GetCurrent() override;
     IDragonMotorController::MOTOR_TYPE GetMotorType() const override;
 
     // Setters (override)
@@ -68,12 +65,13 @@ public:
     void EnableBrakeMode(bool enabled) override;
     void Invert(bool inverted) override;
     void SetSensorInverted(bool inverted) override;
+    void ResetToDefaults();
 
     /// @brief  Set the control constants (e.g. PIDF values).
     /// @param [in] int             slot - hardware slot to use
     /// @param [in] ControlData*    pid - the control constants
     /// @return void
-    void SetControlConstants(int slot, ControlData *controlInfo) override;
+    void SetControlConstants(int slot, const ControlData &controlInfo) override;
 
     /**
     int ConfigSelectedFeedbackSensor(
@@ -131,28 +129,25 @@ public:
     ) override;
     **/
 
-    void SetFramePeriodPriority(
-        MOTOR_PRIORITY priority) override;
+    void SetFramePeriodPriority(MOTOR_PRIORITY priority) override;
 
     double GetCountsPerRev() const override { return m_calcStruc.countsPerRev; }
     double GetGearRatio() const override { return m_calcStruc.gearRatio; }
     bool IsMotorInverted() const override { return m_inverted; };
-    bool IsForwardLimitSwitchClosed() const override;
-    bool IsReverseLimitSwitchClosed() const override;
+    bool IsForwardLimitSwitchClosed() override;
+    bool IsReverseLimitSwitchClosed() override;
     void EnableVoltageCompensation(double fullvoltage) override;
-    void SetSelectedSensorPosition(
-        double initialPosition) override;
+    void SetSelectedSensorPosition(double initialPosition) override;
 
     double GetCountsPerInch() const override;
     double GetCountsPerDegree() const override;
-    double GetCounts() const override;
-    void EnableDisableLimitSwitches(
-        bool enable) override;
+    double GetCounts() override;
+    void EnableDisableLimitSwitches(bool enable) override;
 
 private:
     std::string m_networkTableName;
     MotorControllerUsage::MOTOR_CONTROLLER_USAGE m_type;
-    ctre::phoenixpro::hardware::TalonFX *m_talon;
+    ctre::phoenixpro::hardware::TalonFX m_talon;
     ctre::phoenixpro::controls::ControlRequest *slot0Control;
     ctre::phoenixpro::controls::ControlRequest *slot1Control;
     ctre::phoenixpro::controls::ControlRequest *slot2Control;

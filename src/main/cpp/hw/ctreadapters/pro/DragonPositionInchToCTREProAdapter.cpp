@@ -27,25 +27,25 @@
 #include "utils/ConversionUtils.h"
 
 // Third Party Includes
-#include "ctre/phoenix/motorcontrol/ControlMode.h"
-#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
-DragonPositionInchToCTREProAdapter::DragonPositionInchToCTREProAdapter(std::string networkTableName,
+using ctre::phoenixpro::hardware::TalonFX;
+using std::string;
+
+DragonPositionInchToCTREProAdapter::DragonPositionInchToCTREProAdapter(string networkTableName,
                                                                        int controllerSlot,
-                                                                       ControlData *controlInfo,
-                                                                       DistanceAngleCalcStruc calcStruc,
-                                                                       ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                       const ControlData &controlInfo,
+                                                                       const DistanceAngleCalcStruc &calcStruc,
+                                                                       DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
 void DragonPositionInchToCTREProAdapter::Set(double value)
 {
-    auto output = (m_calcStruc.countsPerInch > 0.01) ? m_calcStruc.countsPerInch * value : (ConversionUtils::InchesToCounts(value, m_calcStruc.countsPerRev, m_calcStruc.diameter) * m_calcStruc.gearRatio);
-    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
+    // TODO  Add phoenix pro commands
 }
 
 void DragonPositionInchToCTREProAdapter::SetControlConstants(int controlSlot,
-                                                             ControlData *controlInfo)
+                                                             const ControlData &controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);

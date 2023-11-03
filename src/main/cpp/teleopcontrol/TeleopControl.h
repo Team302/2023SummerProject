@@ -79,7 +79,7 @@ public:
         bool rightRumble // <I> - rumble right
     );
 
-    void LogInformation() const override;
+    void LogInformation() override;
 
 private:
     //----------------------------------------------------------------------------------

@@ -51,7 +51,7 @@ void ExampleMaxTravelState::Exit()
     m_genState->Exit();
 }
 
-bool ExampleMaxTravelState::AtTarget() const
+bool ExampleMaxTravelState::AtTarget()
 {
     auto attarget = m_genState->AtTarget();
     return attarget;

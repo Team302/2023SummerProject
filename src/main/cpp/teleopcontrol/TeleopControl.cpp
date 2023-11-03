@@ -363,7 +363,7 @@ void TeleopControl::SetRumble(
 	}
 }
 
-void TeleopControl::LogInformation() const
+void TeleopControl::LogInformation()
 {
 	auto self = const_cast<TeleopControl *>(this);
 	for (int inx = 0; inx < DriverStation::kJoystickPorts; ++inx)

@@ -62,7 +62,7 @@ void ExampleReverseStateGen::Exit()
     ExampleBaseStateGen::Exit();
 }
 
-bool ExampleReverseStateGen::AtTarget() const
+bool ExampleReverseStateGen::AtTarget()
 {
     return ExampleBaseStateGen::AtTarget();
 }

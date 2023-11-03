@@ -56,7 +56,7 @@ void ExampleStopState::Exit()
     m_genState->Exit();
 }
 
-bool ExampleStopState::AtTarget() const
+bool ExampleStopState::AtTarget()
 {
     auto attarget = m_genState->AtTarget();
     return attarget;
