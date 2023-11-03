@@ -38,6 +38,8 @@
 #include <hw/factories/PigeonFactory.h>
 #include <iostream>
 
+#include <frc
+
 using namespace std;
 
 void Robot::RobotInit()

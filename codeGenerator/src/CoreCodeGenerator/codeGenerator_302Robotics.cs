@@ -5,6 +5,7 @@ using robotConfiguration;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace CoreCodeGenerator
 {
@@ -50,9 +51,59 @@ namespace CoreCodeGenerator
                 addProgress("Output directory " + rootFolder + " already exists");
             }
 
-            generateRobotConfigs();
+            //generateRobotConfigs();
             //generateMechanismFiles();
             //generateRobotDefinitionFiles();
+            testGenerate();
+        }
+
+        private void testGenerate()
+        {
+            string configFolderPath = getPathInRoot("configs");
+            string path = Path.Combine(configFolderPath, "Test.txt");
+
+            string result = "";
+
+            foreach (robot theRobot in theRobotConfiguration.theRobotVariants.robot)
+            {
+                PropertyInfo[] pi = theRobot.GetType().GetProperties();
+
+                foreach(PropertyInfo property in pi)
+                {
+                    result += "Robot (" + theRobot.robotID + ") Prop: " + property.Name + " Value: "+ property.GetValue(theRobot).ToString() + Environment.NewLine;
+                }
+
+                foreach(mechanismInstance mechInstance in theRobot.mechanismInstance)
+                {
+                    mechanism mech = mechInstance.mechanism;
+                    pi = mech.GetType().GetProperties();
+
+                    foreach (PropertyInfo property in pi)
+                    {
+                        result += "Mechanism (" + mech.name +") Prop: " + property.Name + " Value: " + (property.GetValue(mech) == null ? "NULL" : property.GetValue(mech).ToString()) + Environment.NewLine;
+                    }
+
+                    foreach(motor m in mech.motor)
+                    {
+                        pi = m.GetType().GetProperties();
+                        foreach (PropertyInfo property in pi)
+                        {
+                            result += "Motor (" + m.name+") Prop: " + property.Name + " Value: " + property.GetValue(m).ToString() + Environment.NewLine;
+                        }
+                    }
+
+                    foreach (solenoid s in mech.solenoid)
+                    {
+                        pi = s.GetType().GetProperties();
+                        foreach (PropertyInfo property in pi)
+                        {
+                            result += "Solenoid (" + s.name + ") Prop: " + property.Name + " Value: " + property.GetValue(s).ToString() + Environment.NewLine;
+                        }
+                    }
+                }
+            }
+
+            File.WriteAllText(path, result);
         }
 
         private void generateRobotConfigs()
@@ -61,11 +112,9 @@ namespace CoreCodeGenerator
 
             foreach (robot theRobot in theRobotConfiguration.theRobotVariants.robot)
             {
-
                 string configFolderPath = getPathInRoot("configs");
                 string resultString = loadTemplate(theToolConfiguration.templateRobotConfigurationCppPath);
                 string filePath = Path.Combine(configFolderPath, "RobotConfig" + theRobot.robotID.ToString() + ".cpp");
-
 
                 #region Generate Cpp file
                 resultString = resultString.Replace("$$COPYRIGHT$$", theToolConfiguration.CopyrightNotice);
