@@ -326,41 +326,10 @@ void SwerveChassis::UpdateOdometry()
     units::degree_t yaw{m_pigeon->GetYaw()};
     Rotation2d rot2d{yaw};
 
-    /*if (m_vision == nullptr)
-    {
-        auto targetInfo = m_vision->getTargetInfo();
-        if (targetInfo != nullptr)
-        {
-            auto distToTarget = targetInfo->getDistanceToTarget().to<double>();
-            frc::Pose2d pose = m_vision->GetRobotPosition();
+    /// @todo: Add in vision location data
+    /// Need to decide what to do based on distance to april tag
+    /// Utilize kalman filter within poseEstimator AddVisionMeasurement to be accurate
 
-            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("UpdateOdometry"), string("DistToTarget"), distToTarget);
-            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("UpdateOdometry"), string("HasReset"), m_hasResetToVisionTarget);
-
-            if (distToTarget > 29.5 && !m_hasResetToVisionTarget && distToTarget < 80 && pose.X().to<double>() > 0 && pose.Y().to<double>() > 0) // Need to add low pass filter for all 3 conditions
-            {
-                m_poseEstimator.ResetPosition(rot2d, wpi::array<frc::SwerveModulePosition, 4>{m_frontLeft.get()->GetPosition(), m_frontRight.get()->GetPosition(), m_backLeft.get()->GetPosition(), m_backRight.get()->GetPosition()}, pose);
-                m_hasResetToVisionTarget = true;
-            }
-            else if (distToTarget < 80 && distToTarget < 200)
-            {
-                m_poseEstimator.Update(rot2d, wpi::array<frc::SwerveModulePosition, 4>{m_frontLeft.get()->GetPosition(),
-                                                                                       m_frontRight.get()->GetPosition(),
-                                                                                       m_backLeft.get()->GetPosition(),
-                                                                                       m_backRight.get()->GetPosition()});
-            }
-            else if (distToTarget < 200)
-            {
-                m_poseEstimator.Update(rot2d, wpi::array<frc::SwerveModulePosition, 4>{m_frontLeft.get()->GetPosition(),
-                                                                                       m_frontRight.get()->GetPosition(),
-                                                                                       m_backLeft.get()->GetPosition(),
-                                                                                       m_backRight.get()->GetPosition()});
-                m_hasResetToVisionTarget = false;
-            }
-        }
-    }
-    else
-    {*/
     m_poseEstimator.Update(rot2d, wpi::array<frc::SwerveModulePosition, 4>{m_frontLeft.get()->GetPosition(),
                                                                            m_frontRight.get()->GetPosition(),
                                                                            m_backLeft.get()->GetPosition(),
