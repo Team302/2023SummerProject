@@ -1030,6 +1030,8 @@ namespace FRCrobotCodeGen302
                                 isValue = false;
                                 prop = parentObj.GetType().GetProperty(nt.name, BindingFlags.Public | BindingFlags.Instance);
                             }
+                            else
+                                parentObj = nodeTag.getObject(nt);
                         }
 
 
@@ -1075,7 +1077,7 @@ namespace FRCrobotCodeGen302
                                         pi.SetValue(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), firstUnit == null ? "" : firstUnit.ToString());
                                 }
                             }
-                        }
+                         }
 
                         helperFunctions.RefreshLevel refresh;
                         if (isValue)

@@ -8,6 +8,11 @@ using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
+//todo handle optional elements such as followID in a motorcontroller
+//todo the range of pdpID for ctre is 0-15, for REV it is 0-19. How to adjust the range allowed in the GUI. If initially REV is used and an id > 15 is used, then user chooses CTRE, what to do?
+//todo make mechanism instances separate files so that it is easier for multiple people to work on the robot in parallel
+//todo run a sanity check on a click of a button or on every change?
+
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
 // A property named value__ will not be shown in the tree directly. Its value is shown in the parent node
@@ -256,8 +261,11 @@ namespace ApplicationData
         public uintParameter pdpID { get; set; }
 
         [DefaultValue(0u)]
-        //[Range(typeof(uint), "0", "15")]
+        [Range(typeof(uint), "0", "19")] // REV is 0-19, CTRE 0-15, cannot handle 2 ranges for now
         public uintParameter followID { get; set; }
+
+        [DefaultValue(false)]
+        public boolParameter followIDEnabled { get; set; }
 
         public MotorController()
         {
