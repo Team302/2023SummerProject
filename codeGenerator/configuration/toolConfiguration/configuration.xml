@@ -120,6 +120,12 @@
       <family>angularVelocity</family>
       <wpiClassName>Units.degrees_per_second</wpiClassName>
     </physicalUnit>
+	<physicalUnit>
+      <shortName>PSI</shortName>
+      <longName>pounds per square inch</longName>
+      <family>pressure</family>
+      <wpiClassName>Units.pounds_per_square_inch</wpiClassName>
+    </physicalUnit>
   </physicalUnits>
 
   <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
