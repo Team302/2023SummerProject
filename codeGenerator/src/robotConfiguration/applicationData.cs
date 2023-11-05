@@ -101,7 +101,6 @@ namespace ApplicationData
         public applicationData()
         {
             helperFunctions.initializeNullProperties(this);
-
             helperFunctions.initializeDefaultValues(this);
         }
 
@@ -151,7 +150,7 @@ namespace ApplicationData
         */
         public mechanism()
         {
-            if( (GUID == null) || (GUID == new Guid()) )
+            if ((GUID == null) || (GUID == new Guid()))
                 GUID = Guid.NewGuid();
 
             helperFunctions.initializeNullProperties(this);
@@ -265,11 +264,11 @@ namespace ApplicationData
         public uintParameter followID { get; set; }
 
         [DefaultValue(false)]
-        public boolParameter followIDEnabled { get; set; }
+        public boolParameter enableFollowID { get; set; }
 
         public MotorController()
         {
-            helperFunctions.initializeNullProperties(this);
+            helperFunctions.initializeNullProperties(this, true);
 
             string temp = this.GetType().Name;
             int index = temp.LastIndexOf('_');
@@ -298,34 +297,126 @@ namespace ApplicationData
         }
     }
 
+    public class baseDataClass
+    {
+        protected string defaultDisplayName { get; set; } = "defaultDisplayName";
+
+        virtual public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (propertyName == "")
+                return defaultDisplayName;
+
+            PropertyInfo pi = this.GetType().GetProperty(propertyName);
+            if (pi != null)
+            {
+                object value = pi.GetValue(this);
+                return string.Format("{0} ({1})", propertyName, value.ToString());
+            }
+
+            return null;
+        }
+    }
+
     [Serializable()]
     public class Falcon : MotorController
     {
-        public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
-        public enum NeutralModeValue { Coast, Brake }
+        public class MotorConfigs : baseDataClass
+        {
+            public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
+            public enum NeutralModeValue { Coast, Brake }
 
-        [DefaultValue(0)]
-        [Range(typeof(double), "0", "100")]
-        [PhysicalUnitsFamily(physicalUnit.Family.percent)]
-        [TunableParameter()]
-        public doubleParameter deadbandPercent { get; set; }
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "100")]
+            [PhysicalUnitsFamily(physicalUnit.Family.percent)]
+            [TunableParameter()]
+            public doubleParameter deadbandPercent { get; set; }
 
-        [DefaultValue(0)]
-        [Range(typeof(double), "0", "30.0")]
-        [PhysicalUnitsFamily(physicalUnit.Family.current)]
-        [TunableParameter()]
-        public doubleParameter peakMin { get; set; }
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "30.0")]
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            [TunableParameter()]
+            public doubleParameter peakMin { get; set; }
 
-        [DefaultValue(0)]
-        [Range(typeof(double), "0", "40.0")]
-        [PhysicalUnitsFamily(physicalUnit.Family.current)]
-        public doubleParameter peakMax { get; set; }
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")]
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter peakMax { get; set; }
 
-        [DefaultValue(InvertedValue.CounterClockwise_Positive)]
-        public InvertedValue inverted { get; set; }
+            [DefaultValue(InvertedValue.CounterClockwise_Positive)]
+            public InvertedValue inverted { get; set; }
 
-        [DefaultValue(NeutralModeValue.Coast)]
-        public NeutralModeValue NeutralMode { get; set; }
+            [DefaultValue(NeutralModeValue.Coast)]
+            public NeutralModeValue NeutralMode { get; set; }
+
+            public MotorConfigs()
+            {
+                defaultDisplayName = "MotorConfigs";
+            }
+        }
+        public MotorConfigs theMotorConfigs { get; set; }
+
+        public class CurrentLimits : baseDataClass
+        {
+            [DefaultValue(false)]
+            public boolParameter enableStatorCurrentLimit;
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter statorCurrentLimit { get; set; }
+
+            [DefaultValue(false)]
+            public boolParameter enableSupplyCurrentLimit;
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter supplyCurrentLimit { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter supplyCurrentThreshold { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter supplyTimeThreshold { get; set; }
+
+            public CurrentLimits()
+            {
+                defaultDisplayName = "CurrentLimits";
+            }
+        
+        }
+        public CurrentLimits theCurrentLimits { get; set; }
+
+        public class VoltageConfigs : baseDataClass
+        {
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter peakForwardVoltage { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter peakReverseVoltage { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter supplyVoltageTime { get; set; }
+
+            public VoltageConfigs()
+            {
+                defaultDisplayName = "CurrentLimits";
+            }
+        }
+        public VoltageConfigs theVoltageConfigs { get; set; }
+
         public Falcon()
         {
         }

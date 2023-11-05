@@ -1341,7 +1341,7 @@ namespace FRCrobotCodeGen302
                     {
                         obj = Activator.CreateInstance(((robotElementType)robotElementObj).t);
 
-                        Type baseType = (((robotElementType)robotElementObj).t).BaseType;
+                        Type baseType = ((robotElementType)robotElementObj).t.BaseType;
                         name = baseType.Name;
 
                         Type t = nodeTag.getType(lastSelectedValueNode.Tag);
