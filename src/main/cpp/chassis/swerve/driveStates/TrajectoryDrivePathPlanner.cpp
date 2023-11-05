@@ -13,6 +13,8 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
+#include <cmath>
+
 #include <frc/geometry/Pose2d.h>
 
 // Team302 Includes
@@ -25,17 +27,17 @@
 using frc::Pose2d;
 
 TrajectoryDrivePathPlanner::TrajectoryDrivePathPlanner(RobotDrive *robotDrive) : RobotDrive(),
-                                                                                 m_trajectory(),
+                                                                                 m_path(),
                                                                                  m_robotDrive(robotDrive),
-                                                                                 m_holonomicController(frc2::PIDController{0.75, 0.0, 0}, // 3.725, 0.85
-                                                                                                       frc2::PIDController{2.5, 0.0, 0},  // 3.725, 0.85
-                                                                                                       frc::PIDController{1.35, 0.0, 0}), // 0.325, 0.0
-                                                                                 m_desiredState(),
-                                                                                 m_trajectoryStates(),
+                                                                                 m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
+                                                                                 m_holonomicController(pathplanner::PIDConstants(1.0, 1.0, 1.0, 1.0),                                                                                               // translation gains kP, kI, kD, iZone
+                                                                                                       pathplanner::PIDConstants(1.0, 1.0, 1.0, 1.0),                                                                                               // rotational gains
+                                                                                                       units::velocity::meters_per_second_t(4.0),                                                                                                   // max MODULE speed
+                                                                                                       units::meter_t(std::sqrt(std::pow(m_chassis->GetWheelBase().to<double>(), 2) + std::pow(m_chassis->GetWheelBase().to<double>(), 2)) / 2.0)), // driveBaseRadius / furthest swerve module
+                                                                                 // m_desiredState(),
                                                                                  m_prevPose(ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose()),
                                                                                  m_wasMoving(false),
                                                                                  m_timer(std::make_unique<frc::Timer>()),
-                                                                                 m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
                                                                                  m_whyDone("Trajectory isn't finished/Error")
 
 {
@@ -44,50 +46,54 @@ TrajectoryDrivePathPlanner::TrajectoryDrivePathPlanner(RobotDrive *robotDrive) :
 void TrajectoryDrivePathPlanner::Init(ChassisMovement &chassisMovement)
 {
     // m_holonomicController.setTolerance(frc::Pose2d{units::length::meter_t(0.1), units::length::meter_t(0.1), frc::Rotation2d(units::angle::degree_t(2.0))});
-    // Clear m_trajectoryStates in case it holds onto a previous trajectory
-    m_trajectoryStates.clear();
+    m_path = std::make_shared<pathplanner::PathPlannerPath>(chassisMovement.path);
+    m_trajectory = pathplanner::PathPlannerTrajectory(m_path, frc::ChassisSpeeds(){});
 
-    m_trajectory = chassisMovement.pathplannerTrajectory;
-    m_trajectoryStates = m_trajectory.getStates();
-
-    if (!m_trajectoryStates.empty()) // only go if path name found
+    if (!m_trajectory.getStates().empty()) // only go if path name found
     {
         // Desired state is first state in trajectory
-        m_desiredState = m_trajectoryStates.front(); // m_desiredState is the first state, or starting position
+        // m_desiredState = m_trajectoryStates.front(); // m_desiredState is the first state, or starting position
 
-        m_finalState = m_trajectoryStates.back();
+        m_finalState = m_trajectory.getEndState();
 
         m_timer.get()->Reset(); // Restarts and starts timer
         m_timer.get()->Start();
     }
 
-    m_delta = m_finalState.pose - m_chassis->GetPose();
+    m_delta = m_finalState.getTargetHolonomicPose() - m_chassis->GetPose();
 }
 
 std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveModuleStates(ChassisMovement &chassisMovement)
 {
-    if (!m_trajectoryStates.empty()) // If we have a path parsed / have states to run
+    // Using event markers for robot actions
+    // need to create dummy comands and then can call functions based on names
+    // or get commands to work (maybe InstantCommand?)
+    for (pathplanner::EventMarker &marker : m_path->getEventMarkers())
     {
-        if (m_trajectory.getInitialPose() != chassisMovement.pathplannerTrajectory.getInitialPose())
+        if (marker.shouldTrigger(m_chassis->GetPose()))
+        {
+            auto command = marker.getCommand();
+
+            command.get()->GetName();
+        }
+    }
+
+    if (!m_trajectory.getStates().empty()) // If we have a path parsed / have states to run
+    {
+
+        // NOTE this if statement could be troublesome in the future if these two poses never equal each other
+        /// @todo is there a better way to get the initial pose for a PathPlannerPath (there is InitialDifferentialPose...)
+        frc::Pose2d incomingInitialPose = frc::Pose2d(chassisMovement.path.getPoint(0).position, chassisMovement.path.getPoint(0).holonomicRotation.value());
+        if (m_trajectory.getInitialTargetHolonomicPose() != incomingInitialPose)
         {
             Init(chassisMovement);
         }
 
-        // calculate where we are and where we want to be
-        CalcCurrentAndDesiredStates();
+        units::second_t currentTime = m_timer.get()->Get();
+        pathplanner::PathPlannerTrajectory::State targetState = m_trajectory.sample(currentTime); // in path following code from pathplanner, if the drive controller
+                                                                                                  // is holonomic, the sampled state is flipped, don't know why...
 
-        // Use the controller to calculate the chassis speeds for getting there
-        frc::ChassisSpeeds refChassisSpeeds;
-
-        // trying to use the last rotation of the path as the target
-        refChassisSpeeds = m_holonomicController.calculate(m_chassis->GetPose(), m_desiredState);
-
-        chassisMovement.chassisSpeeds = refChassisSpeeds;
-
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Trajectory Drive Path Planner", "HolonomicRotation (Degs)", m_desiredState.holonomicRotation.Degrees().to<double>());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Trajectory Drive Path Planner", "Omega (Rads Per Sec)", refChassisSpeeds.omega.to<double>());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Trajectory Drive Path Planner", "Yaw Odometry (Degs)", m_chassis->GetPose().Rotation().Degrees().to<double>());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Trajectory Drive Path Planner", "Yaw Pigeon (Degs)", PigeonFactory::GetFactory()->GetCenterPigeon()->GetYaw());
+        frc::ChassisSpeeds targetSpeeds = m_holonomicController.calculateRobotRelativeSpeeds(m_chassis->GetPose(), targetState);
 
         // Set chassisMovement speeds that will be used by RobotDrive
         return m_robotDrive->UpdateSwerveModuleStates(chassisMovement);
@@ -107,23 +113,14 @@ std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveMo
     }
 }
 
-void TrajectoryDrivePathPlanner::CalcCurrentAndDesiredStates()
-{
-    // Get current time
-    auto sampleTime = units::time::second_t(m_timer.get()->Get());
-    // Set desired state to the state at current time
-    m_desiredState = m_trajectory.sample(sampleTime);
-}
-
 bool TrajectoryDrivePathPlanner::IsDone()
 {
-
     bool isDone = false;
 
-    if (!m_trajectoryStates.empty()) // If we have states...
+    if (!m_trajectory.getStates().empty()) // If we have states...
     {
         // isDone = m_holonomicController.atReference();
-        isDone = IsSamePose(m_chassis->GetPose(), m_finalState.pose, 10.0, 1.0);
+        isDone = IsSamePose(m_chassis->GetPose(), m_trajectory.getEndState().getTargetHolonomicPose(), 10.0, 1.0);
     }
     else
     {
@@ -149,15 +146,6 @@ bool TrajectoryDrivePathPlanner::IsSamePose(frc::Pose2d currentPose, frc::Pose2d
     double dDeltaX = abs(dPrevPosX - dCurPosX);
     double dDeltaY = abs(dPrevPosY - dCurPosY);
     double dDeltaRot = abs(dPrevPosRot - dCurPosRot);
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "trajectory drive path planner", "dCurPosX", dCurPosX);
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "trajectory drive path planner", "dCurPosY", dCurPosY);
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "trajectory drive path planner", "dCurPosRot", dCurPosRot);
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "trajectory drive path planner", "dPrevPosX", dPrevPosX);
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "trajectory drive path planner", "dPrevPosY", dPrevPosY);
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "trajectory drive path planner", "dPrevPosRot", dPrevPosRot);
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "trajectory drive path planner", "dDeltaX", dDeltaX);
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "trajectory drive path planner", "dDeltaY", dDeltaY);
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "trajectory drive path planner", "dDeltaRot", dDeltaRot);
 
     //  If Position of X or Y has moved since last scan..  Using Delta X/Y
     return ((dDeltaX <= xyTolerance) && (dDeltaY <= xyTolerance) && (dDeltaRot <= rotTolerance));

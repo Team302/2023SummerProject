@@ -42,7 +42,7 @@ public:
 private:
     SwerveChassis *m_chassis;
     std::unique_ptr<frc::Timer> m_timer;
-    pathplanner::PathPlannerTrajectory m_trajectory;
+    pathplanner::PathPlannerPath m_path;
     std::string m_pathname;
     double m_maxTime;
     std::string m_ntName;

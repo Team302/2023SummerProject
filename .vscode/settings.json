@@ -94,7 +94,15 @@
     "xtr1common": "cpp",
     "xtree": "cpp",
     "xutility": "cpp",
-    "*.mac": "cpp"
+    "*.mac": "cpp",
+    "any": "cpp",
+    "ios": "cpp",
+    "xfacet": "cpp",
+    "xhash": "cpp",
+    "xiosbase": "cpp",
+    "xlocale": "cpp",
+    "xlocinfo": "cpp",
+    "xlocnum": "cpp"
   },
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,

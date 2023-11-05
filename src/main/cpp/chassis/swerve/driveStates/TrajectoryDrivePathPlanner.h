@@ -23,7 +23,7 @@
 #include <chassis/swerve/SwerveChassis.h>
 
 // Third party includes
-#include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 
 class TrajectoryDrivePathPlanner : public RobotDrive
@@ -41,21 +41,19 @@ public:
     bool IsDone();
 
 private:
-    void CalcCurrentAndDesiredStates();
-
     bool IsSamePose(frc::Pose2d currentPose, frc::Pose2d previousPose, double xyTolerance, double rotTolerance);
 
-    pathplanner::PathPlannerTrajectory m_trajectory;
+    std::shared_ptr<pathplanner::PathPlannerPath> m_path;
     RobotDrive *m_robotDrive;
+    SwerveChassis *m_chassis;
     pathplanner::PPHolonomicDriveController m_holonomicController;
-    pathplanner::PathPlannerTrajectory::PathPlannerState m_desiredState;
-    std::vector<pathplanner::PathPlannerTrajectory::PathPlannerState> m_trajectoryStates;
-    pathplanner::PathPlannerTrajectory::PathPlannerState m_finalState;
+    // pathplanner::PathPlannerTrajectory::State m_desiredState;
+    pathplanner::PathPlannerTrajectory m_trajectory;
+    pathplanner::PathPlannerTrajectory::State m_finalState;
     frc::Pose2d m_prevPose;
     bool m_wasMoving;
     frc::Transform2d m_delta;
     std::unique_ptr<frc::Timer> m_timer;
 
-    SwerveChassis *m_chassis;
     std::string m_whyDone;
 };

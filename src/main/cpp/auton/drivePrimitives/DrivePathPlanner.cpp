@@ -33,7 +33,7 @@
 #include <chassis/swerve/driveStates/TrajectoryDrivePathPlanner.h>
 
 // third party includes
-#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 
 using namespace pathplanner;
 
@@ -58,7 +58,7 @@ void DrivePathPlanner::Init(PrimitiveParams *params)
     m_ntName = string("DrivePathPlanner: ") + m_pathname;
     m_maxTime = params->GetTime();
 
-    m_trajectory = PathPlanner::loadPath(m_pathname, PathConstraints(4.5_mps, 2.75_mps_sq));
+    m_path = PathPlannerPath::fromPathFile(m_pathname);
 
     // Start timeout timer for path
     m_timer.get()->Reset();
@@ -70,9 +70,11 @@ void DrivePathPlanner::Run()
     ChassisMovement moveInfo;
     moveInfo.driveOption = ChassisOptionEnums::DriveStateType::TRAJECTORY_DRIVE_PLANNER;
     moveInfo.controllerType = ChassisOptionEnums::AutonControllerType::HOLONOMIC;
+
+    /// @TODO: should this heading option be trajectory or something else?
     moveInfo.headingOption = ChassisOptionEnums::HeadingOption::IGNORE;
 
-    moveInfo.pathplannerTrajectory = m_trajectory;
+    moveInfo.path = m_path;
     m_chassis->Drive(moveInfo);
 }
 
