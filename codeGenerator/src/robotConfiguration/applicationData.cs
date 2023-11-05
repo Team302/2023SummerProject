@@ -83,11 +83,11 @@ namespace ApplicationData
     {
 #if !enableTestAutomation
         public List<MotorController> MotorControllers { get; set; }
-        public pdp pdp { get; set; }
+        public pdp PowerDistributionPanel { get; set; }
+        public List<pcm> PneumaticControlModules { get; set; }
         public List<mechanismInstance> mechanismInstances { get; set; }
 
         /*        
-                public List<pcm> pcm { get; set; }
                 public List<pigeon> pigeon { get; set; }
                 public List<limelight> limelight { get; set; }
                 public chassis chassis { get; set; }
@@ -114,7 +114,7 @@ namespace ApplicationData
             //else if (propertyName == "testClass")
             //    return string.Format("{0} ({1}))", propertyName, testClass.name);
             else if (propertyName == "pdp")
-                return string.Format("{0} ({1})", propertyName, pdp.type);
+                return string.Format("{0} ({1})", propertyName, PowerDistributionPanel.type);
 
             return "robot class - incomplete getDisplayName";
         }
@@ -225,6 +225,10 @@ namespace ApplicationData
         [DefaultValue(pdptype.REV)]
         public pdptype type { get; set; }
 
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter canID { get; set; }
+
         public pdp()
         {
             helperFunctions.initializeNullProperties(this);
@@ -236,10 +240,42 @@ namespace ApplicationData
             refresh = helperFunctions.RefreshLevel.parentHeader;
             if (string.IsNullOrEmpty(propertyName))
                 refresh = helperFunctions.RefreshLevel.none;
-            return "Pdp (" + type.ToString() + ")";
+            return "Power Distribution Panel (" + type.ToString() + ")";
         }
     }
 
+    [Serializable()]
+    public class pcm
+    {
+        public string name { get; set; }
+
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter canID { get; set; }
+
+        [DefaultValue(95.0)]
+        [PhysicalUnitsFamily(physicalUnit.Family.pressure)]
+        public doubleParameter minPressure { get; set; }
+
+        [DefaultValue(115.0)]
+        [PhysicalUnitsFamily(physicalUnit.Family.pressure)]
+        public doubleParameter maxPressure { get; set; }
+
+        public pcm()
+        {
+            helperFunctions.initializeNullProperties(this);
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.parentHeader;
+            if (string.IsNullOrEmpty(propertyName))
+                refresh = helperFunctions.RefreshLevel.none;
+            return string.Format("PCM ({0})",name);
+        }
+    }
+	
     [Serializable()]
     [XmlInclude(typeof(Falcon))]
     [XmlInclude(typeof(TalonSRX_Motor))]
@@ -788,19 +824,7 @@ namespace ApplicationData
 
 
 
-    [Serializable()]
-    public class pcm
-    {
-        [DefaultValue(0u)]
-        [Range(typeof(uint), "0", "62")]
-        public uintParameter CAN_ID { get; set; }
-        public analogInput analogInput { get; set; }
 
-        public pcm()
-        {
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
 
     [Serializable()]
     public class analogInput
