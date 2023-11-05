@@ -43,10 +43,15 @@ protected:
     frc::SwerveModuleState m_blState;
     frc::SwerveModuleState m_brState;
 
+    frc::SwerveDriveKinematics<4> m_kinematics;
+
     units::length::inch_t m_wheelbase;
     units::length::inch_t m_wheeltrack;
+    frc::Translation2d m_centerOfRotation;
+
     units::velocity::feet_per_second_t m_maxspeed;
 
-    void CorrectForTipping(ChassisMovement &chassisMovement);
+    void
+    CorrectForTipping(ChassisMovement &chassisMovement);
     void DecideTipCorrection(ChassisMovement &chassisMovement);
 };

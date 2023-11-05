@@ -37,6 +37,7 @@ RobotDrive::RobotDrive() : ISwerveDriveState::ISwerveDriveState(),
                            m_brState(),
                            m_wheelbase(units::length::inch_t(20.0)),
                            m_wheeltrack(units::length::inch_t(20.0)),
+                           m_centerOfRotation(m_wheelbase / 2.0, m_wheeltrack / 2.0),
                            m_maxspeed(units::velocity::feet_per_second_t(1.0))
 {
     auto chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
@@ -45,6 +46,7 @@ RobotDrive::RobotDrive() : ISwerveDriveState::ISwerveDriveState(),
         m_wheelbase = chassis->GetWheelBase();
         m_wheeltrack = chassis->GetTrack();
         m_maxspeed = chassis->GetMaxSpeed();
+        m_kinematics = chassis->GetKinematics();
     }
     else
     {
@@ -59,119 +61,12 @@ std::array<frc::SwerveModuleState, 4> RobotDrive::UpdateSwerveModuleStates(Chass
         DecideTipCorrection(chassisMovement);
     }
 
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "RobotDrive", "Vx", chassisMovement.chassisSpeeds.vx.to<double>());
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "RobotDrive", "Vy", chassisMovement.chassisSpeeds.vy.to<double>());
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "RobotDrive", "Omega", chassisMovement.chassisSpeeds.omega.to<double>());
+    wpi::array<frc::SwerveModuleState, 4> states = m_kinematics.ToSwerveModuleStates(chassisMovement.chassisSpeeds, chassisMovement.centerOfRotationOffset + m_centerOfRotation);
 
-    // These calculations are based on Ether's Chief Delphi derivation
-    // The only changes are that that derivation is based on positive angles being clockwise
-    // and our codes/sensors are based on positive angles being counter clockwise.
+    m_kinematics.DesaturateWheelSpeeds(*states, m_maxspeed);
 
-    // A = Vx - omega * L/2
-    // B = Vx + omega * L/2
-    // C = Vy - omega * W/2
-    // D = Vy + omega * W/2
-    //
-    // Where:
-    // Vx is the sideways (strafe) vector
-    // Vy is the forward vector
-    // omega is the rotation about Z vector
-    // L is the wheelbase (front to back)
-    // W is the wheeltrack (side to side)
-    //
-    // Since our Vx is forward and Vy is strafe we need to rotate the vectors
-    // We will use these variable names in the code to help tie back to the document.
-    // Variable names, though, will follow C++ standards and start with a lower case letter.
-    auto l = m_wheelbase;
-    auto w = m_wheeltrack;
+    [ m_flState, m_frState, m_blState, m_brState ] = states;
 
-    auto vy = 1.0 * chassisMovement.chassisSpeeds.vx;
-    auto vx = -1.0 * chassisMovement.chassisSpeeds.vy;
-    auto omega = chassisMovement.chassisSpeeds.omega;
-    /*
-        units::time::second_t kLooperDt = units::time::second_t(20.0 / 1000.0);
-        frc::Pose2d robot_pose_vel = frc::Pose2d(vx * kLooperDt, vy * kLooperDt, frc::Rotation2d(omega * kLooperDt));
-        // frc::Twist2d twist_vel = chassis->GetPose().Log(robot_pose_vel);
-        frc::Twist2d twist_vel = frc::Pose2d().Log(robot_pose_vel);
-        // chassisMovement.chassisSpeeds = frc::ChassisSpeeds(twist_vel.dx / kLooperDt, twist_vel.dy / kLooperDt, twist_vel.dtheta / kLooperDt);
-
-        // vx = twist_vel.dx / kLooperDt;
-        // vy = twist_vel.dx / kLooperDt;
-        // omega = twist_vel.dtheta / kLooperDt;
-    */
-    units::length::meter_t centerOfRotationW = (w / 2.0) - chassisMovement.centerOfRotationOffset.Y();
-    units::length::meter_t centerOfRotationL = (l / 2.0) - chassisMovement.centerOfRotationOffset.X();
-
-    units::velocity::meters_per_second_t omegaW = omega.to<double>() * centerOfRotationW / 1_s;
-    units::velocity::meters_per_second_t omegaL = omega.to<double>() * centerOfRotationL / 1_s;
-
-    auto a = vx + omegaL;
-    auto b = vx - omegaL;
-    auto c = vy + omegaW;
-    auto d = vy - omegaW;
-
-    // here we'll negate the angle to conform to the positive CCW convention
-    m_flState.angle = units::angle::radian_t(atan2(b.to<double>(), d.to<double>()));
-    m_flState.angle = -1.0 * m_flState.angle.Degrees();
-    m_flState.speed = units::velocity::meters_per_second_t(sqrt(pow(b.to<double>(), 2) + pow(d.to<double>(), 2)));
-    double maxCalcSpeed = abs(m_flState.speed.to<double>());
-
-    m_frState.angle = units::angle::radian_t(atan2(b.to<double>(), c.to<double>()));
-    m_frState.angle = -1.0 * m_frState.angle.Degrees();
-    m_frState.speed = units::velocity::meters_per_second_t(sqrt(pow(b.to<double>(), 2) + pow(c.to<double>(), 2)));
-    if (abs(m_frState.speed.to<double>()) > maxCalcSpeed)
-    {
-        maxCalcSpeed = abs(m_frState.speed.to<double>());
-    }
-
-    m_blState.angle = units::angle::radian_t(atan2(a.to<double>(), d.to<double>()));
-    m_blState.angle = -1.0 * m_blState.angle.Degrees();
-    m_blState.speed = units::velocity::meters_per_second_t(sqrt(pow(a.to<double>(), 2) + pow(d.to<double>(), 2)));
-    if (abs(m_blState.speed.to<double>()) > maxCalcSpeed)
-    {
-        maxCalcSpeed = abs(m_blState.speed.to<double>());
-    }
-
-    m_brState.angle = units::angle::radian_t(atan2(a.to<double>(), c.to<double>()));
-    m_brState.angle = -1.0 * m_brState.angle.Degrees();
-    m_brState.speed = units::velocity::meters_per_second_t(sqrt(pow(a.to<double>(), 2) + pow(c.to<double>(), 2)));
-    if (abs(m_brState.speed.to<double>()) > maxCalcSpeed)
-    {
-        maxCalcSpeed = abs(m_brState.speed.to<double>());
-    }
-
-    // normalize speeds if necessary (maxCalcSpeed > max attainable speed)
-    if (maxCalcSpeed > m_maxspeed.to<double>())
-    {
-        auto ratio = m_maxspeed.to<double>() / maxCalcSpeed;
-        m_flState.speed *= ratio;
-        m_frState.speed *= ratio;
-        m_blState.speed *= ratio;
-        m_brState.speed *= ratio;
-    }
-
-    /*
-    SwerveChassis *chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
-    frc::SwerveDriveKinematics<4> kinematics = chassis->GetKinematics();
-
-    wpi::array<frc::SwerveModuleState, 4> states = kinematics.ToSwerveModuleStates(chassisMovement.chassisSpeeds, chassisMovement.centerOfRotationOffset);
-
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Robot Drive"), string("bl_Before"), m_blState.speed.to<double>());
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Robot Drive"), string("br_Before"), m_brState.speed.to<double>());
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Robot Drive"), string("MaxSpeed"), chassis->GetMaxSpeed().to<double>());
-
-    chassis->GetKinematics().DesaturateWheelSpeeds(&states, chassis->GetMaxSpeed());
-
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Robot Drive"), string("bl_After"), m_blState.speed.to<double>());
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Robot Drive"), string("br_After"), m_brState.speed.to<double>());
-
-    auto [fl, fr, bl, br] = states;
-
-    m_flState = fl;
-    m_frState = fr;
-    m_blState = bl;
-    m_brState = br;
-*/
     return {m_flState, m_frState, m_blState, m_brState};
 }
 
@@ -180,9 +75,6 @@ void RobotDrive::DecideTipCorrection(ChassisMovement &chassisMovement)
 {
     if (frc::DriverStation::IsFMSAttached())
     {
-        //        auto table = nt::NetworkTableInstance::GetDefault().GetTable("match time");
-        //        table.get()->PutNumber(std::string("time"), frc::DriverStation::GetMatchTime());
-
         if (frc::DriverStation::GetMatchTime() > 20)
         {
             CorrectForTipping(chassisMovement);
@@ -195,7 +87,6 @@ void RobotDrive::DecideTipCorrection(ChassisMovement &chassisMovement)
 }
 void RobotDrive::CorrectForTipping(ChassisMovement &chassisMovement)
 {
-    // TODO: add checktipping variable to network table
     auto chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
     if (chassis != nullptr)
     {
