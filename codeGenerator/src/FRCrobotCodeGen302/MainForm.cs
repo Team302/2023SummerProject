@@ -729,6 +729,7 @@ namespace FRCrobotCodeGen302
 
                 nodeTag nt = (nodeTag)e.Node.Tag;
 
+                enableCallback = false;
                 // first take care of nodes that are a collection (such as List<>)
                 if (baseDataConfiguration.isACollection(nt.obj))
                 {
@@ -772,7 +773,7 @@ namespace FRCrobotCodeGen302
                             allowEdit = beObj.isTunable ? true : !beObj.showExpanded;
                         }
 
-                        enableCallback = false;
+                        
                         if ((beObj.name == "value") || showUnits)
                         {
                             string updatedUnits = setPhysicalUnitsComboBox(beObj.unitsFamily, beObj.physicalUnits);
@@ -1029,6 +1030,8 @@ namespace FRCrobotCodeGen302
                                 isValue = false;
                                 prop = parentObj.GetType().GetProperty(nt.name, BindingFlags.Public | BindingFlags.Instance);
                             }
+                            else
+                                parentObj = nodeTag.getObject(nt);
                         }
 
 
@@ -1074,7 +1077,7 @@ namespace FRCrobotCodeGen302
                                         pi.SetValue(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), firstUnit == null ? "" : firstUnit.ToString());
                                 }
                             }
-                        }
+                         }
 
                         helperFunctions.RefreshLevel refresh;
                         if (isValue)
@@ -1180,10 +1183,25 @@ namespace FRCrobotCodeGen302
                             //}
                         }
 
-                        lastSelectedValueNode.Text = getDisplayName(isValue__ ? obj : prop.GetValue(obj), lnt.name);
+                        helperFunctions.RefreshLevel refresh;
+                        //lastSelectedValueNode.Text = getDisplayName(isValue__ ? obj : prop.GetValue(obj), lnt.name, out refresh);
+                        lastSelectedValueNode.Text = getDisplayName( obj, lnt.name, out refresh);
 
                         if (lastSelectedValueNode.Parent != null)
-                            lastSelectedValueNode.Parent.Text = getDisplayName(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), "");
+                        {
+                            if (refresh == helperFunctions.RefreshLevel.parentHeader)
+                                lastSelectedValueNode.Parent.Text = getDisplayName(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), "");
+
+                            if (refresh == helperFunctions.RefreshLevel.fullParent)
+                            {
+                                TreeNodeCollection tnc = lastSelectedValueNode.Parent.Nodes;
+                                foreach (TreeNode node in tnc)
+                                {
+                                    helperFunctions.RefreshLevel refr;
+                                    node.Text = getDisplayName(((nodeTag)node.Tag).obj, ((nodeTag)node.Tag).name, out refr);
+                                }
+                            }
+                        }
 
                         mechanism theMechanism;
                         if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
@@ -1323,7 +1341,7 @@ namespace FRCrobotCodeGen302
                     {
                         obj = Activator.CreateInstance(((robotElementType)robotElementObj).t);
 
-                        Type baseType = (((robotElementType)robotElementObj).t).BaseType;
+                        Type baseType = ((robotElementType)robotElementObj).t.BaseType;
                         name = baseType.Name;
 
                         Type t = nodeTag.getType(lastSelectedValueNode.Tag);
@@ -1340,7 +1358,7 @@ namespace FRCrobotCodeGen302
                     {
                         obj = Activator.CreateInstance((new mechanismInstance()).GetType());
 
-                        name = "mechanismInstance";
+                        name = "mechanismInstances";
                         ((mechanismInstance)obj).mechanism = applicationDataConfig.DeepClone((mechanism)((robotElementType)robotElementObj).theObject);
                     }
                     else if (baseDataConfiguration.isACollection(((robotElementType)robotElementObj).t))
@@ -1372,7 +1390,7 @@ namespace FRCrobotCodeGen302
                         PropertyInfo pi = nodeTag.getObject(lastSelectedValueNode.Tag).GetType().GetProperty(name);
                         object theObj = pi.GetValue(nodeTag.getObject(lastSelectedValueNode.Tag), null);
 
-                        if (name != "mechanismInstance")
+                        if (name != "mechanismInstances")
                             theAppDataConfiguration.initializeData(theObj, obj, name, null);
 
                         if (addToCollection)
@@ -1456,17 +1474,18 @@ namespace FRCrobotCodeGen302
                 {
                     foreach (object robotElementObj in robotElementCheckedListBox.CheckedItems) // there should only be mechanisms in the checkedItems list 
                     {
-                        // first create a new element instance
-                        if (robotElementObj is mechanism)
+                        robotElementType ret = (robotElementType)robotElementObj;
+                        if (ret.theObject is mechanism)
                         {
-                            Type elementType = ((mechanism)robotElementObj).GetType();
+                            Type elementType = ret.t;
 
                             object obj = Activator.CreateInstance((new mechanismInstance()).GetType());
-                            ((mechanismInstance)obj).mechanism = applicationDataConfig.DeepClone((mechanism)robotElementObj);
+                            ((mechanismInstance)obj).mechanism = applicationDataConfig.DeepClone((mechanism)ret.theObject);
 
                             // then add it to the collection
-                            nodeTag.getObject(lastSelectedArrayNode.Tag).GetType().GetMethod("Add").Invoke(lastSelectedArrayNode.Tag, new object[] { obj });
-                            int count = (int)nodeTag.getObject(lastSelectedArrayNode.Tag).GetType().GetProperty("Count").GetValue(lastSelectedArrayNode.Tag);
+                            object theCollectionObj = nodeTag.getObject(lastSelectedArrayNode.Tag);
+                            theCollectionObj.GetType().GetMethod("Add").Invoke(theCollectionObj, new object[] { obj });
+                            int count = (int)theCollectionObj.GetType().GetProperty("Count").GetValue(theCollectionObj);
 
                             AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
                         }
@@ -1535,7 +1554,7 @@ namespace FRCrobotCodeGen302
         {
             foreach (applicationData r in theAppDataConfiguration.theRobotVariants.Robots)
             {
-                foreach (mechanismInstance mi in r.mechanismInstance)
+                foreach (mechanismInstance mi in r.mechanismInstances)
                 {
                     if (mi.mechanism.GUID == theMechanism.GUID)
                     {
@@ -1590,7 +1609,7 @@ namespace FRCrobotCodeGen302
             {
                 string fullPath = tn.FullPath;
 
-                string mechInstancesName = @"\mechanismInstance\";
+                string mechInstancesName = @"\mechanismInstances\";
                 int index = fullPath.IndexOf(mechInstancesName);
                 if (index == -1)
                     return false;

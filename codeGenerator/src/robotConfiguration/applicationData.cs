@@ -4,8 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+
+//todo handle optional elements such as followID in a motorcontroller
+//todo the range of pdpID for ctre is 0-15, for REV it is 0-19. How to adjust the range allowed in the GUI. If initially REV is used and an id > 15 is used, then user chooses CTRE, what to do?
+//todo make mechanism instances separate files so that it is easier for multiple people to work on the robot in parallel
+//todo run a sanity check on a click of a button or on every change?
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -54,32 +60,40 @@ namespace ApplicationData
             helperFunctions.initializeDefaultValues(this);
         }
 
-        //public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
-        //{
-        //    refresh = helperFunctions.RefreshLevel.none;
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.parentHeader;
 
-        //    if (propertyName == "name")
-        //        return string.Format("{0} ({1})", propertyName, name);
+            if (propertyName == "")
+                return name;
 
-        //    return null;
-        //}
+            PropertyInfo pi = this.GetType().GetProperty(propertyName);
+            if (pi != null)
+            {
+                object value = pi.GetValue(this);
+                return string.Format("{0} ({1})", propertyName, value.ToString());
+            }
+
+            return null;
+        }
     }
 
     [Serializable()]
     public partial class applicationData
     {
 #if !enableTestAutomation
-        public List<Motor> motor { get; set; }
+        public List<MotorController> MotorControllers { get; set; }
         public pdp pdp { get; set; }
-        public List<mechanismInstance> mechanismInstance { get; set; }
+        public List<mechanismInstance> mechanismInstances { get; set; }
 
-/*        public List<pcm> pcm { get; set; }
-        public List<pigeon> pigeon { get; set; }
-        public List<limelight> limelight { get; set; }
-        public chassis chassis { get; set; }
-        public List<camera> camera { get; set; }
-        public List<roborio> roborio { get; set; }
-*/
+        /*        
+                public List<pcm> pcm { get; set; }
+                public List<pigeon> pigeon { get; set; }
+                public List<limelight> limelight { get; set; }
+                public chassis chassis { get; set; }
+                public List<camera> camera { get; set; }
+                public List<roborio> roborio { get; set; }
+        */
 
         [DefaultValue(1u)]
         [Range(typeof(uint), "1", "9999")]
@@ -88,7 +102,6 @@ namespace ApplicationData
         public applicationData()
         {
             helperFunctions.initializeNullProperties(this);
-
             helperFunctions.initializeDefaultValues(this);
         }
 
@@ -124,21 +137,21 @@ namespace ApplicationData
             return name;
         }
 #if !enableTestAutomation
-        public List<Motor> Motor { get; set; }
+        public List<MotorController> MotorControllers { get; set; }
 
-/*
-        public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
-        public List<state> state { get; set; }
-        public List<solenoid> solenoid { get; set; }
-        public List<servo> servo { get; set; }
-        public List<analogInput> analogInput { get; set; }
-        public List<digitalInput> digitalInput { get; set; }
-        public List<cancoder> cancoder { get; set; }
-        public colorsensor colorsensor { get; set; }
-*/
+        /*
+                public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
+                public List<state> state { get; set; }
+                public List<solenoid> solenoid { get; set; }
+                public List<servo> servo { get; set; }
+                public List<analogInput> analogInput { get; set; }
+                public List<digitalInput> digitalInput { get; set; }
+                public List<cancoder> cancoder { get; set; }
+                public colorsensor colorsensor { get; set; }
+        */
         public mechanism()
         {
-            if (GUID == null)
+            if ((GUID == null) || (GUID == new Guid()))
                 GUID = Guid.NewGuid();
 
             helperFunctions.initializeNullProperties(this);
@@ -148,8 +161,12 @@ namespace ApplicationData
             helperFunctions.initializeDefaultValues(this);
         }
 
-        public string getDisplayName()
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
         {
+            refresh = helperFunctions.RefreshLevel.none;
+            if (propertyName == "name")
+                refresh = helperFunctions.RefreshLevel.parentHeader;
+
             return string.Format("{0}", name);
         }
 #endif
@@ -224,69 +241,236 @@ namespace ApplicationData
     }
 
     [Serializable()]
-    [XmlInclude(typeof(Falcon_Motor))]
+    [XmlInclude(typeof(Falcon))]
     [XmlInclude(typeof(TalonSRX_Motor))]
-    public class Motor
+    public class MotorController
     {
         [XmlIgnore]
         [Constant()]
-        public string motorType { get; protected set; }
+        public string motorControllerType { get; protected set; }
 
+        [ConstantInMechInstance]
         public string name { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
-        public uintParameter CAN_ID { get; set; }
+        public uintParameter canID { get; set; }
 
-        public Motor()
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "15")]
+        public uintParameter pdpID { get; set; }
+
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "19")] // REV is 0-19, CTRE 0-15, cannot handle 2 ranges for now
+        public uintParameter followID { get; set; }
+
+        [DefaultValue(false)]
+        public boolParameter enableFollowID { get; set; }
+
+        public MotorController()
         {
-            helperFunctions.initializeNullProperties(this);
+            helperFunctions.initializeNullProperties(this, true);
 
             string temp = this.GetType().Name;
-            motorType = temp.Substring(0, temp.LastIndexOf('_'));
-            name = motorType;
+            int index = temp.LastIndexOf('_');
+
+            motorControllerType = (index < 0) ? temp : temp.Substring(0, index);
+            name = motorControllerType;
 
             helperFunctions.initializeDefaultValues(this);
         }
-        public string getDisplayName()
+
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
         {
-            return name;
+            refresh = helperFunctions.RefreshLevel.parentHeader;
+
+            if (propertyName == "")
+                return name;
+
+            PropertyInfo pi = this.GetType().GetProperty(propertyName);
+            if (pi != null)
+            {
+                object value = pi.GetValue(this);
+                return string.Format("{0} ({1})", propertyName, value.ToString());
+            }
+
+            return null;
         }
     }
 
-    [Serializable()]
-    public class Falcon_Motor : Motor
+    public class baseDataClass
     {
-        [DefaultValue(1.15)]
-        [Range(typeof(double), "0", "62")]
-        [PhysicalUnitsFamily(physicalUnit.Family.percent)]
-        [TunableParameter()]
-        public doubleParameter deadbandPercent { get; set; }
+        protected string defaultDisplayName { get; set; } = "defaultDisplayName";
 
-        [DefaultValue(5.55)]
-        [Range(typeof(double), "0", "100")]
-        [PhysicalUnitsFamily(physicalUnit.Family.percent)]
-        [TunableParameter()]
-        public doubleParameter deadband { get; set; }
+        virtual public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
 
-        [DefaultValue(2.2)]
-        [Range(typeof(double), "-1.0", "3.0")]
-        [PhysicalUnitsFamily(physicalUnit.Family.current)]
-        [TunableParameter()]
-        public doubleParameter peakMin { get; set; }
+            if (propertyName == "")
+                return defaultDisplayName;
 
-        [DefaultValue(4.4)]
-        [Range(typeof(double), "-10.0", "20.0")]
-        [PhysicalUnitsFamily(physicalUnit.Family.current)]
-        public doubleParameter peakMax { get; set; }
+            PropertyInfo pi = this.GetType().GetProperty(propertyName);
+            if (pi != null)
+            {
+                object value = pi.GetValue(this);
+                return string.Format("{0} ({1})", propertyName, value.ToString());
+            }
 
-        public Falcon_Motor()
+            return null;
+        }
+    }
+
+    [Serializable()]
+    public class Falcon : MotorController
+    {
+        public class MotorConfigs : baseDataClass
+        {
+            public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
+            public enum NeutralModeValue { Coast, Brake }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "100")]
+            [PhysicalUnitsFamily(physicalUnit.Family.percent)]
+            [TunableParameter()]
+            public doubleParameter deadbandPercent { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "30.0")]
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            [TunableParameter()]
+            public doubleParameter peakMin { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")]
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter peakMax { get; set; }
+
+            [DefaultValue(InvertedValue.CounterClockwise_Positive)]
+            public InvertedValue inverted { get; set; }
+
+            [DefaultValue(NeutralModeValue.Coast)]
+            public NeutralModeValue NeutralMode { get; set; }
+
+            public MotorConfigs()
+            {
+                defaultDisplayName = "MotorConfigs";
+            }
+        }
+        public MotorConfigs theMotorConfigs { get; set; }
+
+        public class CurrentLimits : baseDataClass
+        {
+            [DefaultValue(false)]
+            public boolParameter enableStatorCurrentLimit { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter statorCurrentLimit { get; set; }
+
+            [DefaultValue(false)]
+            public boolParameter enableSupplyCurrentLimit { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter supplyCurrentLimit { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter supplyCurrentThreshold { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter supplyTimeThreshold { get; set; }
+
+            public CurrentLimits()
+            {
+                defaultDisplayName = "CurrentLimits";
+            }
+        
+        }
+        public CurrentLimits theCurrentLimits { get; set; }
+
+        public class VoltageConfigs : baseDataClass
+        {
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter peakForwardVoltage { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter peakReverseVoltage { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter supplyVoltageTime { get; set; }
+
+            public VoltageConfigs()
+            {
+                defaultDisplayName = "VoltageConfigs";
+            }
+        }
+        public VoltageConfigs theVoltageConfigs { get; set; }
+
+        public class TorqueConfigs : baseDataClass
+        {
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter peakForwardTorqueCurrent { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter peakReverseTorqueCurrent { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter torqueNeutralDeadband { get; set; }
+
+            public TorqueConfigs()
+            {
+                defaultDisplayName = "TorqueConfigs";
+            }
+        }
+        public TorqueConfigs theTorqueConfigs { get; set; }
+
+        public class FeedbackConfigs : baseDataClass
+        {
+            public enum FeedbackSensorSource { RotorSensor , RemoteCANcoder, FusedCANcoder }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.angle)]
+            public doubleParameter feedbackRotorOffset { get; set; }
+
+            [DefaultValue(FeedbackSensorSource.RotorSensor)]
+            public FeedbackSensorSource feedbackSensor { get; set; }
+
+            [DefaultValue(0)]
+            public intParameter remoteSensorID { get; set; }
+
+            public FeedbackConfigs()
+            {
+                defaultDisplayName = "FeedbackConfigs";
+            }
+        }
+        public FeedbackConfigs theFeedbackConfigs { get; set; }
+
+        public Falcon()
         {
         }
     }
 
     [Serializable()]
-    public class TalonSRX_Motor : Motor
+    public class TalonSRX_Motor : MotorController
     {
         [DefaultValue(1.1)]
         [Range(typeof(double), "0", "62")]
@@ -743,11 +927,11 @@ namespace ApplicationData
     [Serializable()]
     public class chassis
     {
-        public List<Motor> motor { get; set; }
+        public List<MotorController> motor { get; set; }
 
         public chassis()
         {
-            motor = new List<Motor>();
+            motor = new List<MotorController>();
             swervemodule = new List<swervemodule>();
 
             helperFunctions.initializeDefaultValues(this);
@@ -805,11 +989,11 @@ namespace ApplicationData
     [Serializable()]
     public class swervemodule
     {
-        public List<Motor> motor { get; set; }
+        public List<MotorController> motor { get; set; }
 
         public swervemodule()
         {
-            motor = new List<Motor>();
+            motor = new List<MotorController>();
 
             helperFunctions.initializeDefaultValues(this);
         }
