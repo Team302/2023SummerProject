@@ -86,7 +86,8 @@ namespace ApplicationData
         public pdp pdp { get; set; }
         public List<mechanismInstance> mechanismInstances { get; set; }
 
-        /*        public List<pcm> pcm { get; set; }
+        /*        
+                public List<pcm> pcm { get; set; }
                 public List<pigeon> pigeon { get; set; }
                 public List<limelight> limelight { get; set; }
                 public chassis chassis { get; set; }
@@ -360,7 +361,7 @@ namespace ApplicationData
         public class CurrentLimits : baseDataClass
         {
             [DefaultValue(false)]
-            public boolParameter enableStatorCurrentLimit;
+            public boolParameter enableStatorCurrentLimit { get; set; }
 
             [DefaultValue(0)]
             [Range(typeof(double), "0", "40.0")] //todo choose a valid range
@@ -368,7 +369,7 @@ namespace ApplicationData
             public doubleParameter statorCurrentLimit { get; set; }
 
             [DefaultValue(false)]
-            public boolParameter enableSupplyCurrentLimit;
+            public boolParameter enableSupplyCurrentLimit { get; set; }
 
             [DefaultValue(0)]
             [Range(typeof(double), "0", "40.0")] //todo choose a valid range
@@ -412,10 +413,56 @@ namespace ApplicationData
 
             public VoltageConfigs()
             {
-                defaultDisplayName = "CurrentLimits";
+                defaultDisplayName = "VoltageConfigs";
             }
         }
         public VoltageConfigs theVoltageConfigs { get; set; }
+
+        public class TorqueConfigs : baseDataClass
+        {
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter peakForwardTorqueCurrent { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter peakReverseTorqueCurrent { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public doubleParameter torqueNeutralDeadband { get; set; }
+
+            public TorqueConfigs()
+            {
+                defaultDisplayName = "TorqueConfigs";
+            }
+        }
+        public TorqueConfigs theTorqueConfigs { get; set; }
+
+        public class FeedbackConfigs : baseDataClass
+        {
+            public enum FeedbackSensorSource { RotorSensor , RemoteCANcoder, FusedCANcoder }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [PhysicalUnitsFamily(physicalUnit.Family.angle)]
+            public doubleParameter feedbackRotorOffset { get; set; }
+
+            [DefaultValue(FeedbackSensorSource.RotorSensor)]
+            public FeedbackSensorSource feedbackSensor { get; set; }
+
+            [DefaultValue(0)]
+            public intParameter remoteSensorID { get; set; }
+
+            public FeedbackConfigs()
+            {
+                defaultDisplayName = "FeedbackConfigs";
+            }
+        }
+        public FeedbackConfigs theFeedbackConfigs { get; set; }
 
         public Falcon()
         {
