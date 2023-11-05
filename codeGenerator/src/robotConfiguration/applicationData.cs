@@ -79,7 +79,7 @@ namespace ApplicationData
 #if !enableTestAutomation
         public List<MotorController> MotorControllers { get; set; }
         public pdp pdp { get; set; }
-        public List<mechanismInstance> mechanismInstance { get; set; }
+        public List<mechanismInstance> mechanismInstances { get; set; }
 
         /*        public List<pcm> pcm { get; set; }
                 public List<pigeon> pigeon { get; set; }
@@ -146,7 +146,7 @@ namespace ApplicationData
         */
         public mechanism()
         {
-            if (GUID == null)
+            if( (GUID == null) || (GUID == new Guid()) )
                 GUID = Guid.NewGuid();
 
             helperFunctions.initializeNullProperties(this);
@@ -244,6 +244,7 @@ namespace ApplicationData
         [Constant()]
         public string motorControllerType { get; protected set; }
 
+        [ConstantInMechInstance]
         public string name { get; set; }
 
         [DefaultValue(0u)]

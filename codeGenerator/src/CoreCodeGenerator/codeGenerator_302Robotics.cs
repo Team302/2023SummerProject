@@ -253,7 +253,7 @@ namespace CoreCodeGenerator
                 replacement += (replacement != "" ? "\n\n" : "") + functionHeaderTemplate.Replace("#", bot.robotID.ToString());
                 replacement += vectorCreation;
 
-                foreach(mechanismInstance mechInstance in bot.mechanismInstance)
+                foreach(mechanismInstance mechInstance in bot.mechanismInstances)
                 {
                     replacement += mechanismTemplate.Replace("MECH", mechInstance.name).Replace("TYPE", mechInstance.mechanism.name);
                 }
