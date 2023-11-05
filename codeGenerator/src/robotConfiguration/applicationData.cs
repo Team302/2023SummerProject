@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -54,32 +55,39 @@ namespace ApplicationData
             helperFunctions.initializeDefaultValues(this);
         }
 
-        //public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
-        //{
-        //    refresh = helperFunctions.RefreshLevel.none;
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.parentHeader;
 
-        //    if (propertyName == "name")
-        //        return string.Format("{0} ({1})", propertyName, name);
+            if (propertyName == "")
+                return name;
 
-        //    return null;
-        //}
+            PropertyInfo pi = this.GetType().GetProperty(propertyName);
+            if (pi != null)
+            {
+                object value = pi.GetValue(this);
+                return string.Format("{0} ({1})", propertyName, value.ToString());
+            }
+
+            return null;
+        }
     }
 
     [Serializable()]
     public partial class applicationData
     {
 #if !enableTestAutomation
-        public List<Motor> motor { get; set; }
+        public List<MotorController> MotorControllers { get; set; }
         public pdp pdp { get; set; }
         public List<mechanismInstance> mechanismInstance { get; set; }
 
-/*        public List<pcm> pcm { get; set; }
-        public List<pigeon> pigeon { get; set; }
-        public List<limelight> limelight { get; set; }
-        public chassis chassis { get; set; }
-        public List<camera> camera { get; set; }
-        public List<roborio> roborio { get; set; }
-*/
+        /*        public List<pcm> pcm { get; set; }
+                public List<pigeon> pigeon { get; set; }
+                public List<limelight> limelight { get; set; }
+                public chassis chassis { get; set; }
+                public List<camera> camera { get; set; }
+                public List<roborio> roborio { get; set; }
+        */
 
         [DefaultValue(1u)]
         [Range(typeof(uint), "1", "9999")]
@@ -124,18 +132,18 @@ namespace ApplicationData
             return name;
         }
 #if !enableTestAutomation
-        public List<Motor> Motor { get; set; }
+        public List<MotorController> MotorControllers { get; set; }
 
-/*
-        public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
-        public List<state> state { get; set; }
-        public List<solenoid> solenoid { get; set; }
-        public List<servo> servo { get; set; }
-        public List<analogInput> analogInput { get; set; }
-        public List<digitalInput> digitalInput { get; set; }
-        public List<cancoder> cancoder { get; set; }
-        public colorsensor colorsensor { get; set; }
-*/
+        /*
+                public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
+                public List<state> state { get; set; }
+                public List<solenoid> solenoid { get; set; }
+                public List<servo> servo { get; set; }
+                public List<analogInput> analogInput { get; set; }
+                public List<digitalInput> digitalInput { get; set; }
+                public List<cancoder> cancoder { get; set; }
+                public colorsensor colorsensor { get; set; }
+        */
         public mechanism()
         {
             if (GUID == null)
@@ -148,8 +156,12 @@ namespace ApplicationData
             helperFunctions.initializeDefaultValues(this);
         }
 
-        public string getDisplayName()
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
         {
+            refresh = helperFunctions.RefreshLevel.none;
+            if (propertyName == "name")
+                refresh = helperFunctions.RefreshLevel.parentHeader;
+
             return string.Format("{0}", name);
         }
 #endif
@@ -224,69 +236,94 @@ namespace ApplicationData
     }
 
     [Serializable()]
-    [XmlInclude(typeof(Falcon_Motor))]
+    [XmlInclude(typeof(Falcon))]
     [XmlInclude(typeof(TalonSRX_Motor))]
-    public class Motor
+    public class MotorController
     {
         [XmlIgnore]
         [Constant()]
-        public string motorType { get; protected set; }
+        public string motorControllerType { get; protected set; }
 
         public string name { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
-        public uintParameter CAN_ID { get; set; }
+        public uintParameter canID { get; set; }
 
-        public Motor()
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "15")]
+        public uintParameter pdpID { get; set; }
+
+        [DefaultValue(0u)]
+        //[Range(typeof(uint), "0", "15")]
+        public uintParameter followID { get; set; }
+
+        public MotorController()
         {
             helperFunctions.initializeNullProperties(this);
 
             string temp = this.GetType().Name;
-            motorType = temp.Substring(0, temp.LastIndexOf('_'));
-            name = motorType;
+            int index = temp.LastIndexOf('_');
+
+            motorControllerType = (index < 0) ? temp : temp.Substring(0, index);
+            name = motorControllerType;
 
             helperFunctions.initializeDefaultValues(this);
         }
-        public string getDisplayName()
+
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
         {
-            return name;
+            refresh = helperFunctions.RefreshLevel.parentHeader;
+
+            if (propertyName == "")
+                return name;
+
+            PropertyInfo pi = this.GetType().GetProperty(propertyName);
+            if (pi != null)
+            {
+                object value = pi.GetValue(this);
+                return string.Format("{0} ({1})", propertyName, value.ToString());
+            }
+
+            return null;
         }
     }
 
     [Serializable()]
-    public class Falcon_Motor : Motor
+    public class Falcon : MotorController
     {
-        [DefaultValue(1.15)]
-        [Range(typeof(double), "0", "62")]
+        public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
+        public enum NeutralModeValue { Coast, Brake }
+
+        [DefaultValue(0)]
+        [Range(typeof(double), "0", "100")]
         [PhysicalUnitsFamily(physicalUnit.Family.percent)]
         [TunableParameter()]
         public doubleParameter deadbandPercent { get; set; }
 
-        [DefaultValue(5.55)]
-        [Range(typeof(double), "0", "100")]
-        [PhysicalUnitsFamily(physicalUnit.Family.percent)]
-        [TunableParameter()]
-        public doubleParameter deadband { get; set; }
-
-        [DefaultValue(2.2)]
-        [Range(typeof(double), "-1.0", "3.0")]
+        [DefaultValue(0)]
+        [Range(typeof(double), "0", "30.0")]
         [PhysicalUnitsFamily(physicalUnit.Family.current)]
         [TunableParameter()]
         public doubleParameter peakMin { get; set; }
 
-        [DefaultValue(4.4)]
-        [Range(typeof(double), "-10.0", "20.0")]
+        [DefaultValue(0)]
+        [Range(typeof(double), "0", "40.0")]
         [PhysicalUnitsFamily(physicalUnit.Family.current)]
         public doubleParameter peakMax { get; set; }
 
-        public Falcon_Motor()
+        [DefaultValue(InvertedValue.CounterClockwise_Positive)]
+        public InvertedValue inverted { get; set; }
+
+        [DefaultValue(NeutralModeValue.Coast)]
+        public NeutralModeValue NeutralMode { get; set; }
+        public Falcon()
         {
         }
     }
 
     [Serializable()]
-    public class TalonSRX_Motor : Motor
+    public class TalonSRX_Motor : MotorController
     {
         [DefaultValue(1.1)]
         [Range(typeof(double), "0", "62")]
@@ -743,11 +780,11 @@ namespace ApplicationData
     [Serializable()]
     public class chassis
     {
-        public List<Motor> motor { get; set; }
+        public List<MotorController> motor { get; set; }
 
         public chassis()
         {
-            motor = new List<Motor>();
+            motor = new List<MotorController>();
             swervemodule = new List<swervemodule>();
 
             helperFunctions.initializeDefaultValues(this);
@@ -805,11 +842,11 @@ namespace ApplicationData
     [Serializable()]
     public class swervemodule
     {
-        public List<Motor> motor { get; set; }
+        public List<MotorController> motor { get; set; }
 
         public swervemodule()
         {
-            motor = new List<Motor>();
+            motor = new List<MotorController>();
 
             helperFunctions.initializeDefaultValues(this);
         }

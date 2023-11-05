@@ -1180,10 +1180,25 @@ namespace FRCrobotCodeGen302
                             //}
                         }
 
-                        lastSelectedValueNode.Text = getDisplayName(isValue__ ? obj : prop.GetValue(obj), lnt.name);
+                        helperFunctions.RefreshLevel refresh;
+                        //lastSelectedValueNode.Text = getDisplayName(isValue__ ? obj : prop.GetValue(obj), lnt.name, out refresh);
+                        lastSelectedValueNode.Text = getDisplayName( obj, lnt.name, out refresh);
 
                         if (lastSelectedValueNode.Parent != null)
-                            lastSelectedValueNode.Parent.Text = getDisplayName(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), "");
+                        {
+                            if (refresh == helperFunctions.RefreshLevel.parentHeader)
+                                lastSelectedValueNode.Parent.Text = getDisplayName(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), "");
+
+                            if (refresh == helperFunctions.RefreshLevel.fullParent)
+                            {
+                                TreeNodeCollection tnc = lastSelectedValueNode.Parent.Nodes;
+                                foreach (TreeNode node in tnc)
+                                {
+                                    helperFunctions.RefreshLevel refr;
+                                    node.Text = getDisplayName(((nodeTag)node.Tag).obj, ((nodeTag)node.Tag).name, out refr);
+                                }
+                            }
+                        }
 
                         mechanism theMechanism;
                         if (isPartOfAMechanismTemplate(lastSelectedValueNode, out theMechanism))
