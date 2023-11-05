@@ -30,12 +30,11 @@ FieldDrive::FieldDrive(RobotDrive *robotDrive) : RobotDrive(), m_robotDrive(robo
 
 std::array<frc::SwerveModuleState, 4> FieldDrive::UpdateSwerveModuleStates(ChassisMovement &chassisMovement)
 {
-    frc::ChassisSpeeds fieldRelativeSpeeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(chassisMovement.chassisSpeeds.vx,
-                                                                                         chassisMovement.chassisSpeeds.vy,
-                                                                                         chassisMovement.chassisSpeeds.omega,
-                                                                                         ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose().Rotation());
+    chassisMovement.chassisSpeeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(chassisMovement.chassisSpeeds.vx,
+                                                                                chassisMovement.chassisSpeeds.vy,
+                                                                                chassisMovement.chassisSpeeds.omega,
+                                                                                ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose().Rotation());
 
-    chassisMovement.chassisSpeeds = fieldRelativeSpeeds;
     return m_robotDrive->UpdateSwerveModuleStates(chassisMovement);
 }
 
