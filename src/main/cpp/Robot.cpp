@@ -28,6 +28,8 @@
 #include <utils/logging/LoggerData.h>
 #include <utils/logging/LoggerEnums.h>
 #include <utils/WaypointXmlParser.h>
+#include <utils/BuildDetailsReader.h>
+#include <RobotDefinitions.h>
 
 #include <AdjustableItemMgr.h>
 #include <mechanisms/SomeMech/SomeMech.h>
@@ -52,6 +54,12 @@ void Robot::RobotInit()
 {
     Logger::GetLogger()->PutLoggingSelectionsOnDashboard();
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("arrived"));
+
+    // Read build details for team number, branch, and more
+    //    m_detailsReader = new BuildDetailsReader();
+    //    m_details = m_detailsReader->ReadBuildDetails();
+
+    //    m_robot = RobotDefinitions::GetRobotDefinition(m_details.teamNumber);
 
     m_controller = nullptr;
 
