@@ -12,6 +12,7 @@ using System.Xml.Serialization;
 //todo the range of pdpID for ctre is 0-15, for REV it is 0-19. How to adjust the range allowed in the GUI. If initially REV is used and an id > 15 is used, then user chooses CTRE, what to do?
 //todo make mechanism instances separate files so that it is easier for multiple people to work on the robot in parallel
 //todo run a sanity check on a click of a button or on every change?
+//todo in the treeview, place the "name" nodes at the top
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -358,6 +359,7 @@ namespace ApplicationData
         }
     }
 
+    [Serializable]
     public class baseDataClass
     {
         protected string defaultDisplayName { get; set; } = "defaultDisplayName";
@@ -388,6 +390,7 @@ namespace ApplicationData
         [DefaultValue(motorType.Falcon)]
         public motorType motor { get; set; }
 
+        [Serializable]
         public class MotorConfigs : baseDataClass
         {
             public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
@@ -423,6 +426,7 @@ namespace ApplicationData
         }
         public MotorConfigs theMotorConfigs { get; set; }
 
+        [Serializable]
         public class CurrentLimits : baseDataClass
         {
             [DefaultValue(false)]

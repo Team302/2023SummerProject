@@ -173,7 +173,8 @@ namespace applicationConfiguration
             {
                 if (pi.Name == "name")
                 {
-                    pi.SetValue(obj, objectName);
+                    if (string.IsNullOrEmpty(pi.GetValue(obj).ToString()))
+                        pi.SetValue(obj, objectName);
                 }
                 else if (isACollection(pi.PropertyType))
                 {
