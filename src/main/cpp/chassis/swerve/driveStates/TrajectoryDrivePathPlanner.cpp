@@ -74,7 +74,18 @@ std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveMo
         {
             auto command = marker.getCommand();
 
-            command.get()->GetName();
+            //These can be registered similar to path planner
+            //Realistically, this will turn from a switch statement to a map lookup
+            //Functions in map will get populated from primitive
+            switch (command.get()->GetName())
+              {
+                case "Test":
+                      //some code
+                      break;
+                default:
+                      //default code
+                      break;
+              }  
         }
     }
 
