@@ -773,7 +773,7 @@ namespace FRCrobotCodeGen302
                             allowEdit = beObj.isTunable ? true : !beObj.showExpanded;
                         }
 
-                        
+
                         if ((beObj.name == "value") || showUnits)
                         {
                             string updatedUnits = setPhysicalUnitsComboBox(beObj.unitsFamily, beObj.physicalUnits);
@@ -1077,7 +1077,7 @@ namespace FRCrobotCodeGen302
                                         pi.SetValue(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), firstUnit == null ? "" : firstUnit.ToString());
                                 }
                             }
-                         }
+                        }
 
                         helperFunctions.RefreshLevel refresh;
                         if (isValue)
@@ -1185,7 +1185,7 @@ namespace FRCrobotCodeGen302
 
                         helperFunctions.RefreshLevel refresh;
                         //lastSelectedValueNode.Text = getDisplayName(isValue__ ? obj : prop.GetValue(obj), lnt.name, out refresh);
-                        lastSelectedValueNode.Text = getDisplayName( obj, lnt.name, out refresh);
+                        lastSelectedValueNode.Text = getDisplayName(obj, lnt.name, out refresh);
 
                         if (lastSelectedValueNode.Parent != null)
                         {
@@ -1327,7 +1327,7 @@ namespace FRCrobotCodeGen302
         {
             if (lastSelectedValueNode != null)
             {
-                List<(string,object)> objectsToAddToCurrentNode = new List<(string,object)>();
+                List<(string, object)> objectsToAddToCurrentNode = new List<(string, object)>();
 
                 TreeNode mechanismInstancesNode = null;
                 TreeNode tn = null;
@@ -1406,11 +1406,15 @@ namespace FRCrobotCodeGen302
                             string nameStr = "here5";
                             try
                             {
-                                nameStr = obj.GetType().GetProperty("name").GetValue(obj).ToString();
-                                nameStr += "_" + count;
-                                PropertyInfo thisPi = obj.GetType().GetProperty("name");
-                                if (thisPi != null)
-                                    thisPi.SetValue(obj, nameStr);
+                                PropertyInfo piName = obj.GetType().GetProperty("name");
+                                if (piName != null)
+                                {
+                                    nameStr = piName.GetValue(obj).ToString();
+                                    nameStr += "_" + count;
+                                    PropertyInfo thisPi = obj.GetType().GetProperty("name");
+                                    if (thisPi != null)
+                                        thisPi.SetValue(obj, nameStr);
+                                }
                             }
                             catch { }
 
@@ -1427,7 +1431,7 @@ namespace FRCrobotCodeGen302
                             else
                             {
                                 if (!objectsToAddToCurrentNode.Exists(o => o.Item2 == theObj))
-                                    objectsToAddToCurrentNode.Add((name,theObj));
+                                    objectsToAddToCurrentNode.Add((name, theObj));
 
                                 //if (tn == null)
                                 //    tn = AddNode(lastSelectedValueNode, theObj, name); // add the List containing an element
@@ -1451,7 +1455,7 @@ namespace FRCrobotCodeGen302
                         updateMechInstancesFromMechTemplate(theMechanism);
                 }
 
-                foreach ((string,object) newObj in objectsToAddToCurrentNode)
+                foreach ((string, object) newObj in objectsToAddToCurrentNode)
                 {
                     tn = AddNode(lastSelectedValueNode, newObj.Item2, newObj.Item1);
                 }
