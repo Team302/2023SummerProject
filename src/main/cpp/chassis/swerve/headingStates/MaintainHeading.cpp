@@ -16,10 +16,11 @@
 // Team302 Includes
 #include <chassis/swerve/headingStates/MaintainHeading.h>
 #include <chassis/ChassisOptionEnums.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 
 /// DEBUGGING
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 MaintainHeading::MaintainHeading() : ISwerveDriveOrientation(ChassisOptionEnums::HeadingOption::MAINTAIN)
 {
@@ -35,7 +36,8 @@ void MaintainHeading::UpdateChassisSpeeds(ChassisMovement &chassisMovement)
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Maintain", "VyBEFORE", chassisMovement.chassisSpeeds.vy.to<double>());
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Maintain", "OmegaBEFORE", chassisMovement.chassisSpeeds.omega.to<double>());
 
-    auto chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    auto chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 
     if (std::abs(rot.to<double>()) < 0.1)
     {

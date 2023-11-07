@@ -19,7 +19,8 @@
 #include <string>
 #include <vector>
 
-#include <hw/usages/ServoUsage.h>
+#include "units/angle.h"
+#include <configs/usages/ServoUsage.h>
 
 #include <frc/Servo.h>
 
@@ -35,8 +36,8 @@ public:
 	DragonServo(
 		ServoUsage::SERVO_USAGE deviceUsage, // <I> - Usage of the servo
 		int deviceID,						 // <I> - PWM ID
-		double minAngle,					 // <I> - Minimun desired angle
-		double maxAngle						 // <I> - Maximum desired angle
+		units::angle::degree_t minAngle,	 // <I> - Minimun desired angle
+		units::angle::degree_t maxAngle		 // <I> - Maximum desired angle
 	);
 
 	virtual ~DragonServo() = default;
@@ -44,8 +45,8 @@ public:
 	void Set(double value);
 	void SetOffline();
 	double Get() const;
-	void SetAngle(double angle);
-	double GetAngle() const;
+	void SetAngle(units::angle::degree_t angle);
+	units::angle::degree_t GetAngle() const;
 
 	ServoUsage::SERVO_USAGE GetUsage() const;
 	void MoveToMaxAngle();
@@ -54,6 +55,6 @@ public:
 private:
 	ServoUsage::SERVO_USAGE m_usage;
 	frc::Servo *m_servo;
-	double m_minAngle;
-	double m_maxAngle;
+	units::angle::degree_t m_minAngle;
+	units::angle::degree_t m_maxAngle;
 };

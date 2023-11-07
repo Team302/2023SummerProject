@@ -21,12 +21,12 @@
 #include <vector>
 
 // Team 302 includes
-#include <State.h>
+#include "State.h"
 #include <mechanisms/StateStruc.h>
-#include <utils/logging/LoggableItem.h>
+#include "utils/logging/LoggableItem.h"
 
 // forward declare
-class Mech;
+class BaseMech;
 class PrimitiveParams;
 
 // Third Party Includes
@@ -36,7 +36,7 @@ class StateMgr : public LoggableItem
 public:
     StateMgr();
     ~StateMgr() = default;
-    void Init(Mech *mech, const std::map<std::string, StateStruc> &stateMap);
+    void Init(BaseMech *mech, const std::map<std::string, StateStruc> &stateMap);
 
     /// @brief  run the current state
     /// @return void
@@ -59,7 +59,7 @@ public:
     inline State *GetSpecifiedState(unsigned int stateID) const { return stateID < m_stateVector.size() ? m_stateVector[stateID] : nullptr; };
     inline State *GetCurrentStatePtr() const { return m_stateVector[m_currentStateID]; };
 
-    void LogInformation() const override;
+    void LogInformation() override;
 
     void SetAreGamepadTransitionsChecked(bool checkGamepadTransitions) { m_checkGamePadTransitions = checkGamepadTransitions; }
 
@@ -73,7 +73,7 @@ protected:
     std::vector<State *> GetStateVector() { return m_stateVector; };
 
 private:
-    Mech *m_mech;
+    BaseMech *m_mech;
     State *m_currentState;
     std::vector<State *> m_stateVector;
     int m_currentStateID;

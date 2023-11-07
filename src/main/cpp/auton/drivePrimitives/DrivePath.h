@@ -38,7 +38,7 @@ public:
     bool IsDone() override;
 
 private:
-    std::shared_ptr<IChassis> m_chassis;
+    IChassis *m_chassis;
     std::unique_ptr<frc::Timer> m_timer;
     frc::Trajectory m_trajectory;
     bool m_runHoloController;

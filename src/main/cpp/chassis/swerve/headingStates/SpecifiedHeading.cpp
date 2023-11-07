@@ -16,7 +16,8 @@
 // Team302 Includes
 #include <chassis/ChassisOptionEnums.h>
 #include <chassis/swerve/headingStates/SpecifiedHeading.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 
 // Standish Quick Fix
 #include <frc/DriverStation.h>
@@ -38,6 +39,10 @@ void SpecifiedHeading::UpdateChassisSpeeds(ChassisMovement &chassisMovement)
         chassisMovement.chassisSpeeds.omega += CalcHeadingCorrection(m_targetAngle, m_kPGoalHeadingControl_STANDISH);
     }
 
-    auto chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
-    chassis->SetStoredHeading(chassis->GetPose().Rotation().Degrees());
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    auto chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
+    if (chassis != nullptr)
+    {
+        chassis->SetStoredHeading(chassis->GetPose().Rotation().Degrees());
+    }
 }

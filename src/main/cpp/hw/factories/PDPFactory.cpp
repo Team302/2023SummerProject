@@ -25,7 +25,7 @@
 #include <frc/PowerDistribution.h>
 
 // Team 302 includes
-#include <hw/factories/PDPFactory.h>
+#include "hw/factories/PDPFactory.h"
 
 // Third Party Includes
 

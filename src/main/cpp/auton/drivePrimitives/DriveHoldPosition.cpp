@@ -15,7 +15,6 @@
 //====================================================================================================================================================
 
 // C++ Includes
-#include <memory>
 #include <string>
 
 // FRC includes
@@ -25,7 +24,8 @@
 #include <auton/PrimitiveParams.h>
 #include <auton/drivePrimitives/DriveHoldPosition.h>
 #include <auton/drivePrimitives/IPrimitive.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <mechanisms/controllers/ControlModes.h>
 
 // Third Party Includes
@@ -33,9 +33,11 @@
 using namespace std;
 using namespace frc;
 
-DriveHoldPosition::DriveHoldPosition() : m_chassis(ChassisFactory::GetChassisFactory()->GetIChassis()), // Get chassis from chassis factory
-										 m_timeRemaining(0.0)											// Value will be changed in init
+DriveHoldPosition::DriveHoldPosition() : m_chassis(nullptr),
+										 m_timeRemaining(0.0) // Value will be changed in init
 {
+	auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+	m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 }
 
 void DriveHoldPosition::Init(PrimitiveParams *params)

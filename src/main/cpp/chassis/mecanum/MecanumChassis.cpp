@@ -25,46 +25,49 @@
 #include <frc/geometry/Rotation2d.h>
 #include <frc/geometry/Translation2d.h>
 
-#include <units/angle.h>
+#include "units/angle.h"
 
-#include <chassis/holonomic/FieldDriveUtils.h>
-#include <chassis/ChassisMovement.h>
-#include <hw/factories/PigeonFactory.h>
-#include <hw/DragonPigeon.h>
-#include <utils/ConversionUtils.h>
-#include <utils/logging/Logger.h>
+#include "chassis/holonomic/FieldDriveUtils.h"
+#include "chassis/ChassisMovement.h"
+#include "hw/interfaces/IDragonPigeon.h"
 
-#include <chassis/mecanum/MecanumChassis.h>
-#include <chassis/ChassisOptionEnums.h>
+#include "configs/RobotConfigMgr.h"
+#include "configs/RobotConfig.h"
+#include "configs/usages/CanSensorUsage.h"
 
-#include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
+#include "utils/ConversionUtils.h"
+#include "utils/logging/Logger.h"
+
+#include "chassis/mecanum/MecanumChassis.h"
+#include "chassis/ChassisOptionEnums.h"
+
+#include "ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h"
 
 using namespace std;
 using namespace frc;
 using namespace ctre::phoenix::motorcontrol::can;
 
-MecanumChassis::MecanumChassis(
-    shared_ptr<IDragonMotorController> leftFrontMotor,
-    shared_ptr<IDragonMotorController> leftBackMotor,
-    shared_ptr<IDragonMotorController> rightFrontMotor,
-    shared_ptr<IDragonMotorController> rightBackMotor,
-    units::meter_t wheelBase,
-    units::meter_t trackWidth,
-    units::velocity::meters_per_second_t maxSpeed,
-    units::angular_velocity::degrees_per_second_t maxAngSpeed,
-    units::length::inch_t wheelDiameter,
-    string networktablename) : IChassis(),
-                               m_leftFrontMotor(leftFrontMotor),
-                               m_leftBackMotor(leftBackMotor),
-                               m_rightFrontMotor(rightFrontMotor),
-                               m_rightBackMotor(rightBackMotor),
-                               m_pigeon(PigeonFactory::GetFactory()->GetPigeon(DragonPigeon::PIGEON_USAGE::CENTER_OF_ROBOT)),
-                               m_maxSpeed(maxSpeed),
-                               m_maxAngSpeed(maxAngSpeed),
-                               m_wheelDiameter(wheelDiameter),
-                               m_wheelBase(wheelBase),
-                               m_track(trackWidth),
-                               m_ntName(networktablename)
+MecanumChassis::MecanumChassis(shared_ptr<IDragonMotorController> leftFrontMotor,
+                               shared_ptr<IDragonMotorController> leftBackMotor,
+                               shared_ptr<IDragonMotorController> rightFrontMotor,
+                               shared_ptr<IDragonMotorController> rightBackMotor,
+                               units::meter_t wheelBase,
+                               units::meter_t trackWidth,
+                               units::velocity::meters_per_second_t maxSpeed,
+                               units::angular_velocity::degrees_per_second_t maxAngSpeed,
+                               units::length::inch_t wheelDiameter,
+                               string networktablename) : IChassis(),
+                                                          m_leftFrontMotor(leftFrontMotor),
+                                                          m_leftBackMotor(leftBackMotor),
+                                                          m_rightFrontMotor(rightFrontMotor),
+                                                          m_rightBackMotor(rightBackMotor),
+                                                          m_pigeon(RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(CanSensorUsage::CANSENSOR_USAGE::PIGEON_ROBOT_CENTER)),
+                                                          m_maxSpeed(maxSpeed),
+                                                          m_maxAngSpeed(maxAngSpeed),
+                                                          m_wheelDiameter(wheelDiameter),
+                                                          m_wheelBase(wheelBase),
+                                                          m_track(trackWidth),
+                                                          m_ntName(networktablename)
 {
 }
 
@@ -157,10 +160,5 @@ void MecanumChassis::SetTargetHeading(units::angle::degree_t targetYaw)
 
 void MecanumChassis::ZeroEncoder(shared_ptr<IDragonMotorController> controller)
 {
-    if (controller.get() != nullptr)
-    {
-        auto motor = controller.get()->GetSpeedController();
-        auto talon = dynamic_cast<WPI_TalonSRX *>(motor.get());
-        talon->SetSelectedSensorPosition(0, 0);
-    }
+    // TODO: add methods to motors to reset encoders to zero
 }

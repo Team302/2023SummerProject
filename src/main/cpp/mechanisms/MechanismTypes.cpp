@@ -29,8 +29,8 @@
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/MechanismTypes.h>
-#include <utils/logging/Logger.h>
+#include "mechanisms/MechanismTypes.h"
+#include "utils/logging/Logger.h"
 
 // @ADDMECH add your mechanism include
 

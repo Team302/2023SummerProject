@@ -18,7 +18,7 @@
 
 #include <mechanisms/StateStruc.h>
 
-class Mech;
+class BaseMech;
 class MechanismTargetData;
 class PrimitiveParams;
 
@@ -33,7 +33,7 @@ public:
         bool check);
 
     static State *CreateState(
-        Mech *mech,
+        BaseMech *mech,
         StateStruc &stateInfo,
         MechanismTargetData *targetData);
 };

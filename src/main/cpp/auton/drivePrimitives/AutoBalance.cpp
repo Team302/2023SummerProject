@@ -22,17 +22,18 @@
 #include <auton/drivePrimitives/AutoBalance.h>
 #include <chassis/ChassisMovement.h>
 #include <chassis/ChassisOptionEnums.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 
 /// DEBUGGING
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 using namespace std;
 using namespace frc;
 
 using namespace wpi::math;
 
-AutoBalance::AutoBalance() : m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
+AutoBalance::AutoBalance() : m_chassis(nullptr),
                              // max velocity of 1 rotation per second and a max acceleration of 180 degrees per second squared.
                              m_headingOption(ChassisOptionEnums::HeadingOption::MAINTAIN),
                              m_heading(0.0),
@@ -42,6 +43,8 @@ AutoBalance::AutoBalance() : m_chassis(ChassisFactory::GetChassisFactory()->GetS
                              m_maxTimeTimer(new frc::Timer())
 
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 }
 void AutoBalance::Init(PrimitiveParams *params)
 {

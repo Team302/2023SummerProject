@@ -20,7 +20,7 @@
 
 // Team 302 Includes
 #include <utils/WaypointXmlParser.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <utils/Waypoint2d.h>
 #include <chassis/swerve/driveStates/DragonTrajectoryGenerator.h>
 // Third party includes

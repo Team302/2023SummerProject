@@ -19,11 +19,10 @@
 #include <frc/filter/Debouncer.h>
 #include <frc/DigitalInput.h>
 
-#include <units/time.h>
-
-#include <hw/DragonDigitalInput.h>
-#include <hw/usages/DigitalInputUsage.h>
-#include <utils/logging/Logger.h>
+#include "units/time.h"
+#include "hw/DragonDigitalInput.h"
+#include <configs/usages/DigitalInputUsage.h>
+#include "utils/logging/Logger.h"
 
 using namespace frc;
 using namespace std;

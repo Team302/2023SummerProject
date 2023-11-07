@@ -16,38 +16,30 @@
 #include <string>
 
 #include <auton/PrimitiveParams.h>
-#include <State.h>
-#include <mechanisms/base/Mech.h>
-#include <mechanisms/base/StateMgr.h>
-#include <mechanisms/controllers/MechanismTargetData.h>
-#include <mechanisms/MechanismFactory.h>
-#include <mechanisms/MechanismTypes.h>
+#include "State.h"
+#include "mechanisms/base/BaseMech.h"
+#include "mechanisms/base/StateMgr.h"
+#include "mechanisms/controllers/MechanismTargetData.h"
+#include "mechanisms/MechanismTypes.h"
 #include <mechanisms/StateMgrHelper.h>
 #include <mechanisms/StateStruc.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 //@ADDMech Add includes for mech states and mech state mgr
-#include <mechanisms/arm/ArmState.h>
-#include <mechanisms/arm/ArmManualState.h>
-#include <mechanisms/arm/ArmStateMgr.h>
-#include <mechanisms/extender/ExtenderState.h>
-#include <mechanisms/extender/ExtenderManualState.h>
-#include <mechanisms/extender/ExtenderStateMgr.h>
-#include <mechanisms/Intake/IntakeState.h>
-#include <mechanisms/Intake/IntakeStateMgr.h>
 
 using namespace std;
 
 void StateMgrHelper::InitStateMgrs()
 {
     //@ADDMech Add MechanismStateMgr::GetInstanceI() here
-    ArmStateMgr::GetInstance();
-    ExtenderStateMgr::GetInstance();
-    IntakeStateMgr::GetInstance();
+    // ArmStateMgr::GetInstance();
+    // ExtenderStateMgr::GetInstance();
+    // IntakeStateMgr::GetInstance();
 }
 
 void StateMgrHelper::RunCurrentMechanismStates()
 {
+    /**
     for (auto i = MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM + 1; i < MechanismTypes::MECHANISM_TYPE::MAX_MECHANISM_TYPES; ++i)
     {
         auto mech = MechanismFactory::GetMechanismFactory()->GetMechanism(static_cast<MechanismTypes::MECHANISM_TYPE>(i));
@@ -64,10 +56,12 @@ void StateMgrHelper::RunCurrentMechanismStates()
             stateMgr->RunCurrentState();
         }
     }
+    **/
 }
 
 void StateMgrHelper::SetMechanismStateFromParam(PrimitiveParams *params)
 {
+    /**
     if (params != nullptr)
     {
         for (auto i = MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM + 1; i < MechanismTypes::MECHANISM_TYPE::MAX_MECHANISM_TYPES; ++i)
@@ -84,10 +78,12 @@ void StateMgrHelper::SetMechanismStateFromParam(PrimitiveParams *params)
             }
         }
     }
+    **/
 }
 
 void StateMgrHelper::SetCheckGamepadInputsForStateTransitions(bool check)
 {
+    /**
     for (auto i = MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM + 1; i < MechanismTypes::MECHANISM_TYPE::MAX_MECHANISM_TYPES; ++i)
     {
         auto mech = MechanismFactory::GetMechanismFactory()->GetMechanism(static_cast<MechanismTypes::MECHANISM_TYPE>(i));
@@ -97,53 +93,56 @@ void StateMgrHelper::SetCheckGamepadInputsForStateTransitions(bool check)
             stateMgr->SetAreGamepadTransitionsChecked(check);
         }
     }
+    **/
 }
 
-State *StateMgrHelper::CreateState(Mech *mech, StateStruc &stateInfo, MechanismTargetData *targetData)
+State *StateMgrHelper::CreateState(BaseMech *mech, StateStruc &stateInfo, MechanismTargetData *targetData)
 {
-    auto controlData = targetData->GetController();
-    auto controlData2 = targetData->GetController2();
-    auto target = targetData->GetTarget();
-    auto secondaryTarget = targetData->GetSecondTarget();
-    auto solenoidState = targetData->GetSolenoidState();
+    // auto controlData = targetData->GetController();
+    // auto controlData2 = targetData->GetController2();
+    // auto target = targetData->GetTarget();
+    // auto secondaryTarget = targetData->GetSecondTarget();
+    // auto solenoidState = targetData->GetSolenoidState();
     //  auto solenoid2State = targetData->GetSolenoid2State();
     //  auto robotPitch = targetData->GetRobotPitch();
     //  auto function1Coeff = targetData->GetFunction1Coeff();
     //  auto function2Coeff = targetData->GetFunction2Coeff();
     auto type = stateInfo.type;
-    auto xmlString = stateInfo.xmlIdentifier;
-    auto id = stateInfo.id;
+    // auto xmlString = stateInfo.xmlIdentifier;
+    // auto id = stateInfo.id;
 
     State *thisState = nullptr;
     switch (type)
     {
         // @ADDMECH Add case(s) to create your state(s)
 
-    case StateType::ARM_STATE:
-        thisState = new ArmState(xmlString, id, controlData, target);
-        break;
+        /**
+        case StateType::ARM_STATE:
+            thisState = new ArmState(xmlString, id, controlData, target);
+            break;
 
-    case StateType::MANUAL_ARM_STATE:
-        thisState = new ArmManualState(xmlString, id, controlData, target);
-        break;
+        case StateType::MANUAL_ARM_STATE:
+            thisState = new ArmManualState(xmlString, id, controlData, target);
+            break;
 
-    case StateType::EXTENDER_STATE:
-        thisState = new ExtenderState(xmlString, id, controlData, target);
-        break;
+        case StateType::EXTENDER_STATE:
+            thisState = new ExtenderState(xmlString, id, controlData, target);
+            break;
 
-    case StateType::MANUAL_EXTENDER_STATE:
-        thisState = new ExtenderManualState(xmlString, id, controlData, target);
-        break;
+        case StateType::MANUAL_EXTENDER_STATE:
+            thisState = new ExtenderManualState(xmlString, id, controlData, target);
+            break;
 
-    case StateType::INTAKE_STATE:
-    {
-        string identifier("creating");
-        identifier += xmlString;
-        identifier += to_string(id);
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("IntakeDebugging"), identifier, "creating");
-        thisState = new IntakeState(xmlString, id, controlData, controlData2, target, secondaryTarget, solenoidState);
-    }
-    break;
+        case StateType::INTAKE_STATE:
+        {
+            string identifier("creating");
+            identifier += xmlString;
+            identifier += to_string(id);
+            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("IntakeDebugging"), identifier, "creating");
+            thisState = new IntakeState(xmlString, id, controlData, controlData2, target, secondaryTarget, solenoidState);
+        }
+        break;
+        **/
 
     default:
         Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, mech->GetNetworkTableName(), string("StateMgr::StateMgr"), string("unknown state"));

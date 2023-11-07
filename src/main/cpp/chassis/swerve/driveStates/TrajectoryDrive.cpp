@@ -18,8 +18,9 @@
 // Team302 Includes
 #include <chassis/swerve/driveStates/TrajectoryDrive.h>
 #include <chassis/ChassisMovement.h>
-#include <chassis/ChassisFactory.h>
-#include <utils/logging/Logger.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
+#include "utils/logging/Logger.h"
 #include <chassis/swerve/headingStates/SpecifiedHeading.h>
 
 using frc::Pose2d;
@@ -33,13 +34,19 @@ TrajectoryDrive::TrajectoryDrive(RobotDrive *robotDrive) : RobotDrive(),
                                                                                                                            frc::TrapezoidProfile<units::radian>::Constraints{0_rad_per_s, 0_rad_per_s / 1_s}}),
                                                            m_desiredState(),
                                                            m_trajectoryStates(),
-                                                           m_prevPose(ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose()),
+                                                           m_prevPose(),
                                                            m_wasMoving(false),
                                                            m_timer(std::make_unique<frc::Timer>()),
-                                                           m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
+                                                           m_chassis(nullptr),
                                                            m_whyDone("Trajectory isn't finished/Error")
 
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
+    if (m_chassis != nullptr)
+    {
+        m_prevPose = m_chassis->GetPose();
+    }
 }
 
 void TrajectoryDrive::Init(ChassisMovement &chassisMovement)
@@ -61,7 +68,7 @@ void TrajectoryDrive::Init(ChassisMovement &chassisMovement)
         m_timer.get()->Start();
     }
 
-    m_delta = m_finalState.pose - ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose();
+    m_delta = m_finalState.pose - m_chassis->GetPose();
 }
 
 std::array<frc::SwerveModuleState, 4> TrajectoryDrive::UpdateSwerveModuleStates(ChassisMovement &chassisMovement)
@@ -84,11 +91,9 @@ std::array<frc::SwerveModuleState, 4> TrajectoryDrive::UpdateSwerveModuleStates(
                                                            frc::Rotation2d(chassisMovement.yawAngle));
         chassisMovement.chassisSpeeds = refChassisSpeeds;
 
-        auto swerveChassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
-
         if (chassisMovement.headingOption == ChassisOptionEnums::HeadingOption::SPECIFIED_ANGLE)
         {
-            auto specifedHeading = dynamic_cast<SpecifiedHeading *>(swerveChassis->GetHeadingState(chassisMovement));
+            auto specifedHeading = dynamic_cast<SpecifiedHeading *>(m_chassis->GetHeadingState(chassisMovement));
             chassisMovement.chassisSpeeds.omega = units::angular_velocity::radians_per_second_t(0);
             specifedHeading->UpdateChassisSpeeds(chassisMovement);
         }
@@ -126,7 +131,7 @@ bool TrajectoryDrive::IsDone()
 
     if (!m_trajectoryStates.empty()) // If we have states...
     {
-        auto curPos = ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose();
+        auto curPos = m_chassis->GetPose();
 
         // Check if the current pose and the trajectory's final pose are the same
 

@@ -65,7 +65,7 @@ public:
 private:
 	float m_maxTime;	 // Target time
 	float m_currentTime; // Time since init
-	std::shared_ptr<IChassis> m_chassis;
+	IChassis *m_chassis;
 	std::unique_ptr<frc::Timer> m_timer;
 	double m_heading;
 };

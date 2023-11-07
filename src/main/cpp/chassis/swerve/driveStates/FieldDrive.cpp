@@ -19,10 +19,11 @@
 
 // Team302 Includes
 #include <chassis/swerve/driveStates/FieldDrive.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 
 /// DEBUGGING
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 FieldDrive::FieldDrive(RobotDrive *robotDrive) : RobotDrive(), m_robotDrive(robotDrive)
 {
@@ -72,13 +73,18 @@ std::array<frc::SwerveModuleState, 4> FieldDrive::UpdateSwerveModuleStates(Chass
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "FieldDrive", "OmegaFudge", omega.to<double>());
     */
 
-    frc::ChassisSpeeds fieldRelativeSpeeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(chassisMovement.chassisSpeeds.vx,
-                                                                                         chassisMovement.chassisSpeeds.vy,
-                                                                                         chassisMovement.chassisSpeeds.omega,
-                                                                                         ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose().Rotation());
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    auto chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
+    if (chassis != nullptr)
+    {
+        frc::ChassisSpeeds fieldRelativeSpeeds = frc::ChassisSpeeds::FromFieldRelativeSpeeds(chassisMovement.chassisSpeeds.vx,
+                                                                                             chassisMovement.chassisSpeeds.vy,
+                                                                                             chassisMovement.chassisSpeeds.omega,
+                                                                                             chassis->GetPose().Rotation());
 
-    chassisMovement.chassisSpeeds = fieldRelativeSpeeds;
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "FieldDrive", "Chassis Rotation", ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose().Rotation().Degrees().to<double>());
+        chassisMovement.chassisSpeeds = fieldRelativeSpeeds;
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "FieldDrive", "Chassis Rotation", chassis->GetPose().Rotation().Degrees().to<double>());
+    }
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "FieldDrive", "VxAFTER", chassisMovement.chassisSpeeds.vx.to<double>());
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "FieldDrive", "VyAFTER", chassisMovement.chassisSpeeds.vy.to<double>());
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "FieldDrive", "OmegaAFTER", chassisMovement.chassisSpeeds.omega.to<double>());

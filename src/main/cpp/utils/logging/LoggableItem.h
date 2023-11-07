@@ -24,5 +24,5 @@ public:
 	virtual ~LoggableItem() = default;
 
 	/// @brief log data to the network table if it is activated and time period has past
-	virtual void LogInformation() const = 0;
+	virtual void LogInformation() = 0;
 };

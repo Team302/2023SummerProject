@@ -16,7 +16,6 @@
 #pragma once
 
 // C++ Includes
-#include <memory>
 
 // FRC/WPI Includes
 #include <frc/trajectory/TrajectoryUtil.h>
@@ -45,6 +44,6 @@ public:
     bool IsDone() override;
 
 private:
-    std::shared_ptr<IChassis> m_chassis;
+    IChassis *m_chassis;
     frc::Trajectory m_trajectory;
 };

@@ -16,8 +16,9 @@
 
 #pragma once
 #include <string>
+#include <vector>
 
-#include <utils/logging/LoggableItem.h>
+#include "utils/logging/LoggableItem.h"
 
 ///	 @interface     State
 ///  @brief      	Interface for state classes
@@ -25,17 +26,21 @@ class State : public LoggableItem
 {
 
 public:
-    State(
-        std::string stateName,
-        int stateId);
+    State(std::string stateName,
+          int stateId);
     State() = delete;
     ~State() = default;
 
     virtual void Init() = 0;
     virtual void Run() = 0;
     virtual void Exit() = 0;
-    virtual bool AtTarget() const = 0;
-    void LogInformation() const override;
+    virtual bool AtTarget() = 0;
+
+    virtual void RegisterTransitionState(State *state);
+    virtual bool IsTransitionCondition(bool considerGamepadTransitions) const;
+    std::vector<State *> GetPossibleStateTransitions() const { return m_transitionStates; }
+
+    void LogInformation() override;
 
     inline std::string GetStateName() const { return m_stateName; }
     inline int GetStateId() const { return m_stateId; }
@@ -43,4 +48,5 @@ public:
 private:
     std::string m_stateName;
     int m_stateId;
+    std::vector<State *> m_transitionStates;
 };

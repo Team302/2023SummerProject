@@ -22,8 +22,8 @@
 #include <frc/motorcontrol/MotorController.h>
 
 #include <mechanisms/controllers/ControlModes.h>
-#include <hw/interfaces/IDragonMotorController.h>
-#include <hw/usages/MotorControllerUsage.h>
+#include "hw/interfaces/IDragonMotorController.h"
+#include "configs/usages/MotorControllerUsage.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/RemoteSensorSource.h>
@@ -53,7 +53,6 @@ public:
     double GetRPS() const override;
     MotorControllerUsage::MOTOR_CONTROLLER_USAGE GetType() const override;
     int GetID() const override;
-    std::shared_ptr<frc::MotorController> GetSpeedController() const override;
     double GetCurrent() const override;
     IDragonMotorController::MOTOR_TYPE GetMotorType() const override;
 
@@ -72,7 +71,7 @@ public:
     /// @param [in] int             slot - hardware slot to use
     /// @param [in] ControlData*    pid - the control constants
     /// @return void
-    void SetControlConstants(int slot, ControlData *controlInfo) override;
+    void SetControlConstants(int slot, const ControlData &controlInfo) override;
     // Method:		SelectClosedLoopProfile
     // Description:	Selects which profile slot to use for closed-loop control
     // Returns:		void
@@ -124,8 +123,8 @@ public:
         ) override;
 
         double GetGearRatio() const override { return m_gearRatio;}
-        bool IsForwardLimitSwitchClosed() const override;
-        bool IsReverseLimitSwitchClosed() const override;
+        bool IsForwardLimitSwitchClosed()  override;
+        bool IsReverseLimitSwitchClosed() override;
         void EnableVoltageCompensation( double fullvoltage) override;
         void SetSelectedSensorPosition
         (
@@ -135,7 +134,7 @@ public:
         double GetCountsPerInch() const override;
         double GetCountsPerDegree() const override;
         ControlModes::CONTROL_TYPE GetControlMode() const override;
-        double GetCounts() const override;
+        double GetCounts() override;
         void EnableDisableLimitSwitches
         (
             bool enable

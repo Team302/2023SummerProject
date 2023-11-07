@@ -17,12 +17,13 @@
 #pragma once
 #include <string>
 
-#include <units/velocity.h>
-#include <units/angular_velocity.h>
+#include "units/velocity.h"
+#include "units/angular_velocity.h"
 
 #include <chassis/IChassis.h>
 #include <chassis/ChassisMovement.h>
-#include <hw/interfaces/IDragonMotorController.h>
+#include "hw/interfaces/IDragonMotorController.h"
+#include "hw/interfaces/IDragonPigeon.h"
 
 namespace frc
 {
@@ -75,7 +76,7 @@ private:
     std::shared_ptr<IDragonMotorController> m_leftBackMotor;
     std::shared_ptr<IDragonMotorController> m_rightFrontMotor;
     std::shared_ptr<IDragonMotorController> m_rightBackMotor;
-    DragonPigeon *m_pigeon;
+    IDragonPigeon *m_pigeon;
 
     units::velocity::meters_per_second_t m_maxSpeed;
     units::angular_velocity::degrees_per_second_t m_maxAngSpeed;

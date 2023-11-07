@@ -33,9 +33,9 @@ PrimitiveParams::PrimitiveParams(
 	float endDriveSpeed,
 	std::string pathName,
 	// @ADDMECH mechanism state for mech as parameter
-	ArmStateMgr::ARM_STATE armState,
-	ExtenderStateMgr::EXTENDER_STATE extenderState,
-	IntakeStateMgr::INTAKE_STATE intakeState,
+	//ArmStateMgr::ARM_STATE armState,
+	//ExtenderStateMgr::EXTENDER_STATE extenderState,
+	//IntakeStateMgr::INTAKE_STATE intakeState,
 	DragonLimelight::PIPELINE_MODE pipelineMode) :			 // Pass over parameters to class variables
 												   m_id(id), // Primitive ID
 												   m_time(time),
@@ -48,9 +48,9 @@ PrimitiveParams::PrimitiveParams(
 												   m_endDriveSpeed(endDriveSpeed),
 												   m_pathName(pathName),
 												   // @ADDMECH initilize state mgr attribute
-												   m_armState(armState),
-												   m_extenderState(extenderState),
-												   m_intakeState(intakeState),
+												   //m_armState(armState),
+												   //m_extenderState(extenderState),
+												   //m_intakeState(intakeState),
 												   m_pipelineMode(pipelineMode)
 {
 }

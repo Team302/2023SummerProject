@@ -16,14 +16,13 @@
 #pragma once
 
 // C++ Libraries
-#include <memory>
 
 // #include <frc/drive/Vector2d.h>
 
 // Team 302 includes
 #include <chassis/differential/DifferentialChassis.h>
-#include <teleopcontrol/TeleopControl.h>
-#include <State.h>
+#include "teleopcontrol/TeleopControl.h"
+#include "State.h"
 
 class ArcadeDrive : public State
 {
@@ -34,10 +33,10 @@ public:
     void Init() override;
     void Run() override;
     void Exit() override;
-    bool AtTarget() const override;
+    bool AtTarget() override;
 
 private:
     inline TeleopControl *GetController() const { return m_controller; }
-    std::shared_ptr<DifferentialChassis> m_chassis;
+    DifferentialChassis *m_chassis;
     TeleopControl *m_controller;
 };

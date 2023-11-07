@@ -10,21 +10,21 @@
 
 #include <auton/AutonPreviewer.h>
 #include <auton/CyclePrimitives.h>
-#include <chassis/ChassisFactory.h>
 #include <chassis/holonomic/HolonomicDrive.h>
-#include <chassis/swerve/SwerveChassis.h>
+#include "chassis/swerve/SwerveChassis.h"
 #include <chassis/mecanum/MecanumChassis.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <driveteamfeedback/DriverFeedback.h>
 #include <DragonVision/LimelightFactory.h>
-#include <mechanisms/StateMgrHelper.h>
+#include <PeriodicLooper.h>
 #include <Robot.h>
 #include <robotstate/RobotState.h>
-#include <RobotXmlParser.h>
-#include <teleopcontrol/TeleopControl.h>
+#include "teleopcontrol/TeleopControl.h"
 #include <utils/DragonField.h>
 #include <utils/FMSData.h>
 #include <utils/logging/LoggableItemMgr.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <utils/logging/LoggerData.h>
 #include <utils/logging/LoggerEnums.h>
 #include <utils/WaypointXmlParser.h>
@@ -35,8 +35,18 @@
 #include <mechanisms/SomeMech/SomeMech.h>
 
 /// DEBUGGING
-#include <hw/factories/PigeonFactory.h>
-#include <iostream>
+
+#include "configs/RobotConfigMgr.h"
+#include "configs/RobotConfig.h"
+#include "configs/usages/CanSensorUsage.h"
+
+/* How to check robot variant
+#if ROBOT_VARIANT == 2024
+#warning COMP BOT
+#else
+#warning UNKNOWN
+#endif
+*/
 
 using namespace std;
 
@@ -46,27 +56,16 @@ void Robot::RobotInit()
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("arrived"));
 
     // Read build details for team number, branch, and more
-    m_detailsReader = new BuildDetailsReader();
-    m_details = m_detailsReader->ReadBuildDetails();
+    //    m_detailsReader = new BuildDetailsReader();
+    //    m_details = m_detailsReader->ReadBuildDetails();
 
-    m_robot = RobotDefinitions::GetRobotDefinition(m_details.teamNumber);
-
-    /*
-        Example code after getting robot definition
-
-        m_intake = (Intake)m_robot->GetComponent(RobotDefinitions::Components::Intake);
-        m_intake->Initialize();
-
-        m_turret = (Turret)m_robot->GetComponent(RobotDefinitions::Components::Turret);
-        m_turret->Initialize();
-
-    */
+    //    m_robot = RobotDefinitions::GetRobotDefinition(m_details.teamNumber);
 
     m_controller = nullptr;
 
-    // Read the XML file to build the robot
-    auto XmlParser = new RobotXmlParser();
-    XmlParser->ParseXML();
+    // Build the robot
+    RobotConfigMgr::GetInstance()->InitRobot(RobotConfigMgr::RobotIdentifier::EXAMPLE);
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
 
     auto waypointParser = WaypointXmlParser::GetInstance();
     waypointParser->ParseWaypoints();
@@ -78,7 +77,7 @@ void Robot::RobotInit()
     m_robotState = RobotState::GetInstance();
     m_robotState->Init();
 
-    m_chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 
     m_holonomic = nullptr;
     if (m_chassis != nullptr)
@@ -89,13 +88,6 @@ void Robot::RobotInit()
     m_cyclePrims = new CyclePrimitives();
     m_previewer = new AutonPreviewer(m_cyclePrims); // TODO:: Move to DriveTeamFeedback
     m_field = DragonField::GetInstance();           // TODO: move to drive team feedback
-
-    m_someMech = new SomeMech();
-    m_someMech->Initialize();
-
-    //    m_dragonLimeLight = LimelightFactory::GetLimelightFactory()->GetLimelight(); // ToDo:: Move to Dragon Vision
-
-    StateMgrHelper::InitStateMgrs();
 
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("end"));
 }
@@ -115,16 +107,6 @@ void Robot::RobotPeriodic()
 
     m_someMech->Cyclic();
 
-    if (m_chassis != nullptr)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "balance info", "yaw", m_chassis->GetYaw().to<double>());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "balance info", "pitch", m_chassis->GetPitch().to<double>());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "balance info", "roll", m_chassis->GetRoll().to<double>());
-    }
-    // if (m_tuner != nullptr)
-    // {
-    //     m_tuner->ListenForUpdates();
-    // }
     if (m_robotState != nullptr)
     {
         m_robotState->Run();
@@ -195,16 +177,16 @@ void Robot::RobotPeriodic()
         feedback->UpdateFeedback();
     }
 
-    auto pigeon = PigeonFactory::GetFactory()->GetCenterPigeon();
+    auto pigeon = RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(CanSensorUsage::CANSENSOR_USAGE::PIGEON_ROBOT_CENTER);
     if (pigeon == nullptr)
     {
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("DEUBGGING"), string("Pigeon Nullptr?"), "true");
     }
     else
     {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Yaw"), pigeon->GetYaw());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Pitch"), pigeon->GetPitch());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Roll"), pigeon->GetRoll());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Yaw"), pigeon->GetYaw().to<double>());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Pitch"), pigeon->GetPitch().to<double>());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Roll"), pigeon->GetRoll().to<double>());
     }
 }
 
@@ -223,11 +205,11 @@ void Robot::AutonomousInit()
 {
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("AutonomousInit"), string("arrived"));
 
-    StateMgrHelper::SetCheckGamepadInputsForStateTransitions(false);
     if (m_cyclePrims != nullptr)
     {
         m_cyclePrims->Init();
     }
+    PeriodicLooper::GetInstance()->AutonRunCurrentState();
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("AutonomousInit"), string("end"));
 }
 
@@ -237,6 +219,7 @@ void Robot::AutonomousPeriodic()
     {
         m_cyclePrims->Run();
     }
+    PeriodicLooper::GetInstance()->AutonRunCurrentState();
 }
 
 void Robot::TeleopInit()
@@ -248,7 +231,6 @@ void Robot::TeleopInit()
         m_controller = TeleopControl::GetInstance();
     }
 
-    StateMgrHelper::SetCheckGamepadInputsForStateTransitions(true);
     if (m_chassis != nullptr && m_controller != nullptr)
     {
         if (m_holonomic != nullptr)
@@ -262,13 +244,9 @@ void Robot::TeleopInit()
         resetMoveInfo.headingOption = ChassisOptionEnums::HeadingOption::MAINTAIN;
 
         m_chassis->Drive();
-    }
-    StateMgrHelper::RunCurrentMechanismStates();
-
-    if (m_chassis != nullptr)
-    {
         dynamic_cast<VisionDrive *>(m_chassis->GetSpecifiedDriveState(ChassisOptionEnums::DriveStateType::VISION_DRIVE))->setInAutonMode(false);
     }
+    PeriodicLooper::GetInstance()->TeleopRunCurrentState();
 
     // now in teleop, clear field of trajectories
     if (m_field != nullptr)
@@ -290,7 +268,7 @@ void Robot::TeleopPeriodic()
             m_holonomic->Run();
         }
     }
-    StateMgrHelper::RunCurrentMechanismStates();
+    PeriodicLooper::GetInstance()->TeleopRunCurrentState();
 
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("TeleopPeriodic"), string("end"));
 }
@@ -313,6 +291,16 @@ void Robot::TestInit()
 
 void Robot::TestPeriodic()
 {
+}
+
+void Robot::SimulationInit()
+{
+    PeriodicLooper::GetInstance()->SimulationRunCurrentState();
+}
+
+void Robot::SimulationPeriodic()
+{
+    PeriodicLooper::GetInstance()->SimulationRunCurrentState();
 }
 
 #ifndef RUNNING_FRC_TESTS

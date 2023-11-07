@@ -17,10 +17,10 @@
 #pragma once
 
 // C++ Includes
-#include <frc/BuiltInAccelerometer.h>
+#include "frc/BuiltInAccelerometer.h"
 
 // Team 302 includes
-#include <hw/builtinaccel/RoboRioOrientation.h>
+#include "hw/builtinaccel/RoboRioOrientation.h"
 
 // Forward declares
 class DragonRoboRioAccelerometerFactory
@@ -30,8 +30,7 @@ public:
 
 	/// @brief      Create the Builtin Accelerometer
 	/// @returns 	frc::BuiltInAccelerometer*
-	frc::BuiltInAccelerometer *CreateAccelerometer(
-		RoboRioOrientation::ROBORIO_ORIENTATION orientation);
+	frc::BuiltInAccelerometer *CreateAccelerometer(RoboRioOrientation::ROBORIO_ORIENTATION orientation);
 
 	/// @brief      Get the Builtin Accelerometer
 	/// @returns 	frc::BuiltInAccelerometer*

@@ -27,9 +27,10 @@
 #include <auton/PrimitiveParams.h>
 #include <auton/drivePrimitives/IPrimitive.h>
 #include <chassis/ChassisMovement.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <mechanisms/controllers/ControlModes.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 
@@ -44,9 +45,11 @@ using namespace frc;
 /// @brief constructor that creates/initializes the object
 DriveStop::DriveStop() : m_maxTime(0.0),
 						 m_currentTime(0.0),
-						 m_chassis(ChassisFactory::GetChassisFactory()->GetIChassis()),
+						 m_chassis(nullptr),
 						 m_timer(make_unique<Timer>())
 {
+	auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+	m_chassis = config != nullptr ? config->GetIChassis() : nullptr;
 }
 
 /// @brief initialize this usage of the primitive
@@ -64,13 +67,13 @@ void DriveStop::Init(PrimitiveParams *params)
 /// @return void
 void DriveStop::Run()
 {
-	if (m_chassis.get() != nullptr)
+	if (m_chassis != nullptr)
 	{
 		ChassisMovement moveInfo;
 		moveInfo.chassisSpeeds.vx = 0_mps;
 		moveInfo.chassisSpeeds.vy = 0_mps;
 		moveInfo.chassisSpeeds.omega = units::degrees_per_second_t(0.0);
-		m_chassis.get()->Drive(moveInfo);
+		m_chassis->Drive(moveInfo);
 	}
 	else
 	{

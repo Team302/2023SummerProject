@@ -16,24 +16,23 @@
 
 #include <string>
 
-#include <hw/DragonAnalogInput.h>
+#include "hw/DragonAnalogInput.h"
 
 using namespace std;
 
-DragonAnalogInput::DragonAnalogInput(
-	string networkTableName,
-	ANALOG_SENSOR_TYPE type,
-	int analogID,
-	float voltageMin,
-	float voltageMax,
-	float outputMin,
-	float outputMax) : AnalogInput(analogID),
-					   m_networkTableName(networkTableName),
-					   m_type(type),
-					   m_voltMin(voltageMin),
-					   m_voltMax(voltageMax),
-					   m_outMin(outputMin),
-					   m_outMax(outputMax)
+DragonAnalogInput::DragonAnalogInput(string networkTableName,
+									 ANALOG_SENSOR_TYPE type,
+									 int analogID,
+									 float voltageMin,
+									 float voltageMax,
+									 float outputMin,
+									 float outputMax) : AnalogInput(analogID),
+														m_networkTableName(networkTableName),
+														m_type(type),
+														m_voltMin(voltageMin),
+														m_voltMax(voltageMax),
+														m_outMin(outputMin),
+														m_outMax(outputMax)
 {
 }
 

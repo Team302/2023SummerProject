@@ -24,16 +24,18 @@
 #include <auton/drivePrimitives/ResetPosition.h>
 #include <auton/PrimitiveParams.h>
 #include <auton/drivePrimitives/IPrimitive.h>
-#include <chassis/ChassisFactory.h>
-#include <hw/factories/PigeonFactory.h>
-#include <utils/logging/Logger.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
+#include "utils/logging/Logger.h"
 #include <DragonVision/DragonVision.h>
 
 using namespace std;
 using namespace frc;
 
-ResetPosition::ResetPosition() : m_chassis(ChassisFactory::GetChassisFactory()->GetIChassis())
+ResetPosition::ResetPosition() : m_chassis(nullptr)
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 }
 
 void ResetPosition::Init(PrimitiveParams *params)
@@ -41,13 +43,10 @@ void ResetPosition::Init(PrimitiveParams *params)
 
     m_trajectory = DragonTrajectoryUtils::GetTrajectory(params);
 
-    auto pigeon = PigeonFactory::GetFactory()->GetCenterPigeon();
-    // pigeon->ReZeroPigeon(m_trajectory.InitialPose().Rotation().Degrees().to<double>());
-
     m_chassis->ResetPose(m_trajectory.InitialPose());
 
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Reset Position"), string("Auton Info: ResetPosX"), m_chassis.get()->GetPose().X().to<double>());
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Reset Position"), string("Auton Info: ResetPosY"), m_chassis.get()->GetPose().Y().to<double>());
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Reset Position"), string("Auton Info: ResetPosX"), m_chassis->GetPose().X().to<double>());
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Reset Position"), string("Auton Info: ResetPosY"), m_chassis->GetPose().Y().to<double>());
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Reset Position"), string("Auton Info: InitialPoseX"), m_trajectory.InitialPose().X().to<double>());
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Reset Position"), string("Auton Info: InitialPoseY"), m_trajectory.InitialPose().Y().to<double>());
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Reset Position"), string("Auton Info: InitialPoseOmega"), m_trajectory.InitialPose().Rotation().Degrees().to<double>());

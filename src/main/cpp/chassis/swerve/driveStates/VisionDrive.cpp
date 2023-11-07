@@ -20,14 +20,15 @@
 
 // Team302 Includes
 #include <chassis/swerve/driveStates/VisionDrive.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 #include <utils/FMSData.h>
 #include <robotstate/RobotState.h>
 #include <utils/FMSData.h>
-#include <teleopcontrol/TeleopControl.h>
+#include "teleopcontrol/TeleopControl.h"
 
 /// DEBUGGING
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 VisionDrive::VisionDrive(RobotDrive *robotDrive) : RobotDrive(),
                                                    IRobotStateChangeSubscriber(),
@@ -37,12 +38,15 @@ VisionDrive::VisionDrive(RobotDrive *robotDrive) : RobotDrive(),
                                                    m_pipelineMode(DragonLimelight::APRIL_TAG),
                                                    m_inAutonMode(false),
                                                    m_robotDrive(robotDrive),
-                                                   m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
+                                                   m_chassis(nullptr),
                                                    m_vision(DragonVision::GetDragonVision()),
+                                                   m_lostGamePieceTimer(new frc::Timer()),
                                                    m_haveGamePiece(false),
-                                                   m_moveInXDir(false),
-                                                   m_lostGamePieceTimer(new frc::Timer())
+                                                   m_moveInXDir(false)
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
+
     RobotState::GetInstance()->RegisterForStateChanges(this, RobotStateChanges::StateChange::HoldingGamePiece);
 }
 
@@ -66,12 +70,12 @@ std::array<frc::SwerveModuleState, 4> VisionDrive::UpdateSwerveModuleStates(Chas
     {
         if (m_vision->getPipeline(DragonVision::LIMELIGHT_POSITION::FRONT) == targetData->getTargetType())
         {
-            bool atTarget_x = false;
-            bool atTarget_angle = false;
+            // bool atTarget_angle = false;
 
             units::angle::radian_t angleError = units::angle::radian_t(0.0);
 
-            atTarget_angle = AtTargetAngle(targetData, &angleError);
+            // atTarget_angle = AtTargetAngle(targetData, &angleError);
+            AtTargetAngle(targetData, &angleError);
 
             Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "VisionDrive", "Angle Error (Deg)", units::angle::degree_t(angleError).to<double>());
 

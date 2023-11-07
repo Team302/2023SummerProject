@@ -18,9 +18,9 @@
 #include <string>
 
 #include <frc/Solenoid.h>
-#include <hw/DragonSolenoid.h>
-#include <hw/usages/SolenoidUsage.h>
-#include <utils/logging/Logger.h>
+#include "hw/DragonSolenoid.h"
+#include <configs/usages/SolenoidUsage.h>
+#include "utils/logging/Logger.h"
 #include <frc/Compressor.h>
 
 using namespace frc;
@@ -49,8 +49,7 @@ DragonSolenoid::DragonSolenoid(
     InitDouble(networkTableName, usage, pcmID, pcmType, forwardChannel, reverseChannel, reversed);
 }
 
-void DragonSolenoid::Set(
-    bool on)
+void DragonSolenoid::Set(bool on)
 {
     if (m_solenoid != nullptr)
     {

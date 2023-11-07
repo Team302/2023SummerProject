@@ -17,7 +17,6 @@
 #pragma once
 
 // C++ Includes
-#include <memory>
 
 // FRC includes
 
@@ -45,6 +44,6 @@ private:
 	const float kD = 0.0;
 	const float kF = 0.0;
 	// Objects
-	std::shared_ptr<IChassis> m_chassis;
+	IChassis* m_chassis;
 	double m_timeRemaining; // In seconds
 };

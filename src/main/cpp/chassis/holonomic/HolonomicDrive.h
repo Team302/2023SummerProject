@@ -18,8 +18,8 @@
 // C++ Libraries
 
 // Team 302 includes
-#include <teleopcontrol/TeleopControl.h>
-#include <State.h>
+#include "teleopcontrol/TeleopControl.h"
+#include "State.h"
 #include <chassis/swerve/driveStates/DragonTrajectoryGenerator.h>
 #include <utils/DragonField.h>
 #include <chassis/swerve/driveStates/VisionDrive.h>
@@ -38,7 +38,7 @@ public:
     void Init() override;
     void Run() override;
     void Exit() override;
-    bool AtTarget() const override;
+    bool AtTarget() override;
 
     void Update(RobotStateChanges::StateChange change, int state) override;
 
