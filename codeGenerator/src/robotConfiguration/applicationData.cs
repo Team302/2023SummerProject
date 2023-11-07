@@ -12,6 +12,7 @@ using System.Xml.Serialization;
 //todo the range of pdpID for ctre is 0-15, for REV it is 0-19. How to adjust the range allowed in the GUI. If initially REV is used and an id > 15 is used, then user chooses CTRE, what to do?
 //todo make mechanism instances separate files so that it is easier for multiple people to work on the robot in parallel
 //todo run a sanity check on a click of a button or on every change?
+//todo in the treeview, place the "name" nodes at the top
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -82,7 +83,6 @@ namespace ApplicationData
     public partial class applicationData
     {
 #if !enableTestAutomation
-        public List<MotorController> MotorControllers { get; set; }
         public pdp PowerDistributionPanel { get; set; }
         public List<pcm> PneumaticControlModules { get; set; }
         public List<mechanismInstance> mechanismInstances { get; set; }
@@ -245,6 +245,31 @@ namespace ApplicationData
     }
 
     [Serializable()]
+    public class pigeon
+    {
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter canID { get; set; }
+
+        [DefaultValue(CAN_BUS.rio)]
+        public CAN_BUS canBusName { get; set; }
+
+        [DefaultValue("0.0")]
+        public string rotation { get; set; }
+
+        [DefaultValue(pigeontype.pigeon1)]
+        public pigeontype type { get; set; }
+
+        [DefaultValue(pigeonname.CENTER_OF_ROTATION)]
+        public pigeonname name { get; set; }
+
+        public pigeon()
+        {
+            helperFunctions.initializeDefaultValues(this);
+        }
+    }
+
+    [Serializable()]
     public class pcm
     {
         public string name { get; set; }
@@ -272,12 +297,12 @@ namespace ApplicationData
             refresh = helperFunctions.RefreshLevel.parentHeader;
             if (string.IsNullOrEmpty(propertyName))
                 refresh = helperFunctions.RefreshLevel.none;
-            return string.Format("PCM ({0})",name);
+            return string.Format("PCM ({0})", name);
         }
     }
-	
+
     [Serializable()]
-    [XmlInclude(typeof(Falcon))]
+    [XmlInclude(typeof(TalonFX))]
     [XmlInclude(typeof(TalonSRX_Motor))]
     public class MotorController
     {
@@ -334,6 +359,7 @@ namespace ApplicationData
         }
     }
 
+    [Serializable]
     public class baseDataClass
     {
         protected string defaultDisplayName { get; set; } = "defaultDisplayName";
@@ -357,8 +383,14 @@ namespace ApplicationData
     }
 
     [Serializable()]
-    public class Falcon : MotorController
+    public class TalonFX : MotorController
     {
+        public enum motorType { Falcon, Kraken }
+
+        [DefaultValue(motorType.Falcon)]
+        public motorType motor { get; set; }
+
+        [Serializable]
         public class MotorConfigs : baseDataClass
         {
             public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
@@ -394,6 +426,7 @@ namespace ApplicationData
         }
         public MotorConfigs theMotorConfigs { get; set; }
 
+        [Serializable]
         public class CurrentLimits : baseDataClass
         {
             [DefaultValue(false)]
@@ -426,10 +459,11 @@ namespace ApplicationData
             {
                 defaultDisplayName = "CurrentLimits";
             }
-        
+
         }
         public CurrentLimits theCurrentLimits { get; set; }
 
+        [Serializable]
         public class VoltageConfigs : baseDataClass
         {
             [DefaultValue(0)]
@@ -454,6 +488,7 @@ namespace ApplicationData
         }
         public VoltageConfigs theVoltageConfigs { get; set; }
 
+        [Serializable]
         public class TorqueConfigs : baseDataClass
         {
             [DefaultValue(0)]
@@ -478,9 +513,10 @@ namespace ApplicationData
         }
         public TorqueConfigs theTorqueConfigs { get; set; }
 
+        [Serializable]
         public class FeedbackConfigs : baseDataClass
         {
-            public enum FeedbackSensorSource { RotorSensor , RemoteCANcoder, FusedCANcoder }
+            public enum FeedbackSensorSource { RotorSensor, RemoteCANcoder, FusedCANcoder }
 
             [DefaultValue(0)]
             [Range(typeof(double), "0", "40.0")] //todo choose a valid range
@@ -500,7 +536,7 @@ namespace ApplicationData
         }
         public FeedbackConfigs theFeedbackConfigs { get; set; }
 
-        public Falcon()
+        public TalonFX()
         {
         }
     }
@@ -854,31 +890,7 @@ namespace ApplicationData
     }
 
 
-    [Serializable()]
-    public class pigeon
-    {
-        [DefaultValue(0u)]
-        [Range(typeof(uint), "0", "62")]
-        public uintParameter CAN_ID { get; set; }
 
-        [DefaultValue(CAN_BUS.rio)]
-        [TunableParameter()]
-        public CAN_BUS canBusName { get; set; }
-
-        [DefaultValue("0.0")]
-        public string rotation { get; set; }
-
-        [DefaultValue(pigeontype.pigeon1)]
-        public pigeontype type { get; set; }
-
-        [DefaultValue(pigeonname.CENTER_OF_ROTATION)]
-        public pigeonname name { get; set; }
-
-        public pigeon()
-        {
-            helperFunctions.initializeDefaultValues(this);
-        }
-    }
 
     [Serializable()]
     public class limelight
@@ -1022,7 +1034,7 @@ namespace ApplicationData
             helperFunctions.initializeDefaultValues(this);
         }
 
-        public cancoder cancoder { get; set; }
+        public ctreCANcoder cancoder { get; set; }
 
         [DefaultValue(swervemoduletype.LEFT_FRONT)]
         public swervemoduletype type { get; set; }
@@ -1065,11 +1077,11 @@ namespace ApplicationData
 
 
     [Serializable()]
-    public class cancoder
+    public class ctreCANcoder
     {
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
-        public uintParameter CAN_ID { get; set; }
+        public uintParameter canID { get; set; }
 
         [DefaultValue(CAN_BUS.rio)]
         public CAN_BUS canBusName { get; set; }
@@ -1080,7 +1092,7 @@ namespace ApplicationData
         [DefaultValue(false)]
         public bool reverse { get; set; }
 
-        public cancoder()
+        public ctreCANcoder()
         {
             helperFunctions.initializeDefaultValues(this);
         }
