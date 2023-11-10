@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <toolConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <rootOutputFolder>..\..\src\main\cpp</rootOutputFolder>
+  <rootOutputFolder>..\..\..\src\main\cpp</rootOutputFolder>
   <robotConfiguration>..\RobotConfigurations\testRobotConfig.xml</robotConfiguration>
   <appDataConfigurations>
     <string>C:\FRC\2023SummerProject\codeGenerator\configuration\RobotConfigurations\testRobotConfig.xml</string>
@@ -127,6 +127,14 @@
       <wpiClassName>Units.pounds_per_square_inch</wpiClassName>
     </physicalUnit>
   </physicalUnits>
+
+	<codeTemplateFiles>
+		<codeTemplateFile>
+			<name>RobotElementNames</name>
+			<templateFilePathName>..\..\templates\RobotElementNames.h</templateFilePathName>
+			<outputFilePathName>configs\RobotElementNames.h</outputFilePathName>
+		</codeTemplateFile>
+	</codeTemplateFiles>
 
   <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
   <templateMechanismHPath>..\templates\MECHANISM_NAME.h</templateMechanismHPath>

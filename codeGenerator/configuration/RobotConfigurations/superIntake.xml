@@ -5,7 +5,7 @@
   <MotorControllers>
     <MotorController
       xsi:type="TalonFX">
-      <name>leftIntake</name>
+      <name>leftIntakeMotor</name>
       <canID>
         <unitsFamily>none</unitsFamily>
         <name>canID</name>
@@ -166,7 +166,7 @@
     </MotorController>
     <MotorController
       xsi:type="TalonFX">
-      <name>rightIntake</name>
+      <name>rightIntakeMotor</name>
       <canID>
         <unitsFamily>none</unitsFamily>
         <name>canID</name>

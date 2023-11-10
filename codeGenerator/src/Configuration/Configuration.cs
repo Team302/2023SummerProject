@@ -27,6 +27,7 @@ namespace Configuration
         public string templateRobotDefinitionsCppPath = "";
         public string templateRobotDefinitionsHPath = "";
 
+        public List<codeTemplateFile> codeTemplateFiles = new List<codeTemplateFile>();
 
         public string CopyrightNotice = "";
         public string GenerationNotice = "";
@@ -88,6 +89,11 @@ namespace Configuration
             }
         }
 
+        public codeTemplateFile getTemplateInfo(string name)
+        {
+            return this.codeTemplateFiles.Find(t => t.name == name);
+        }
+
         public string RelativePath(string absPath, string relTo)
         {
             string[] absDirs = absPath.Split('\\');
@@ -132,8 +138,17 @@ namespace Configuration
 
             return relativePath.ToString();
         }
+
+
     }
 
+    [Serializable]
+    public class codeTemplateFile
+    {
+        public string name { get; set; }
+        public string templateFilePathName { get; set; }
+        public string outputFilePathName { get; set; }
+    }
 
     [Serializable]
     public class physicalUnit

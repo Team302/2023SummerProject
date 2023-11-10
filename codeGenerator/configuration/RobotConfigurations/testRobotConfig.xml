@@ -14,14 +14,14 @@
       <PneumaticControlModules />
       <mechanismInstances>
         <mechanismInstance>
-          <name>leftIntakeMechanism</name>
+          <name>left_Intake_Mechanism</name>
           <mechanism>
             <GUID>13d71691-d2d4-4ecf-8a8a-5b8a6b363e20</GUID>
             <name>superIntake</name>
             <MotorControllers>
               <MotorController
                 xsi:type="TalonFX">
-                <name>leftIntake</name>
+                <name>leftIntakeMotor</name>
                 <canID>
                   <unitsFamily>none</unitsFamily>
                   <name>canID</name>
@@ -182,7 +182,7 @@
               </MotorController>
               <MotorController
                 xsi:type="TalonFX">
-                <name>rightIntake</name>
+                <name>rightIntakeMotor</name>
                 <canID>
                   <unitsFamily>none</unitsFamily>
                   <name>canID</name>
@@ -353,7 +353,7 @@
             <MotorControllers>
               <MotorController
                 xsi:type="TalonFX">
-                <name>leftIntake</name>
+                <name>leftIntakeMotor</name>
                 <canID>
                   <unitsFamily>none</unitsFamily>
                   <name>canID</name>
@@ -514,7 +514,7 @@
               </MotorController>
               <MotorController
                 xsi:type="TalonFX">
-                <name>rightIntake</name>
+                <name>rightIntakeMotor</name>
                 <canID>
                   <unitsFamily>none</unitsFamily>
                   <name>canID</name>
@@ -689,7 +689,7 @@
   </Robots>
   <Mechanisms>
     <mechanism>
-      <GUID>0bca61a0-3814-4fd4-b0ab-993e84469293</GUID>
+      <GUID>6b2ca064-220a-4761-aae4-5d3997cbd70c</GUID>
       <name>superIntake</name>
       <MotorControllers />
     </mechanism>

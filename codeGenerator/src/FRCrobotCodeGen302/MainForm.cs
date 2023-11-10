@@ -405,7 +405,7 @@ namespace FRCrobotCodeGen302
         {
             try
             {
-                codeGenerator.generate(theAppDataConfiguration, generatorConfig);
+                codeGenerator.generate(theAppDataConfiguration, generatorConfig, ProductVersion);
             }
             catch (Exception ex)
             {

@@ -13,6 +13,8 @@ using System.Xml.Serialization;
 //todo make mechanism instances separate files so that it is easier for multiple people to work on the robot in parallel
 //todo run a sanity check on a click of a button or on every change?
 //todo in the treeview, place the "name" nodes at the top
+//todo in the robot code check that an enum belonging to another robot is not used
+//todo check naming convention
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
