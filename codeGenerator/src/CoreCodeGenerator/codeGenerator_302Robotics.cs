@@ -19,81 +19,6 @@ namespace CoreCodeGenerator
         private applicationDataConfig theRobotConfiguration = new applicationDataConfig();
         private toolConfiguration theToolConfiguration = new toolConfiguration();
 
-        private string getTemplateFullPath(string templatePath)
-        {
-            if (Path.IsPathRooted(templatePath))
-            {
-                return templatePath;
-            }
-
-            return Path.Combine(Path.GetDirectoryName(theToolConfiguration.configurationFullPath), templatePath);
-        }
-
-        private string getOutputFileFullPath(string filePath)
-        {
-            if (Path.IsPathRooted(filePath))
-            {
-                return filePath;
-            }
-
-            return Path.Combine(theToolConfiguration.rootOutputFolder, filePath);
-        }
-
-        private string loadTemplate(string templatePath)
-        {
-            return File.ReadAllText(getTemplateFullPath(templatePath));
-        }
-
-        private void copyrightAndGenNoticeAndSave(string outputFilePathName, string contents)
-        {
-            contents = contents.Replace("$$_Copyright_$$", theToolConfiguration.CopyrightNotice.Trim() + Environment.NewLine + getGenerationInfo());
-            contents = astyle.AStyleCaller.beautify(contents, null);
-
-            string outputFullFilePathName = getOutputFileFullPath(outputFilePathName);
-
-            string currentText = "";
-            string contentsWithoutGenInfo = "";
-            bool writeFile = true;
-            if (File.Exists(outputFullFilePathName))
-            {
-                currentText = File.ReadAllText(outputFullFilePathName);
-
-                currentText = removeGenerationInfo(currentText);
-                contentsWithoutGenInfo = removeGenerationInfo(contents);
-
-                if( currentText == contentsWithoutGenInfo)
-                    writeFile = false;
-            }
-
-            if (writeFile)
-            {
-                File.WriteAllText(outputFullFilePathName, contents);
-                addProgress("Wrote " + outputFullFilePathName);
-            }
-            else
-                addProgress("File content has not changed " + outputFullFilePathName);
-        }
-
-        private string removeGenerationInfo(string input)
-        {
-            int index = input.IndexOf("// Generated on");
-            if (index >= 0)
-            {
-                int nextNewLineIndex = input.IndexOf("\n", index);
-                return input.Remove(index, nextNewLineIndex - index);
-            }
-
-            return input;
-        }
-
-        private string getGenerationInfo()
-        {
-            string genNotice = theToolConfiguration.GenerationNotice.Trim().Replace("$CODE_GENERATOR_VERSION$", codeGeneratorVersion);
-            genNotice = genNotice.Replace("$GENERATION_DATE$", DateTime.Now.ToLongDateString());
-            genNotice = genNotice.Replace("$GENERATION_TIME$", DateTime.Now.ToLongTimeString());
-
-            return genNotice;
-        }
 
         public void generate(applicationDataConfig theRobotConfig, toolConfiguration generatorConfig, string codeGenVersion)
         {
@@ -148,13 +73,7 @@ namespace CoreCodeGenerator
             return string.Format("{0}_{1},", ToUnderscoreCase(mi.name), ToUnderscoreCase(mc.name));
         }
 
-        private string ToUnderscoreCase(string str)
-        {
-            if (str.Contains("_"))
-                return str;
 
-            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
-        }
         private void generateMechanismFiles()
         {
             addProgress("Writing mechanism files...");
@@ -409,5 +328,94 @@ namespace CoreCodeGenerator
             //later we may add a folder for individual RobotDefinition files if we move away from creating them as functions
             return theToolConfiguration.rootOutputFolder;
         }
+
+        #region Support functions
+        private string getTemplateFullPath(string templatePath)
+        {
+            if (Path.IsPathRooted(templatePath))
+            {
+                return templatePath;
+            }
+
+            return Path.Combine(Path.GetDirectoryName(theToolConfiguration.configurationFullPath), templatePath);
+        }
+
+        private string getOutputFileFullPath(string filePath)
+        {
+            if (Path.IsPathRooted(filePath))
+            {
+                return filePath;
+            }
+
+            return Path.Combine(theToolConfiguration.rootOutputFolder, filePath);
+        }
+
+        private string loadTemplate(string templatePath)
+        {
+            return File.ReadAllText(getTemplateFullPath(templatePath));
+        }
+
+        private void copyrightAndGenNoticeAndSave(string outputFilePathName, string contents)
+        {
+            contents = contents.Replace("$$_Copyright_$$", theToolConfiguration.CopyrightNotice.Trim());
+            contents = contents.Replace("$$_GEN_NOTICE_$$", getGenerationInfo());
+
+            contents = astyle.AStyleCaller.beautify(contents, null);
+
+            string outputFullFilePathName = getOutputFileFullPath(outputFilePathName);
+
+            string currentText = "";
+            string contentsWithoutGenInfo = "";
+            bool writeFile = true;
+            if (File.Exists(outputFullFilePathName))
+            {
+                currentText = File.ReadAllText(outputFullFilePathName);
+
+                currentText = removeGenerationInfo(currentText);
+                contentsWithoutGenInfo = removeGenerationInfo(contents);
+
+                if (currentText == contentsWithoutGenInfo)
+                    writeFile = false;
+            }
+
+            if (writeFile)
+            {
+                File.WriteAllText(outputFullFilePathName, contents);
+                addProgress("Wrote " + outputFullFilePathName);
+            }
+            else
+                addProgress("File content has not changed " + outputFullFilePathName);
+        }
+
+        private string removeGenerationInfo(string input)
+        {
+            int index = input.IndexOf("// Generated on");
+            if (index >= 0)
+            {
+                int nextNewLineIndex = input.IndexOf("\n", index);
+                return input.Remove(index, nextNewLineIndex - index);
+            }
+
+            return input;
+        }
+
+        private string getGenerationInfo()
+        {
+            string genNotice = theToolConfiguration.GenerationNotice.Trim().Replace("$CODE_GENERATOR_VERSION$", codeGeneratorVersion);
+            genNotice = genNotice.Replace("$GENERATION_DATE$", DateTime.Now.ToLongDateString());
+            genNotice = genNotice.Replace("$GENERATION_TIME$", DateTime.Now.ToLongTimeString());
+
+            return genNotice;
+        }
+
+        private string ToUnderscoreCase(string str)
+        {
+            if (str.Contains("_"))
+                return str;
+
+            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
+        }
+        #endregion
+
     }
 }

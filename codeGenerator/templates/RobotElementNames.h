@@ -1,4 +1,5 @@
 $$_Copyright_$$
+$$_GEN_NOTICE_$$
 
 #pragma once
 
