@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<topLevelAppDataElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<topLevelAppDataElement xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Robots>
     <applicationData>
       <PowerDistributionPanel>
@@ -689,7 +689,7 @@
   </Robots>
   <Mechanisms>
     <mechanism>
-      <GUID>6b2ca064-220a-4761-aae4-5d3997cbd70c</GUID>
+      <GUID>a1954a9a-b6f5-4a68-93bc-558915044446</GUID>
       <name>superIntake</name>
       <MotorControllers />
     </mechanism>
