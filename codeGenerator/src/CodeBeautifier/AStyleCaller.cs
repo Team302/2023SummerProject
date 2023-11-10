@@ -14,7 +14,7 @@ namespace astyle
         {
             // options to pass to AStyle
             // mode=cs is required for C# files
-            string options = "-A2tOP";
+            string options = "-A1tOP";
 
             // create an object
             AStyleInterface AStyle = new AStyleInterface();
