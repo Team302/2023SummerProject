@@ -41,18 +41,15 @@ public:
     bool IsDone();
 
 private:
-    bool IsSamePose(frc::Pose2d currentPose, frc::Pose2d previousPose, double xyTolerance, double rotTolerance);
+    bool IsSamePose(frc::Pose2d currentPose, frc::Pose2d previousPose, units::meter_t xyTolerance, units::degree_t rotTolerance);
 
     std::shared_ptr<pathplanner::PathPlannerPath> m_path;
     RobotDrive *m_robotDrive;
     SwerveChassis *m_chassis;
     pathplanner::PPHolonomicDriveController m_holonomicController;
-    // pathplanner::PathPlannerTrajectory::State m_desiredState;
     pathplanner::PathPlannerTrajectory m_trajectory;
-    pathplanner::PathPlannerTrajectory::State m_finalState;
     frc::Pose2d m_prevPose;
     bool m_wasMoving;
-    frc::Transform2d m_delta;
     std::unique_ptr<frc::Timer> m_timer;
 
     std::string m_whyDone;

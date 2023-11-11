@@ -47,45 +47,24 @@ void TrajectoryDrivePathPlanner::Init(ChassisMovement &chassisMovement)
 {
     // m_holonomicController.setTolerance(frc::Pose2d{units::length::meter_t(0.1), units::length::meter_t(0.1), frc::Rotation2d(units::angle::degree_t(2.0))});
     m_path = std::make_shared<pathplanner::PathPlannerPath>(chassisMovement.path);
-    m_trajectory = pathplanner::PathPlannerTrajectory(m_path, frc::ChassisSpeeds(){});
+    m_trajectory = pathplanner::PathPlannerTrajectory(m_path, frc::ChassisSpeeds{});
 
     if (!m_trajectory.getStates().empty()) // only go if path name found
     {
-        // Desired state is first state in trajectory
-        // m_desiredState = m_trajectoryStates.front(); // m_desiredState is the first state, or starting position
-
-        m_finalState = m_trajectory.getEndState();
-
         m_timer.get()->Reset(); // Restarts and starts timer
         m_timer.get()->Start();
     }
-
-    m_delta = m_finalState.getTargetHolonomicPose() - m_chassis->GetPose();
 }
 
 std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveModuleStates(ChassisMovement &chassisMovement)
 {
     // Using event markers for robot actions
-    // need to create dummy comands and then can call functions based on names
-    // or get commands to work (maybe InstantCommand?)
+    // register named commands that are made up of runcommands
     for (pathplanner::EventMarker &marker : m_path->getEventMarkers())
     {
         if (marker.shouldTrigger(m_chassis->GetPose()))
         {
-            auto command = marker.getCommand();
-
-            //These can be registered similar to path planner
-            //Realistically, this will turn from a switch statement to a map lookup
-            //Functions in map will get populated from primitive
-            switch (command.get()->GetName())
-              {
-                case "Test":
-                      //some code
-                      break;
-                default:
-                      //default code
-                      break;
-              }  
+            marker.getCommand()->Execute();
         }
     }
 
@@ -130,8 +109,7 @@ bool TrajectoryDrivePathPlanner::IsDone()
 
     if (!m_trajectory.getStates().empty()) // If we have states...
     {
-        // isDone = m_holonomicController.atReference();
-        isDone = IsSamePose(m_chassis->GetPose(), m_trajectory.getEndState().getTargetHolonomicPose(), 10.0, 1.0);
+        isDone = IsSamePose(m_chassis->GetPose(), m_trajectory.getEndState().getTargetHolonomicPose(), units::meter_t(0.1), units::degree_t(1.0));
     }
     else
     {
@@ -143,21 +121,11 @@ bool TrajectoryDrivePathPlanner::IsDone()
     return isDone;
 }
 
-bool TrajectoryDrivePathPlanner::IsSamePose(frc::Pose2d currentPose, frc::Pose2d previousPose, double xyTolerance, double rotTolerance)
+bool TrajectoryDrivePathPlanner::IsSamePose(frc::Pose2d currentPose, frc::Pose2d previousPose, units::meter_t xyTolerance, units::degree_t rotTolerance)
 {
     // Detect if the two poses are the same within a tolerance
-    double dCurPosX = currentPose.X().to<double>() * 100; // cm
-    double dCurPosY = currentPose.Y().to<double>() * 100;
-    double dPrevPosX = previousPose.X().to<double>() * 100;
-    double dPrevPosY = previousPose.Y().to<double>() * 100;
+    frc::Transform2d delta = currentPose - previousPose;
 
-    double dCurPosRot = currentPose.Rotation().Degrees().to<double>();
-    double dPrevPosRot = previousPose.Rotation().Degrees().to<double>();
-
-    double dDeltaX = abs(dPrevPosX - dCurPosX);
-    double dDeltaY = abs(dPrevPosY - dCurPosY);
-    double dDeltaRot = abs(dPrevPosRot - dCurPosRot);
-
-    //  If Position of X or Y has moved since last scan..  Using Delta X/Y
-    return ((dDeltaX <= xyTolerance) && (dDeltaY <= xyTolerance) && (dDeltaRot <= rotTolerance));
+    //  If Position of X or Y has moved since last scan...
+    return ((units::math::abs(delta.X()) <= xyTolerance) && (units::math::abs(delta.Y()) <= xyTolerance) && (units::math::abs(delta.Rotation().Degrees()) <= rotTolerance));
 }
