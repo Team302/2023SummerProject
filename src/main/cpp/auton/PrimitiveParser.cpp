@@ -113,6 +113,113 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
                         }
                     }
                 }
+                else if (strcmp(primitiveNode.name(), "event") == 0)
+                {
+                    std::string eventName = "";
+                    ChassisOptionEnums::HeadingOption headingOption = ChassisOptionEnums::HeadingOption::MAINTAIN;
+                    double heading = 0.0;
+
+                    // Mech states
+                    auto armstate = ArmStateMgr::ARM_STATE::HOLD_POSITION_ROTATE;
+                    auto extenderstate = ExtenderStateMgr::EXTENDER_STATE::HOLD_POSITION_EXTEND;
+                    auto intakestate = IntakeStateMgr::INTAKE_STATE::HOLD;
+                    auto pipelineMode = DragonLimelight::PIPELINE_MODE::UNKNOWN;
+
+                    for (xml_attribute attr = primitiveNode.first_attribute(); attr; attr = attr.next_attribute())
+                    {
+                        if (strcmp(attr.name(), "headingOption") == 0)
+                        {
+                            auto headingItr = headingOptionMap.find(attr.value());
+                            if (headingItr != headingOptionMap.end())
+                            {
+                                headingOption = headingItr->second;
+                            }
+                            else
+                            {
+                                Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("PrimitiveParser"), string("ParseXML invalid heading option"), attr.value());
+                                hasError = true;
+                            }
+                        }
+                        else if (strcmp(attr.name(), "heading") == 0)
+                        {
+                            heading = attr.as_float();
+                        }
+                        else if (strcmp(attr.name(), "arm") == 0)
+                        {
+                            auto armItr = ArmStateMgr::GetInstance()->m_armXmlStringToStateEnumMap.find(attr.value());
+                            if (armItr != ArmStateMgr::GetInstance()->m_armXmlStringToStateEnumMap.end())
+                            {
+                                armstate = armItr->second;
+                            }
+                            else
+                            {
+                                Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("PrimitiveParser"), string("PrimitiveParser::ParseXML invalid arm state"), attr.value());
+                                hasError = true;
+                            }
+                        }
+                        else if (strcmp(attr.name(), "extender") == 0)
+                        {
+                            auto extenderItr = ExtenderStateMgr::GetInstance()->m_extenderXmlStringToStateEnumMap.find(attr.value());
+                            if (extenderItr != ExtenderStateMgr::GetInstance()->m_extenderXmlStringToStateEnumMap.end())
+                            {
+                                extenderstate = extenderItr->second;
+                            }
+                            else
+                            {
+                                Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("PrimitiveParser"), string("PrimitiveParser::ParseXML invalid extender state"), attr.value());
+                                hasError = true;
+                            }
+                        }
+                        else if (strcmp(attr.name(), "intake") == 0)
+                        {
+                            auto intakeItr = IntakeStateMgr::GetInstance()->m_intakeXmlStringToStateEnumMap.find(attr.value());
+                            if (intakeItr != IntakeStateMgr::GetInstance()->m_intakeXmlStringToStateEnumMap.end())
+                            {
+                                intakestate = intakeItr->second;
+                            }
+                            else
+                            {
+                                Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("PrimitiveParser"), string("PrimitiveParser::ParseXML invalid intake state"), attr.value());
+                                hasError = true;
+                            }
+                        }
+                        else if (strcmp(attr.name(), "pipeline") == 0)
+                        {
+                            if (strcmp(attr.value(), "UNKNOWN") == 0)
+                            {
+                                pipelineMode = DragonLimelight::PIPELINE_MODE::UNKNOWN;
+                            }
+                            else if (strcmp(attr.value(), "OFF") == 0)
+                            {
+                                pipelineMode = DragonLimelight::PIPELINE_MODE::OFF;
+                            }
+                            else if (strcmp(attr.value(), "APRIL_TAG") == 0)
+                            {
+                                pipelineMode = DragonLimelight::PIPELINE_MODE::APRIL_TAG;
+                            }
+                            else if (strcmp(attr.value(), "CONE") == 0)
+                            {
+                                pipelineMode = DragonLimelight::PIPELINE_MODE::CONE;
+                            }
+                            else if (strcmp(attr.value(), "CUBE") == 0)
+                            {
+                                pipelineMode = DragonLimelight::PIPELINE_MODE::CUBE;
+                            }
+                            else
+                            {
+                                Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("PrimitiveParser"), string("PrimitiveParser::ParseXML invalid pipeline mode"), attr.value());
+                                hasError = true;
+                            }
+                        }
+
+                        // @ADDMECH add case for your mechanism state to get the statemgr / state
+                        else
+                        {
+                            Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("PrimitiveParser"), string("ParseXML invalid attribute"), attr.name());
+                            hasError = true;
+                        }
+                    }
+                }
                 else if (strcmp(primitiveNode.name(), "primitive") == 0)
                 {
                     auto primitiveType = UNKNOWN_PRIMITIVE;
