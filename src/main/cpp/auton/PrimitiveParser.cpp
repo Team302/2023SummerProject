@@ -218,6 +218,9 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
                             Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("PrimitiveParser"), string("ParseXML invalid attribute"), attr.name());
                             hasError = true;
                         }
+
+                        // DragonEvent* event = new DragonEvent(all args from above)
+                        // pathplanner::registNamedCommand(name, GetEventRunner(event));
                     }
                 }
                 else if (strcmp(primitiveNode.name(), "primitive") == 0)
