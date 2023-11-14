@@ -43,7 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="baseGenerator.cs" />
     <Compile Include="codeGenerator_302Robotics.cs" />
+    <Compile Include="MechanismGenerator.cs" />
+    <Compile Include="MiscellaneousGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
