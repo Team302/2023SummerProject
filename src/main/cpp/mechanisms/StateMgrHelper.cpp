@@ -16,6 +16,7 @@
 #include <string>
 
 #include <auton/PrimitiveParams.h>
+#include <auton/DragonEvent.h>
 #include <State.h>
 #include <mechanisms/base/Mech.h>
 #include <mechanisms/base/StateMgr.h>
@@ -77,6 +78,40 @@ void StateMgrHelper::SetMechanismStateFromParam(PrimitiveParams *params)
             if (stateMgr != nullptr)
             {
                 auto stateID = stateMgr->GetCurrentStateParam(params);
+                if (stateID > -1)
+                {
+                    stateMgr->SetCurrentState(stateID, true);
+                }
+            }
+        }
+    }
+}
+
+void StateMgrHelper::SetMechanismStateFromEvent(DragonEvent *event)
+{
+    if (event != nullptr)
+    {
+        for (auto i = MechanismTypes::MECHANISM_TYPE::UNKNOWN_MECHANISM + 1; i < MechanismTypes::MECHANISM_TYPE::MAX_MECHANISM_TYPES; ++i)
+        {
+            auto mech = MechanismFactory::GetMechanismFactory()->GetMechanism(static_cast<MechanismTypes::MECHANISM_TYPE>(i));
+            auto stateMgr = mech != nullptr ? mech->GetStateMgr() : nullptr;
+            if (stateMgr != nullptr)
+            {
+                int stateID = -1;
+
+                switch (static_cast<MechanismTypes::MECHANISM_TYPE>(i))
+                {
+                case MechanismTypes::ARM:
+                    stateID = static_cast<int>(event->GetArmState());
+                    break;
+                case MechanismTypes::EXTENDER:
+                    stateID = static_cast<int>(event->GetExtenderState());
+                    break;
+                case MechanismTypes::INTAKE:
+                    stateID = static_cast<int>(event->GetIntakeState());
+                    break;
+                }
+
                 if (stateID > -1)
                 {
                     stateMgr->SetCurrentState(stateID, true);

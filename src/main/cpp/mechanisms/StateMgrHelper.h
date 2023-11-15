@@ -21,6 +21,7 @@
 class Mech;
 class MechanismTargetData;
 class PrimitiveParams;
+class DragonEvent;
 
 class StateMgrHelper
 {
@@ -29,6 +30,8 @@ public:
     static void RunCurrentMechanismStates();
     static void SetMechanismStateFromParam(
         PrimitiveParams *params);
+    static void SetMechanismStateFromEvent(
+        DragonEvent *event);
     static void SetCheckGamepadInputsForStateTransitions(
         bool check);
 
