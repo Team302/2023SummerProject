@@ -17,11 +17,13 @@
 #include <string>
 
 #include <frc/Filesystem.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
 
 #include <auton/AutonSelector.h>
 #include <auton/PrimitiveEnums.h>
 #include <auton/PrimitiveParams.h>
 #include <auton/PrimitiveParser.h>
+#include <auton/DragonEvent.h>
 #include <auton/drivePrimitives/IPrimitive.h>
 #include <utils/logging/Logger.h>
 
@@ -219,8 +221,13 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
                             hasError = true;
                         }
 
-                        // DragonEvent* event = new DragonEvent(all args from above)
-                        // pathplanner::registNamedCommand(name, GetEventRunner(event));
+                        DragonEvent *event = new DragonEvent(eventName,
+                                                             headingOption,
+                                                             heading,
+                                                             armstate,
+                                                             extenderstate,
+                                                             intakestate,
+                                                             pipelineMode);
                     }
                 }
                 else if (strcmp(primitiveNode.name(), "primitive") == 0)

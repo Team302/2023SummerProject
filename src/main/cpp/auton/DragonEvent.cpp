@@ -14,11 +14,18 @@
 //====================================================================================================================================================
 
 #include "auton/DragonEvent.h"
+#include "mechanisms/StateMgrHelper.h"
+#include "chassis/ChassisFactory.h"
 
 std::function<void(DragonEvent *)> DragonEvent::GetEventRunner()
 {
-    return [](DragonEvent *)
+    return [](DragonEvent *event)
     {
-        // code to set all states
+        StateMgrHelper::SetMechanismStateFromEvent(event);
+
+        SwerveChassis *chassis = ChassisFactory::GetSwerveChassis();
+
+        // need to set chassis heading while getting chassis speeds
+        // chassis->
     };
 }
