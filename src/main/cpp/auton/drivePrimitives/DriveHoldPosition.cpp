@@ -52,6 +52,7 @@ void DriveHoldPosition::Init(PrimitiveParams *params)
 									   0.0,
 									   0.0,
 									   0.0,
+									   ControlData::FEEDFORWARD_TYPE::DUTY_CYCLE,
 									   0.0,
 									   0.0,
 									   0.0,

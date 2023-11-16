@@ -156,6 +156,7 @@ void SwerveModule::Init(units::velocity::meters_per_second_t maxVelocity,
                                              0.0,
                                              0.0,
                                              0.5, // 0.5
+                                             ControlData::FEEDFORWARD_TYPE::DUTY_CYCLE,
                                              0.0,
                                              maxAcceleration.to<double>(),
                                              maxVelocity.to<double>(),

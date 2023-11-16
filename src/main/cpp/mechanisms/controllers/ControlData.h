@@ -25,6 +25,13 @@ public:
     /// @brief default constructor will create a basic percent output control data.
     ControlData();
 
+    enum FEEDFORWARD_TYPE
+    {
+        VOLTAGE,
+        TORQUE_CURRENT,
+        DUTY_CYCLE
+    };
+
     /// @brief      Create the ControlData object that is used to control mechanisms
     /// @param [in] mode - control mode
     /// @param [in] server - where to run the controller on
@@ -46,6 +53,7 @@ public:
         double integral,
         double derivative,
         double feedforward,
+        FEEDFORWARD_TYPE feedforwadType,
         double integralZone,
         double maxAcceleration,
         double cruiseVelocity,
@@ -110,6 +118,7 @@ private:
     double m_integral;
     double m_derivative;
     double m_feedforward;
+    FEEDFORWARD_TYPE m_feedforwardType;
     double m_iZone;
     double m_maxAcceleration;
     double m_cruiseVelocity;

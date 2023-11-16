@@ -28,6 +28,9 @@
 
 // Third Party Includes
 
+using ctre::phoenixpro::controls::PositionDutyCycle;
+using ctre::phoenixpro::controls::PositionTorqueCurrentFOC;
+using ctre::phoenixpro::controls::PositionVoltage;
 using ctre::phoenixpro::hardware::TalonFX;
 using std::string;
 
@@ -42,6 +45,25 @@ DragonPositionDegreeToCTREProAdapter::DragonPositionDegreeToCTREProAdapter(strin
 void DragonPositionDegreeToCTREProAdapter::Set(double value)
 {
     // TODO  Add phoenix pro commands
+    /**
+    units::angle::degree_t target = units::angle::degree_t(value);
+    PositionDutyCycle duty{0_tr};
+    PositionTorqueCurrentFOC torque{0_tr};
+    PositionVoltage voltage{0_tr};
+
+    ctre::phoenix6::controls::PositionVoltage m_voltagePosition{0_tr, 0_tps, true, 0_V, 0, false};
+    ctre::phoenix6::controls::PositionTorqueCurrentFOC m_torquePosition{0_tr, 0_tps, 0_A, 1, false};
+
+    {
+        m_fx.SetControl(m_voltagePosition.WithPosition(desiredRotations));
+    }
+    else if (m_joystick.GetRightBumper())
+    {
+    m_fx.SetControl(m_torquePosition.WithPosition(desiredRotations));
+
+    auto output = (m_calcStruc.countsPerDegree > 0.01) ? m_calcStruc.countsPerDegree * value : (ConversionUtils::DegreesToCounts(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
+    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
+**/
 }
 
 void DragonPositionDegreeToCTREProAdapter::SetControlConstants(int controlSlot,

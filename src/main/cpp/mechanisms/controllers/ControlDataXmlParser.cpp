@@ -52,6 +52,7 @@ ControlData *ControlDataXmlParser::ParseXML(
     double i = 0.0;
     double d = 0.0;
     double f = 0.0;
+    ControlData::FEEDFORWARD_TYPE fType = ControlData::FEEDFORWARD_TYPE::DUTY_CYCLE;
     double izone = 0.0;
     double maxAccel = 0.0;
     double cruiseVel = 0.0;
@@ -76,6 +77,11 @@ ControlData *ControlDataXmlParser::ParseXML(
     map<string, ControlModes::CONTROL_RUN_LOCS> serverMap;
     serverMap[string("MOTORCONTROLLER")] = ControlModes::CONTROL_RUN_LOCS::MOTOR_CONTROLLER;
     serverMap[string("ROBORIO")] = ControlModes::CONTROL_RUN_LOCS::ROBORIO;
+
+    map<string, ControlData::FEEDFORWARD_TYPE> ftypeMap;
+    ftypeMap[string("VOLTAGE")] = ControlData::FEEDFORWARD_TYPE::VOLTAGE;
+    ftypeMap[string("TORQUE_CURRENT")] = ControlData::FEEDFORWARD_TYPE::TORQUE_CURRENT;
+    ftypeMap[string("DUTY_CYCLE")] = ControlData::FEEDFORWARD_TYPE::DUTY_CYCLE;
 
     bool hasError = false;
 
@@ -118,6 +124,14 @@ ControlData *ControlDataXmlParser::ParseXML(
         {
             f = attr.as_double();
         }
+        else if (strcmp(attr.name(), "feedforwardType"))
+        {
+            auto itr = ftypeMap.find(string(attr.value()));
+            if (itr != ftypeMap.end())
+            {
+                fType = itr->second;
+            }
+        }
         else if (strcmp(attr.name(), "izone") == 0)
         {
             izone = attr.as_double();
@@ -148,7 +162,7 @@ ControlData *ControlDataXmlParser::ParseXML(
     }
     if (!hasError)
     {
-        data = new ControlData(mode, server, identifier, p, i, d, f, izone, maxAccel, cruiseVel, peak, nominal);
+        data = new ControlData(mode, server, identifier, p, i, d, f, fType, izone, maxAccel, cruiseVel, peak, nominal);
     }
     return data;
 }
