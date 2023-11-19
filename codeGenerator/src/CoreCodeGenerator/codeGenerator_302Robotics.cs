@@ -40,8 +40,8 @@ namespace CoreCodeGenerator
                 addProgress("Output directory " + rootFolder + " already exists and therefore was not created.");
             }
 
-            new MiscellaneousGenerator(codeGenVersion, theRobotConfig, generatorConfig).generate();
-            new MechanismGenerator(codeGenVersion, theRobotConfig, generatorConfig).generate();
+            new MiscellaneousGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
+            new MechanismGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
 
             //generateRobotDefinitionFiles();
         }

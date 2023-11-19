@@ -13,12 +13,14 @@ namespace CoreCodeGenerator
 {
     internal class MiscellaneousGenerator : baseGenerator
     {
-        internal MiscellaneousGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration)
+        internal MiscellaneousGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, showMessage displayProgress)
                 : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration)
         {
+            setProgressCallback(displayProgress);
         }
         internal void generate()
         {
+            addProgress("Writing general files...");
             codeTemplateFile cdf = theToolConfiguration.getTemplateInfo("RobotElementNames");
             string template = loadTemplate(cdf.templateFilePathName);
 

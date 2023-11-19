@@ -12,9 +12,10 @@ namespace CoreCodeGenerator
 {
     internal class MechanismGenerator : baseGenerator
     {
-        internal MechanismGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration)
+        internal MechanismGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, showMessage displayProgress)
         : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration)
         {
+            setProgressCallback(displayProgress);
         }
 
         internal void generate()
