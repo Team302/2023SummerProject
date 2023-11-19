@@ -51,8 +51,15 @@ namespace CoreCodeGenerator
 
         internal void copyrightAndGenNoticeAndSave(string outputFilePathName, string contents)
         {
-            contents = contents.Replace("$$_Copyright_$$", theToolConfiguration.CopyrightNotice.Trim());
-            contents = contents.Replace("$$_GEN_NOTICE_$$", getGenerationInfo());
+            string copyright = theToolConfiguration.CopyrightNotice.Trim();
+            copyright = copyright.Replace(Environment.NewLine,"\n").Replace("\n", Environment.NewLine);
+            
+            string generationString = getGenerationInfo();
+            generationString = generationString.Replace(Environment.NewLine,"\n").Replace("\n", Environment.NewLine);
+            
+            contents = contents.Replace("$$_Copyright_$$", copyright);
+            contents = contents.Replace("$$_GEN_NOTICE_$$", generationString);
+            contents = theToolConfiguration.EditorFormattingDisable.Trim() + Environment.NewLine + contents.TrimStart();
 
             contents = astyle.AStyleCaller.beautify(contents, null);
 

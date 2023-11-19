@@ -31,6 +31,7 @@ namespace Configuration
 
         public string CopyrightNotice = "";
         public string GenerationNotice = "";
+        public string EditorFormattingDisable = "";
 
         public void loadDummyData()
         {
