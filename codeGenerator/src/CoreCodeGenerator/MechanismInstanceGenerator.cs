@@ -3,6 +3,7 @@ using ApplicationData;
 using Configuration;
 using DataConfiguration;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -44,7 +45,39 @@ namespace CoreCodeGenerator
 
                     string mechanismName = mi.name;
 
-                    createMechanismFolder(mechanismName);
+
+                    #region the generated files
+                    createMechanismFolder(mechanismName, true);
+                    #region Generate Cpp File
+                    cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_gen_cpp");
+                    template = loadTemplate(cdf.templateFilePathName);
+
+                    resultString = template;
+
+                    resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+                    resultString = resultString.Replace("$$_OBJECT_CREATION_$$", ListToString(generateMethod(mi, "generateObjectCreation"), ";"));
+                    resultString = resultString.Replace("$$_ELEMENT_INITIALIZATION_$$", ListToString(generateMethod(mi, "generateInitialization")));
+
+                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
+                    copyrightAndGenNoticeAndSave(filePathName, resultString);
+                    #endregion
+
+                    #region Generate H File
+                    cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_gen_h");
+                    template = loadTemplate(cdf.templateFilePathName);
+
+                    resultString = template;
+
+                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
+                    resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+
+                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
+                    copyrightAndGenNoticeAndSave(filePathName, resultString);
+                    #endregion
+                    #endregion
+
+                    #region The decorator mod files
+                    createMechanismFolder(mechanismName, false);
 
                     #region Generate Cpp File
                     cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_cpp");
@@ -53,10 +86,8 @@ namespace CoreCodeGenerator
                     resultString = template;
 
                     resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
-                    resultString = resultString.Replace("$$_OBJECT_CREATION_$$", ListToString( generateMethod(mi, "generateObjectCreation"),";"));
-                    resultString = resultString.Replace("$$_ELEMENT_INITIALIZATION_$$", ListToString(generateMethod(mi, "generateInitialization")));
 
-                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName));
+                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), false);
                     copyrightAndGenNoticeAndSave(filePathName, resultString);
                     #endregion
 
@@ -66,38 +97,38 @@ namespace CoreCodeGenerator
 
                     resultString = template;
 
-                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
                     resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
 
-                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName));
+                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), false);
                     copyrightAndGenNoticeAndSave(filePathName, resultString);
+                    #endregion
                     #endregion
                 }
             }
         }
 
-        internal string getIncludePath(string mechanismName)
+        internal string getIncludePath(string mechanismName, bool generated)
         {
-            return getMechanismOutputPath(mechanismName).Replace(theToolConfiguration.rootOutputFolder, "").Replace(@"\", "/").TrimStart('/');
+            return getMechanismOutputPath(mechanismName, generated).Replace(theToolConfiguration.rootOutputFolder, "").Replace(@"\", "/").TrimStart('/');
         }
 
-        internal void createMechanismFolder(string mechanismName)
+        internal void createMechanismFolder(string mechanismName, bool generated)
         {
-            Directory.CreateDirectory(getMechanismOutputPath(mechanismName));
+            Directory.CreateDirectory(getMechanismOutputPath(mechanismName, generated));
         }
 
-        internal string getMechanismFullFilePathName(string mechanismName, string templateFilePath)
+        internal string getMechanismFullFilePathName(string mechanismName, string templateFilePath, bool generated)
         {
             string filename = Path.GetFileName(templateFilePath);
 
             filename = filename.Replace("MECHANISM_NAME", mechanismName);
 
-            return Path.Combine(getMechanismOutputPath(mechanismName), filename);
+            return Path.Combine(getMechanismOutputPath(mechanismName, generated), filename);
         }
 
-        internal string getMechanismOutputPath(string mechanismName)
+        internal string getMechanismOutputPath(string mechanismName, bool generated)
         {
-            return Path.Combine(theToolConfiguration.rootOutputFolder, "mechanisms", mechanismName, "generated");
+            return Path.Combine(theToolConfiguration.rootOutputFolder, "mechanisms", mechanismName, generated ? "generated" : "decoratormods");
         }
 
     }

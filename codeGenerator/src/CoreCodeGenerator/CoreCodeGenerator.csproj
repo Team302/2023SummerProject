@@ -50,6 +50,7 @@
     <Compile Include="MiscellaneousGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RobotConfigManagerGenerator.cs" />
+    <Compile Include="RobotConfigRobotSpecificGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeBeautifier\CodeBeautifier.csproj">

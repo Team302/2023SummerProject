@@ -44,6 +44,7 @@ namespace CoreCodeGenerator
             new MechanismGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
             new MechanismInstanceGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
             new RobotConfigManagerGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
+            new RobotConfigRobotSpecificGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
         }
 
 #if david

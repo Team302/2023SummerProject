@@ -65,7 +65,7 @@ namespace ApplicationData
         public mechanismInstance()
         {
             name = "mechanismInstanceName";
-
+            helperFunctions.initializeNullProperties(this);
             helperFunctions.initializeDefaultValues(this);
         }
 
@@ -132,6 +132,11 @@ namespace ApplicationData
 
             return new List<string>();
         }
+
+        public string getIncludePath()
+        {
+            return String.Format("mechanisms/{0}/decoratormods/{0}.h",name);
+        }
     }
 
     [Serializable()]
@@ -174,6 +179,11 @@ namespace ApplicationData
                 return string.Format("{0} ({1})", propertyName, PowerDistributionPanel.type);
 
             return "robot class - incomplete getDisplayName";
+        }
+
+        public string getFullRobotName()
+        {
+            return string.Format("{0}_{1}", name, robotID.value);
         }
 #endif
     }
