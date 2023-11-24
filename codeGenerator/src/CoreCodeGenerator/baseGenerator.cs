@@ -4,8 +4,10 @@ using Configuration;
 using DataConfiguration;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +24,36 @@ namespace CoreCodeGenerator
             this.codeGeneratorVersion = codeGeneratorVersion;
             this.theRobotConfiguration = theRobotConfiguration;
             this.theToolConfiguration = theToolConfiguration;
+            generatorContext.theGeneratorConfig = theToolConfiguration;
+        }
+
+        protected string ListToString(List<string> list, string delimeter)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < list.Count; i++)
+            {
+                list[i] = list[i].Trim();
+                if (!string.IsNullOrWhiteSpace(list[i]))
+                    sb.AppendLine(string.Format("{0}{1}", list[i], delimeter));
+            }
+
+            return sb.ToString();
+        }
+        protected string ListToString(List<string> list)
+        {
+            return ListToString(list, "");
+        }
+
+        internal List<string> generateMethod(object obj, string methodName)
+        {
+            MethodInfo mi = obj.GetType().GetMethod("generate");
+            if (mi != null)
+            {
+                object[] parameters = new object[] { methodName };
+                return (List<string>)mi.Invoke(obj, parameters);
+            }
+
+            return new List<string> { "" };
         }
 
         internal string getTemplateFullPath(string templatePath)
@@ -52,12 +84,12 @@ namespace CoreCodeGenerator
         internal void copyrightAndGenNoticeAndSave(string outputFilePathName, string contents)
         {
             string copyright = theToolConfiguration.CopyrightNotice.Trim();
-            copyright = copyright.Replace(Environment.NewLine,"\n").Replace("\n", Environment.NewLine);
-            
+            copyright = copyright.Replace(Environment.NewLine, "\n").Replace("\n", Environment.NewLine);
+
             string generationString = getGenerationInfo();
-            generationString = generationString.Replace(Environment.NewLine,"\n").Replace("\n", Environment.NewLine);
-            
-            contents = contents.Replace("$$_Copyright_$$", copyright);
+            generationString = generationString.Replace(Environment.NewLine, "\n").Replace("\n", Environment.NewLine);
+
+            contents = contents.Replace("$$_COPYRIGHT_$$", copyright);
             contents = contents.Replace("$$_GEN_NOTICE_$$", generationString);
             contents = theToolConfiguration.EditorFormattingDisable.Trim() + Environment.NewLine + contents.TrimStart();
 

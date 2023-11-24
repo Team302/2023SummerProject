@@ -11,12 +11,6 @@ $$_MECHANISM_NAME_$$::$$_MECHANISM_NAME_$$()
 {
 }
 
-void $$_MECHANISM_NAME_$$::Initialize()
-{
-    m_table = nt::NetworkTableInstance::GetDefault().GetTable(m_ntName);
-    m_table.get()->PutBoolean("Enable Tuning for $$_MECHANISM_NAME_$$?", m_tuning);
-}
-
 void $$_MECHANISM_NAME_$$::Cyclic()
 {
     CheckForTuningEnabled();

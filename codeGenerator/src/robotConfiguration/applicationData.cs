@@ -1,12 +1,18 @@
 using Configuration;
 using DataConfiguration;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Channels;
+using System.Security.Authentication.ExtendedProtection;
+using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using static System.Net.Mime.MediaTypeNames;
 
 //todo handle optional elements such as followID in a motorcontroller
 //todo the range of pdpID for ctre is 0-15, for REV it is 0-19. How to adjust the range allowed in the GUI. If initially REV is used and an id > 15 is used, then user chooses CTRE, what to do?
@@ -79,6 +85,53 @@ namespace ApplicationData
 
             return null;
         }
+
+        public List<string> generate(string generateFunctionName)
+        {
+            List<string> sb = new List<string>();
+            object obj = this.mechanism;
+
+            PropertyInfo[] propertyInfos = obj.GetType().GetProperties();
+            foreach (PropertyInfo pi in propertyInfos) // add its children
+            {
+                if (baseDataConfiguration.isACollection(pi.PropertyType))
+                {
+                    object theObject = pi.GetValue(obj);
+                    if (theObject != null)
+                    {
+                        Type elementType = theObject.GetType().GetGenericArguments().Single();
+                        ICollection ic = theObject as ICollection;
+                        foreach (var v in ic)
+                        {
+                            if (v != null)
+                            {
+                                sb.AddRange(generate(v, generateFunctionName));
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    object theObject = pi.GetValue(obj);
+                    if (theObject != null)
+                        sb.AddRange(generate(theObject, generateFunctionName));
+                }
+            }
+
+            return sb;
+        }
+
+        private List<string> generate(object obj, string generateFunctionName)
+        {
+            MethodInfo mi = obj.GetType().GetMethod(generateFunctionName);
+            if (mi != null)
+            {
+                object[] parameters = new object[] { };
+                return (List<string>)mi.Invoke(obj, parameters);
+            }
+
+            return new List<string>();
+        }
     }
 
     [Serializable()]
@@ -100,6 +153,8 @@ namespace ApplicationData
         [DefaultValue(1u)]
         [Range(typeof(uint), "1", "9999")]
         public uintParameter robotID { get; set; }
+
+        public string name { get; set; } = "Example";
 
         public applicationData()
         {
@@ -140,16 +195,15 @@ namespace ApplicationData
         }
 #if !enableTestAutomation
         public List<MotorController> MotorControllers { get; set; }
-
+        public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
+        public List<solenoid> solenoid { get; set; }
+        public List<servo> servo { get; set; }
+        public List<analogInput> analogInput { get; set; }
+        public List<digitalInput> digitalInput { get; set; }
         /*
-                public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
+        public colorsensor colorsensor { get; set; }
+        public List<cancoder> cancoder { get; set; }
                 public List<state> state { get; set; }
-                public List<solenoid> solenoid { get; set; }
-                public List<servo> servo { get; set; }
-                public List<analogInput> analogInput { get; set; }
-                public List<digitalInput> digitalInput { get; set; }
-                public List<cancoder> cancoder { get; set; }
-                public colorsensor colorsensor { get; set; }
         */
         public mechanism()
         {
@@ -170,6 +224,52 @@ namespace ApplicationData
                 refresh = helperFunctions.RefreshLevel.parentHeader;
 
             return string.Format("{0}", name);
+        }
+
+        public List<string> generate(string generateFunctionName)
+        {
+            List<string> sb = new List<string>();
+
+            PropertyInfo[] propertyInfos = this.GetType().GetProperties();
+            foreach (PropertyInfo pi in propertyInfos) // add its children
+            {
+                if (baseDataConfiguration.isACollection(pi.PropertyType))
+                {
+                    object theObject = pi.GetValue(this);
+                    if (theObject != null)
+                    {
+                        Type elementType = theObject.GetType().GetGenericArguments().Single();
+                        ICollection ic = theObject as ICollection;
+                        foreach (var v in ic)
+                        {
+                            if (v != null)
+                            {
+                                sb.AddRange(generate(v, generateFunctionName));
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    object theObject = pi.GetValue(this);
+                    if (theObject != null)
+                        sb.AddRange(generate(theObject, generateFunctionName));
+                }
+            }
+
+            return sb;
+        }
+
+        private List<string> generate(object obj, string generateFunctionName)
+        {
+            MethodInfo mi = obj.GetType().GetMethod(generateFunctionName);
+            if (mi != null)
+            {
+                object[] parameters = new object[] { };
+                return (List<string>)mi.Invoke(obj, parameters);
+            }
+
+            return new List<string>();
         }
 #endif
     }
@@ -216,6 +316,15 @@ namespace ApplicationData
         public string getDisplayName()
         {
             return string.Format("{0}", name);
+        }
+
+        public string generateDefinition()
+        {
+            ImplementationNameAttribute impNameAttr = this.GetType().GetCustomAttribute<ImplementationNameAttribute>();
+            if (impNameAttr != null)
+                return string.Format("{0} {1};", impNameAttr.name, name);
+
+            return string.Format("{0} {1};", this.GetType().Name, name);
         }
     }
 
@@ -305,19 +414,19 @@ namespace ApplicationData
 
     [Serializable()]
     [XmlInclude(typeof(TalonFX))]
-    [XmlInclude(typeof(TalonSRX_Motor))]
-    public class MotorController
+    [XmlInclude(typeof(TalonSRX))]
+    public class MotorController : baseRobotElementClass
     {
         [XmlIgnore]
         [Constant()]
         public string motorControllerType { get; protected set; }
 
-        [ConstantInMechInstance]
-        public string name { get; set; }
-
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
         public uintParameter canID { get; set; }
+
+        [DefaultValue(CAN_BUS.rio)]
+        public CAN_BUS canBusName { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "15")]
@@ -359,6 +468,72 @@ namespace ApplicationData
 
             return null;
         }
+
+        override public List<string> generateObjectCreation()
+        {
+            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},\"{4}\")",
+                name,
+                getImplementationName(),
+                utilities.ListToString(generateElementNames()).ToUpper(),
+                canID.value.ToString(),
+                canBusName.ToString());
+
+            return new List<string> { creation };
+        }
+    }
+
+    [Serializable]
+    public class baseRobotElementClass
+    {
+        [ConstantInMechInstance]
+        public string name { get; set; }
+
+        virtual public List<string> generateElementNames()
+        {
+            return new List<string> { string.Format("{0}_{1}", ToUnderscoreCase(generatorContext.theMechanism.name), ToUnderscoreCase(name)) };
+        }
+
+        public string getImplementationName()
+        {
+            ImplementationNameAttribute impNameAttr = this.GetType().GetCustomAttribute<ImplementationNameAttribute>();
+            if (impNameAttr == null)
+                return this.GetType().Name;
+
+            return impNameAttr.name;
+        }
+        virtual public List<string> generateDefinition()
+        {
+            return new List<string> { string.Format("{0}* {1};", getImplementationName(), name) };
+        }
+        virtual public List<string> generateInitialization()
+        {
+            return new List<string> { "baseRobotElementClass.generateInitialization needs to be overridden" };
+        }
+        virtual public List<string> generateObjectCreation()
+        {
+            return new List<string> { "baseRobotElementClass.generateInitialization needs to be overridden" };
+        }
+        virtual public List<string> generateIncludes()
+        {
+            List<string> sb = new List<string>();
+            List<UserIncludeFileAttribute> userIncludesAttr = this.GetType().GetCustomAttributes<UserIncludeFileAttribute>().ToList();
+            foreach (UserIncludeFileAttribute include in userIncludesAttr)
+                sb.Add(string.Format("#include \"{0}\"{1}", include.pathName, Environment.NewLine));
+
+            List<SystemIncludeFileAttribute> sysIncludesAttr = this.GetType().GetCustomAttributes<SystemIncludeFileAttribute>().ToList();
+            foreach (SystemIncludeFileAttribute include in sysIncludesAttr)
+                sb.Add(string.Format("#include <{0}>{1}", include.pathName, Environment.NewLine));
+
+            return sb;
+        }
+
+        internal string ToUnderscoreCase(string str)
+        {
+            if (str.Contains("_"))
+                return str;
+
+            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
+        }
     }
 
     [Serializable]
@@ -385,6 +560,8 @@ namespace ApplicationData
     }
 
     [Serializable()]
+    [ImplementationName("DragonTalonFX")]
+    [UserIncludeFile("hw/DragonTalonFX.h")]
     public class TalonFX : MotorController
     {
         public enum motorType { Falcon, Kraken }
@@ -541,10 +718,13 @@ namespace ApplicationData
         public TalonFX()
         {
         }
+
     }
 
     [Serializable()]
-    public class TalonSRX_Motor : MotorController
+    [ImplementationName("DragonTalonSRX")]
+    [UserIncludeFile("hw/DragonTalonSRX.h")]
+    public class TalonSRX : MotorController
     {
         [DefaultValue(1.1)]
         [Range(typeof(double), "0", "62")]
@@ -560,7 +740,7 @@ namespace ApplicationData
         [TunableParameter()]
         public doubleParameter peakMax_ { get; set; }
 
-        public TalonSRX_Motor()
+        public TalonSRX()
         {
         }
     }
@@ -577,11 +757,7 @@ namespace ApplicationData
 
 
 
-    [Serializable()]
-    public enum analogInputType
-    {
-        PRESSURE_GAUGE,
-    }
+
 
     [Serializable()]
     public enum pigeontype
@@ -860,34 +1036,59 @@ namespace ApplicationData
         }
     }
 
-
-
-
-
     [Serializable()]
-    public class analogInput
+    [ImplementationName("DragonAnalogInput")]
+    [UserIncludeFile("hw/DragonAnalogInput.h")]
+    public class analogInput : baseRobotElementClass
     {
+        public enum analogInputType
+        {
+            ANALOG_GENERAL,
+            ANALOG_GYRO,
+            POTENTIOMETER,
+            PRESSURE_GAUGE,
+            ELEVATOR_HEIGHT
+        }
+
         [DefaultValue(analogInputType.PRESSURE_GAUGE)]
         [TunableParameter()]
         public analogInputType type { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "7")]
-        public uint analogId { get; set; }
+        public uintParameter analogId { get; set; }
 
         [DefaultValue(0D)]
-        public double voltageMin { get; set; }
+        public doubleParameter voltageMin { get; set; }
 
         [DefaultValue(5D)]
-        public double voltageMax { get; set; }
+        public doubleParameter voltageMax { get; set; }
 
-        public double outputMin { get; set; }
+        public doubleParameter outputMin { get; set; }
 
-        public double outputMax { get; set; }
+        public doubleParameter outputMax { get; set; }
 
         public analogInput()
         {
+            name = GetType().Name;
+            helperFunctions.initializeNullProperties(this);
             helperFunctions.initializeDefaultValues(this);
+        }
+
+        override public List<string> generateObjectCreation()
+        {
+            string creation = string.Format("{0} = new {1}(\"{0}\",{1}::ANALOG_SENSOR_TYPE::{2},{3},{4},{5},{6},{7})",
+                name,
+                getImplementationName(),
+                type,
+                analogId.value,
+                voltageMin.value,
+                voltageMax.value,
+                outputMin.value,
+                outputMax.value
+                );
+
+            return new List<string> { creation };
         }
     }
 
@@ -1003,24 +1204,42 @@ namespace ApplicationData
     }
 
     [Serializable()]
-    public class digitalInput
+    [ImplementationName("DragonDigitalInput")]
+    [UserIncludeFile("hw/DragonDigitalInput.h")]
+    public class digitalInput : baseRobotElementClass
     {
-        public string name { get; set; }
-
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "25")]
-        public uint digitalId { get; set; }
+        [PhysicalUnitsFamily(physicalUnit.Family.none)]
+        public uintParameter digitalId { get; set; }
 
         [DefaultValue(false)]
-        public bool reversed { get; set; }
+        public boolParameter reversed { get; set; }
 
         [DefaultValue(0D)]
-        public double debouncetime { get; set; }
+        [PhysicalUnitsFamily(physicalUnit.Family.time)]
+        public doubleParameter debouncetime { get; set; }
 
         public digitalInput()
         {
             name = GetType().Name;
+            helperFunctions.initializeNullProperties(this);
             helperFunctions.initializeDefaultValues(this);
+        }
+
+        override public List<string> generateObjectCreation()
+        {
+            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},{4},{5}({6}))",
+                name,
+                getImplementationName(),
+                utilities.ListToString(generateElementNames()).ToUpper(),
+                digitalId.value,
+                reversed.value.ToString().ToLower(),
+                generatorContext.theGeneratorConfig.getWPIphysicalUnitType(debouncetime.__units__),
+                debouncetime.value
+                );
+
+            return new List<string> { creation };
         }
     }
 
@@ -1101,25 +1320,21 @@ namespace ApplicationData
     }
 
 
-
-
-
     [Serializable()]
-    public class solenoid
+    [ImplementationName("DragonSolenoid")]
+    [UserIncludeFile("hw/DragonSolenoid.h")]
+    public class solenoid : baseRobotElementClass
     {
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
         public uintParameter CAN_ID { get; set; }
 
-        [TunableParameter()]
-        public string name { get; set; }
-
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "7")]
-        public uint channel { get; set; }
+        public uintParameter channel { get; set; }
 
         [DefaultValue(false)]
-        public bool reversed { get; set; }
+        public boolParameter reversed { get; set; }
 
         [DefaultValue(solenoidtype.REVPH)]
         public solenoidtype type { get; set; }
@@ -1128,7 +1343,23 @@ namespace ApplicationData
         {
             name = this.GetType().Name;
 
+            helperFunctions.initializeNullProperties(this);
             helperFunctions.initializeDefaultValues(this);
+        }
+
+        override public List<string> generateObjectCreation()
+        {
+            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},frc::PneumaticsModuleType::{4},{5},{6})",
+                name,
+                getImplementationName(),
+                utilities.ListToString(generateElementNames()).ToUpper(),
+                CAN_ID.value,
+                type,
+                channel.value,
+                reversed.value.ToString().ToLower()
+                );
+
+            return new List<string> { creation };
         }
     }
 
@@ -1137,31 +1368,53 @@ namespace ApplicationData
 
 
     [Serializable()]
-    public class servo
+    [ImplementationName("DragonServo")]
+    [UserIncludeFile("hw/DragonServo.h")]
+    public class servo : baseRobotElementClass
     {
-        public string name { get; set; }
-
-
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "19")]
-        public uint Id { get; set; }
+        public uintParameter Id { get; set; }
 
-        [DefaultValue("0.0")]
-        public string minAngle { get; set; }
+        [DefaultValue(0.0)]
+        [Range(typeof(double), "0", "360")]
+        [PhysicalUnitsFamily(physicalUnit.Family.angle)]
+        public doubleParameter minAngle { get; set; }
 
-        [DefaultValue("360.0")]
-        public string maxAngle { get; set; }
+        [DefaultValue(360.0)]
+        [Range(typeof(double), "0", "360")]
+        [PhysicalUnitsFamily(physicalUnit.Family.angle)]
+        public doubleParameter maxAngle { get; set; }
 
         public servo()
         {
             name = GetType().Name;
+            helperFunctions.initializeNullProperties(this);
             helperFunctions.initializeDefaultValues(this);
+        }
+
+        override public List<string> generateObjectCreation()
+        {
+            string creation = string.Format("{0} = new {1}(RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},{4}({5}),{6}({7}))",
+                name,
+                getImplementationName(),
+                utilities.ListToString(generateElementNames()).ToUpper(),
+                Id.value,
+                generatorContext.theGeneratorConfig.getWPIphysicalUnitType(minAngle.__units__),
+                minAngle.value,
+                generatorContext.theGeneratorConfig.getWPIphysicalUnitType(maxAngle.__units__),
+                maxAngle.value
+                );
+            
+            return new List<string> { creation };
         }
     }
 
 
     [Serializable()]
-    public class colorsensor
+    [ImplementationName("DragonColorSensor")]
+    [UserIncludeFile("hw/DragonColorSensor.h")]
+    public class colorsensor : baseRobotElementClass
     {
         [DefaultValue(colorsensorport.kOnboard)]
         public colorsensorport port { get; set; }
@@ -1332,4 +1585,39 @@ namespace ApplicationData
         }
     }
 #endif
+
+    public static class generatorContext
+    {
+        public static mechanism theMechanism { get; set; }
+        public static mechanismInstance theMechanismInstance { get; set; }
+        public static applicationData theRobot { get; set; }
+        public static toolConfiguration theGeneratorConfig { get; set; }
+
+        public static void clear()
+        {
+            theMechanism = null;
+            theMechanismInstance = null;
+            theRobot = null;
+        }
+    }
+
+    public static class utilities
+    {
+        public static string ListToString(List<string> list, string delimeter)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < list.Count; i++)
+            {
+                list[i] = list[i].Trim();
+                if (!string.IsNullOrWhiteSpace(list[i]))
+                    sb.AppendLine(string.Format("{0}{1}", list[i], delimeter));
+            }
+
+            return sb.ToString().Trim();
+        }
+        public static string ListToString(List<string> list)
+        {
+            return ListToString(list, "");
+        }
+    }
 }

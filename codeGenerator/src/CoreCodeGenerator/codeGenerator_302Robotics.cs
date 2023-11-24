@@ -42,8 +42,8 @@ namespace CoreCodeGenerator
 
             new MiscellaneousGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
             new MechanismGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
-
-            //generateRobotDefinitionFiles();
+            new MechanismInstanceGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
+            new RobotConfigManagerGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
         }
 
 #if david

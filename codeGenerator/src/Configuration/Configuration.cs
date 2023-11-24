@@ -41,6 +41,15 @@ namespace Configuration
             return "";
         }
 
+        public string getWPIphysicalUnitType(string unitShortName)
+        {
+            physicalUnit pu = physicalUnits.Find(u => u.shortName == unitShortName);
+            if (pu != null)
+                return pu.wpiClassName;
+
+            return "";
+        }
+
         string rootOutputFolder_temp;
         string robotConfiguration_temp;
         private void preSerialize()

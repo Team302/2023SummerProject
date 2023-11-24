@@ -21,7 +21,38 @@ namespace CoreCodeGenerator
         internal void generate()
         {
             addProgress("Writing general files...");
+            generate_RobotElementNames();
+            generate_MechanismNames();
+        }
+
+        internal void generate_RobotElementNames()
+        {
+            addProgress("Writing RobotElementNames...");
             codeTemplateFile cdf = theToolConfiguration.getTemplateInfo("RobotElementNames");
+            string template = loadTemplate(cdf.templateFilePathName);
+
+            StringBuilder sb = new StringBuilder();
+
+            generatorContext.clear();
+            foreach (mechanism mech in theRobotConfiguration.theRobotVariants.Mechanisms)
+            {
+                generatorContext.theMechanism = mech;
+                List<string> names = generateMethod(mech, "generateElementNames");
+                for (int i = 0; i < names.Count; i++)
+                {
+                    if (!string.IsNullOrWhiteSpace(names[i]))
+                        sb.AppendLine(string.Format("{0},", names[i]));
+                }
+            }
+            template = template.Replace("$$_ROBOT_ELEMENT_NAMES_ENUMS_$$", sb.ToString().ToUpper());
+            
+            copyrightAndGenNoticeAndSave(getOutputFileFullPath(cdf.outputFilePathName), template);
+        }
+
+        internal void generate_MechanismNames()
+        {
+            addProgress("Writing MechanismNames...");
+            codeTemplateFile cdf = theToolConfiguration.getTemplateInfo("MechanismNames");
             string template = loadTemplate(cdf.templateFilePathName);
 
             StringBuilder sb = new StringBuilder();
@@ -30,21 +61,23 @@ namespace CoreCodeGenerator
             {
                 foreach (mechanismInstance mi in robot.mechanismInstances)
                 {
-                    foreach (MotorController mc in mi.mechanism.MotorControllers)
-                        sb.AppendLine(getRobotElementName(mi, mc));
-
+                    sb.AppendLine(string.Format("{0},", getMechanismInstanceName(mi)));
                 }
             }
 
-            template = template.Replace("$$_ROBOT_ELEMENT_NAMES_ENUMS_$$", sb.ToString().ToUpper());
+            template = template.Replace("$$_MECHANISM_NAMES_ENUMS_$$", sb.ToString().ToUpper());
 
             copyrightAndGenNoticeAndSave(getOutputFileFullPath(cdf.outputFilePathName), template);
         }
 
-        internal string getRobotElementName(mechanismInstance mi, MotorController mc)
+        internal string getMechanismElementName(MotorController mc)
         {
-            return string.Format("{0}_{1},", ToUnderscoreCase(mi.name), ToUnderscoreCase(mc.name));
+            return string.Format("{0}", ToUnderscoreCase(mc.name));
         }
 
+        internal string getMechanismInstanceName(mechanismInstance mi)
+        {
+            return string.Format("{0}", ToUnderscoreCase(mi.name));
+        }
     }
 }

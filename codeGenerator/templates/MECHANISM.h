@@ -9,12 +9,21 @@ $$_GEN_NOTICE_$$
 // FRC Includes
 #include <networktables/NetworkTable.h>
 
+$$_INCLUDE_FILES_$$
+
 class $$_MECHANISM_NAME_$$
 {
     public:
         $$_MECHANISM_NAME_$$();
-        void Initialize();
+        virtual void Initialize();
         void Cyclic();
+
+        $$_MECHANISM_ELEMENTS_$$
+
+    protected : 
+        std::string m_ntName;
+        bool m_tuning = false;
+        std::shared_ptr<nt::NetworkTable> m_table;   
 
     private:
         void CheckForTuningEnabled();
@@ -23,7 +32,5 @@ class $$_MECHANISM_NAME_$$
 
         $$_TUNABLE_PARAMETERS_$$
 
-        std::string m_ntName = "$$_MECHANISM_NAME_$$";
-        bool m_tuning = false;
-        std::shared_ptr<nt::NetworkTable> m_table;
+
 };
