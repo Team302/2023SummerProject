@@ -16,6 +16,24 @@
 #include "auton/DragonEvent.h"
 #include "mechanisms/StateMgrHelper.h"
 #include "chassis/ChassisFactory.h"
+#include "DragonVision/LimelightFactory.h"
+
+DragonEvent::DragonEvent(std::string name,
+                         ChassisOptionEnums::HeadingOption headingOption,
+                         float heading,
+                         // mechanism params
+                         ArmStateMgr::ARM_STATE armState,
+                         ExtenderStateMgr::EXTENDER_STATE extenderState,
+                         IntakeStateMgr::INTAKE_STATE intakeState,
+                         DragonLimelight::PIPELINE_MODE pipelineMode) : m_name(name),
+                                                                        m_headingOption(headingOption),
+                                                                        m_heading(heading),
+                                                                        m_armState(armState),
+                                                                        m_extenderState(extenderState),
+                                                                        m_intakeState(intakeState),
+                                                                        m_pipelineMode(pipelineMode)
+{
+}
 
 std::function<void()> DragonEvent::GetEventRunner(DragonEvent *event)
 {
@@ -24,6 +42,11 @@ std::function<void()> DragonEvent::GetEventRunner(DragonEvent *event)
         StateMgrHelper::SetMechanismStateFromEvent(event);
 
         SwerveChassis *chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
+
+        DragonLimelight *m_limelight = LimelightFactory::GetLimelightFactory()->GetLimelight(LimelightUsages::PRIMARY);
+
+        if (event->GetPipelineMode() != DragonLimelight::PIPELINE_MODE::UNKNOWN)
+            m_limelight->SetPipeline(event->GetPipelineMode());
 
         // need to set chassis heading while getting chassis speeds
         // chassis->
