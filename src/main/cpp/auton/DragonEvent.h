@@ -18,6 +18,9 @@
 #include <string>
 #include <functional>
 
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/RunCommand.h>
+
 #include <chassis/ChassisOptionEnums.h>
 #include <mechanisms/arm/ArmStateMgr.h>
 #include <mechanisms/extender/ExtenderStateMgr.h>
@@ -39,7 +42,7 @@ public:
     DragonEvent() = delete;
     ~DragonEvent() = default;
 
-    static std::function<void(DragonEvent *)> GetEventRunner();
+    static std::function<void()> GetEventRunner(DragonEvent *event);
 
     std::string GetName() const { return m_name; };
     ChassisOptionEnums::HeadingOption GetHeadingOption() const { return m_headingOption; };

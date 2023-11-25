@@ -34,7 +34,7 @@ struct ChassisMovement
 {
     ChassisOptionEnums::DriveStateType driveOption = ChassisOptionEnums::DriveStateType::ROBOT_DRIVE;
     frc::ChassisSpeeds chassisSpeeds = frc::ChassisSpeeds();
-    pathplanner::PathPlannerPath path = pathplanner::PathPlannerTrajectory();
+    pathplanner::PathPlannerPath* path = nullptr;
     frc::Translation2d centerOfRotationOffset = frc::Translation2d();
     ChassisOptionEnums::HeadingOption headingOption = ChassisOptionEnums::HeadingOption::MAINTAIN;
     ChassisOptionEnums::NoMovementOption noMovementOption = ChassisOptionEnums::NoMovementOption::STOP;

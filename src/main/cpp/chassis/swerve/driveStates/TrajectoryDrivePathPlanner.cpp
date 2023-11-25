@@ -73,10 +73,13 @@ std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveMo
 
         // NOTE this if statement could be troublesome in the future if these two poses never equal each other
         /// @todo is there a better way to get the initial pose for a PathPlannerPath (there is InitialDifferentialPose...)
-        frc::Pose2d incomingInitialPose = frc::Pose2d(chassisMovement.path.getPoint(0).position, chassisMovement.path.getPoint(0).holonomicRotation.value());
-        if (m_trajectory.getInitialTargetHolonomicPose() != incomingInitialPose)
+        if (chassisMovement.path != nullptr)
         {
-            Init(chassisMovement);
+            frc::Pose2d incomingInitialPose = frc::Pose2d(chassisMovement.path->getPoint(0).position, chassisMovement.path->getPoint(0).holonomicRotation.value());
+            if (m_trajectory.getInitialTargetHolonomicPose() != incomingInitialPose)
+            {
+                Init(chassisMovement);
+            }
         }
 
         units::second_t currentTime = m_timer.get()->Get();
