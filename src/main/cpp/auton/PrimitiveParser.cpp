@@ -228,6 +228,8 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
                                                              extenderstate,
                                                              intakestate,
                                                              pipelineMode);
+
+                        pathplanner::NamedCommands::registerNamedCommand(eventName)
                     }
                 }
                 else if (strcmp(primitiveNode.name(), "primitive") == 0)
