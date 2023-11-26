@@ -21,9 +21,11 @@ public:
 	// This enum contains values for each of the robot elements such as motors, solenoids, etc
 	enum ROBOT_ELEMENT_NAMES
 	{
+		UNKNOWN_ROBOT_ELEMENT_NAMES = -1,
+
 		$$_ROBOT_ELEMENT_NAMES_ENUMS_$$
-	
-		MAX_ROBOT_ELEMENT_NAMES
+
+			MAX_ROBOT_ELEMENT_NAMES
 	};
 
 private:

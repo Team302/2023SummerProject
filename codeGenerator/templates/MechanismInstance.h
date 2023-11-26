@@ -27,10 +27,13 @@ public:
     $$_MECHANISM_INSTANCE_NAME_$$() = delete;
     ~$$_MECHANISM_INSTANCE_NAME_$$() = default;
 
+    //todo not sure what to do with these
+    /*
     bool IsAtMinPosition(RobotElementNames::ROBOT_ELEMENT_NAMES identifier) const override;
     bool IsAtMinPosition(RobotElementNames::ROBOT_ELEMENT_NAMES identifier) const override;
     bool IsAtMaxPosition(RobotElementNames::ROBOT_ELEMENT_NAMES identifier) const override;
     bool IsAtMaxPosition(RobotElementNames::ROBOT_ELEMENT_NAMES identifier) const override;
+    */
 
 private:
     $$_MECHANISM_INSTANCE_NAME_$$_gen* m_$$_MECHANISM_INSTANCE_NAME_$$;

@@ -980,7 +980,10 @@ namespace FRCrobotCodeGen302
                         {
                             prop.SetValue(objToOperateOn, physicalUnitsComboBox.Text);
 
-                            lastSelectedValueNode.Text = getDisplayName(parentObj, lnt.name);
+                            if (objToOperateOn is parameter)
+                                lastSelectedValueNode.Text = getDisplayName(objToOperateOn, lnt.name);
+                            else
+                                lastSelectedValueNode.Text = getDisplayName(parentObj, lnt.name);
 
                             if (lastSelectedValueNode.Parent != null)
                                 lastSelectedValueNode.Parent.Text = getDisplayName(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), "");

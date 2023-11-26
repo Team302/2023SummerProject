@@ -31,20 +31,24 @@ namespace CoreCodeGenerator
             codeTemplateFile cdf = theToolConfiguration.getTemplateInfo("RobotElementNames");
             string template = loadTemplate(cdf.templateFilePathName);
 
-            StringBuilder sb = new StringBuilder();
+            List<string> names = new List<string>();
 
             generatorContext.clear();
             foreach (mechanism mech in theRobotConfiguration.theRobotVariants.Mechanisms)
             {
                 generatorContext.theMechanism = mech;
-                List<string> names = generateMethod(mech, "generateElementNames");
-                for (int i = 0; i < names.Count; i++)
-                {
-                    if (!string.IsNullOrWhiteSpace(names[i]))
-                        sb.AppendLine(string.Format("{0},", names[i]));
-                }
+                names.AddRange(generateMethod(mech, "generateElementNames"));
             }
-            template = template.Replace("$$_ROBOT_ELEMENT_NAMES_ENUMS_$$", sb.ToString().ToUpper());
+
+            generatorContext.clear();
+            foreach (applicationData robot in theRobotConfiguration.theRobotVariants.Robots)
+            {
+                generatorContext.theRobot = robot;
+                names.AddRange(generateMethod(robot, "generateElementNames").Distinct().ToList());
+            }
+
+
+            template = template.Replace("$$_ROBOT_ELEMENT_NAMES_ENUMS_$$", utilities.ListToString(names.Distinct().ToList(),",").ToUpper());
             
             copyrightAndGenNoticeAndSave(getOutputFileFullPath(cdf.outputFilePathName), template);
         }

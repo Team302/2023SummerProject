@@ -32,9 +32,6 @@ namespace CoreCodeGenerator
             foreach (mechanism mech in theRobotConfiguration.theRobotVariants.Mechanisms)
             {
                 generatorContext.theMechanism = mech;
-                //StringBuilder sbTemp = new StringBuilder();
-                //iterateThrough(mech, sbTemp);
-                //string strTemp = sbTemp.ToString();
 
                 string filePathName;
                 string resultString;
@@ -111,26 +108,10 @@ namespace CoreCodeGenerator
 
                 resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
                 resultString = resultString.Replace("$$_MECHANISM_ELEMENTS_$$", ListToString(generateMethod(mech, "generateDefinition")));
-                resultString = resultString.Replace("$$_INCLUDE_FILES_$$", ListToString(generateMethod(mech, "generateIncludes")));
+                resultString = resultString.Replace("$$_INCLUDE_FILES_$$", ListToString(generateMethod(mech, "generateIncludes").Distinct().ToList()));
 
                 //closed loop parameters
                 string allParameters = "";
-#if david
-                foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                {
-                    Type objType = cLCParams.GetType();
-
-                    PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                    foreach (PropertyInfo pi in propertyInfos)
-                    {
-                        bool skip = (pi.Name == "name");
-                        if (!skip)
-                            allParameters += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
-                    }
-
-                }
-#endif
                 resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
 
                 filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_NAME", mechanismName));

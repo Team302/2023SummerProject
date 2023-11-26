@@ -20,12 +20,14 @@ using std::string;
 /// @param otherMotor Same as previous
 /// @param solenoid Solenoid in the mechanism - code generator should probably use the usage for the variable name
 /// Additional actuators and sensors are also in this list.
-$$_MECHANISM_INSTANCE_NAME_$$::$$_MECHANISM_INSTANCE_NAME_$$($$_MECHANISM_INSTANCE_NAME_$$_gen* base) : $$_MECHANISM_INSTANCE_NAME_$$_gen(),
-m_$$_MECHANISM_INSTANCE_NAME_$$(base)
+$$_MECHANISM_INSTANCE_NAME_$$::$$_MECHANISM_INSTANCE_NAME_$$($$_MECHANISM_INSTANCE_NAME_$$_gen *base) : $$_MECHANISM_INSTANCE_NAME_$$_gen(),
+                                                                                                        m_$$_MECHANISM_INSTANCE_NAME_$$(base)
 {
     PeriodicLooper::GetInstance()->RegisterAll(*this);
 }
 
+// todo not sure what to do with this
+/*
 bool $$_MECHANISM_INSTANCE_NAME_$$::IsAtMinPosition(RobotElementNames::ROBOT_ELEMENT_NAMES identifier) const
 {
     return m_$$_MECHANISM_INSTANCE_NAME_$$->IsAtMinPosition(identifier);
@@ -42,4 +44,4 @@ bool $$_MECHANISM_INSTANCE_NAME_$$::IsAtMaxPosition(RobotElementNames::ROBOT_ELE
 {
     return m_$$_MECHANISM_INSTANCE_NAME_$$->IsAtMaxPosition(identifier);
 }
-
+*/

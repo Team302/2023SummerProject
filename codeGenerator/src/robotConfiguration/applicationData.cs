@@ -21,6 +21,10 @@ using static System.Net.Mime.MediaTypeNames;
 //todo in the treeview, place the "name" nodes at the top
 //todo in the robot code, check that an enum belonging to another robot is not used
 //todo check naming convention
+//todo getDisplayName gets called multiple times when a solenoid name is changed in a mechanism
+//todo handle DistanceAngleCalcStruc should this be split into 2 separate structs? one ofr dist , 2nd for angle?
+//todo when mechanisms are renamed, the GUIDs get messed up
+//todo if a decorator mod file exists, do not write it
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -176,6 +180,52 @@ namespace ApplicationData
         {
             return string.Format("{0}_{1}", name, robotID.value);
         }
+
+        public List<string> generate(string generateFunctionName)
+        {
+            List<string> sb = new List<string>();
+
+            PropertyInfo[] propertyInfos = this.GetType().GetProperties();
+            foreach (PropertyInfo pi in propertyInfos) // add its children
+            {
+                if (baseDataConfiguration.isACollection(pi.PropertyType))
+                {
+                    object theObject = pi.GetValue(this);
+                    if (theObject != null)
+                    {
+                        Type elementType = theObject.GetType().GetGenericArguments().Single();
+                        ICollection ic = theObject as ICollection;
+                        foreach (var v in ic)
+                        {
+                            if (v != null)
+                            {
+                                sb.AddRange(generate(v, generateFunctionName));
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    object theObject = pi.GetValue(this);
+                    if (theObject != null)
+                        sb.AddRange(generate(theObject, generateFunctionName));
+                }
+            }
+
+            return sb;
+        }
+
+        private List<string> generate(object obj, string generateFunctionName)
+        {
+            MethodInfo mi = obj.GetType().GetMethod(generateFunctionName);
+            if (mi != null)
+            {
+                object[] parameters = new object[] { };
+                return (List<string>)mi.Invoke(obj, parameters);
+            }
+
+            return new List<string>();
+        }
 #endif
     }
     [Serializable()]
@@ -287,8 +337,8 @@ namespace ApplicationData
         public List<servo> servo { get; set; }
         public List<analogInput> analogInput { get; set; }
         public List<digitalInput> digitalInput { get; set; }
-        public List<colorsensor> colorsensor { get; set; }
-        public List<ctreCANcoder> cancoder { get; set; }
+        // not defined in /hw/Dragon.. public List<colorsensor> colorsensor { get; set; }
+        public List<CANcoder> cancoder { get; set; }
         //public List<state> state { get; set; }
 
         public mechanism()
@@ -525,7 +575,7 @@ namespace ApplicationData
         public boolParameter enableFollowID { get; set; }
 
         public MotorController()
-        { 
+        {
         }
 
         public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
@@ -1052,7 +1102,7 @@ namespace ApplicationData
         }
 
         public List<MotorController> motor { get; set; }
-        public ctreCANcoder cancoder { get; set; }
+        public CANcoder cancoder { get; set; }
         [DefaultValue(swervemoduletype.LEFT_FRONT)]
         public swervemoduletype position { get; set; }
         public closedLoopControlParameters controlParameters { get; set; }
@@ -1090,7 +1140,9 @@ namespace ApplicationData
 
 
     [Serializable()]
-    public class ctreCANcoder : baseRobotElementClass
+    [ImplementationName("DragonCanCoder")]
+    [UserIncludeFile("hw/DragonCanCoder.h")]
+    public class CANcoder : baseRobotElementClass
     {
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
@@ -1105,8 +1157,33 @@ namespace ApplicationData
         [DefaultValue(false)]
         public boolParameter reverse { get; set; }
 
-        public ctreCANcoder()
+        public CANcoder()
         {
+        }
+
+        override public List<string> generateObjectCreation()
+        {
+            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},\"{4}\",{5},{6})",
+                name,
+                getImplementationName(),
+                utilities.ListToString(generateElementNames()).ToUpper(),
+                canID.value,
+                canBusName,
+                offset.value,
+                reverse.value.ToString().ToLower()
+                );
+
+            return new List<string> { creation };
+        }
+
+        override public List<string> generateInitialization()
+        {
+            List<string> initCode = new List<string>()
+            {
+                string.Format("// {0} : CANcoder inputs do not have initialization needs", name)
+            };
+
+            return initCode;
         }
     }
 
@@ -1383,11 +1460,45 @@ namespace ApplicationData
             helperFunctions.initializeDefaultValues(this);
             name = GetType().Name;
         }
-        virtual public List<string> generateElementNames()
+
+        virtual public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
         {
-            return new List<string> { string.Format("{0}_{1}", ToUnderscoreCase(generatorContext.theMechanism.name), ToUnderscoreCase(name)) };
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (string.IsNullOrEmpty(propertyName))
+                refresh = helperFunctions.RefreshLevel.none;
+            else if (propertyName == "name")
+                refresh = helperFunctions.RefreshLevel.parentHeader;
+
+            if (string.IsNullOrEmpty(propertyName))
+                return name;
+
+            PropertyInfo pi = this.GetType().GetProperty(propertyName);
+            if (pi == null)
+                return string.Format("baseRobotElementClass.getDisplayName : pi is null for propertyName {0}", propertyName);
+
+            object obj = pi.GetValue(this);
+            if (obj == null)
+                return string.Format("baseRobotElementClass.getDisplayName : obj is null for propertyName {0}", propertyName);
+
+            if (obj is parameter)
+            {
+                pi = this.GetType().GetProperty("value");
+                obj = pi.GetValue(this);
+            }
+
+            return string.Format("{0} ({1})", propertyName, obj.ToString());
         }
 
+        virtual public List<string> generateElementNames()
+        {
+            if (generatorContext.theMechanism != null)
+                return new List<string> { string.Format("{0}_{1}", ToUnderscoreCase(generatorContext.theMechanism.name), ToUnderscoreCase(name)) };
+            else if (generatorContext.theRobot != null)
+                return new List<string> { string.Format("{0}", ToUnderscoreCase(name)) };
+            else
+                return new List<string> { "generateElementNames got to the else statement...should not be here" };
+        }
         public string getImplementationName()
         {
             ImplementationNameAttribute impNameAttr = this.GetType().GetCustomAttribute<ImplementationNameAttribute>();
