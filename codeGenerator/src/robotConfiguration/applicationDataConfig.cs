@@ -501,6 +501,7 @@ namespace applicationConfiguration
             {
                 mechanism temp = new mechanism();
                 temp.name = mech.name;
+                temp.GUID = mech.GUID;
                 theRobotVariants.Mechanisms.Add(temp);
             }
 
