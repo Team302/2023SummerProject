@@ -60,7 +60,7 @@ namespace CoreCodeGenerator
             foreach (applicationData robot in theRobotConfiguration.theRobotVariants.Robots)
             {
                 generatorContext.theRobot = robot;
-                sb.AppendLine(string.Format("{0},", robot.getFullRobotName()));
+                sb.AppendLine(string.Format("{0} = {1},", robot.getFullRobotName(), robot.robotID.value));
             }
             template = template.Replace("$$_ROBOT_CONFIGURATIONS_NAMES_ENUMS_$$", sb.ToString());
 

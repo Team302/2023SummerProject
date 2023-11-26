@@ -52,20 +52,19 @@ namespace CoreCodeGenerator
         internal void generate_MechanismNames()
         {
             addProgress("Writing MechanismNames...");
-            codeTemplateFile cdf = theToolConfiguration.getTemplateInfo("MechanismNames");
+            codeTemplateFile cdf = theToolConfiguration.getTemplateInfo("MechanismTypes");
             string template = loadTemplate(cdf.templateFilePathName);
 
-            StringBuilder sb = new StringBuilder();
-
+            List<string> mechNames = new List<string>();
             foreach (applicationData robot in theRobotConfiguration.theRobotVariants.Robots)
             {
                 foreach (mechanismInstance mi in robot.mechanismInstances)
                 {
-                    sb.AppendLine(string.Format("{0},", getMechanismInstanceName(mi)));
+                    mechNames.Add(string.Format("{0}", getMechanismInstanceName(mi)));
                 }
             }
 
-            template = template.Replace("$$_MECHANISM_NAMES_ENUMS_$$", sb.ToString().ToUpper());
+            template = template.Replace("$$_MECHANISM_NAMES_ENUMS_$$", ListToString(mechNames.Distinct().ToList(), ",").ToUpper());
 
             copyrightAndGenNoticeAndSave(getOutputFileFullPath(cdf.outputFilePathName), template);
         }

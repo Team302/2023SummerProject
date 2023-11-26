@@ -30,79 +30,101 @@ namespace CoreCodeGenerator
             List<string> mechMainFiles = new List<string>();
             //List<string> mechStateFiles = new List<string>();
             //List<string> mechStateMgrFiles = new List<string>();
+            List<string> mechInstanceNames = new List<string>();
             foreach (applicationData robot in theRobotConfiguration.theRobotVariants.Robots)
             {
                 generatorContext.theRobot = robot;
                 foreach (mechanismInstance mi in robot.mechanismInstances)
                 {
-                    generatorContext.theMechanismInstance = mi;
-                    generatorContext.theMechanism = mi.mechanism;
+                    if (!mechInstanceNames.Exists(n => n == mi.name))
+                    {
+                        mechInstanceNames.Add(mi.name);
 
-                    string filePathName;
-                    string resultString;
-                    codeTemplateFile cdf;
-                    string template;
+                        generatorContext.theMechanismInstance = mi;
+                        generatorContext.theMechanism = mi.mechanism;
 
-                    string mechanismName = mi.name;
+                        string filePathName;
+                        string resultString;
+                        codeTemplateFile cdf;
+                        string template;
+
+                        string mechanismName = mi.name;
 
 
-                    #region the generated files
-                    createMechanismFolder(mechanismName, true);
-                    #region Generate Cpp File
-                    cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_gen_cpp");
-                    template = loadTemplate(cdf.templateFilePathName);
+                        #region the generated files
+                        createMechanismFolder(mechanismName, true);
+                        #region Generate Cpp File
+                        cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_gen_cpp");
+                        template = loadTemplate(cdf.templateFilePathName);
 
-                    resultString = template;
+                        resultString = template;
 
-                    resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
-                    resultString = resultString.Replace("$$_OBJECT_CREATION_$$", ListToString(generateMethod(mi, "generateObjectCreation"), ";"));
-                    resultString = resultString.Replace("$$_ELEMENT_INITIALIZATION_$$", ListToString(generateMethod(mi, "generateInitialization")));
+                        resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+                        resultString = resultString.Replace("$$_OBJECT_CREATION_$$", ListToString(generateMethod(mi, "generateObjectCreation"), ";"));
 
-                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
-                    copyrightAndGenNoticeAndSave(filePathName, resultString);
-                    #endregion
+                        List<string> initCode = new List<string>
+                        {
+                            "if(false){}"
+                        };
+                        foreach (applicationData r in theRobotConfiguration.theRobotVariants.Robots)
+                        {
+                            mechanismInstance mis = r.mechanismInstances.Find(m => m.name == mi.name);
+                            if (mis != null)
+                            {
+                                initCode.Add(string.Format("else if(RobotConfigMgr::RobotIdentifier::{0} == robotFullName)", r.getFullRobotName()));
+                                initCode.Add("{");
+                                initCode.AddRange(generateMethod(mis, "generateInitialization"));
+                                initCode.Add("}");
+                            }
+                        }
+                        resultString = resultString.Replace("$$_ELEMENT_INITIALIZATION_$$", ListToString(initCode));
 
-                    #region Generate H File
-                    cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_gen_h");
-                    template = loadTemplate(cdf.templateFilePathName);
+                        filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
+                        copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        #endregion
 
-                    resultString = template;
+                        #region Generate H File
+                        cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_gen_h");
+                        template = loadTemplate(cdf.templateFilePathName);
 
-                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
-                    resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+                        resultString = template;
 
-                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
-                    copyrightAndGenNoticeAndSave(filePathName, resultString);
-                    #endregion
-                    #endregion
+                        resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
+                        resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
 
-                    #region The decorator mod files
-                    createMechanismFolder(mechanismName, false);
+                        filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
+                        copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        #endregion
+                        #endregion
 
-                    #region Generate Cpp File
-                    cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_cpp");
-                    template = loadTemplate(cdf.templateFilePathName);
+                        #region The decorator mod files
+                        createMechanismFolder(mechanismName, false);
 
-                    resultString = template;
+                        #region Generate Cpp File
+                        cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_cpp");
+                        template = loadTemplate(cdf.templateFilePathName);
 
-                    resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+                        resultString = template;
 
-                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), false);
-                    copyrightAndGenNoticeAndSave(filePathName, resultString);
-                    #endregion
+                        resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
 
-                    #region Generate H File
-                    cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_h");
-                    template = loadTemplate(cdf.templateFilePathName);
+                        filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), false);
+                        copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        #endregion
 
-                    resultString = template;
+                        #region Generate H File
+                        cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_h");
+                        template = loadTemplate(cdf.templateFilePathName);
 
-                    resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+                        resultString = template;
 
-                    filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), false);
-                    copyrightAndGenNoticeAndSave(filePathName, resultString);
-                    #endregion
-                    #endregion
+                        resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+
+                        filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), false);
+                        copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        #endregion
+                        #endregion
+                    }
                 }
             }
         }

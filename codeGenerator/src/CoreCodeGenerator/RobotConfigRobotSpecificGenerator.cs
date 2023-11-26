@@ -57,7 +57,6 @@ namespace CoreCodeGenerator
 
             #endregion
 
-
             #region Generate CPP File
             cdf = theToolConfiguration.getTemplateInfo("RobotConfigRobotSpecific_cpp");
             template = loadTemplate(cdf.templateFilePathName);
@@ -86,8 +85,6 @@ namespace CoreCodeGenerator
                 copyrightAndGenNoticeAndSave(getOutputFileFullPath(cdf.outputFilePathName).Replace("$$_ROBOT_NAME_$$", robot.getFullRobotName()), resultString);
             }
             #endregion
-
-
         }
     }
 }
