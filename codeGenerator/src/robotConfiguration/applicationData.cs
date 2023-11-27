@@ -573,22 +573,22 @@ namespace ApplicationData
         {
         }
 
-        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
-        {
-            refresh = helperFunctions.RefreshLevel.parentHeader;
+        //public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        //{
+        //    refresh = helperFunctions.RefreshLevel.parentHeader;
 
-            if (propertyName == "")
-                return name;
+        //    if (propertyName == "")
+        //        return name;
 
-            PropertyInfo pi = this.GetType().GetProperty(propertyName);
-            if (pi != null)
-            {
-                object value = pi.GetValue(this);
-                return string.Format("{0} ({1})", propertyName, value.ToString());
-            }
+        //    PropertyInfo pi = this.GetType().GetProperty(propertyName);
+        //    if (pi != null)
+        //    {
+        //        object value = pi.GetValue(this);
+        //        return string.Format("{0} ({1})", propertyName, value.ToString());
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         override public List<string> generateObjectCreation()
         {
