@@ -25,6 +25,7 @@ using static System.Net.Mime.MediaTypeNames;
 //todo handle DistanceAngleCalcStruc should this be split into 2 separate structs? one ofr dist , 2nd for angle?
 //todo when mechanisms are renamed, the GUIDs get messed up
 //todo if a decorator mod file exists, do not write it
+//todo show the DataDescription information
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -416,22 +417,22 @@ namespace ApplicationData
     public class closedLoopControlParameters : baseRobotElementClass
     {
         [DefaultValue(0D)]
-        [System.ComponentModel.Description("The proportional gain of the PID controller.")]
+        [DataDescription("The proportional gain of the PIDF controller.")]
         [TunableParameter()]
         public doubleParameter pGain { get; set; }
 
         [DefaultValue(0D)]
-        [System.ComponentModel.Description("The integral gain of the PID controller.")]
+        [DataDescription("The integral gain of the PIDF controller.")]
         [TunableParameter()]
         public doubleParameter iGain { get; set; }
 
         [DefaultValue(0D)]
-        [System.ComponentModel.Description("The differential gain of the PID controller.")]
+        [DataDescription("The differential gain of the PIDF controller.")]
         [TunableParameter()]
         public doubleParameter dGain { get; set; }
 
         [DefaultValue(0D)]
-        [System.ComponentModel.Description("The feed forward gain of the PID controller.")]
+        [DataDescription("The feed forward gain of the PIDF controller.")]
         [TunableParameter()]
         public doubleParameter fGain { get; set; }
 
