@@ -573,23 +573,6 @@ namespace ApplicationData
         {
         }
 
-        //public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
-        //{
-        //    refresh = helperFunctions.RefreshLevel.parentHeader;
-
-        //    if (propertyName == "")
-        //        return name;
-
-        //    PropertyInfo pi = this.GetType().GetProperty(propertyName);
-        //    if (pi != null)
-        //    {
-        //        object value = pi.GetValue(this);
-        //        return string.Format("{0} ({1})", propertyName, value.ToString());
-        //    }
-
-        //    return null;
-        //}
-
         override public List<string> generateObjectCreation()
         {
             string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},\"{4}\")",
