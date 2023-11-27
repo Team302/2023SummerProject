@@ -468,14 +468,6 @@ namespace ApplicationData
         {
 
         }
-
-        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
-        {
-            refresh = helperFunctions.RefreshLevel.parentHeader;
-            if (string.IsNullOrEmpty(propertyName))
-                refresh = helperFunctions.RefreshLevel.none;
-            return "Power Distribution Panel (" + type.ToString() + ")";
-        }
     }
 
     [Serializable()]
@@ -531,14 +523,6 @@ namespace ApplicationData
 
         public pcm()
         {
-        }
-
-        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
-        {
-            refresh = helperFunctions.RefreshLevel.parentHeader;
-            if (string.IsNullOrEmpty(propertyName))
-                refresh = helperFunctions.RefreshLevel.none;
-            return string.Format("PCM ({0})", name);
         }
     }
 
