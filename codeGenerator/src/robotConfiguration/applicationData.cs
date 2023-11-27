@@ -442,11 +442,6 @@ namespace ApplicationData
         {
         }
 
-        public string getDisplayName()
-        {
-            return string.Format("{0}", name);
-        }
-
         public string generateDefinition()
         {
             ImplementationNameAttribute impNameAttr = this.GetType().GetCustomAttribute<ImplementationNameAttribute>();
@@ -1040,6 +1035,31 @@ namespace ApplicationData
         {
             helperFunctions.initializeNullProperties(this);
             helperFunctions.initializeDefaultValues(this);
+        }
+
+
+        public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            if (string.IsNullOrEmpty(propertyName))
+                return "Chassis";
+
+            PropertyInfo pi = this.GetType().GetProperty(propertyName);
+            if (pi == null)
+                return string.Format("chassis.getDisplayName : pi is null for propertyName {0}", propertyName);
+
+            object obj = pi.GetValue(this);
+            if (obj == null)
+                return string.Format("chassis.getDisplayName : obj is null for propertyName {0}", propertyName);
+
+            if (obj is parameter)
+            {
+                pi = this.GetType().GetProperty("value");
+                obj = pi.GetValue(this);
+            }
+
+            return string.Format("{0} ({1})", propertyName, obj.ToString());
         }
     }
 
