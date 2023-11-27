@@ -229,7 +229,7 @@ PrimitiveParamsVector PrimitiveParser::ParseXML(string fulldirfile)
                                                              intakestate,
                                                              pipelineMode);
 
-                        frc2::CommandPtr command = frc2::RunCommand(DragonEvent::GetEventRunner(event)).ToPtr();
+                        frc2::CommandPtr command = frc2::RunCommand(DragonEvent::RegisterEventRunner(event)).ToPtr();
 
                         pathplanner::NamedCommands::registerCommand(eventName, std::move(command));
                     }

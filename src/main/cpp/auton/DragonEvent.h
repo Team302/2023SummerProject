@@ -42,7 +42,7 @@ public:
     DragonEvent() = delete;
     ~DragonEvent() = default;
 
-    static std::function<void()> GetEventRunner(DragonEvent *event);
+    static std::function<void()> RegisterEventRunner(DragonEvent *event);
 
     std::string GetName() const { return m_name; };
     ChassisOptionEnums::HeadingOption GetHeadingOption() const { return m_headingOption; };
@@ -56,6 +56,7 @@ public:
     DragonLimelight::PIPELINE_MODE GetPipelineMode() const { return m_pipelineMode; }
 
 private:
+    static std::map<std::string, ChassisMovement> m_registeredEventsMap;
     std::string m_name;
     ChassisOptionEnums::HeadingOption m_headingOption;
     float m_heading;
