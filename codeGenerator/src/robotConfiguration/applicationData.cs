@@ -142,13 +142,13 @@ namespace ApplicationData
 #if !enableTestAutomation
         public pdp PowerDistributionPanel { get; set; }
         public List<pcm> PneumaticControlModules { get; set; }
-        public List<pigeon> pigeon { get; set; }
-        public List<limelight> limelight { get; set; }
-        public chassis chassis { get; set; }
+        public List<pigeon> Pigeons { get; set; }
+        public List<limelight> Limelights { get; set; }
+        public chassis Chassis { get; set; }
         public List<mechanismInstance> mechanismInstances { get; set; }
-        public List<camera> camera { get; set; }
-        public List<roborio> roborio { get; set; }
-        public List<led> led { get; set; }
+        public List<camera> Cameras { get; set; }
+        public List<roborio> Roborios { get; set; }
+        public List<led> Leds { get; set; }
 
         [DefaultValue(1u)]
         [Range(typeof(uint), "1", "9999")]
@@ -228,6 +228,7 @@ namespace ApplicationData
         }
 #endif
     }
+
     [Serializable()]
     public class mechanismInstance
     {
@@ -914,7 +915,7 @@ namespace ApplicationData
         [PhysicalUnitsFamily(physicalUnit.Family.angle)]
         public limelightRotation rotation { get; set; }
 
-        List<doubleParameterUserDefinedTunable> tunableParameters { get; set; }
+        public List<doubleParameterUserDefinedTunable> tunableParameters { get; set; }
 
         [DefaultValue(limelightDefaultLedMode.currentPipeline)]
         public limelightDefaultLedMode defaultledmode { get; set; }
