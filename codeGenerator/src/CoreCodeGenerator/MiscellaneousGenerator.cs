@@ -6,8 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CoreCodeGenerator
 {
@@ -47,9 +49,29 @@ namespace CoreCodeGenerator
                 names.AddRange(generateMethod(robot, "generateElementNames").Distinct().ToList());
             }
 
+            List<Type> theTypeList = Assembly.GetAssembly(typeof(baseRobotElementClass)).GetTypes()
+                  .Where(t => (t.BaseType == typeof(baseRobotElementClass))).ToList();
 
-            template = template.Replace("$$_ROBOT_ELEMENT_NAMES_ENUMS_$$", utilities.ListToString(names.Distinct().ToList(),",").ToUpper());
-            
+            StringBuilder sb = new StringBuilder();
+            foreach (Type type in theTypeList)
+            {
+                string enumName = ToUnderscoreCase(type.Name);
+
+                sb.AppendLine(string.Format("enum {0}_USAGE", enumName.ToUpper()));
+                sb.AppendLine("{");
+                sb.AppendLine(string.Format("UNKNOWN_{0} = -1,", enumName.ToUpper()));
+
+                string startingChars = enumName + "::";
+                foreach (string s in names.Where(t => t.StartsWith(startingChars)))
+                { 
+                    sb.AppendLine(string.Format("{0},", s.Substring(startingChars.Length).ToUpper())); 
+                }
+                sb.AppendLine(string.Format("MAX_{0}", enumName.ToUpper()));
+                sb.AppendLine("};");
+            }
+
+            template = template.Replace("$$_ROBOT_ELEMENT_NAMES_ENUMS_$$", sb.ToString() + Environment.NewLine);
+
             copyrightAndGenNoticeAndSave(getOutputFileFullPath(cdf.outputFilePathName), template);
         }
 

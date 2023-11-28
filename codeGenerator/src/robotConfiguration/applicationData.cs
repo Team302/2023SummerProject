@@ -339,7 +339,7 @@ namespace ApplicationData
         public List<servo> servo { get; set; }
         public List<analogInput> analogInput { get; set; }
         public List<digitalInput> digitalInput { get; set; }
-        // not defined in /hw/Dragon.. public List<colorsensor> colorsensor { get; set; }
+        // not defined in /hw/Dragon.. public List<colorSensor> colorSensor { get; set; }
         public List<CANcoder> cancoder { get; set; }
         //public List<state> state { get; set; }
 
@@ -1316,7 +1316,7 @@ namespace ApplicationData
     [Serializable()]
     [ImplementationName("DragonColorSensor")]
     [UserIncludeFile("hw/DragonColorSensor.h")]
-    public class colorsensor : baseRobotElementClass
+    public class colorSensor : baseRobotElementClass
     {
         public enum colorSensorPort
         {
@@ -1327,7 +1327,7 @@ namespace ApplicationData
         [DefaultValue(colorSensorPort.kOnboard)]
         public colorSensorPort port { get; set; }
 
-        public colorsensor()
+        public colorSensor()
         {
         }
     }
@@ -1482,9 +1482,16 @@ namespace ApplicationData
         virtual public List<string> generateElementNames()
         {
             if (generatorContext.theMechanism != null)
-                return new List<string> { string.Format("{0}_{1}", ToUnderscoreCase(generatorContext.theMechanism.name), ToUnderscoreCase(name)) };
+            {
+
+                Type baseType = GetType();
+                while((baseType.BaseType != typeof(object)) && (baseType.BaseType != typeof(baseRobotElementClass)))
+                    baseType = baseType.BaseType;
+
+                return new List<string> { string.Format("{2}::{0}_{1}", ToUnderscoreCase(generatorContext.theMechanism.name), ToUnderscoreCase(name), ToUnderscoreCase(baseType.Name)) };
+            }
             else if (generatorContext.theRobot != null)
-                return new List<string> { string.Format("{0}", ToUnderscoreCase(name)) };
+                return new List<string> { string.Format("{0}_________{1}", ToUnderscoreCase(name), this.GetType().Name) };
             else
                 return new List<string> { "generateElementNames got to the else statement...should not be here" };
         }
@@ -1527,7 +1534,7 @@ namespace ApplicationData
             if (str.Contains("_"))
                 return str;
 
-            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) ? "_" + x.ToString() : x.ToString())).ToLower();
+            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) && char.IsLower(str[i-1]) ? "_" + x.ToString() : x.ToString())).ToLower();
         }
     }
 
