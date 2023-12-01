@@ -20,7 +20,7 @@
 #include <string>
 
 // Team 302 includes
-#include "configs/usages/DigitalInputUsage.h"
+#include "configs/RobotElementNames.h"
 
 #include "units/time.h"
 // Forward declares
@@ -35,14 +35,14 @@ public:
 	/// @returns 	DigitalInput*
 	DragonDigitalInput *CreateInput(
 		std::string networkTableName,
-		DigitalInputUsage::DIGITAL_INPUT_USAGE type,
+		RobotElementNames::DIGITAL_INPUT_USAGE type,
 		int digitalID,
 		bool reversed,
 		units::time::second_t debounceTime);
 
 	/// @brief    Get the requested Digital input
 	DragonDigitalInput *GetInput(
-		DigitalInputUsage::DIGITAL_INPUT_USAGE type);
+		RobotElementNames::DIGITAL_INPUT_USAGE type);
 
 private:
 	DigitalInputFactory();

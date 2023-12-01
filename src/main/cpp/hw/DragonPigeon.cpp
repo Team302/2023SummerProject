@@ -23,7 +23,7 @@ using namespace ctre::phoenix::sensors;
 
 DragonPigeon::DragonPigeon(int canID,
                            string canBusName,
-                           CanSensorUsage::CANSENSOR_USAGE usage,
+                           RobotElementNames::CANCODER_USAGE usage,
                            double rotation) : m_pigeon(WPI_PigeonIMU(canID)),
                                               m_usage(usage),
                                               m_initialYaw(rotation),

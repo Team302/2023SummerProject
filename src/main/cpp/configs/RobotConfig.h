@@ -21,11 +21,7 @@
 #include "chassis/mecanum/MecanumChassis.h"
 #include "chassis/IChassis.h"
 
-#include "configs/usages/CanSensorUsage.h"
-#include "configs/usages/DigitalInputUsage.h"
-#include "configs/usages/MotorControllerUsage.h"
-#include "configs/usages/ServoUsage.h"
-#include "configs/usages/SolenoidUsage.h"
+#include "configs/RobotElementNames.h"
 
 #include "hw/interfaces/IDragonMotorController.h"
 #include "hw/interfaces/IDragonPigeon.h"
@@ -48,30 +44,17 @@ public:
     virtual MecanumChassis *GetMecanumChassis() const;
     virtual IChassis *GetIChassis() const;
 
-    virtual IDragonMotorController *GetMotorController(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage);
-    virtual DragonSolenoid *GetSolenoid(SolenoidUsage::SOLENOID_USAGE usage);
-    virtual DragonServo *GetServo(ServoUsage::SERVO_USAGE usage);
+    virtual IDragonMotorController *GetMotorController(RobotElementNames::MOTOR_CONTROLLER_USAGE usage);
+    virtual DragonSolenoid *GetSolenoid(RobotElementNames::SOLENOID_USAGE usage);
+    virtual DragonServo *GetServo(RobotElementNames::SERVO_USAGE usage);
 
-    virtual DragonCanCoder *GetCanCoder(CanSensorUsage::CANSENSOR_USAGE usage);
-    virtual IDragonPigeon *GetPigeon(CanSensorUsage::CANSENSOR_USAGE usage);
+    virtual DragonCanCoder *GetCanCoder(RobotElementNames::CANCODER_USAGE usage);
+    virtual IDragonPigeon *GetPigeon(RobotElementNames::PIGEON_USAGE usage);
 
     // TODO:  add methods to access mechanisms and hardware as necessary
 
 protected:
     virtual void DefineBuiltInControlItems();
-
-    // actuators
-    virtual void DefineMotorControllers();
-    virtual void DefineSolenoids();
-    virtual void DefineServos();
-
-    // sensors
-    virtual void DefineCANSensors();
-    virtual void DefineDigitalInputSensors();
-    virtual void DefineAnalogInputSensors();
-    virtual void DefineI2CSensors();
-    virtual void DefineVisionSensors();
-    virtual void DefinePWMIO();
 
     // mechanisms
     virtual void DefineChassis();
