@@ -15,8 +15,8 @@ namespace CoreCodeGenerator
 {
     internal class RobotConfigManagerGenerator : baseGenerator
     {
-        internal RobotConfigManagerGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, showMessage displayProgress)
-        : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration)
+        internal RobotConfigManagerGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, bool cleanMode, showMessage displayProgress)
+        : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration, cleanMode)
         {
             setProgressCallback(displayProgress);
         }
@@ -28,7 +28,7 @@ namespace CoreCodeGenerator
             codeTemplateFile cdf;
             string template;
 
-            addProgress("Writing Robot Configuration Manager files...");
+            addProgress((cleanMode ? "Erasing" : "Writing") + " Robot Configuration Manager files...");
 
             #region Generate CPP File
             cdf = theToolConfiguration.getTemplateInfo("RobotConfigMgr_cpp");

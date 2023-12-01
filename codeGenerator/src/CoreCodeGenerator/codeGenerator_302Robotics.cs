@@ -13,14 +13,22 @@ namespace CoreCodeGenerator
     public class codeGenerator_302Robotics : baseReportingClass
     {
         string codeGeneratorVersion = "";
+        public bool cleanDecoratorModFolders { get; set; } = false;
 
         public enum MECHANISM_FILE_TYPE { MAIN, STATE, STATE_MGR }
 
         private applicationDataConfig theRobotConfiguration = new applicationDataConfig();
         private toolConfiguration theToolConfiguration = new toolConfiguration();
 
-
         public void generate(string codeGenVersion, applicationDataConfig theRobotConfig, toolConfiguration generatorConfig)
+        {
+            generate(codeGenVersion, theRobotConfig, generatorConfig, false);
+        }
+        public void clean(string codeGenVersion, applicationDataConfig theRobotConfig, toolConfiguration generatorConfig)
+        {
+            generate(codeGenVersion, theRobotConfig, generatorConfig, true);
+        }
+        private void generate(string codeGenVersion, applicationDataConfig theRobotConfig, toolConfiguration generatorConfig, bool cleanMode)
         {
             codeGeneratorVersion = codeGenVersion;
             theRobotConfiguration = theRobotConfig;
@@ -40,11 +48,11 @@ namespace CoreCodeGenerator
                 addProgress("Output directory " + rootFolder + " already exists and therefore was not created.");
             }
 
-            new MiscellaneousGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
-            new MechanismGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
-            new MechanismInstanceGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
-            new RobotConfigManagerGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
-            new RobotConfigRobotSpecificGenerator(codeGenVersion, theRobotConfig, generatorConfig, addProgress).generate();
+            new MiscellaneousGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, addProgress).generate();
+            new MechanismGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, addProgress).generate();
+            new MechanismInstanceGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, cleanDecoratorModFolders, addProgress).generate();
+            new RobotConfigManagerGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, addProgress).generate();
+            new RobotConfigRobotSpecificGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, addProgress).generate();
         }
 
 #if david

@@ -15,8 +15,8 @@ namespace CoreCodeGenerator
 {
     internal class RobotConfigRobotSpecificGenerator : baseGenerator
     {
-        internal RobotConfigRobotSpecificGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, showMessage displayProgress)
-        : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration)
+        internal RobotConfigRobotSpecificGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, bool cleanMode, showMessage displayProgress)
+        : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration, cleanMode)
         {
             setProgressCallback(displayProgress);
         }
@@ -29,7 +29,7 @@ namespace CoreCodeGenerator
             codeTemplateFile cdf;
             string template;
 
-            addProgress("Writing Robot specific configuration files...");
+            addProgress((cleanMode ? "Erasing" : "Writing") + " Robot specific configuration files...");
 
             #region Generate H File
             cdf = theToolConfiguration.getTemplateInfo("RobotConfigRobotSpecific_h");

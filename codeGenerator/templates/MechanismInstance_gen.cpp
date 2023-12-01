@@ -3,6 +3,7 @@ $$_GEN_NOTICE_$$
 
 // FRC Includes
 #include <networktables/NetworkTableInstance.h>
+#include "hw/interfaces/IDragonMotorController.h"
 
 #include "$$_MECHANISM_INSTANCE_NAME_$$_gen.h"
 

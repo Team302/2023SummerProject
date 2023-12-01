@@ -15,14 +15,14 @@ namespace CoreCodeGenerator
 {
     internal class MiscellaneousGenerator : baseGenerator
     {
-        internal MiscellaneousGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, showMessage displayProgress)
-                : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration)
+        internal MiscellaneousGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, bool cleanMode, showMessage displayProgress)
+                : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration, cleanMode)
         {
             setProgressCallback(displayProgress);
         }
         internal void generate()
         {
-            addProgress("Writing general files...");
+            addProgress((cleanMode ? "Erasing" : "Writing") + " general files...");
             generate_RobotElementNames();
             generate_MechanismNames();
         }
@@ -48,6 +48,7 @@ namespace CoreCodeGenerator
                 generatorContext.theRobot = robot;
                 names.AddRange(generateMethod(robot, "generateElementNames").Distinct().ToList());
             }
+            names = names.Distinct().ToList();
 
             List<Type> theTypeList = Assembly.GetAssembly(typeof(baseRobotElementClass)).GetTypes()
                   .Where(t => (t.BaseType == typeof(baseRobotElementClass))).ToList();
@@ -68,6 +69,7 @@ namespace CoreCodeGenerator
                 }
                 sb.AppendLine(string.Format("MAX_{0}", enumName.ToUpper()));
                 sb.AppendLine("};");
+                sb.AppendLine();
             }
 
             template = template.Replace("$$_ROBOT_ELEMENT_NAMES_ENUMS_$$", sb.ToString() + Environment.NewLine);

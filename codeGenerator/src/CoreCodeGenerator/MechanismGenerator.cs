@@ -15,8 +15,8 @@ namespace CoreCodeGenerator
 {
     internal class MechanismGenerator : baseGenerator
     {
-        internal MechanismGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, showMessage displayProgress)
-        : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration)
+        internal MechanismGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, bool cleanMode, showMessage displayProgress)
+        : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration, cleanMode)
         {
             setProgressCallback(displayProgress);
         }
@@ -25,7 +25,7 @@ namespace CoreCodeGenerator
 
         internal void generate()
         {
-            addProgress("Writing mechanism files...");
+            addProgress((cleanMode ? "Erasing" : "Writing") + " mechanism files...");
             List<string> mechMainFiles = new List<string>();
             //List<string> mechStateFiles = new List<string>();
             //List<string> mechStateMgrFiles = new List<string>();
@@ -117,6 +117,12 @@ namespace CoreCodeGenerator
                 filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_NAME", mechanismName));
                 copyrightAndGenNoticeAndSave(filePathName, resultString);
                 #endregion
+
+                if (cleanMode)
+                {
+                    Directory.Delete(getMechanismOutputPath(mechanismName), true);
+                    Directory.Delete(Path.Combine(getMechanismOutputPath(mechanismName), ".."), true);
+                }
             }
         }
 

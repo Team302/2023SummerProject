@@ -8,10 +8,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Channels;
+using System.Security.AccessControl;
 using System.Security.Authentication.ExtendedProtection;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using static ApplicationData.TalonFX;
 using static System.Net.Mime.MediaTypeNames;
 
 //todo handle optional elements such as followID in a motorcontroller
@@ -443,15 +445,6 @@ namespace ApplicationData
         public closedLoopControlParameters()
         {
         }
-
-        public string generateDefinition()
-        {
-            ImplementationNameAttribute impNameAttr = this.GetType().GetCustomAttribute<ImplementationNameAttribute>();
-            if (impNameAttr != null)
-                return string.Format("{0} {1};", impNameAttr.name, name);
-
-            return string.Format("{0} {1};", this.GetType().Name, name);
-        }
     }
 
     [Serializable()]
@@ -533,9 +526,36 @@ namespace ApplicationData
     [XmlInclude(typeof(TalonSRX))]
     public class MotorController : baseRobotElementClass
     {
+        public enum MOTOR_TYPE
+        {
+            UNKNOWN_MOTOR = -1,
+            FALCON500,
+            NEOMOTOR,
+            NEO500MOTOR,
+            CIMMOTOR,
+            MINICIMMOTOR,
+            BAGMOTOR,
+            PRO775,
+            ANDYMARK9015,
+            ANDYMARKNEVEREST,
+            ANDYMARKRS775125,
+            ANDYMARKREDLINEA,
+            REVROBOTICSHDHEXMOTOR,
+            BANEBOTSRS77518V,
+            BANEBOTSRS550,
+            MODERNROBOTICS12VDCMOTOR,
+            JOHNSONELECTRICALGEARMOTOR,
+            TETRIXMAXTORQUENADOMOTOR,
+            NONE,
+            MAX_MOTOR_TYPES
+        };
+
         [XmlIgnore]
         [Constant()]
         public string motorControllerType { get; protected set; }
+
+        [DefaultValue(MOTOR_TYPE.UNKNOWN_MOTOR)]
+        public MOTOR_TYPE motorType { get; set; }
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
@@ -555,21 +575,41 @@ namespace ApplicationData
         [DefaultValue(false)]
         public boolParameter enableFollowID { get; set; }
 
+        [Serializable]
+        public class DistanceAngleCalcInfo : baseDataClass
+        {
+            [DefaultValue(0)]
+            public intParameter countsPerRev { get; set; }
+
+            [DefaultValue(1.0)]
+            public doubleParameter gearRatio { get; set; }
+
+            [DefaultValue(1.0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.length)]
+            public doubleParameter diameter { get; set; }
+
+            [DefaultValue(0)]
+            public doubleParameter countsPerInch { get; set; }
+
+            [DefaultValue(0)]
+            public doubleParameter countsPerDegree { get; set; }
+
+            public DistanceAngleCalcInfo()
+            {
+            }
+
+            public override string ToString()
+            {
+                return string.Format("{{ {0}, {1}, {2}, {3}, {4} }}", countsPerRev.value, gearRatio.value, diameter.value, countsPerInch.value, countsPerDegree.value);
+            }
+        }
+        public DistanceAngleCalcInfo theDistanceAngleCalcInfo { get; set; }
+
         public MotorController()
         {
         }
 
-        override public List<string> generateObjectCreation()
-        {
-            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},\"{4}\")",
-                name,
-                getImplementationName(),
-                utilities.ListToString(generateElementNames()).ToUpper(),
-                canID.value.ToString(),
-                canBusName.ToString());
 
-            return new List<string> { creation };
-        }
     }
 
     [Serializable()]
@@ -577,11 +617,6 @@ namespace ApplicationData
     [UserIncludeFile("hw/DragonTalonFX.h")]
     public class TalonFX : MotorController
     {
-        public enum motorType { Falcon, Kraken }
-
-        [DefaultValue(motorType.Falcon)]
-        public motorType motor { get; set; }
-
         [Serializable]
         public class MotorConfigs : baseDataClass
         {
@@ -651,7 +686,6 @@ namespace ApplicationData
             {
                 defaultDisplayName = "CurrentLimits";
             }
-
         }
         public CurrentLimits theCurrentLimits { get; set; }
 
@@ -754,6 +788,18 @@ namespace ApplicationData
 
             return initCode;
         }
+
+        override public List<string> generateObjectCreation()
+        {
+            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},\"{4}\")",
+                name,
+                getImplementationName(),
+                utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
+                canID.value.ToString(),
+                canBusName.ToString());
+
+            return new List<string> { creation };
+        }
     }
 
     [Serializable()]
@@ -800,6 +846,30 @@ namespace ApplicationData
             //todo add the TalonSRX initialization
 
             return initCode;
+        }
+
+        override public List<string> generateObjectCreation()
+        {
+            /*
+                 DragonTalonSRX(std::string networkTableName,
+                   RobotElementNames::MOTOR_CONTROLLER_USAGE deviceType,
+                   int deviceID,
+                   int pdpID,
+                   const DistanceAngleCalcStruc &calcStruc,
+                   IDragonMotorController::MOTOR_TYPE motortype
+
+    );
+             */
+            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},{4},{5}, IDragonMotorController::MOTOR_TYPE::{6})",
+                name,
+                getImplementationName(),
+                utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
+                canID.value.ToString(),
+                pdpID.value.ToString(),
+                theDistanceAngleCalcInfo.ToString(),
+                motorType);
+
+            return new List<string> { creation };
         }
     }
 
@@ -1055,10 +1125,10 @@ namespace ApplicationData
 
         override public List<string> generateObjectCreation()
         {
-            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},{4},{5}({6}))",
+            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},{4},{5}({6}))",
                 name,
                 getImplementationName(),
-                utilities.ListToString(generateElementNames()).ToUpper(),
+                utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
                 digitalId.value,
                 reversed.value.ToString().ToLower(),
                 generatorContext.theGeneratorConfig.getWPIphysicalUnitType(debouncetime.__units__),
@@ -1152,10 +1222,10 @@ namespace ApplicationData
 
         override public List<string> generateObjectCreation()
         {
-            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},\"{4}\",{5},{6})",
+            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},\"{4}\",{5},{6})",
                 name,
                 getImplementationName(),
-                utilities.ListToString(generateElementNames()).ToUpper(),
+                utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
                 canID.value,
                 canBusName,
                 offset.value,
@@ -1224,10 +1294,10 @@ namespace ApplicationData
 
             if (enableDualChannel.value)
             {
-                creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},frc::PneumaticsModuleType::{4},{5},{6},{7})",
+                creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},frc::PneumaticsModuleType::{4},{5},{6},{7})",
                     name,
                     getImplementationName(),
-                    utilities.ListToString(generateElementNames()).ToUpper(),
+                    utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
                     CAN_ID.value,
                     type,
                     forwardChannel.value,
@@ -1237,10 +1307,10 @@ namespace ApplicationData
             }
             else
             {
-                creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},frc::PneumaticsModuleType::{4},{5},{6})",
+                creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},frc::PneumaticsModuleType::{4},{5},{6})",
                     name,
                     getImplementationName(),
-                    utilities.ListToString(generateElementNames()).ToUpper(),
+                    utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
                     CAN_ID.value,
                     type,
                     channel.value,
@@ -1287,10 +1357,10 @@ namespace ApplicationData
 
         override public List<string> generateObjectCreation()
         {
-            string creation = string.Format("{0} = new {1}(RobotElementNames::ROBOT_ELEMENT_NAMES::{2},{3},{4}({5}),{6}({7}))",
+            string creation = string.Format("{0} = new {1}(RobotElementNames::{2},{3},{4}({5}),{6}({7}))",
                 name,
                 getImplementationName(),
-                utilities.ListToString(generateElementNames()).ToUpper(),
+                utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
                 Id.value,
                 generatorContext.theGeneratorConfig.getWPIphysicalUnitType(minAngle.__units__),
                 minAngle.value,
@@ -1445,7 +1515,7 @@ namespace ApplicationData
 
         public baseRobotElementClass()
         {
-            helperFunctions.initializeNullProperties(this);
+            helperFunctions.initializeNullProperties(this,true);
             helperFunctions.initializeDefaultValues(this);
             name = GetType().Name;
         }
@@ -1481,17 +1551,15 @@ namespace ApplicationData
 
         virtual public List<string> generateElementNames()
         {
+            Type baseType = GetType();
+            while ((baseType.BaseType != typeof(object)) && (baseType.BaseType != typeof(baseRobotElementClass)))
+                baseType = baseType.BaseType;
             if (generatorContext.theMechanism != null)
             {
-
-                Type baseType = GetType();
-                while((baseType.BaseType != typeof(object)) && (baseType.BaseType != typeof(baseRobotElementClass)))
-                    baseType = baseType.BaseType;
-
                 return new List<string> { string.Format("{2}::{0}_{1}", ToUnderscoreCase(generatorContext.theMechanism.name), ToUnderscoreCase(name), ToUnderscoreCase(baseType.Name)) };
             }
             else if (generatorContext.theRobot != null)
-                return new List<string> { string.Format("{0}_________{1}", ToUnderscoreCase(name), this.GetType().Name) };
+                return new List<string> { string.Format("{1}::{0}", ToUnderscoreCase(name), ToUnderscoreCase(baseType.Name)) };
             else
                 return new List<string> { "generateElementNames got to the else statement...should not be here" };
         }
@@ -1515,6 +1583,7 @@ namespace ApplicationData
         {
             return new List<string> { "baseRobotElementClass.generateInitialization needs to be overridden" };
         }
+
         virtual public List<string> generateIncludes()
         {
             List<string> sb = new List<string>();
@@ -1534,7 +1603,7 @@ namespace ApplicationData
             if (str.Contains("_"))
                 return str;
 
-            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) && char.IsLower(str[i-1]) ? "_" + x.ToString() : x.ToString())).ToLower();
+            return string.Concat(str.Select((x, i) => i > 0 && char.IsUpper(x) && char.IsLower(str[i - 1]) ? "_" + x.ToString() : x.ToString())).ToLower();
         }
     }
 
@@ -1558,6 +1627,11 @@ namespace ApplicationData
             }
 
             return null;
+        }
+
+        public baseDataClass()
+        {
+            
         }
     }
 

@@ -31,7 +31,8 @@ namespace FRCrobotCodeGen302
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.button1 = new System.Windows.Forms.Button();
+            this.generateButton = new System.Windows.Forms.Button();
+            this.cleanButton = new System.Windows.Forms.Button();
             this.configurationBrowseButton = new System.Windows.Forms.Button();
             this.configurationFilePathNameTextBox = new System.Windows.Forms.TextBox();
             this.outputFolderLabel = new System.Windows.Forms.Label();
@@ -79,17 +80,29 @@ namespace FRCrobotCodeGen302
             ((System.ComponentModel.ISupportInitialize)(this.valueNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
+            // generateButton
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(511, 263);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(70, 32);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Generate";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.generateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.generateButton.Location = new System.Drawing.Point(511, 263);
+            this.generateButton.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.generateButton.Name = "generateButton";
+            this.generateButton.Size = new System.Drawing.Size(70, 32);
+            this.generateButton.TabIndex = 0;
+            this.generateButton.Text = "Generate";
+            this.generateButton.UseVisualStyleBackColor = true;
+            this.generateButton.Click += new System.EventHandler(this.generateButton_Click);
+            // 
+            // cleanButton
+            // 
+            this.cleanButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cleanButton.Location = new System.Drawing.Point(432, 263);
+            this.cleanButton.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
+            this.cleanButton.Name = "cleanButton";
+            this.cleanButton.Size = new System.Drawing.Size(70, 32);
+            this.cleanButton.TabIndex = 0;
+            this.cleanButton.Text = "Clean";
+            this.cleanButton.UseVisualStyleBackColor = true;
+            this.cleanButton.Click += new System.EventHandler(this.cleanButton_Click);
             // 
             // configurationBrowseButton
             // 
@@ -236,7 +249,8 @@ namespace FRCrobotCodeGen302
             this.tabMainPage.Controls.Add(this.clearReportButton);
             this.tabMainPage.Controls.Add(this.createNewRobotVariantsConfigButton);
             this.tabMainPage.Controls.Add(this.label1);
-            this.tabMainPage.Controls.Add(this.button1);
+            this.tabMainPage.Controls.Add(this.generateButton);
+            this.tabMainPage.Controls.Add(this.cleanButton);
             this.tabMainPage.Controls.Add(this.configurationFilePathNameTextBox);
             this.tabMainPage.Controls.Add(this.progressTextBox);
             this.tabMainPage.Controls.Add(this.configurationBrowseButton);
@@ -576,7 +590,8 @@ namespace FRCrobotCodeGen302
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button generateButton;
+        private System.Windows.Forms.Button cleanButton;
         private System.Windows.Forms.Button configurationBrowseButton;
         private System.Windows.Forms.Button createNewRobotVariantsConfigButton;
         private System.Windows.Forms.TextBox configurationFilePathNameTextBox;

@@ -9,7 +9,6 @@ $$_GEN_NOTICE_$$
 // FRC Includes
 #include <networktables/NetworkTable.h>
 
-#include "configs/RobotConfigMgr.h"
 #include "mechanisms/base/StateMgr.h"
 #include "mechanisms/$$_MECHANISM_NAME_$$/generated/$$_MECHANISM_NAME_$$.h"
 

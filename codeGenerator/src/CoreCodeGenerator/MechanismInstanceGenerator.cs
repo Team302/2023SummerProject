@@ -16,8 +16,8 @@ namespace CoreCodeGenerator
 {
     internal class MechanismInstanceGenerator : baseGenerator
     {
-        internal MechanismInstanceGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, showMessage displayProgress)
-        : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration)
+        internal MechanismInstanceGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, bool cleanMode, bool cleanDecoratorModFolders, showMessage displayProgress)
+        : base(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration, cleanMode, cleanDecoratorModFolders)
         {
             setProgressCallback(displayProgress);
         }
@@ -26,7 +26,7 @@ namespace CoreCodeGenerator
 
         internal void generate()
         {
-            addProgress("Writing mechanism instance files...");
+            addProgress((cleanMode ? "Erasing" : "Writing") + " mechanism instance files...");
             List<string> mechMainFiles = new List<string>();
             //List<string> mechStateFiles = new List<string>();
             //List<string> mechStateMgrFiles = new List<string>();
@@ -124,6 +124,16 @@ namespace CoreCodeGenerator
                         copyrightAndGenNoticeAndSave(filePathName, resultString);
                         #endregion
                         #endregion
+
+                        if (cleanMode)
+                        {
+                            Directory.Delete(getMechanismOutputPath(mechanismName, true));
+                            if (cleanDecoratorModFolders)
+                            {
+                                Directory.Delete(getMechanismOutputPath(mechanismName, false));
+                                Directory.Delete(Path.Combine(getMechanismOutputPath(mechanismName, true), ".."));
+                            }
+                        }
                     }
                 }
             }

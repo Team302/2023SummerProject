@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,15 +19,27 @@ namespace CoreCodeGenerator
         internal string codeGeneratorVersion = "";
         internal applicationDataConfig theRobotConfiguration = new applicationDataConfig();
         internal toolConfiguration theToolConfiguration = new toolConfiguration();
+        public bool cleanMode { get; private set; }
+        protected bool cleanDecoratorModFolders { get; set; } = false;
 
-        internal baseGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration)
+        internal baseGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, bool cleanMode)
+        {
+            initialize(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration, cleanMode, false);
+        }
+        internal baseGenerator(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, bool cleanMode, bool cleanDecoratorModFolders)
+        {
+            initialize(codeGeneratorVersion, theRobotConfiguration, theToolConfiguration, cleanMode, cleanDecoratorModFolders);
+        }
+
+        private void initialize(string codeGeneratorVersion, applicationDataConfig theRobotConfiguration, toolConfiguration theToolConfiguration, bool cleanMode, bool cleanDecoratorModFolders)
         {
             this.codeGeneratorVersion = codeGeneratorVersion;
             this.theRobotConfiguration = theRobotConfiguration;
             this.theToolConfiguration = theToolConfiguration;
             generatorContext.theGeneratorConfig = theToolConfiguration;
+            this.cleanMode = cleanMode;
+            this.cleanDecoratorModFolders = cleanDecoratorModFolders;
         }
-
         protected string ListToString(List<string> list, string delimeter)
         {
             StringBuilder sb = new StringBuilder();
@@ -111,13 +124,29 @@ namespace CoreCodeGenerator
                     writeFile = false;
             }
 
-            if (writeFile)
+            if (cleanMode)
             {
-                File.WriteAllText(outputFullFilePathName, contents);
-                addProgress("Wrote " + outputFullFilePathName);
+                bool erase = true;
+
+                if (Path.GetDirectoryName(outputFilePathName).Contains("decoratormods"))
+                    erase = cleanDecoratorModFolders;
+
+                if (erase)
+                {
+                    addProgress("Erasing " + outputFullFilePathName);
+                    File.Delete(outputFullFilePathName);
+                }
             }
             else
-                addProgress("File content has not changed " + outputFullFilePathName);
+            {
+                if (writeFile)
+                {
+                    File.WriteAllText(outputFullFilePathName, contents);
+                    addProgress("Wrote " + outputFullFilePathName);
+                }
+                else
+                    addProgress("File content has not changed " + outputFullFilePathName);
+            }
         }
 
         internal string removeGenerationInfo(string input)

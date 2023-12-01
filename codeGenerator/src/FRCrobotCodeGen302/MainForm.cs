@@ -401,7 +401,7 @@ namespace FRCrobotCodeGen302
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void generateButton_Click(object sender, EventArgs e)
         {
             try
             {
@@ -412,7 +412,24 @@ namespace FRCrobotCodeGen302
                 MessageBox.Show("Something went wrong. See below. \r\n\r\n" + ex.Message, "Code generator error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private void cleanButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DialogResult dr = MessageBox.Show("Do you also want to delete the user modifiable files within the decoratorMod folders?", "Delete warning", MessageBoxButtons.YesNoCancel);
+                if (dr == DialogResult.Yes)
+                    codeGenerator.cleanDecoratorModFolders = true;
+                else
+                    codeGenerator.cleanDecoratorModFolders = false;
 
+                if (dr != DialogResult.Cancel)
+                    codeGenerator.clean(ProductVersion, theAppDataConfiguration, generatorConfig);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Something went wrong. See below. \r\n\r\n" + ex.Message, "Code generator error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void configurationBrowseButton_Click(object sender, EventArgs e)
         {
             try

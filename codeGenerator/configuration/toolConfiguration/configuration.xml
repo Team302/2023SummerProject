@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <toolConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <rootOutputFolder>..\..\..\src\main\cpp</rootOutputFolder>
-  <robotConfiguration>..\RobotConfigurations\testRobotConfig_.xml</robotConfiguration>
+  <robotConfiguration>..\RobotConfigurations\official\2024_configuration.xml</robotConfiguration>
   <appDataConfigurations>
     <string>C:\FRC\2023SummerProject\codeGenerator\configuration\RobotConfigurations\testRobotConfig.xml</string>
     <string>../RobotConfigurations/testRobotConfig.xml</string>
     <string>../RobotConfigurations/testRobotConfig_.xml</string>
+    <string>../RobotConfigurations/official/2024_configuration.xml</string>
   </appDataConfigurations>
   <collectionBaseTypes>
     <string>ApplicationData.MotorController</string>

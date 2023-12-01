@@ -3,11 +3,10 @@ $$_GEN_NOTICE_$$
 
 #include "configs/RobotConfigMgr.h"
 #include "configs/RobotConfig.h"
-#include "configs/RobotConfigExample.h"
 $$_ROBOT_CONFIG_INCLUDES_$$
 
-RobotConfigMgr* RobotConfigMgr::m_instance = nullptr;
-RobotConfigMgr* RobotConfigMgr::GetInstance()
+RobotConfigMgr *RobotConfigMgr::m_instance = nullptr;
+RobotConfigMgr *RobotConfigMgr::GetInstance()
 {
     if (RobotConfigMgr::m_instance == nullptr)
     {
