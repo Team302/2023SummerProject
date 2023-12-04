@@ -29,7 +29,7 @@
 #include <frc/GenericHID.h>
 #include <gamepad/IDragonGamePad.h>
 #include <gamepad/DragonXBox.h>
-#include <gamepad/DragonGamePad.h>
+#include <gamepad/DragonGamepad.h>
 #include "teleopcontrol/TeleopControl.h"
 #include <teleopcontrol/TeleopControlFunctions.h>
 #include <teleopcontrol/TeleopControlMap.h>
