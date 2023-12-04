@@ -21,7 +21,7 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonVelocityToCTREProAdapter.h"
 #include "hw/ctreadapters/pro/DragonVelocityInchToCTREProAdapter.h"
 #include "mechanisms/controllers/ControlData.h"
 #include "mechanisms/controllers/ControlModes.h"
@@ -38,18 +38,11 @@ DragonVelocityInchToCTREProAdapter::DragonVelocityInchToCTREProAdapter(string ne
                                                                        int controllerSlot,
                                                                        const ControlData &controlInfo,
                                                                        const DistanceAngleCalcStruc &calcStruc,
-                                                                       DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                       DragonTalonFX &controller) : DragonVelocityToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
 void DragonVelocityInchToCTREProAdapter::Set(double value)
 {
     // TODO  Add phoenix pro commands
-}
-
-void DragonVelocityInchToCTREProAdapter::SetControlConstants(int controlSlot,
-                                                             const ControlData &controlInfo)
-{
-    SetPeakAndNominalValues(m_networkTableName, controlInfo);
-    SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);
 }

@@ -162,7 +162,7 @@ ControlData *ControlDataXmlParser::ParseXML(
     }
     if (!hasError)
     {
-        data = new ControlData(mode, server, identifier, p, i, d, f, fType, izone, maxAccel, cruiseVel, peak, nominal);
+        data = new ControlData(mode, server, identifier, p, i, d, f, fType, izone, maxAccel, cruiseVel, peak, nominal, false);
     }
     return data;
 }

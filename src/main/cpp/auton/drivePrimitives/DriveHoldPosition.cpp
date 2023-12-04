@@ -57,7 +57,8 @@ void DriveHoldPosition::Init(PrimitiveParams *params)
 									   0.0,
 									   0.0,
 									   1.0,
-									   0.0);
+									   0.0,
+									   false);
 	// m_chassis->SetControlConstants( cd.get() );
 	// auto left = m_chassis->GetCurrentLeftPosition();
 	// auto right = m_chassis->GetCurrentRightPosition();

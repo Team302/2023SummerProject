@@ -58,57 +58,62 @@ public:
         double maxAcceleration,
         double cruiseVelocity,
         double peakValue,
-        double nominalValue);
+        double nominalValue,
+        bool enableFOC);
 
     virtual ~ControlData() = default;
 
     /// @brief  Retrieve the Control Type
     /// @return ControlModes::CONTROL_TYPE
-    inline ControlModes::CONTROL_TYPE GetMode() const { return m_mode; };
+    inline ControlModes::CONTROL_TYPE GetMode() const { return m_mode; }
 
     /// @brief Retrieve where to run the controller on
     /// @return ConrolModes::CONTROL_RUN_LOCS
-    inline ControlModes::CONTROL_RUN_LOCS GetRunLoc() const { return m_runLoc; };
+    inline ControlModes::CONTROL_RUN_LOCS GetRunLoc() const { return m_runLoc; }
 
     /// @brief  Retrieve the identifier
     /// @return std::string the identifier
-    inline std::string GetIdentifier() const { return m_identifier; };
+    inline std::string GetIdentifier() const { return m_identifier; }
 
     /// @brief  Retrieve the P coefficient for a PID-based control mode
     /// @return double - P coefficient
-    inline double GetP() const { return m_proportional; };
+    inline double GetP() const { return m_proportional; }
 
     /// @brief  Retrieve the I coefficient for a PID-based control mode
     /// @return double - I coefficient
-    inline double GetI() const { return m_integral; };
+    inline double GetI() const { return m_integral; }
 
     /// @brief  Retrieve the D coefficient for a PID-based control mode
     /// @return double - D coefficient
-    inline double GetD() const { return m_derivative; };
+    inline double GetD() const { return m_derivative; }
 
     /// @brief  Retrieve the Feed-forwared coefficient for a PID-based control mode
     /// @return double - F coefficient
-    inline double GetF() const { return m_feedforward; };
+    inline double GetF() const { return m_feedforward; }
+
+    inline FEEDFORWARD_TYPE GetFType() const { return m_feedforwardType; }
 
     /// @brief  Retrieve the izone for a PID-based control mode (where the intregal is reset)
     /// @return double - izone value
-    inline double GetIZone() const { return m_iZone; };
+    inline double GetIZone() const { return m_iZone; }
 
     /// @brief  Retrieve the max acceleration for a trapezoid control mode
     /// @return double - max acceleration
-    inline double GetMaxAcceleration() const { return m_maxAcceleration; };
+    inline double GetMaxAcceleration() const { return m_maxAcceleration; }
 
     /// @brief  Retrieve the cruise velocity for a trapezoid control mode
     /// @return double - cruise velocity
-    inline double GetCruiseVelocity() const { return m_cruiseVelocity; };
+    inline double GetCruiseVelocity() const { return m_cruiseVelocity; }
 
     /// @brief  Retrieve the peak value
     /// @return double - peak value
-    inline double GetPeakValue() const { return m_peakValue; };
+    inline double GetPeakValue() const { return m_peakValue; }
 
     /// @brief  Retrieve the nominal value
     /// @return double - nominal value
-    inline double GetNominalValue() const { return m_nominalValue; };
+    inline double GetNominalValue() const { return m_nominalValue; }
+
+    inline bool IsFOCEnabled() const { return m_enableFOC; }
 
 private:
     ControlModes::CONTROL_TYPE m_mode;
@@ -124,4 +129,5 @@ private:
     double m_cruiseVelocity;
     double m_peakValue;
     double m_nominalValue;
+    bool m_enableFOC;
 };

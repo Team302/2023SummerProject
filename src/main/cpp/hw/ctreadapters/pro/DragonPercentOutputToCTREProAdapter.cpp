@@ -25,8 +25,11 @@
 #include "mechanisms/controllers/ControlModes.h"
 
 // Third Party Includes
+#include "units/dimensionless.h"
+#include "units/voltage.h"
 
 using ctre::phoenixpro::controls::DutyCycleOut;
+using ctre::phoenixpro::controls::VoltageOut;
 using ctre::phoenixpro::hardware::TalonFX;
 using std::string;
 
@@ -34,13 +37,29 @@ DragonPercentOutputToCTREProAdapter::DragonPercentOutputToCTREProAdapter(string 
                                                                          int controllerSlot,
                                                                          const ControlData &controlInfo,
                                                                          const DistanceAngleCalcStruc &calcStruc,
-                                                                         DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                         DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller),
+                                                                                                      m_isDuty(false),
+                                                                                                      m_isVoltage(false)
 {
+    auto ftype = controlInfo.GetFType();
+    m_isDuty = (ftype == ControlData::FEEDFORWARD_TYPE::DUTY_CYCLE);
+    m_isVoltage = (ftype == ControlData::FEEDFORWARD_TYPE::VOLTAGE);
+    m_enableFOC = controlInfo.IsFOCEnabled();
 }
 void DragonPercentOutputToCTREProAdapter::Set(double value)
 {
-    DutyCycleOut out{value};
-    m_controller->Set(out);
+    if (m_isDuty)
+    {
+        DutyCycleOut out{value};
+        out.WithEnableFOC(m_enableFOC);
+        m_controller->Set(out);
+    }
+    else if (m_isVoltage)
+    {
+        VoltageOut out{units::volt_t(value)};
+        out.WithEnableFOC(m_enableFOC);
+        m_controller->Set(out);
+    }
 }
 
 void DragonPercentOutputToCTREProAdapter::SetControlConstants(int controlSlot,

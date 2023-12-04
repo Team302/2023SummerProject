@@ -25,7 +25,7 @@
 #include "hw/DragonTalonFX.h"
 #include "mechanisms/controllers/ControlData.h"
 
-class DragonVelocityRPSToCTREProAdapter : public DragonControlToCTREProAdapter
+class DragonVelocityRPSToCTREProAdapter : public DragonVelocityToCTREProAdapter
 {
 public:
     DragonVelocityRPSToCTREProAdapter() = delete;
@@ -38,7 +38,4 @@ public:
     ~DragonVelocityRPSToCTREProAdapter() = default;
 
     void Set(double value) override;
-
-    void SetControlConstants(int controlSlot,
-                             const ControlData &controlInfo) override;
 };

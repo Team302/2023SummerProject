@@ -161,7 +161,8 @@ void SwerveModule::Init(units::velocity::meters_per_second_t maxVelocity,
                                              maxAcceleration.to<double>(),
                                              maxVelocity.to<double>(),
                                              maxVelocity.to<double>(),
-                                             0.0);
+                                             0.0,
+                                             false);
     m_driveMotor->SetControlConstants(0, m_runClosedLoopDrive ? m_driveVelocityControlData : m_drivePercentControlData);
     // auto trans = Transform2d(offsetFromCenterOfRobot, Rotation2d() );
     // m_currentPose = m_currentPose + trans;

@@ -25,17 +25,25 @@
 #include "hw/DragonTalonFX.h"
 #include "mechanisms/controllers/ControlData.h"
 
-class DragonVelocityInchToCTREProAdapter : public DragonVelocityToCTREProAdapter
+class DragonVelocityToCTREProAdapter : public DragonControlToCTREProAdapter
 {
 public:
-    DragonVelocityInchToCTREProAdapter() = delete;
-    DragonVelocityInchToCTREProAdapter(std::string networkTableName,
-                                       int controllerSlot,
-                                       const ControlData &controlInfo,
-                                       const DistanceAngleCalcStruc &calcStruc,
-                                       DragonTalonFX &controller);
+    DragonVelocityToCTREProAdapter() = delete;
+    DragonVelocityToCTREProAdapter(std::string networkTableName,
+                                   int controllerSlot,
+                                   const ControlData &controlInfo,
+                                   const DistanceAngleCalcStruc &calcStruc,
+                                   DragonTalonFX &controller);
 
-    ~DragonVelocityInchToCTREProAdapter() = default;
+    ~DragonVelocityToCTREProAdapter() = default;
 
     void Set(double value) override;
+
+    void SetControlConstants(int controlSlot,
+                             const ControlData &controlInfo) override;
+
+private:
+    bool m_isDuty;
+    bool m_isVoltage;
+    bool m_isTorque;
 };
