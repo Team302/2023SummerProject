@@ -71,8 +71,21 @@ void DrivePathPlanner::Run()
     moveInfo.driveOption = ChassisOptionEnums::DriveStateType::TRAJECTORY_DRIVE_PLANNER;
     moveInfo.controllerType = ChassisOptionEnums::AutonControllerType::HOLONOMIC;
 
-    /// @TODO: should this heading option be trajectory or something else?
     moveInfo.headingOption = ChassisOptionEnums::HeadingOption::IGNORE;
+
+    // Using event markers for robot actions
+    // register named commands that are made up of runcommands
+    for (pathplanner::EventMarker &marker : m_path->getEventMarkers())
+    {
+        if (marker.shouldTrigger(m_chassis->GetPose()))
+        {
+            marker.getCommand()->Execute();
+
+            ChassisMovement eventOptions = DragonEvent::GetChassisOptionsFromEvent(marker.getCommand()->GetName());
+            moveInfo.headingOption = eventOptions.headingOption;
+            moveInfo.yawAngle = eventOptions.yawAngle;
+        }
+    }
 
     moveInfo.path = m_path;
     m_chassis->Drive(moveInfo);

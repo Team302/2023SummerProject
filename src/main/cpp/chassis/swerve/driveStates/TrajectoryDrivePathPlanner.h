@@ -43,6 +43,8 @@ public:
 private:
     bool IsSamePose(frc::Pose2d currentPose, frc::Pose2d previousPose, units::meter_t xyTolerance, units::degree_t rotTolerance);
 
+    ChassisMovement m_currentChassisMovement;
+
     std::shared_ptr<pathplanner::PathPlannerPath> m_path;
     RobotDrive *m_robotDrive;
     SwerveChassis *m_chassis;

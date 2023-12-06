@@ -23,10 +23,12 @@
 #include <chassis/ChassisFactory.h>
 #include <utils/logging/Logger.h>
 #include <chassis/swerve/headingStates/SpecifiedHeading.h>
+#include "auton/DragonEvent.h"
 
 using frc::Pose2d;
 
 TrajectoryDrivePathPlanner::TrajectoryDrivePathPlanner(RobotDrive *robotDrive) : RobotDrive(),
+                                                                                 m_currentChassisMovement(),
                                                                                  m_path(),
                                                                                  m_robotDrive(robotDrive),
                                                                                  m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
@@ -45,7 +47,8 @@ TrajectoryDrivePathPlanner::TrajectoryDrivePathPlanner(RobotDrive *robotDrive) :
 
 void TrajectoryDrivePathPlanner::Init(ChassisMovement &chassisMovement)
 {
-    // m_holonomicController.setTolerance(frc::Pose2d{units::length::meter_t(0.1), units::length::meter_t(0.1), frc::Rotation2d(units::angle::degree_t(2.0))});
+    m_currentChassisMovement = chassisMovement;
+
     m_path = std::make_shared<pathplanner::PathPlannerPath>(chassisMovement.path);
     m_trajectory = pathplanner::PathPlannerTrajectory(m_path, frc::ChassisSpeeds{});
 
@@ -54,23 +57,17 @@ void TrajectoryDrivePathPlanner::Init(ChassisMovement &chassisMovement)
         m_timer.get()->Reset(); // Restarts and starts timer
         m_timer.get()->Start();
     }
+
+    m_holonomicController.setRotationTargetOverride([this]()
+                                                    { return GetRotationOverride(m_currentChassisMovement); });
 }
 
 std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveModuleStates(ChassisMovement &chassisMovement)
 {
-    // Using event markers for robot actions
-    // register named commands that are made up of runcommands
-    for (pathplanner::EventMarker &marker : m_path->getEventMarkers())
-    {
-        if (marker.shouldTrigger(m_chassis->GetPose()))
-        {
-            marker.getCommand()->Execute();
-        }
-    }
+    m_currentChassisMovement = chassisMovement;
 
     if (!m_trajectory.getStates().empty()) // If we have a path parsed / have states to run
     {
-
         // NOTE this if statement could be troublesome in the future if these two poses never equal each other
         /// @todo is there a better way to get the initial pose for a PathPlannerPath (there is InitialDifferentialPose...)
         if (chassisMovement.path != nullptr)
@@ -87,6 +84,8 @@ std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveMo
                                                                                                   // is holonomic, the sampled state is flipped, don't know why...
 
         frc::ChassisSpeeds targetSpeeds = m_holonomicController.calculateRobotRelativeSpeeds(m_chassis->GetPose(), targetState);
+
+        chassisMovement.chassisSpeeds = targetSpeeds;
 
         // Set chassisMovement speeds that will be used by RobotDrive
         return m_robotDrive->UpdateSwerveModuleStates(chassisMovement);
@@ -122,6 +121,34 @@ bool TrajectoryDrivePathPlanner::IsDone()
     }
 
     return isDone;
+}
+
+std::optional<frc::Rotation2d> GetRotationOverride(ChassisMovement movementInfo)
+{
+    switch (movementInfo.headingOption)
+    {
+    case ChassisOptionEnums::HeadingOption::FACE_APRIL_TAG:
+    case ChassisOptionEnums::HeadingOption::FACE_GAME_PIECE:
+    case ChassisOptionEnums::HeadingOption::TOWARD_GOAL:
+        // these currently don't support the system of overriding target rotation for pathplanner
+        // only manipulate ChassisSpeeds.omega, don't return a target rotation
+        // can maybe change or handle by overriding omega after holo controller calcs targetSpeeds
+        /// @todo FIX
+        return std::nullopt;
+        break;
+    case ChassisOptionEnums::HeadingOption::MAINTAIN:
+    case ChassisOptionEnums::HeadingOption::IGNORE:
+        // don't need to override anything for maintain or ignore
+        return std::nullopt;
+        break;
+    case ChassisOptionEnums::HeadingOption::SPECIFIED_ANGLE:
+        // for specified angle, just return rotation2d holding the target angle
+        return frc::Rotation2d(movementInfo.yawAngle);
+        break;
+    default:
+        return std::nullopt;
+        break;
+    }
 }
 
 bool TrajectoryDrivePathPlanner::IsSamePose(frc::Pose2d currentPose, frc::Pose2d previousPose, units::meter_t xyTolerance, units::degree_t rotTolerance)

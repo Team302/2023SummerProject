@@ -43,14 +43,15 @@ public:
     ~DragonEvent() = default;
 
     static std::function<void()> RegisterEventRunner(DragonEvent *event);
+    static ChassisMovement GetChassisOptionsFromEvent(std::string eventName) { return m_registeredEventsMap[eventName]; }
 
     std::string GetName() const { return m_name; };
-    ChassisOptionEnums::HeadingOption GetHeadingOption() const { return m_headingOption; };
+    ChassisOptionEnums::HeadingOption GetHeadingOption() const { return m_headingOption; }
     float GetHeading() const { return m_heading; };
 
     // Mechanism getters
     ArmStateMgr::ARM_STATE GetArmState() const { return m_armState; };
-    ExtenderStateMgr::EXTENDER_STATE GetExtenderState() const { return m_extenderState; };
+    ExtenderStateMgr::EXTENDER_STATE GetExtenderState() const { return m_extenderState; }
     IntakeStateMgr::INTAKE_STATE GetIntakeState() const { return m_intakeState; }
 
     DragonLimelight::PIPELINE_MODE GetPipelineMode() const { return m_pipelineMode; }
