@@ -7,6 +7,8 @@ $$_GEN_NOTICE_$$
 
 #include "$$_MECHANISM_INSTANCE_NAME_$$_gen.h"
 
+$$_USING_DIRECTIVES_$$
+
 $$_MECHANISM_INSTANCE_NAME_$$_gen::$$_MECHANISM_INSTANCE_NAME_$$_gen()
 {
     m_ntName = "$$_MECHANISM_INSTANCE_NAME_$$";

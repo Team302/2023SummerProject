@@ -513,6 +513,24 @@ namespace DataConfiguration
     }
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    public class UsingAttribute : Attribute
+    {
+        public string theUsing { get; set; }
+        public UsingAttribute(string theUsing)
+        {
+            this.theUsing = theUsing;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+    public class OptionalAttribute : Attribute
+    {
+        public OptionalAttribute()
+        {
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class SystemIncludeFileAttribute : Attribute
     {
         public string pathName { get; set; }
@@ -616,7 +634,7 @@ namespace DataConfiguration
                     {
                         theObj = Activator.CreateInstance(pi.PropertyType);
                         pi.SetValue(obj, theObj);
-                        if (recursive)
+                        if( (recursive) && baseDataConfiguration.isACollection(obj) )
                             initializeNullProperties(theObj);
                     }
                 }

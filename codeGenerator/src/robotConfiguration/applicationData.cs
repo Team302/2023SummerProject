@@ -336,7 +336,7 @@ namespace ApplicationData
         }
 #if !enableTestAutomation
         public List<MotorController> MotorControllers { get; set; }
-        public List<closedLoopControlParameters> closedLoopControlParameters { get; set; }
+        public List<PIDFZ> closedLoopControlParameters { get; set; }
         public List<solenoid> solenoid { get; set; }
         public List<servo> servo { get; set; }
         public List<analogInput> analogInput { get; set; }
@@ -414,9 +414,15 @@ namespace ApplicationData
 #endif
     }
 
+    [Serializable]
+    public class CANcoderInstance : baseRobotElementClass
+    {
+
+    }
+
 #if !enableTestAutomation
     [Serializable()]
-    public class closedLoopControlParameters : baseRobotElementClass
+    public class PID : baseRobotElementClass
     {
         [DefaultValue(0D)]
         [DataDescription("The proportional gain of the PIDF controller.")]
@@ -432,17 +438,46 @@ namespace ApplicationData
         [DataDescription("The differential gain of the PIDF controller.")]
         [TunableParameter()]
         public doubleParameter dGain { get; set; }
+        public PID()
+        {
+        }
+    }
 
+    [Serializable()]
+    public class PIDF : PID
+    {
         [DefaultValue(0D)]
         [DataDescription("The feed forward gain of the PIDF controller.")]
         [TunableParameter()]
         public doubleParameter fGain { get; set; }
 
+        public PIDF()
+        {
+        }
+    }
+
+    [Serializable()]
+    public class PIDFslot : PIDF
+    {
+
+        [DefaultValue(0D)]
+        [DataDescription("The slot to store the PIDF settings.")]
+        [Range(0, 3)]
+        public intParameter slot { get; set; }
+
+        public PIDFslot()
+        {
+        }
+    }
+
+    [Serializable()]
+    public class PIDFZ : PIDF
+    {
         [DefaultValue(0D)]
         [TunableParameter()]
         public doubleParameter iZone { get; set; }
 
-        public closedLoopControlParameters()
+        public PIDFZ()
         {
         }
     }
@@ -526,6 +561,25 @@ namespace ApplicationData
     [XmlInclude(typeof(TalonSRX))]
     public class MotorController : baseRobotElementClass
     {
+        public enum RemoteSensorSource
+        {
+            Off,
+            TalonSRX_SelectedSensor,
+            Pigeon_Yaw,
+            Pigeon_Pitch,
+            Pigeon_Roll,
+            CANifier_Quadrature,
+            CANifier_PWMInput0,
+            CANifier_PWMInput1,
+            CANifier_PWMInput2,
+            CANifier_PWMInput3,
+            GadgeteerPigeon_Yaw,
+            GadgeteerPigeon_Pitch,
+            GadgeteerPigeon_Roll,
+            CANCoder,
+            TalonFX_SelectedSensor = TalonSRX_SelectedSensor,
+        };
+
         public enum MOTOR_TYPE
         {
             UNKNOWN_MOTOR = -1,
@@ -561,6 +615,10 @@ namespace ApplicationData
         [Range(typeof(uint), "0", "62")]
         public uintParameter canID { get; set; }
 
+        [DefaultValue(0u)]
+        [Range(typeof(uint), "0", "62")]
+        public uintParameter remoteSensorCanID { get; set; }
+
         [DefaultValue(CAN_BUS.rio)]
         public CAN_BUS canBusName { get; set; }
 
@@ -575,38 +633,31 @@ namespace ApplicationData
         [DefaultValue(false)]
         public boolParameter enableFollowID { get; set; }
 
+        [DefaultValue(RemoteSensorSource.Off)]
+        public RemoteSensorSource remoteSensorSource { get; set; }
+
         [Serializable]
-        public class DistanceAngleCalcInfo : baseDataClass
+        public class FusedCANcoder : baseDataClass
         {
-            [DefaultValue(0)]
-            public intParameter countsPerRev { get; set; }
+            [DefaultValue(false)]
+            public boolParameter enable { get; set; }
 
-            [DefaultValue(1.0)]
-            public doubleParameter gearRatio { get; set; }
+            public CANcoderInstance fusedCANcoder { get; set; }
 
-            [DefaultValue(1.0)]
-            [PhysicalUnitsFamily(physicalUnit.Family.length)]
-            public doubleParameter diameter { get; set; }
+            public doubleParameter sensorToMechanismRatio { get; set; }
+            public doubleParameter rotorToSensorRatio { get; set; }
 
-            [DefaultValue(0)]
-            public doubleParameter countsPerInch { get; set; }
-
-            [DefaultValue(0)]
-            public doubleParameter countsPerDegree { get; set; }
-
-            public DistanceAngleCalcInfo()
+            public FusedCANcoder()
             {
-            }
-
-            public override string ToString()
-            {
-                return string.Format("{{ {0}, {1}, {2}, {3}, {4} }}", countsPerRev.value, gearRatio.value, diameter.value, countsPerInch.value, countsPerDegree.value);
+                defaultDisplayName = "FusedCANcoder";
             }
         }
-        public DistanceAngleCalcInfo theDistanceAngleCalcInfo { get; set; }
+
+        public FusedCANcoder fusedCANcoder { get;set; }
 
         public MotorController()
         {
+            motorControllerType = this.GetType().Name;
         }
 
 
@@ -615,44 +666,15 @@ namespace ApplicationData
     [Serializable()]
     [ImplementationName("DragonTalonFX")]
     [UserIncludeFile("hw/DragonTalonFX.h")]
+    [Using("ctre::phoenixpro::signals::ForwardLimitSourceValue")]
+    [Using("ctre::phoenixpro::signals::ForwardLimitTypeValue")]
+    [Using("ctre::phoenixpro::signals::ReverseLimitSourceValue")]
+    [Using("ctre::phoenixpro::signals::ReverseLimitTypeValue")]
+    [Using("ctre::phoenixpro::signals::InvertedValue")]
+    [Using("ctre::phoenixpro::signals::NeutralModeValue")]
+    [Using("ctre::phoenix::motorcontrol::RemoteSensorSource")]
     public class TalonFX : MotorController
     {
-        [Serializable]
-        public class MotorConfigs : baseDataClass
-        {
-            public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
-            public enum NeutralModeValue { Coast, Brake }
-
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "100")]
-            [PhysicalUnitsFamily(physicalUnit.Family.percent)]
-            [TunableParameter()]
-            public doubleParameter deadbandPercent { get; set; }
-
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "30.0")]
-            [PhysicalUnitsFamily(physicalUnit.Family.current)]
-            [TunableParameter()]
-            public doubleParameter peakMin { get; set; }
-
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "40.0")]
-            [PhysicalUnitsFamily(physicalUnit.Family.current)]
-            public doubleParameter peakMax { get; set; }
-
-            [DefaultValue(InvertedValue.CounterClockwise_Positive)]
-            public InvertedValue inverted { get; set; }
-
-            [DefaultValue(NeutralModeValue.Coast)]
-            public NeutralModeValue NeutralMode { get; set; }
-
-            public MotorConfigs()
-            {
-                defaultDisplayName = "MotorConfigs";
-            }
-        }
-        public MotorConfigs theMotorConfigs { get; set; }
-
         [Serializable]
         public class CurrentLimits : baseDataClass
         {
@@ -688,6 +710,75 @@ namespace ApplicationData
             }
         }
         public CurrentLimits theCurrentLimits { get; set; }
+
+        public List<PIDFslot> PIDFs { get; set; }
+
+        [Serializable]
+        public class ConfigHWLimitSW : baseDataClass
+        {
+            public enum ForwardLimitSourceValue { LimitSwitchPin }
+            public enum ForwardLimitTypeValue { NormallyOpen, NormallyClosed }
+            public enum ReverseLimitSourceValue { LimitSwitchPin }
+            public enum ReverseLimitTypeValue { NormallyOpen, NormallyClosed }
+            public boolParameter enableForward { get; set; }
+            public intParameter remoteForwardSensorID { get; set; }
+            public boolParameter forwardResetPosition { get; set; }
+            public doubleParameter forwardPosition { get; set; }
+            public ForwardLimitSourceValue forwardType { get; set; }
+            public ForwardLimitTypeValue forwardOpenClose { get; set; }
+            public boolParameter enableReverse { get; set; }
+            public intParameter remoteReverseSensorID { get; set; }
+            public boolParameter reverseResetPosition { get; set; }
+            public doubleParameter reversePosition { get; set; }
+            public ReverseLimitSourceValue revType { get; set; }
+            public ReverseLimitTypeValue revOpenClose { get; set; }
+
+            public ConfigHWLimitSW()
+            {
+                defaultDisplayName = "ConfigHWLimitSW";
+            }
+        }
+        public ConfigHWLimitSW theConfigHWLimitSW { get; set; }
+
+        [Serializable]
+        public class ConfigMotorSettings : baseDataClass
+        {
+            public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
+            public enum NeutralModeValue { Coast, Brake }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "100")]
+            [PhysicalUnitsFamily(physicalUnit.Family.percent)]
+            [TunableParameter()]
+            public doubleParameter deadbandPercent { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "0", "1.0")]
+            [PhysicalUnitsFamily(physicalUnit.Family.none)]
+            [TunableParameter()]
+            public doubleParameter peakForwardDutyCycle { get; set; }
+
+            [DefaultValue(0)]
+            [Range(typeof(double), "-1.0", "0.0")]
+            [PhysicalUnitsFamily(physicalUnit.Family.none)]
+            public doubleParameter peakReverseDutyCycle { get; set; }
+
+            [DefaultValue(InvertedValue.CounterClockwise_Positive)]
+            public InvertedValue inverted { get; set; }
+
+            [DefaultValue(NeutralModeValue.Coast)]
+            public NeutralModeValue mode { get; set; }
+
+            public ConfigMotorSettings()
+            {
+                defaultDisplayName = "ConfigMotorSettings";
+            }
+        }
+        public ConfigMotorSettings theConfigMotorSettings { get; set; }
+
+        public doubleParameter diameter { get; set; }
+
+        /* It seems that the following are not needed
 
         [Serializable]
         public class VoltageConfigs : baseDataClass
@@ -762,6 +853,7 @@ namespace ApplicationData
         }
         public FeedbackConfigs theFeedbackConfigs { get; set; }
 
+        */
         public TalonFX()
         {
         }
@@ -784,7 +876,105 @@ namespace ApplicationData
                                             generatorContext.theGeneratorConfig.getWPIphysicalUnitType(theCurrentLimits.supplyTimeThreshold.__units__), theCurrentLimits.supplyTimeThreshold.value
                                             ));
 
-            //todo add the rest of TalonFX initialization
+            foreach (PIDFslot pIDFslot in PIDFs)
+            {
+                initCode.Add(string.Format(@"{0}->SetPIDConstants({1}, // slot
+                                                                    {2}, // P
+                                                                    {3}, // I
+                                                                    {4}, // D
+                                                                    {5}); // F",
+                                            name,
+                                            pIDFslot.slot.value,
+                                            pIDFslot.pGain.value,
+                                            pIDFslot.iGain.value,
+                                            pIDFslot.dGain.value,
+                                            pIDFslot.fGain.value
+                                            ));
+            }
+
+            initCode.Add(string.Format(@"{0}->ConfigHWLimitSW({1}, // enableForward
+                                            {2}, // remoteForwardSensorID                  
+                                            {3}, // forwardResetPosition                 
+                                            {4}, // forwardPosition                 
+                                            {5}::{6}, // forwardType
+                                            {7}::{8}, // forwardOpenClose
+                                            {9}, // enableReverse
+                                            {10}, // remoteReverseSensorID
+                                            {11}, // reverseResetPosition
+                                            {12}, // reversePosition
+                                            {13}::{14}, // revType
+                                            {15}::{16} ); // revOpenClose"
+                                            ,
+                                            name,
+                                            theConfigHWLimitSW.enableForward.value.ToString().ToLower(),
+                                            theConfigHWLimitSW.remoteForwardSensorID.value,
+                                            theConfigHWLimitSW.forwardResetPosition.value.ToString().ToLower(),
+                                            theConfigHWLimitSW.forwardPosition.value,
+
+                                            theConfigHWLimitSW.forwardType.GetType().Name,
+                                            theConfigHWLimitSW.forwardType,
+                                            theConfigHWLimitSW.forwardOpenClose.GetType().Name,
+                                            theConfigHWLimitSW.forwardOpenClose,
+
+                                            theConfigHWLimitSW.enableReverse.value.ToString().ToLower(),
+                                            theConfigHWLimitSW.remoteReverseSensorID.value,
+                                            theConfigHWLimitSW.reverseResetPosition.value.ToString().ToLower(),
+                                            theConfigHWLimitSW.reversePosition.value,
+
+                                            theConfigHWLimitSW.revType.GetType().Name,
+                                            theConfigHWLimitSW.revType,
+                                            theConfigHWLimitSW.revOpenClose.GetType().Name,
+                                            theConfigHWLimitSW.revOpenClose
+                                           ));
+
+            initCode.Add(string.Format(@"{0}->ConfigMotorSettings({1}::{2}, // ctre::phoenixpro::signals::InvertedValue
+                                            {3}::{4}, // ctre::phoenixpro::signals::NeutralModeValue                  
+                                            {5}, // deadbandPercent                 
+                                            {6}, // peakForwardDutyCycle                 
+                                            {7} ); // peakReverseDutyCycle"
+                                            ,
+                                            name,
+
+                                            theConfigMotorSettings.inverted.GetType().Name,
+                                            theConfigMotorSettings.inverted,
+
+                                            theConfigMotorSettings.mode.GetType().Name,
+                                            theConfigMotorSettings.mode,
+
+                                            theConfigMotorSettings.deadbandPercent.value,
+                                            theConfigMotorSettings.peakForwardDutyCycle.value,
+                                            theConfigMotorSettings.peakReverseDutyCycle.value
+                                           ));
+
+            initCode.Add(string.Format(@"{0}->SetAsFollowerMotor({1} ); // masterCANID",
+                                            name,
+                                            followID.value
+                                            ));
+
+            initCode.Add(string.Format(@"{0}->SetRemoteSensor({1}, // canID
+                                                              {2}::{2}_{3} ); // ctre::phoenix::motorcontrol::RemoteSensorSource",
+                                            name,
+                                            remoteSensorCanID.value,
+                                            remoteSensorSource.GetType().Name,
+                                            remoteSensorSource
+                                            ));
+
+            if( fusedCANcoder.enable.value == true)
+            {
+                initCode.Add(string.Format(@"{0}->FuseCancoder(*{1}, // DragonCanCoder &cancoder
+                                                               {2}, // sensorToMechanismRatio
+                                                               {3} ); // rotorToSensorRatio",
+                                            name,
+                                            fusedCANcoder.fusedCANcoder.name,
+                                            fusedCANcoder.sensorToMechanismRatio.value,
+                                            fusedCANcoder.rotorToSensorRatio.value
+                                            ));
+            }
+
+            initCode.Add(string.Format(@"{0}->SetDiameter({1} ); // double diameter",
+                                name,
+                                diameter.value
+                                ));
 
             return initCode;
         }
@@ -807,6 +997,37 @@ namespace ApplicationData
     [UserIncludeFile("hw/DragonTalonSRX.h")]
     public class TalonSRX : MotorController
     {
+        [Serializable]
+        public class DistanceAngleCalcInfo : baseDataClass
+        {
+            [DefaultValue(0)]
+            public intParameter countsPerRev { get; set; }
+
+            [DefaultValue(1.0)]
+            public doubleParameter gearRatio { get; set; }
+
+            [DefaultValue(1.0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.length)]
+            public doubleParameter diameter { get; set; }
+
+            [DefaultValue(0)]
+            public doubleParameter countsPerInch { get; set; }
+
+            [DefaultValue(0)]
+            public doubleParameter countsPerDegree { get; set; }
+
+            public DistanceAngleCalcInfo()
+            {
+            }
+
+            public override string ToString()
+            {
+                return string.Format("{{ {0}, {1}, {2}, {3}, {4} }}", countsPerRev.value, gearRatio.value, diameter.value, countsPerInch.value, countsPerDegree.value);
+            }
+        }
+        public DistanceAngleCalcInfo theDistanceAngleCalcInfo { get; set; }
+
+
         [DefaultValue(1.1)]
         [Range(typeof(double), "0", "62")]
         [TunableParameter()]
@@ -1164,7 +1385,7 @@ namespace ApplicationData
         public CANcoder cancoder { get; set; }
         [DefaultValue(swervemoduletype.LEFT_FRONT)]
         public swervemoduletype position { get; set; }
-        public closedLoopControlParameters controlParameters { get; set; }
+        public PIDFZ controlParameters { get; set; }
 
         [DefaultValue(0.0)]
         [TunableParameter()]
@@ -1515,7 +1736,7 @@ namespace ApplicationData
 
         public baseRobotElementClass()
         {
-            helperFunctions.initializeNullProperties(this,true);
+            helperFunctions.initializeNullProperties(this, true);
             helperFunctions.initializeDefaultValues(this);
             name = GetType().Name;
         }
@@ -1598,6 +1819,16 @@ namespace ApplicationData
             return sb;
         }
 
+        virtual public List<string> generateUsings()
+        {
+            List<string> sb = new List<string>();
+            List<UsingAttribute> usingsAttr = this.GetType().GetCustomAttributes<UsingAttribute>().ToList();
+            foreach (UsingAttribute u in usingsAttr)
+                sb.Add(string.Format("using {0}", u.theUsing));
+
+            return sb;
+        }
+
         internal string ToUnderscoreCase(string str)
         {
             if (str.Contains("_"))
@@ -1631,7 +1862,8 @@ namespace ApplicationData
 
         public baseDataClass()
         {
-            
+            helperFunctions.initializeNullProperties(this, true);
+            helperFunctions.initializeDefaultValues(this);
         }
     }
 
@@ -1675,7 +1907,7 @@ namespace ApplicationData
     {
         public string name { get; set; }
 
-        closedLoopControlParameters pid { get; set; }
+        PIDFZ pid { get; set; }
 
         public double maxAccel { get; set; }
 
@@ -1690,7 +1922,7 @@ namespace ApplicationData
     {
         public string name { get; set; }
 
-        closedLoopControlParameters pid { get; set; }
+        PIDFZ pid { get; set; }
 
         public double maxAccel { get; set; }
 
