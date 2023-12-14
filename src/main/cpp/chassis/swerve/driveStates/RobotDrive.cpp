@@ -31,21 +31,13 @@
 using std::string;
 
 RobotDrive::RobotDrive() : ISwerveDriveState::ISwerveDriveState(),
-                           m_flState(),
-                           m_frState(),
-                           m_blState(),
-                           m_brState(),
                            m_kinematics(ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetKinematics()),
-                           m_wheelbase(units::length::inch_t(20.0)),
-                           m_wheeltrack(units::length::inch_t(20.0)),
-                           m_centerOfRotation(m_wheelbase / 2.0, m_wheeltrack / 2.0),
+                           m_centerOfRotation(ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetWheelBase() / 2.0, ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetTrack() / 2.0),
                            m_maxspeed(units::velocity::feet_per_second_t(1.0))
 {
     auto chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
     if (chassis != nullptr)
     {
-        m_wheelbase = chassis->GetWheelBase();
-        m_wheeltrack = chassis->GetTrack();
         m_maxspeed = chassis->GetMaxSpeed();
     }
     else
@@ -65,12 +57,7 @@ std::array<frc::SwerveModuleState, 4> RobotDrive::UpdateSwerveModuleStates(Chass
 
     m_kinematics.DesaturateWheelSpeeds(&states, m_maxspeed);
 
-    m_flState = states[0];
-    m_frState = states[1];
-    m_blState = states[2];
-    m_brState = states[3];
-
-    return {m_flState, m_frState, m_blState, m_brState};
+    return states;
 }
 
 void RobotDrive::DecideTipCorrection(ChassisMovement &chassisMovement)
