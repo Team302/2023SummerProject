@@ -37,14 +37,8 @@ DragonPercentOutputToCTREProAdapter::DragonPercentOutputToCTREProAdapter(string 
                                                                          int controllerSlot,
                                                                          const ControlData &controlInfo,
                                                                          const DistanceAngleCalcStruc &calcStruc,
-                                                                         DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller),
-                                                                                                      m_isDuty(false),
-                                                                                                      m_isVoltage(false)
+                                                                         ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
-    auto ftype = controlInfo.GetFType();
-    m_isDuty = (ftype == ControlData::FEEDFORWARD_TYPE::DUTY_CYCLE);
-    m_isVoltage = (ftype == ControlData::FEEDFORWARD_TYPE::VOLTAGE);
-    m_enableFOC = controlInfo.IsFOCEnabled();
 }
 void DragonPercentOutputToCTREProAdapter::Set(double value)
 {
@@ -52,13 +46,13 @@ void DragonPercentOutputToCTREProAdapter::Set(double value)
     {
         DutyCycleOut out{value};
         out.WithEnableFOC(m_enableFOC);
-        m_controller->Set(out);
+        m_controller.SetControl(out);
     }
     else if (m_isVoltage)
     {
         VoltageOut out{units::volt_t(value)};
         out.WithEnableFOC(m_enableFOC);
-        m_controller->Set(out);
+        m_controller.SetControl(out);
     }
 }
 

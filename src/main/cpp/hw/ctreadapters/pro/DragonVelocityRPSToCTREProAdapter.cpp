@@ -38,7 +38,7 @@ DragonVelocityRPSToCTREProAdapter::DragonVelocityRPSToCTREProAdapter(string netw
                                                                      int controllerSlot,
                                                                      const ControlData &controlInfo,
                                                                      const DistanceAngleCalcStruc &calcStruc,
-                                                                     DragonTalonFX &controller) : DragonVelocityToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                     ctre::phoenixpro::hardware::TalonFX &controller) : DragonVelocityToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 

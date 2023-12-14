@@ -10,10 +10,7 @@
                                    VELOCITY_DEGREES  | 
                                    VELOCITY_RPS |
                                    VOLTAGE | 
-                                   CURRENT | 
                                    TRAPEZOID | 
-                                   MOTION_PROFILE | 
-                                   MOTION_PROFILE_ARC | 
                                    POSITION_DEGREES | 
                                    POSITION_INCH) "PERCENT_OUTPUT"
                    target  value CDATA #IMPLIED

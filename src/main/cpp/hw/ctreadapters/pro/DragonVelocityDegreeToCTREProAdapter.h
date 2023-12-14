@@ -22,6 +22,7 @@
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
 #include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonVelocityToCTREProAdapter.h"
 #include "hw/DragonTalonFX.h"
 #include "mechanisms/controllers/ControlData.h"
 
@@ -33,7 +34,7 @@ public:
                                          int controllerSlot,
                                          const ControlData &controlInfo,
                                          const DistanceAngleCalcStruc &calcStruc,
-                                         DragonTalonFX &controller);
+                                         ctre::phoenixpro::hardware::TalonFX &controller);
 
     ~DragonVelocityDegreeToCTREProAdapter() = default;
 

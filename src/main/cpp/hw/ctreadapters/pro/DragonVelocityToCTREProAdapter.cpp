@@ -41,15 +41,8 @@ DragonVelocityToCTREProAdapter::DragonVelocityToCTREProAdapter(string networkTab
                                                                int controllerSlot,
                                                                const ControlData &controlInfo,
                                                                const DistanceAngleCalcStruc &calcStruc,
-                                                               DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller),
-                                                                                            m_isDuty(false),
-                                                                                            m_isVoltage(false),
-                                                                                            m_isTorque(false)
+                                                               ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
-    auto ftype = controlInfo.GetFType();
-    m_isDuty = (ftype == ControlData::FEEDFORWARD_TYPE::DUTY_CYCLE);
-    m_isVoltage = (ftype == ControlData::FEEDFORWARD_TYPE::VOLTAGE);
-    m_isTorque = (ftype == ControlData::FEEDFORWARD_TYPE::TORQUE_CURRENT);
 }
 
 void DragonVelocityToCTREProAdapter::Set(double value)
@@ -57,17 +50,17 @@ void DragonVelocityToCTREProAdapter::Set(double value)
     if (m_isDuty)
     {
         VelocityDutyCycle out{units::angular_velocity::turns_per_second_t(value)};
-        m_controller->Set(out);
+        m_controller.SetControl(out);
     }
     else if (m_isVoltage)
     {
         VelocityVoltage out{units::angular_velocity::turns_per_second_t(value)};
-        m_controller->Set(out);
+        m_controller.SetControl(out);
     }
     else if (m_isTorque)
     {
         VelocityTorqueCurrentFOC out{units::angular_velocity::turns_per_second_t(value)};
-        m_controller->Set(out);
+        m_controller.SetControl(out);
     }
 }
 

@@ -32,7 +32,7 @@ public:
                                         int controllerSlot,
                                         const ControlData &controlInfo,
                                         const DistanceAngleCalcStruc &calcStruc,
-                                        DragonTalonFX &controller);
+                                        ctre::phoenixpro::hardware::TalonFX &controller);
 
     ~DragonPercentOutputToCTREProAdapter() = default;
 
@@ -40,9 +40,4 @@ public:
 
     void SetControlConstants(int controlSlot,
                              const ControlData &controlInfo) override;
-
-private:
-    bool m_isDuty;
-    bool m_isVoltage;
-    bool m_enableFOC;
 };

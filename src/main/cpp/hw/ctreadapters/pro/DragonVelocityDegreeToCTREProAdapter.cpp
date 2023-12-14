@@ -28,9 +28,16 @@
 #include "utils/ConversionUtils.h"
 
 // Third Party Includes
-#include "ctre/phoenix/motorcontrol/ControlMode.h"
-#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
+#include "ctre/phoenixpro/TalonFX.hpp"
+#include "ctre/phoenixpro/controls/VelocityDutyCycle.hpp"
+#include "ctre/phoenixpro/controls/VelocityTorqueCurrentFOC.hpp"
+#include "ctre/phoenixpro/controls/VelocityVoltage.hpp"
 
+#include "units/angular_velocity.h"
+
+using ctre::phoenixpro::controls::VelocityDutyCycle;
+using ctre::phoenixpro::controls::VelocityTorqueCurrentFOC;
+using ctre::phoenixpro::controls::VelocityVoltage;
 using ctre::phoenixpro::hardware::TalonFX;
 using std::string;
 
@@ -38,11 +45,28 @@ DragonVelocityDegreeToCTREProAdapter::DragonVelocityDegreeToCTREProAdapter(strin
                                                                            int controllerSlot,
                                                                            const ControlData &controlInfo,
                                                                            const DistanceAngleCalcStruc &calcStruc,
-                                                                           DragonTalonFX &controller) : DragonVelocityToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                           ctre::phoenixpro::hardware::TalonFX &controller) : DragonVelocityToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
 void DragonVelocityDegreeToCTREProAdapter::Set(double value)
 {
-    // TODO  Add phoenix pro commands
+    units::angular_velocity::turns_per_second_t target = units::angular_velocity::degrees_per_second_t(value);
+    if (m_isVoltage)
+    {
+        VelocityVoltage out{target};
+        out.WithEnableFOC(m_enableFOC);
+        m_controller.SetControl(out);
+    }
+    else if (m_isTorque)
+    {
+        VelocityTorqueCurrentFOC out{target};
+        m_controller.SetControl(out);
+    }
+    else
+    {
+        VelocityDutyCycle out{target};
+        out.WithEnableFOC(m_enableFOC);
+        m_controller.SetControl(out);
+    }
 }

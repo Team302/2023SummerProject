@@ -79,8 +79,6 @@ SwerveModule::SwerveModule(ModuleID type,
                                                                   m_runClosedLoopDrive(false),
                                                                   m_countsOnTurnEncoderPerDegreesOnAngleSensor(countsOnTurnEncoderPerDegreesOnAngleSensor)
 {
-    driveMotor->SetFramePeriodPriority(IDragonMotorController::MOTOR_PRIORITY::HIGH);
-    turnMotor->SetFramePeriodPriority(IDragonMotorController::MOTOR_PRIORITY::HIGH);
     turnMotor->SetControlConstants(0, m_turnPositionControlData);
 
     Rotation2d ang{units::angle::degree_t(0.0)};

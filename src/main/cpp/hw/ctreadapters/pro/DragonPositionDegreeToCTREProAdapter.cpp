@@ -27,6 +27,9 @@
 #include "utils/ConversionUtils.h"
 
 // Third Party Includes
+#include "ctre/phoenixpro/controls/PositionDutyCycle.hpp"
+#include "ctre/phoenixpro/controls/PositionTorqueCurrentFOC.hpp"
+#include "ctre/phoenixpro/controls/PositionVoltage.hpp"
 
 using ctre::phoenixpro::controls::PositionDutyCycle;
 using ctre::phoenixpro::controls::PositionTorqueCurrentFOC;
@@ -38,32 +41,28 @@ DragonPositionDegreeToCTREProAdapter::DragonPositionDegreeToCTREProAdapter(strin
                                                                            int controllerSlot,
                                                                            const ControlData &controlInfo,
                                                                            const DistanceAngleCalcStruc &calcStruc,
-                                                                           DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                           ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
 void DragonPositionDegreeToCTREProAdapter::Set(double value)
 {
-    // TODO  Add phoenix pro commands
-    /**
     units::angle::degree_t target = units::angle::degree_t(value);
-    PositionDutyCycle duty{0_tr};
-    PositionTorqueCurrentFOC torque{0_tr};
-    PositionVoltage voltage{0_tr};
-
-    ctre::phoenix6::controls::PositionVoltage m_voltagePosition{0_tr, 0_tps, true, 0_V, 0, false};
-    ctre::phoenix6::controls::PositionTorqueCurrentFOC m_torquePosition{0_tr, 0_tps, 0_A, 1, false};
-
+    if (m_isVoltage)
     {
-        m_fx.SetControl(m_voltagePosition.WithPosition(desiredRotations));
+        PositionVoltage out{target, m_enableFOC, m_voltageFeedForward, m_controllerSlot, false};
+        m_controller.SetControl(out);
     }
-    else if (m_joystick.GetRightBumper())
+    else if (m_isTorque)
     {
-    m_fx.SetControl(m_torquePosition.WithPosition(desiredRotations));
-
-    auto output = (m_calcStruc.countsPerDegree > 0.01) ? m_calcStruc.countsPerDegree * value : (ConversionUtils::DegreesToCounts(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
-    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
-**/
+        PositionTorqueCurrentFOC out{target, m_torqueCurrentFeedForward, m_controllerSlot, false};
+        m_controller.SetControl(out);
+    }
+    else
+    {
+        PositionDutyCycle out{target, m_enableFOC, m_dutyFeedForward, m_controllerSlot, false};
+        m_controller.SetControl(out);
+    }
 }
 
 void DragonPositionDegreeToCTREProAdapter::SetControlConstants(int controlSlot,

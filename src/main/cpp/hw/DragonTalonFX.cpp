@@ -30,11 +30,11 @@
 #include "hw/interfaces/IDragonMotorController.h"
 #include "hw/DragonTalonFX.h"
 #include "hw/factories/PDPFactory.h"
-#include "hw/factories/DragonControlToCTREV5AdapterFactory.h"
+#include "hw/factories/DragonControlToCTREProAdapterFactory.h"
 #include "configs/usages/MotorControllerUsage.h"
 #include "utils/logging/Logger.h"
 #include "utils/ConversionUtils.h"
-#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
+#include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
 
 // Third Party Includes
 #include "ctre/phoenixpro/TalonFX.hpp"
@@ -91,14 +91,21 @@ DragonTalonFX::DragonTalonFX(string networkTableName,
 							 string canBusName) : m_networkTableName(networkTableName),
 												  m_type(deviceType),
 												  m_talon(TalonFX(deviceID, canBusName)),
-												  slot0Control(new EmptyControl()),
-												  slot1Control(new EmptyControl()),
-												  slot2Control(new EmptyControl()),
-												  slot3Control(new EmptyControl()),
 												  m_calcStruc(),
 												  m_inverted(false)
 {
 	ResetToDefaults();
+	auto factory = DragonControlToCTREProAdapterFactory::GetFactory();
+	for (auto i = 1; i < 4; ++i)
+	{
+		m_controller[i] = factory->CreateAdapter(networkTableName,
+												 i,
+												 ControlData(),
+												 m_calcStruc,
+												 m_talon);
+
+		m_controller[i]->InitializeDefaults();
+	}
 }
 
 // DragonTalonFX::DragonTalonFX(const DragonTalonFX &other)
@@ -151,33 +158,16 @@ void DragonTalonFX::ConfigMotorSettings(InvertedValue inverted,
 }
 void DragonTalonFX::SetPIDConstants(int slot, double p, double i, double d, double f)
 {
-	if (slot == 0)
-	{
-		Slot0Configs slot0;
-		slot0.kP = p;
-		slot0.kI = i;
-		slot0.kD = d;
-		slot0.kV = f;
-		m_talon.GetConfigurator().Apply(slot0);
-	}
-	else if (slot == 1)
-	{
-		Slot1Configs slot1;
-		slot1.kP = p;
-		slot1.kI = i;
-		slot1.kD = d;
-		slot1.kV = f;
-		m_talon.GetConfigurator().Apply(slot1);
-	}
-	else if (slot == 2)
-	{
-		Slot2Configs slot2;
-		slot2.kP = p;
-		slot2.kI = i;
-		slot2.kD = d;
-		slot2.kV = f;
-		m_talon.GetConfigurator().Apply(slot2);
-	}
+	ControlData controlInfo{ControlModes::CONTROL_TYPE::VOLTAGE,
+							ControlModes::CONTROL_RUN_LOCS::MOTOR_CONTROLLER,
+							std::string("NewController"),
+							p, i, d, f,
+							ControlData::FEEDFORWARD_TYPE::DUTY_CYCLE,
+							0.0, 1.0, 1.0, 1.0, 0.0, true};
+
+	auto factory = DragonControlToCTREProAdapterFactory::GetFactory();
+	delete m_controller[slot];
+	m_controller[slot] = factory->CreateAdapter(m_networkTableName, slot, controlInfo, m_calcStruc, m_talon);
 }
 double DragonTalonFX::GetRotations()
 {
@@ -213,68 +203,10 @@ void DragonTalonFX::UpdateFramePeriods
 	m_talon.SetStatusFramePeriod( frame, milliseconds, 0 );
 }
 **/
-void DragonTalonFX::SetFramePeriodPriority(MOTOR_PRIORITY priority)
-{
-	return;
-	/**
-	switch ( priority )
-	{
-		case HIGH:
-			UpdateFramePeriods( StatusFrameEnhanced::Status_1_General, 10 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_2_Feedback0, 20 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_3_Quadrature, 100 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_4_AinTempVbat, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_8_PulseWidth, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_10_Targets, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_11_UartGadgeteer, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_12_Feedback1, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_13_Base_PIDF0, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_14_Turn_PIDF1, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_15_FirmareApiStatus, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_Brushless_Current, 200 );
-			break;
-
-		case MEDIUM:
-			UpdateFramePeriods( StatusFrameEnhanced::Status_1_General, 60 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_2_Feedback0, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_3_Quadrature, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_4_AinTempVbat, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_8_PulseWidth, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_10_Targets, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_11_UartGadgeteer, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_12_Feedback1, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_13_Base_PIDF0, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_14_Turn_PIDF1, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_15_FirmareApiStatus, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_Brushless_Current, 200 );
-			break;
-
-		case LOW:
-			UpdateFramePeriods( StatusFrameEnhanced::Status_1_General, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_2_Feedback0, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_3_Quadrature, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_4_AinTempVbat, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_8_PulseWidth, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_10_Targets, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_11_UartGadgeteer, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_12_Feedback1, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_13_Base_PIDF0, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_14_Turn_PIDF1, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_15_FirmareApiStatus, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_Brushless_Current, 200 );
-			break;
-
-		default:
-		break;
-
-	}
-	**/
-}
 
 void DragonTalonFX::Set(double value)
 {
-	DutyCycleOut out{value};
-	Set(out);
+	m_controller[0]->Set(value);
 }
 void DragonTalonFX::Set(ControlRequest &control)
 {
@@ -383,8 +315,9 @@ void DragonTalonFX::SetAsFollowerMotor(int masterCANID // <I> - master motor
 /// @return void
 void DragonTalonFX::SetControlConstants(int slot, const ControlData &controlInfo)
 {
-	// TODO:  delete the existing control and create the
-	//        new control for the slot
+	auto factory = DragonControlToCTREProAdapterFactory::GetFactory();
+	delete m_controller[slot];
+	m_controller[slot] = factory->CreateAdapter(m_networkTableName, slot, controlInfo, m_calcStruc, m_talon);
 }
 
 void DragonTalonFX::SetRemoteSensor(int canID,

@@ -33,7 +33,7 @@ public:
                                       int controllerSlot,
                                       const ControlData &controlInfo,
                                       const DistanceAngleCalcStruc &calcStruc,
-                                      DragonTalonFX &controller);
+                                      ctre::phoenixpro::hardware::TalonFX &controller);
 
     ~DragonVelocityRPSToCTREProAdapter() = default;
 
