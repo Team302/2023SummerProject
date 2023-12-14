@@ -40,6 +40,10 @@ public:
     std::string WhyDone() const { return m_whyDone; };
     bool IsDone();
 
+    ChassisMovement GetCurrentChassisMovement() const { return m_currentChassisMovement; }
+
+    static std::optional<frc::Rotation2d> GetRotationOverride(ChassisMovement movementInfo);
+
 private:
     bool IsSamePose(frc::Pose2d currentPose, frc::Pose2d previousPose, units::meter_t xyTolerance, units::degree_t rotTolerance);
 

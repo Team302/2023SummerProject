@@ -58,8 +58,8 @@ void TrajectoryDrivePathPlanner::Init(ChassisMovement &chassisMovement)
         m_timer.get()->Start();
     }
 
-    m_holonomicController.setRotationTargetOverride([this]()
-                                                    { return GetRotationOverride(m_currentChassisMovement); });
+    m_holonomicController.setRotationTargetOverride([]()
+                                                    { return TrajectoryDrivePathPlanner::GetRotationOverride(GetCurrentChassisMovement()) });
 }
 
 std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveModuleStates(ChassisMovement &chassisMovement)

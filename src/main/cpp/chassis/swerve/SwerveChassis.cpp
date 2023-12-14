@@ -46,7 +46,6 @@
 #include <chassis/swerve/driveStates/HoldDrive.h>
 #include <chassis/swerve/driveStates/RobotDrive.h>
 #include <chassis/swerve/driveStates/StopDrive.h>
-#include <chassis/swerve/driveStates/TrajectoryDrive.h>
 #include <chassis/swerve/driveStates/TrajectoryDrivePathPlanner.h>
 #include <chassis/swerve/driveStates/VisionDrive.h>
 
