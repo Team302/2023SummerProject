@@ -18,11 +18,11 @@
 
 #include <teleopcontrol/TeleopControlMappingEnums.h>
 
-class IDragonGamePad
+class IDragonGamepad
 {
 public:
-    IDragonGamePad() = default;
-    ~IDragonGamePad() = default;
+    IDragonGamepad() = default;
+    ~IDragonGamepad() = default;
 
     // getters
     ///-------------------------------------------------------------------------------------------------

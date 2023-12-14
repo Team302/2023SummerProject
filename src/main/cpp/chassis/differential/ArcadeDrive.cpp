@@ -25,7 +25,7 @@
 #include "chassis/differential/ArcadeDrive.h"
 #include "chassis/ChassisMovement.h"
 #include "hw/DragonPigeon.h"
-#include "gamepad/IDragonGamePad.h"
+#include "gamepad/IDragonGamepad.h"
 #include "teleopcontrol/TeleopControl.h"
 #include "teleopcontrol/TeleopControlFunctions.h"
 #include "State.h"
