@@ -32,8 +32,6 @@
 #include <RobotDefinitions.h>
 
 #include <AdjustableItemMgr.h>
-#include <mechanisms/SomeMech/SomeMech.h>
-
 /// DEBUGGING
 
 #include "configs/RobotConfigMgr.h"
@@ -104,8 +102,6 @@ void Robot::RobotPeriodic()
 {
     LoggableItemMgr::GetInstance()->LogData();
     Logger::GetLogger()->PeriodicLog();
-
-    m_someMech->Cyclic();
 
     if (m_robotState != nullptr)
     {
