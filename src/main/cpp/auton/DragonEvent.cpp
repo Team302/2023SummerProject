@@ -37,13 +37,6 @@ DragonEvent::DragonEvent(std::string name,
 
 std::function<void()> DragonEvent::RegisterEventRunner(DragonEvent *event)
 {
-    // register chassis movement for later use
-    ChassisMovement chassisMovement = ChassisMovement();
-
-    chassisMovement.headingOption = event->GetHeadingOption();
-    chassisMovement.yawAngle = units::angle::degree_t(event->GetHeading());
-    m_registeredEventsMap[event->GetName()] = chassisMovement;
-
     // return lambda function for FRC command
     return [event]()
     {

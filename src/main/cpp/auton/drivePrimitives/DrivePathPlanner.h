@@ -26,7 +26,7 @@
 #include <frc/Timer.h>
 
 // third party includes
-#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
 
 class DrivePathPlanner : public IPrimitive
 {
@@ -42,7 +42,7 @@ public:
 private:
     SwerveChassis *m_chassis;
     std::unique_ptr<frc::Timer> m_timer;
-    pathplanner::PathPlannerPath m_path;
+    std::shared_ptr<pathplanner::PathPlannerPath> m_path;
     std::string m_pathname;
     double m_maxTime;
     std::string m_ntName;

@@ -49,17 +49,14 @@ void TrajectoryDrivePathPlanner::Init(ChassisMovement &chassisMovement)
 {
     m_currentChassisMovement = chassisMovement;
 
-    m_path = std::make_shared<pathplanner::PathPlannerPath>(chassisMovement.path);
-    m_trajectory = pathplanner::PathPlannerTrajectory(m_path, frc::ChassisSpeeds{});
+    m_path = std::make_shared<pathplanner::PathPlannerPath>(*chassisMovement.path);
+    m_trajectory = pathplanner::PathPlannerTrajectory(m_path, frc::ChassisSpeeds{}, m_chassis->GetYaw());
 
     if (!m_trajectory.getStates().empty()) // only go if path name found
     {
         m_timer.get()->Reset(); // Restarts and starts timer
         m_timer.get()->Start();
     }
-
-    m_holonomicController.setRotationTargetOverride([]()
-                                                    { return TrajectoryDrivePathPlanner::GetRotationOverride(GetCurrentChassisMovement()) });
 }
 
 std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveModuleStates(ChassisMovement &chassisMovement)
@@ -68,12 +65,9 @@ std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveMo
 
     if (!m_trajectory.getStates().empty()) // If we have a path parsed / have states to run
     {
-        // NOTE this if statement could be troublesome in the future if these two poses never equal each other
-        /// @todo is there a better way to get the initial pose for a PathPlannerPath (there is InitialDifferentialPose...)
         if (chassisMovement.path != nullptr)
         {
-            frc::Pose2d incomingInitialPose = frc::Pose2d(chassisMovement.path->getPoint(0).position, chassisMovement.path->getPoint(0).holonomicRotation.value());
-            if (m_trajectory.getInitialTargetHolonomicPose() != incomingInitialPose)
+            if (m_trajectory.getInitialDifferentialPose() != chassisMovement.path->getStartingDifferentialPose())
             {
                 Init(chassisMovement);
             }

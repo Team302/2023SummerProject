@@ -19,7 +19,8 @@
 #include <memory>
 
 // Third party includes
-#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/path/PathPlannerTrajectory.h>
+#include <pathplanner/lib/path/PathPlannerPath.h>
 
 // Team 302 Includes
 #include <auton/drivePrimitives/IPrimitive.h>

@@ -31,6 +31,7 @@
 #include <chassis/IChassis.h>
 #include <utils/logging/Logger.h>
 #include <chassis/swerve/driveStates/TrajectoryDrivePathPlanner.h>
+#include <auton/DragonEvent.h>
 
 // third party includes
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
@@ -44,7 +45,7 @@ using namespace wpi::math;
 
 DrivePathPlanner::DrivePathPlanner() : m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
                                        m_timer(make_unique<Timer>()),
-                                       m_trajectory(),
+                                       m_path(),
                                        m_pathname(),
                                        // max velocity of 1 rotation per second and a max acceleration of 180 degrees per second squared.
                                        m_maxTime(-1.0),
@@ -80,14 +81,10 @@ void DrivePathPlanner::Run()
         if (marker.shouldTrigger(m_chassis->GetPose()))
         {
             marker.getCommand()->Execute();
-
-            ChassisMovement eventOptions = DragonEvent::GetChassisOptionsFromEvent(marker.getCommand()->GetName());
-            moveInfo.headingOption = eventOptions.headingOption;
-            moveInfo.yawAngle = eventOptions.yawAngle;
         }
     }
 
-    moveInfo.path = m_path;
+    moveInfo.path = m_path.get();
     m_chassis->Drive(moveInfo);
 }
 
