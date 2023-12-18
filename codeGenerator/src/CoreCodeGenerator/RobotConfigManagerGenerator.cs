@@ -41,6 +41,7 @@ namespace CoreCodeGenerator
             {
                 generatorContext.theRobot = robot;
                 sb.AppendLine(string.Format(@"case RobotIdentifier::{0}:
+                                                Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string(""Initializing robot ""), string(""{0}""), string(""""));
                                                 m_config = new RobotConfig{0}();
                                                 break;", robot.getFullRobotName()));
                 includes.AppendLine(string.Format("#include \"configs/RobotConfig{0}.h\"", robot.getFullRobotName()));
