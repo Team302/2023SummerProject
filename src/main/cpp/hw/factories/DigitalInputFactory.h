@@ -20,7 +20,7 @@
 #include <string>
 
 // Team 302 includes
-#include "configs/usages/DigitalInputUsage.h"
+#include "configs/RobotElementNames.h"
 
 #include "units/time.h"
 // Forward declares
@@ -41,7 +41,7 @@ public:
 
 	/// @brief    Get the requested Digital input
 	DragonDigitalInput *GetInput(
-		DigitalInputUsage::DIGITAL_INPUT_USAGE type);
+		RobotElementNames::DIGITAL_INPUT_USAGE type);
 
 private:
 	DigitalInputFactory();

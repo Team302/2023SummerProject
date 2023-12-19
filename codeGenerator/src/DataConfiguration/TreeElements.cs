@@ -491,6 +491,36 @@ namespace DataConfiguration
             this.family = family;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    public class ImplementationNameAttribute : Attribute
+    {
+        public string name { get; set; }
+        public ImplementationNameAttribute(string name)
+        {
+            this.name = name;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    public class UserIncludeFileAttribute : Attribute
+    {
+        public string pathName { get; set; }
+        public UserIncludeFileAttribute(string pathName)
+        {
+            this.pathName = pathName;
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    public class SystemIncludeFileAttribute : Attribute
+    {
+        public string pathName { get; set; }
+        public SystemIncludeFileAttribute(string pathName)
+        {
+            this.pathName = pathName;
+        }
+    }
     #endregion
 
     public static class helperFunctions

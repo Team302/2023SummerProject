@@ -33,7 +33,7 @@
 
 #include "configs/RobotConfigMgr.h"
 #include "configs/RobotConfig.h"
-#include "configs/usages/CanSensorUsage.h"
+#include "configs/RobotElementNames.h"
 
 #include "utils/ConversionUtils.h"
 #include "utils/logging/Logger.h"
@@ -61,7 +61,7 @@ MecanumChassis::MecanumChassis(shared_ptr<IDragonMotorController> leftFrontMotor
                                                           m_leftBackMotor(leftBackMotor),
                                                           m_rightFrontMotor(rightFrontMotor),
                                                           m_rightBackMotor(rightBackMotor),
-                                                          m_pigeon(RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(CanSensorUsage::CANSENSOR_USAGE::PIGEON_ROBOT_CENTER)),
+                                                          m_pigeon(RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(RobotElementNames::PIGEON_USAGE::PIGEON_ROBOT_CENTER)),
                                                           m_maxSpeed(maxSpeed),
                                                           m_maxAngSpeed(maxAngSpeed),
                                                           m_wheelDiameter(wheelDiameter),

@@ -401,18 +401,35 @@ namespace FRCrobotCodeGen302
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void generateButton_Click(object sender, EventArgs e)
         {
             try
             {
-                codeGenerator.generate(theAppDataConfiguration, generatorConfig);
+                codeGenerator.generate(ProductVersion, theAppDataConfiguration, generatorConfig);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Something went wrong. See below. \r\n\r\n" + ex.Message, "Code generator error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private void cleanButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DialogResult dr = MessageBox.Show("Do you also want to delete the user modifiable files within the decoratorMod folders?", "Delete warning", MessageBoxButtons.YesNoCancel);
+                if (dr == DialogResult.Yes)
+                    codeGenerator.cleanDecoratorModFolders = true;
+                else
+                    codeGenerator.cleanDecoratorModFolders = false;
 
+                if (dr != DialogResult.Cancel)
+                    codeGenerator.clean(ProductVersion, theAppDataConfiguration, generatorConfig);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Something went wrong. See below. \r\n\r\n" + ex.Message, "Code generator error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void configurationBrowseButton_Click(object sender, EventArgs e)
         {
             try
@@ -773,7 +790,7 @@ namespace FRCrobotCodeGen302
                             allowEdit = beObj.isTunable ? true : !beObj.showExpanded;
                         }
 
-                        
+
                         if ((beObj.name == "value") || showUnits)
                         {
                             string updatedUnits = setPhysicalUnitsComboBox(beObj.unitsFamily, beObj.physicalUnits);
@@ -980,7 +997,10 @@ namespace FRCrobotCodeGen302
                         {
                             prop.SetValue(objToOperateOn, physicalUnitsComboBox.Text);
 
-                            lastSelectedValueNode.Text = getDisplayName(parentObj, lnt.name);
+                            if (objToOperateOn is parameter)
+                                lastSelectedValueNode.Text = getDisplayName(objToOperateOn, lnt.name);
+                            else
+                                lastSelectedValueNode.Text = getDisplayName(parentObj, lnt.name);
 
                             if (lastSelectedValueNode.Parent != null)
                                 lastSelectedValueNode.Parent.Text = getDisplayName(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), "");
@@ -1077,7 +1097,7 @@ namespace FRCrobotCodeGen302
                                         pi.SetValue(nodeTag.getObject(lastSelectedValueNode.Parent.Tag), firstUnit == null ? "" : firstUnit.ToString());
                                 }
                             }
-                         }
+                        }
 
                         helperFunctions.RefreshLevel refresh;
                         if (isValue)
@@ -1185,7 +1205,7 @@ namespace FRCrobotCodeGen302
 
                         helperFunctions.RefreshLevel refresh;
                         //lastSelectedValueNode.Text = getDisplayName(isValue__ ? obj : prop.GetValue(obj), lnt.name, out refresh);
-                        lastSelectedValueNode.Text = getDisplayName( obj, lnt.name, out refresh);
+                        lastSelectedValueNode.Text = getDisplayName(obj, lnt.name, out refresh);
 
                         if (lastSelectedValueNode.Parent != null)
                         {
@@ -1327,7 +1347,7 @@ namespace FRCrobotCodeGen302
         {
             if (lastSelectedValueNode != null)
             {
-                List<(string,object)> objectsToAddToCurrentNode = new List<(string,object)>();
+                List<(string, object)> objectsToAddToCurrentNode = new List<(string, object)>();
 
                 TreeNode mechanismInstancesNode = null;
                 TreeNode tn = null;
@@ -1406,11 +1426,15 @@ namespace FRCrobotCodeGen302
                             string nameStr = "here5";
                             try
                             {
-                                nameStr = obj.GetType().GetProperty("name").GetValue(obj).ToString();
-                                nameStr += "_" + count;
-                                PropertyInfo thisPi = obj.GetType().GetProperty("name");
-                                if (thisPi != null)
-                                    thisPi.SetValue(obj, nameStr);
+                                PropertyInfo piName = obj.GetType().GetProperty("name");
+                                if (piName != null)
+                                {
+                                    nameStr = piName.GetValue(obj).ToString();
+                                    nameStr += "_" + count;
+                                    PropertyInfo thisPi = obj.GetType().GetProperty("name");
+                                    if (thisPi != null)
+                                        thisPi.SetValue(obj, nameStr);
+                                }
                             }
                             catch { }
 
@@ -1427,7 +1451,7 @@ namespace FRCrobotCodeGen302
                             else
                             {
                                 if (!objectsToAddToCurrentNode.Exists(o => o.Item2 == theObj))
-                                    objectsToAddToCurrentNode.Add((name,theObj));
+                                    objectsToAddToCurrentNode.Add((name, theObj));
 
                                 //if (tn == null)
                                 //    tn = AddNode(lastSelectedValueNode, theObj, name); // add the List containing an element
@@ -1451,7 +1475,7 @@ namespace FRCrobotCodeGen302
                         updateMechInstancesFromMechTemplate(theMechanism);
                 }
 
-                foreach ((string,object) newObj in objectsToAddToCurrentNode)
+                foreach ((string, object) newObj in objectsToAddToCurrentNode)
                 {
                     tn = AddNode(lastSelectedValueNode, newObj.Item2, newObj.Item1);
                 }

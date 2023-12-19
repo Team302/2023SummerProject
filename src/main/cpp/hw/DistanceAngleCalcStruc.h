@@ -24,11 +24,13 @@ struct DistanceAngleCalcStruc
     double countsPerInch;
     double countsPerDegree;
 
-    DistanceAngleCalcStruc() : countsPerRev(0),
-                               gearRatio(1.0),
-                               diameter(1.0),
-                               countsPerInch(0.0),
-                               countsPerDegree(0.0)
-    {
-    }
+    /*
+        DistanceAngleCalcStruc() : countsPerRev(0),
+                                   gearRatio(1.0),
+                                   diameter(1.0),
+                                   countsPerInch(0.0),
+                                   countsPerDegree(0.0)
+        {
+        }
+        */
 };

@@ -4,33 +4,33 @@ using ApplicationData;
 using applicationConfiguration;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using System.Linq;
+using System;
 
 namespace CoreCodeGenerator
 {
     public class codeGenerator_302Robotics : baseReportingClass
     {
+        string codeGeneratorVersion = "";
+        public bool cleanDecoratorModFolders { get; set; } = false;
+
         public enum MECHANISM_FILE_TYPE { MAIN, STATE, STATE_MGR }
 
         private applicationDataConfig theRobotConfiguration = new applicationDataConfig();
         private toolConfiguration theToolConfiguration = new toolConfiguration();
 
-        private string getTemplateFullPath(string templatePath)
+        public void generate(string codeGenVersion, applicationDataConfig theRobotConfig, toolConfiguration generatorConfig)
         {
-            if(Path.IsPathRooted(templatePath)) 
-            {
-                return templatePath;
-            }
-
-            return Path.Combine(Path.GetDirectoryName(theToolConfiguration.configurationFullPath), templatePath);
+            generate(codeGenVersion, theRobotConfig, generatorConfig, false);
         }
-
-        private string loadTemplate(string templatePath) 
+        public void clean(string codeGenVersion, applicationDataConfig theRobotConfig, toolConfiguration generatorConfig)
         {
-            return File.ReadAllText(getTemplateFullPath(templatePath));
+            generate(codeGenVersion, theRobotConfig, generatorConfig, true);
         }
-
-        public void generate(applicationDataConfig theRobotConfig, toolConfiguration generatorConfig)
+        private void generate(string codeGenVersion, applicationDataConfig theRobotConfig, toolConfiguration generatorConfig, bool cleanMode)
         {
+            codeGeneratorVersion = codeGenVersion;
             theRobotConfiguration = theRobotConfig;
             theToolConfiguration = generatorConfig;
 
@@ -45,113 +45,17 @@ namespace CoreCodeGenerator
             }
             else
             {
-                addProgress("Output directory " + rootFolder + " already exists");
+                addProgress("Output directory " + rootFolder + " already exists and therefore was not created.");
             }
 
-            //generateMechanismFiles();
-            //generateRobotDefinitionFiles();
+            new MiscellaneousGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, addProgress).generate();
+            new MechanismGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, addProgress).generate();
+            new MechanismInstanceGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, cleanDecoratorModFolders, addProgress).generate();
+            new RobotConfigManagerGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, addProgress).generate();
+            new RobotConfigRobotSpecificGenerator(codeGenVersion, theRobotConfig, generatorConfig, cleanMode, addProgress).generate();
         }
 
-        private void generateMechanismFiles()
-        {
-            addProgress("Writing mechanism files...");
-            List<string> mechMainFiles = new List<string>();
-            List<string> mechStateFiles = new List<string>();
-            List<string> mechStateMgrFiles = new List<string>();
-            foreach (applicationData theRobot in theRobotConfiguration.theRobotVariants.Robots)
-            {
-                /*
-                foreach (mechanism mech in theRobot.mechanism)
-                {
-                    string filePathName;
-                    string resultString;
-
-                    string mechanismName = mech.name;
-
-                    createMechanismFolder(mechanismName);
-
-                    #region Generate Cpp File
-                    resultString = loadTemplate(theToolConfiguration.templateMechanismCppPath);
-                    filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismCppPath);
-
-                    resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                    resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                    resultString = resultString.Replace("$$_INCLUDE_PATH_$$", getIncludePath(mechanismName));
-                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                    #region Tunable Parameters
-                    string allParameterReading = "";
-                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                    {
-                        Type objType = cLCParams.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        foreach (PropertyInfo pi in propertyInfos)
-                        {
-                            bool skip = (pi.Name == "name");
-                            if (!skip)
-                                allParameterReading += string.Format("{0}_{1} = m_table.get()->GetNumber(\"{0}_{1}\", {2});{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
-                        }
-
-                    }
-                    resultString = resultString.Replace("$$_READ_TUNABLE_PARAMETERS_$$", allParameterReading);
-
-                    string allParameterWriting = "";
-                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                    {
-                        Type objType = cLCParams.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        foreach (PropertyInfo pi in propertyInfos)
-                        {
-                            bool skip = (pi.Name == "name");
-                            if (!skip)
-                                allParameterWriting += string.Format("{0}_{1} = m_table.get()->PutNumber(\"{0}_{1}\", {0}_{1});{2}", cLCParams.name, pi.Name, Environment.NewLine);
-                        }
-
-                    }
-                    resultString = resultString.Replace("$$_PUSH_TUNABLE_PARAMETERS_$$", allParameterWriting);
-
-                    #endregion
-
-                    File.WriteAllText(filePathName, resultString);
-                    #endregion
-
-                    #region Generate H File
-                    resultString = loadTemplate(theToolConfiguration.templateMechanismHPath);
-                    filePathName = getMechanismFullFilePathName(mechanismName, theToolConfiguration.templateMechanismHPath);
-
-                    resultString = resultString.Replace("$$_COPYRIGHT_$$", theToolConfiguration.CopyrightNotice);
-                    resultString = resultString.Replace("$$_GEN_NOTICE_$$", theToolConfiguration.GenerationNotice);
-                    resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-
-                    //closed loop parameters
-                    string allParameters = "";
-                    foreach (closedLoopControlParameters cLCParams in mech.closedLoopControlParameters)
-                    {
-                        Type objType = cLCParams.GetType();
-
-                        PropertyInfo[] propertyInfos = objType.GetProperties();
-
-                        foreach (PropertyInfo pi in propertyInfos)
-                        {
-                            bool skip = (pi.Name == "name");
-                            if (!skip)
-                                allParameters += string.Format("double {0}_{1} = {2};{3}", cLCParams.name, pi.Name, pi.GetValue(cLCParams), Environment.NewLine);
-                        }
-
-                    }
-                    resultString = resultString.Replace("$$_TUNABLE_PARAMETERS_$$", allParameters);
-
-                    File.WriteAllText(filePathName, resultString);
-                    #endregion
-                }
-                */
-            }
-        }
-
+#if david
         private void generateRobotDefinitionFiles()
         {
             #region H File
@@ -171,7 +75,7 @@ namespace CoreCodeGenerator
             string functionTemplate = "void Get#Definition();";
             string replacement = "";
 
-            foreach(applicationData bot in theRobotConfiguration.theRobotVariants.Robots)
+            foreach (applicationData bot in theRobotConfiguration.theRobotVariants.Robots)
             {
                 //this conditional makes sure the functions are on a new line after the first function
                 replacement += replacement != "" ? "\n" : "" + functionTemplate.Replace("#", bot.robotID.ToString());
@@ -182,8 +86,8 @@ namespace CoreCodeGenerator
 
             #region Components Enum
             replacement = "";
-            
-            foreach(mechanism mech in theRobotConfiguration.theRobotVariants.Mechanisms)
+
+            foreach (mechanism mech in theRobotConfiguration.theRobotVariants.Mechanisms)
             {
                 //this conditional makes sure the functions are on a new line after the first function
                 replacement += (replacement != "" ? "\n\t" : "") + mech.name + ",";
@@ -253,7 +157,7 @@ namespace CoreCodeGenerator
                 replacement += (replacement != "" ? "\n\n" : "") + functionHeaderTemplate.Replace("#", bot.robotID.ToString());
                 replacement += vectorCreation;
 
-                foreach(mechanismInstance mechInstance in bot.mechanismInstances)
+                foreach (mechanismInstance mechInstance in bot.mechanismInstances)
                 {
                     replacement += mechanismTemplate.Replace("MECH", mechInstance.name).Replace("TYPE", mechInstance.mechanism.name);
                 }
@@ -272,29 +176,6 @@ namespace CoreCodeGenerator
             #endregion
         }
 
-        private string getIncludePath(string mechanismName)
-        {
-            return getMechanismOutputPath(mechanismName).Replace(theToolConfiguration.rootOutputFolder, "").Replace(@"\", "/").TrimStart('/');
-        }
-
-        private void createMechanismFolder(string mechanismName)
-        {
-            Directory.CreateDirectory(getMechanismOutputPath(mechanismName));
-        }
-
-        private string getMechanismFullFilePathName(string mechanismName, string templateFilePath)
-        {
-            string filename = Path.GetFileName(templateFilePath);
-
-            filename = filename.Replace("MECHANISM_NAME", mechanismName);
-
-            return Path.Combine(getMechanismOutputPath(mechanismName), filename);
-        }
-
-        private string getMechanismOutputPath(string mechanismName)
-        {
-            return Path.Combine(theToolConfiguration.rootOutputFolder, "mechanisms", mechanismName);
-        }
 
         private string getRobotDefinitionFilePath(string filename)
         {
@@ -307,5 +188,7 @@ namespace CoreCodeGenerator
             //later we may add a folder for individual RobotDefinition files if we move away from creating them as functions
             return theToolConfiguration.rootOutputFolder;
         }
+#endif
+
     }
 }

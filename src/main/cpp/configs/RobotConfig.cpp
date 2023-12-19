@@ -24,14 +24,6 @@ RobotConfig::RobotConfig()
 void RobotConfig::BuildRobot()
 {
     DefineBuiltInControlItems();
-    DefineAnalogInputSensors();
-    DefineDigitalInputSensors();
-    DefineCANSensors();
-    DefineI2CSensors();
-    DefinePWMIO();
-    DefineMotorControllers();
-    DefineSolenoids();
-    DefineServos();
 
     DefineChassis();
     DefineMechanisms();
@@ -42,41 +34,6 @@ RobotConfig::~RobotConfig()
 }
 
 void RobotConfig::DefineBuiltInControlItems()
-{
-}
-
-void RobotConfig::DefineMotorControllers()
-{
-}
-
-void RobotConfig::DefineSolenoids()
-{
-}
-
-void RobotConfig::DefineServos()
-{
-}
-void RobotConfig::DefineCANSensors()
-{
-}
-
-void RobotConfig::DefineDigitalInputSensors()
-{
-}
-
-void RobotConfig::DefineAnalogInputSensors()
-{
-}
-
-void RobotConfig::DefinePWMIO()
-{
-}
-
-void RobotConfig::DefineI2CSensors()
-{
-}
-
-void RobotConfig::DefineVisionSensors()
 {
 }
 
@@ -105,27 +62,27 @@ IChassis *RobotConfig::GetIChassis() const
     return nullptr;
 }
 
-IDragonMotorController *RobotConfig::GetMotorController(MotorControllerUsage::MOTOR_CONTROLLER_USAGE usage)
+IDragonMotorController *RobotConfig::GetMotorController(RobotElementNames::MOTOR_CONTROLLER_USAGE usage)
 {
     return nullptr;
 }
 
-DragonSolenoid *RobotConfig::GetSolenoid(SolenoidUsage::SOLENOID_USAGE usage)
+DragonSolenoid *RobotConfig::GetSolenoid(RobotElementNames::SOLENOID_USAGE usage)
 {
     return nullptr;
 }
 
-DragonServo *RobotConfig::GetServo(ServoUsage::SERVO_USAGE usage)
+DragonServo *RobotConfig::GetServo(RobotElementNames::SERVO_USAGE usage)
 {
     return nullptr;
 }
 
-DragonCanCoder *RobotConfig::GetCanCoder(CanSensorUsage::CANSENSOR_USAGE usage)
+DragonCanCoder *RobotConfig::GetCanCoder(RobotElementNames::CANCODER_USAGE usage)
 {
     return nullptr;
 }
 
-IDragonPigeon *RobotConfig::GetPigeon(CanSensorUsage::CANSENSOR_USAGE usage)
+IDragonPigeon *RobotConfig::GetPigeon(RobotElementNames::PIGEON_USAGE usage)
 {
     return nullptr;
 }

@@ -36,7 +36,7 @@
 
 #include "configs/RobotConfigMgr.h"
 #include "configs/RobotConfig.h"
-#include "configs/usages/CanSensorUsage.h"
+#include "configs/RobotElementNames.h"
 
 /* How to check robot variant
 #if ROBOT_VARIANT == 2024
@@ -54,15 +54,13 @@ void Robot::RobotInit()
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("arrived"));
 
     // Read build details for team number, branch, and more
-    //    m_detailsReader = new BuildDetailsReader();
-    //    m_details = m_detailsReader->ReadBuildDetails();
-
-    //    m_robot = RobotDefinitions::GetRobotDefinition(m_details.teamNumber);
+    m_detailsReader = new BuildDetailsReader();
+    m_details = m_detailsReader->ReadBuildDetails();
 
     m_controller = nullptr;
 
     // Build the robot
-    RobotConfigMgr::GetInstance()->InitRobot(RobotConfigMgr::RobotIdentifier::EXAMPLE);
+    RobotConfigMgr::GetInstance()->InitRobot((RobotConfigMgr::RobotIdentifier)m_details.teamNumber);
     auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
 
     auto waypointParser = WaypointXmlParser::GetInstance();
@@ -173,7 +171,7 @@ void Robot::RobotPeriodic()
         feedback->UpdateFeedback();
     }
 
-    auto pigeon = RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(CanSensorUsage::CANSENSOR_USAGE::PIGEON_ROBOT_CENTER);
+    auto pigeon = RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(RobotElementNames::PIGEON_USAGE::PIGEON_ROBOT_CENTER);
     if (pigeon == nullptr)
     {
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("DEUBGGING"), string("Pigeon Nullptr?"), "true");
