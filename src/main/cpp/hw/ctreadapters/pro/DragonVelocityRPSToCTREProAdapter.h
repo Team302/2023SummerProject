@@ -25,7 +25,7 @@
 #include "hw/DragonTalonFX.h"
 #include "mechanisms/controllers/ControlData.h"
 
-class DragonVelocityRPSToCTREProAdapter : public DragonControlToCTREProAdapter
+class DragonVelocityRPSToCTREProAdapter : public DragonVelocityToCTREProAdapter
 {
 public:
     DragonVelocityRPSToCTREProAdapter() = delete;
@@ -33,12 +33,9 @@ public:
                                       int controllerSlot,
                                       const ControlData &controlInfo,
                                       const DistanceAngleCalcStruc &calcStruc,
-                                      DragonTalonFX &controller);
+                                      ctre::phoenixpro::hardware::TalonFX &controller);
 
     ~DragonVelocityRPSToCTREProAdapter() = default;
 
     void Set(double value) override;
-
-    void SetControlConstants(int controlSlot,
-                             const ControlData &controlInfo) override;
 };

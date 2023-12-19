@@ -129,8 +129,6 @@ public:
     ) override;
     **/
 
-    void SetFramePeriodPriority(MOTOR_PRIORITY priority) override;
-
     double GetCountsPerRev() const override { return m_calcStruc.countsPerRev; }
     double GetGearRatio() const override { return m_calcStruc.gearRatio; }
     bool IsMotorInverted() const override { return m_inverted; };
@@ -148,11 +146,7 @@ private:
     std::string m_networkTableName;
     RobotElementNames::MOTOR_CONTROLLER_USAGE m_type;
     ctre::phoenixpro::hardware::TalonFX m_talon;
-    ctre::phoenixpro::controls::ControlRequest *slot0Control;
-    ctre::phoenixpro::controls::ControlRequest *slot1Control;
-    ctre::phoenixpro::controls::ControlRequest *slot2Control;
-    ctre::phoenixpro::controls::ControlRequest *slot3Control;
-    // IDragonControlToVendorControlAdapter *m_controller[4];
+    IDragonControlToVendorControlAdapter *m_controller[4];
     DistanceAngleCalcStruc m_calcStruc;
     bool m_inverted;
 };

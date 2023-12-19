@@ -123,8 +123,6 @@ public:
     ) = 0;
     **/
 
-    virtual void SetFramePeriodPriority(MOTOR_PRIORITY priority) = 0;
-
     virtual double GetCountsPerRev() const = 0;
 
     virtual bool IsMotorInverted() const = 0;

@@ -1,3 +1,4 @@
+
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -24,17 +25,17 @@
 #include "hw/DragonTalonFX.h"
 #include "mechanisms/controllers/ControlData.h"
 
-class DragonPositionInchToCTREProAdapter : public DragonControlToCTREProAdapter
+class DragonVelocityToCTREProAdapter : public DragonControlToCTREProAdapter
 {
 public:
-    DragonPositionInchToCTREProAdapter() = delete;
-    DragonPositionInchToCTREProAdapter(std::string networkTableName,
-                                       int controllerSlot,
-                                       const ControlData &controlInfo,
-                                       const DistanceAngleCalcStruc &calcStruc,
-                                       ctre::phoenixpro::hardware::TalonFX &controller);
+    DragonVelocityToCTREProAdapter() = delete;
+    DragonVelocityToCTREProAdapter(std::string networkTableName,
+                                   int controllerSlot,
+                                   const ControlData &controlInfo,
+                                   const DistanceAngleCalcStruc &calcStruc,
+                                   ctre::phoenixpro::hardware::TalonFX &controller);
 
-    ~DragonPositionInchToCTREProAdapter() = default;
+    ~DragonVelocityToCTREProAdapter() = default;
 
     void Set(double value) override;
 

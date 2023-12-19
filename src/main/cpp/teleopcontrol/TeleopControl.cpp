@@ -27,7 +27,7 @@
 // Third Party Includes
 #include <string>
 #include <frc/GenericHID.h>
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 #include <gamepad/DragonXBox.h>
 #include <gamepad/DragonGamepad.h>
 #include "teleopcontrol/TeleopControl.h"
@@ -191,11 +191,11 @@ vector<TeleopControlFunctions::FUNCTION> TeleopControl::GetButtonFunctionsOnCont
 	return functions;
 }
 
-pair<IDragonGamePad *, TeleopControlMappingEnums::AXIS_IDENTIFIER> TeleopControl::GetAxisInfo(
+pair<IDragonGamepad *, TeleopControlMappingEnums::AXIS_IDENTIFIER> TeleopControl::GetAxisInfo(
 	TeleopControlFunctions::FUNCTION function // <I> - controller with this function
 )
 {
-	IDragonGamePad *controller = nullptr;
+	IDragonGamepad *controller = nullptr;
 	TeleopControlMappingEnums::AXIS_IDENTIFIER axis = TeleopControlMappingEnums::AXIS_IDENTIFIER::UNDEFINED_AXIS;
 
 	if (!IsInitialized())
@@ -216,11 +216,11 @@ pair<IDragonGamePad *, TeleopControlMappingEnums::AXIS_IDENTIFIER> TeleopControl
 	return make_pair(controller, axis);
 }
 
-pair<IDragonGamePad *, TeleopControlMappingEnums::BUTTON_IDENTIFIER> TeleopControl::GetButtonInfo(
+pair<IDragonGamepad *, TeleopControlMappingEnums::BUTTON_IDENTIFIER> TeleopControl::GetButtonInfo(
 	TeleopControlFunctions::FUNCTION function // <I> - controller with this function
 )
 {
-	IDragonGamePad *controller = nullptr;
+	IDragonGamepad *controller = nullptr;
 	TeleopControlMappingEnums::BUTTON_IDENTIFIER btn = TeleopControlMappingEnums::UNDEFINED_BUTTON;
 
 	if (!IsInitialized())
