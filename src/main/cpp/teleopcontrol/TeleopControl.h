@@ -26,7 +26,7 @@
 #include <frc/DriverStation.h>
 
 // Team 302 includes
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 #include <teleopcontrol/TeleopControlAxis.h>
 #include <teleopcontrol/TeleopControlButton.h>
 #include <teleopcontrol/TeleopControlFunctions.h>
@@ -134,11 +134,11 @@ private:
         TeleopControlMappingEnums::AXIS_PROFILE profile // <I> - profile to use
     );
 
-    std::pair<IDragonGamePad *, TeleopControlMappingEnums::AXIS_IDENTIFIER> GetAxisInfo(
+    std::pair<IDragonGamepad *, TeleopControlMappingEnums::AXIS_IDENTIFIER> GetAxisInfo(
         TeleopControlFunctions::FUNCTION function // <I> - controller with this function
     );
 
-    std::pair<IDragonGamePad *, TeleopControlMappingEnums::BUTTON_IDENTIFIER> GetButtonInfo(
+    std::pair<IDragonGamepad *, TeleopControlMappingEnums::BUTTON_IDENTIFIER> GetButtonInfo(
         TeleopControlFunctions::FUNCTION function // <I> - controller with this function
     );
 
@@ -147,7 +147,7 @@ private:
     //----------------------------------------------------------------------------------
     static TeleopControl *m_instance; // Singleton instance of this class
 
-    std::array<IDragonGamePad *, frc::DriverStation::kJoystickPorts> m_controller;
+    std::array<IDragonGamepad *, frc::DriverStation::kJoystickPorts> m_controller;
 
     int m_numControllers;
 };

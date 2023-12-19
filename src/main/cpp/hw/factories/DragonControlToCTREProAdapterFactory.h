@@ -24,11 +24,19 @@
 #include "hw/DragonTalonFX.h"
 
 #include "ctre/phoenixpro/controls/ControlRequest.hpp"
+#include "ctre/phoenixpro/TalonFX.hpp"
+
+class DragonControlToCTREProAdapter;
 
 class DragonControlToCTREProAdapterFactory
 {
 public:
     static DragonControlToCTREProAdapterFactory *GetFactory();
+    DragonControlToCTREProAdapter *CreateAdapter(std::string networkTableName,
+                                                 int controlSlot,
+                                                 const ControlData &controlInfo,
+                                                 const DistanceAngleCalcStruc &calcStruc,
+                                                 ctre::phoenixpro::hardware::TalonFX &controller);
     ctre::phoenixpro::controls::ControlRequest *CreateControlRequest(int controllerSlot,
                                                                      const ControlData &controlInfo,
                                                                      const DistanceAngleCalcStruc &calcStruc,

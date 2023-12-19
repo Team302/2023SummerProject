@@ -31,7 +31,7 @@
 #include <gamepad/axis/ScaledAxis.h>
 #include <gamepad/axis/ScaledDeadbandValue.h>
 #include <gamepad/axis/SquaredProfile.h>
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 #include "utils/logging/Logger.h"
 
 // Third Party Includes

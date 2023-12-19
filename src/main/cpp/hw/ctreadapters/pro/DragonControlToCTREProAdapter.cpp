@@ -35,11 +35,19 @@ DragonControlToCTREProAdapter::DragonControlToCTREProAdapter(string networkTable
 															 int controllerSlot,
 															 const ControlData &controlInfo,
 															 const DistanceAngleCalcStruc &calcStruc,
-															 DragonTalonFX &controller) : IDragonControlToVendorControlAdapter(), m_networkTableName(networkTableName),
-																						  m_controllerSlot(controllerSlot),
-																						  m_controlData(controlInfo),
-																						  m_calcStruc(calcStruc),
-																						  m_controller(&controller)
+															 ctre::phoenixpro::hardware::TalonFX &controller) : IDragonControlToVendorControlAdapter(), m_networkTableName(networkTableName),
+																												m_controllerSlot(controllerSlot),
+																												m_controlData(controlInfo),
+																												m_calcStruc(calcStruc),
+																												m_controller(controller),
+																												m_isDuty(controlInfo.GetFType() == ControlData::FEEDFORWARD_TYPE::DUTY_CYCLE),
+																												m_dutyFeedForward(controlInfo.GetF()),
+																												m_isVoltage(controlInfo.GetFType() == ControlData::FEEDFORWARD_TYPE::VOLTAGE),
+																												m_voltageFeedForward(units::voltage::volt_t(controlInfo.GetF())),
+																												m_isTorque(controlInfo.GetFType() == ControlData::FEEDFORWARD_TYPE::TORQUE_CURRENT),
+																												m_torqueCurrentFeedForward(units::current::ampere_t(controlInfo.GetF())),
+																												m_enableFOC(controlInfo.IsFOCEnabled())
+
 {
 	SetPeakAndNominalValues(networkTableName, controlInfo);
 
@@ -51,7 +59,6 @@ DragonControlToCTREProAdapter::DragonControlToCTREProAdapter(string networkTable
 		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_INCH ||
 		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_RPS ||
 		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VOLTAGE ||
-		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::CURRENT ||
 		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
 	{
 		SetPIDConstants(networkTableName, controllerSlot, controlInfo);
@@ -67,13 +74,13 @@ DragonControlToCTREProAdapter::DragonControlToCTREProAdapter(string networkTable
 
 void DragonControlToCTREProAdapter::InitializeDefaults()
 {
-	m_controller->ResetToDefaults();
+	m_controller.GetConfigurator().Apply(ctre::phoenixpro::configs::TalonFXConfiguration{});
 }
 
 string DragonControlToCTREProAdapter::GetErrorPrompt() const
 {
 	auto prompt = string("CTRE CAN motor controller ");
-	prompt += to_string(m_controller->GetID());
+	prompt += to_string(m_controller.GetDeviceID());
 	return prompt;
 }
 

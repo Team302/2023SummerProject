@@ -28,9 +28,14 @@
 #include "utils/ConversionUtils.h"
 
 // Third Party Includes
-#include "ctre/phoenix/motorcontrol/ControlMode.h"
-#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
+#include "ctre/phoenixpro/controls/MotionMagicDutyCycle.hpp"
+#include "ctre/phoenixpro/controls/MotionMagicTorqueCurrentFOC.hpp"
+#include "ctre/phoenixpro/controls/MotionMagicVoltage.hpp"
+#include "units/angle.h"
 
+using ctre::phoenixpro::controls::MotionMagicDutyCycle;
+using ctre::phoenixpro::controls::MotionMagicTorqueCurrentFOC;
+using ctre::phoenixpro::controls::MotionMagicVoltage;
 using ctre::phoenixpro::hardware::TalonFX;
 using std::string;
 
@@ -38,13 +43,30 @@ DragonTrapezoidToCTREProAdapter::DragonTrapezoidToCTREProAdapter(string networkT
                                                                  int controllerSlot,
                                                                  const ControlData &controlInfo,
                                                                  const DistanceAngleCalcStruc &calcStruc,
-                                                                 DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                 ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
 void DragonTrapezoidToCTREProAdapter::Set(double value)
 {
-    // TODO  Add phoenix pro commands
+    units::angle::turn_t target = units::angle::degree_t(value);
+    if (m_isVoltage)
+    {
+        MotionMagicVoltage out{target};
+        out.WithEnableFOC(m_enableFOC);
+        m_controller.SetControl(out);
+    }
+    else if (m_isTorque)
+    {
+        MotionMagicTorqueCurrentFOC out{target};
+        m_controller.SetControl(out);
+    }
+    else
+    {
+        MotionMagicDutyCycle out{target};
+        out.WithEnableFOC(m_enableFOC);
+        m_controller.SetControl(out);
+    }
 }
 
 void DragonTrapezoidToCTREProAdapter::SetControlConstants(int controlSlot,

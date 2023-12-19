@@ -17,7 +17,7 @@
 
 #include <gamepad/axis/AnalogAxis.h>
 #include <gamepad/button/AnalogButton.h>
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 
 using namespace std;
 

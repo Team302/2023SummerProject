@@ -27,7 +27,13 @@
 #include "utils/ConversionUtils.h"
 
 // Third Party Includes
+#include "ctre/phoenixpro/controls/PositionDutyCycle.hpp"
+#include "ctre/phoenixpro/controls/PositionTorqueCurrentFOC.hpp"
+#include "ctre/phoenixpro/controls/PositionVoltage.hpp"
 
+using ctre::phoenixpro::controls::PositionDutyCycle;
+using ctre::phoenixpro::controls::PositionTorqueCurrentFOC;
+using ctre::phoenixpro::controls::PositionVoltage;
 using ctre::phoenixpro::hardware::TalonFX;
 using std::string;
 
@@ -35,13 +41,28 @@ DragonPositionDegreeToCTREProAdapter::DragonPositionDegreeToCTREProAdapter(strin
                                                                            int controllerSlot,
                                                                            const ControlData &controlInfo,
                                                                            const DistanceAngleCalcStruc &calcStruc,
-                                                                           DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                                           ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
 void DragonPositionDegreeToCTREProAdapter::Set(double value)
 {
-    // TODO  Add phoenix pro commands
+    units::angle::degree_t target = units::angle::degree_t(value);
+    if (m_isVoltage)
+    {
+        PositionVoltage out{target, m_enableFOC, m_voltageFeedForward, m_controllerSlot, false};
+        m_controller.SetControl(out);
+    }
+    else if (m_isTorque)
+    {
+        PositionTorqueCurrentFOC out{target, m_torqueCurrentFeedForward, m_controllerSlot, false};
+        m_controller.SetControl(out);
+    }
+    else
+    {
+        PositionDutyCycle out{target, m_enableFOC, m_dutyFeedForward, m_controllerSlot, false};
+        m_controller.SetControl(out);
+    }
 }
 
 void DragonPositionDegreeToCTREProAdapter::SetControlConstants(int controlSlot,

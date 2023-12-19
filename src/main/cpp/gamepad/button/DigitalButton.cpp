@@ -19,7 +19,7 @@
 #include <frc/GenericHID.h>
 
 #include <gamepad/button/DigitalButton.h>
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 #include "utils/logging/Logger.h"
 
 using namespace std;
