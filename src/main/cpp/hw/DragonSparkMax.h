@@ -9,7 +9,7 @@
 
 #include <memory>
 
-#include "configs/usages/MotorControllerUsage.h"
+#include "configs/RobotElementNames.h"
 #include "hw/interfaces/IDragonMotorController.h"
 
 #include "ctre/phoenix/motorcontrol/RemoteSensorSource.h" // need to remove dependency on ctre
@@ -25,7 +25,7 @@ public:
     //  Constructors
     DragonSparkMax() = delete;
     DragonSparkMax(int id,
-                   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
+                   RobotElementNames::MOTOR_CONTROLLER_USAGE deviceType,
                    CANSparkMax::MotorType motorType,
                    double gearRatio);
 
@@ -34,7 +34,7 @@ public:
     // Getters
     double GetRotations() override;
     double GetRPS() override;
-    MotorControllerUsage::MOTOR_CONTROLLER_USAGE GetType() const override;
+    RobotElementNames::MOTOR_CONTROLLER_USAGE GetType() const override;
     int GetID() const override;
 
     // Setters
@@ -78,7 +78,7 @@ private:
     // DRAGON_CONTROL_MODE m_controlMode;
     double m_outputRotationOffset;
     double m_gearRatio;
-    MotorControllerUsage::MOTOR_CONTROLLER_USAGE m_deviceType;
+    RobotElementNames::MOTOR_CONTROLLER_USAGE m_deviceType;
 
     CANSparkMax *GetSparkMax();
 };

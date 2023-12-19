@@ -31,7 +31,7 @@
 #include "hw/DragonTalonFX.h"
 #include "hw/factories/PDPFactory.h"
 #include "hw/factories/DragonControlToCTREProAdapterFactory.h"
-#include "configs/usages/MotorControllerUsage.h"
+#include "configs/RobotElementNames.h"
 #include "utils/logging/Logger.h"
 #include "utils/ConversionUtils.h"
 #include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
