@@ -12,7 +12,32 @@
           <value>0</value>
         </canID>
       </PowerDistributionPanel>
-      <PneumaticControlModules />
+      <PneumaticControlModules>
+        <pcm>
+          <name>pcm_1</name>
+          <canID>
+            <unitsFamily>none</unitsFamily>
+            <name>canID</name>
+            <__units__ />
+            <type>UInt32</type>
+            <value>0</value>
+          </canID>
+          <minPressure>
+            <unitsFamily>pressure</unitsFamily>
+            <name>minPressure</name>
+            <__units__>PSI</__units__>
+            <type>Double</type>
+            <value>95</value>
+          </minPressure>
+          <maxPressure>
+            <unitsFamily>pressure</unitsFamily>
+            <name>maxPressure</name>
+            <__units__>PSI</__units__>
+            <type>Double</type>
+            <value>115</value>
+          </maxPressure>
+        </pcm>
+      </PneumaticControlModules>
       <Pigeons>
         <pigeon>
           <name>PIGEON_ROBOT_CENTER</name>
@@ -302,14 +327,14 @@
                   <name>CAN_ID</name>
                   <__units__ />
                   <type>UInt32</type>
-                  <value>10</value>
+                  <value>1</value>
                 </CAN_ID>
                 <channel>
                   <unitsFamily>none</unitsFamily>
                   <name>channel</name>
                   <__units__ />
                   <type>UInt32</type>
-                  <value>1</value>
+                  <value>5</value>
                 </channel>
                 <enableDualChannel>
                   <unitsFamily>none</unitsFamily>
@@ -339,6 +364,68 @@
                   <type>Boolean</type>
                   <value>false</value>
                 </reversed>
+                <type>CTREPCM</type>
+              </solenoid>
+            </solenoid>
+            <servo />
+            <analogInput />
+            <digitalInput />
+            <cancoder />
+          </mechanism>
+        </mechanismInstance>
+        <mechanismInstance>
+          <name>sideEject</name>
+          <mechanism>
+            <GUID>d7347c7d-bd0c-4744-a383-e41ca2276829</GUID>
+            <name>ejectMechanism</name>
+            <MotorControllers />
+            <closedLoopControlParameters />
+            <solenoid>
+              <solenoid>
+                <name>ejectSolenoid</name>
+                <CAN_ID>
+                  <unitsFamily>none</unitsFamily>
+                  <name>CAN_ID</name>
+                  <__units__ />
+                  <type>UInt32</type>
+                  <value>1</value>
+                </CAN_ID>
+                <channel>
+                  <unitsFamily>none</unitsFamily>
+                  <name>channel</name>
+                  <__units__ />
+                  <type>UInt32</type>
+                  <value>0</value>
+                </channel>
+                <enableDualChannel>
+                  <unitsFamily>none</unitsFamily>
+                  <name>enableDualChannel</name>
+                  <__units__ />
+                  <type>Boolean</type>
+                  <value>true</value>
+                </enableDualChannel>
+                <forwardChannel>
+                  <unitsFamily>none</unitsFamily>
+                  <name>forwardChannel</name>
+                  <__units__ />
+                  <type>UInt32</type>
+                  <value>0</value>
+                </forwardChannel>
+                <reverseChannel>
+                  <unitsFamily>none</unitsFamily>
+                  <name>reverseChannel</name>
+                  <__units__ />
+                  <type>UInt32</type>
+                  <value>0</value>
+                </reverseChannel>
+                <reversed>
+                  <unitsFamily>none</unitsFamily>
+                  <name>reversed</name>
+                  <__units__ />
+                  <type>Boolean</type>
+                  <value>false</value>
+                </reversed>
+                <type>CTREPCM</type>
               </solenoid>
             </solenoid>
             <servo />
@@ -356,7 +443,7 @@
         <name>robotID</name>
         <__units__ />
         <type>UInt32</type>
-        <value>302</value>
+        <value>1</value>
       </robotID>
       <name>CompBot</name>
     </applicationData>
@@ -724,6 +811,17 @@
     <mechanism>
       <GUID>92e984a4-07ea-41a0-b33a-db45777c78af</GUID>
       <name>intakeMechanism</name>
+      <MotorControllers />
+      <closedLoopControlParameters />
+      <solenoid />
+      <servo />
+      <analogInput />
+      <digitalInput />
+      <cancoder />
+    </mechanism>
+    <mechanism>
+      <GUID>d7347c7d-bd0c-4744-a383-e41ca2276829</GUID>
+      <name>ejectMechanism</name>
       <MotorControllers />
       <closedLoopControlParameters />
       <solenoid />

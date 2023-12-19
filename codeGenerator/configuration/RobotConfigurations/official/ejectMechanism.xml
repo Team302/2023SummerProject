@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<mechanism xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <GUID>d7347c7d-bd0c-4744-a383-e41ca2276829</GUID>
+  <name>ejectMechanism</name>
+  <MotorControllers />
+  <closedLoopControlParameters />
+  <solenoid>
+    <solenoid>
+      <name>ejectSolenoid</name>
+      <CAN_ID>
+        <unitsFamily>none</unitsFamily>
+        <name>CAN_ID</name>
+        <__units__ />
+        <type>UInt32</type>
+        <value>1</value>
+      </CAN_ID>
+      <channel>
+        <unitsFamily>none</unitsFamily>
+        <name>channel</name>
+        <__units__ />
+        <type>UInt32</type>
+        <value>0</value>
+      </channel>
+      <enableDualChannel>
+        <unitsFamily>none</unitsFamily>
+        <name>enableDualChannel</name>
+        <__units__ />
+        <type>Boolean</type>
+        <value>true</value>
+      </enableDualChannel>
+      <forwardChannel>
+        <unitsFamily>none</unitsFamily>
+        <name>forwardChannel</name>
+        <__units__ />
+        <type>UInt32</type>
+        <value>0</value>
+      </forwardChannel>
+      <reverseChannel>
+        <unitsFamily>none</unitsFamily>
+        <name>reverseChannel</name>
+        <__units__ />
+        <type>UInt32</type>
+        <value>0</value>
+      </reverseChannel>
+      <reversed>
+        <unitsFamily>none</unitsFamily>
+        <name>reversed</name>
+        <__units__ />
+        <type>Boolean</type>
+        <value>false</value>
+      </reversed>
+      <type>CTREPCM</type>
+    </solenoid>
+  </solenoid>
+  <servo />
+  <analogInput />
+  <digitalInput />
+  <cancoder />
+</mechanism>

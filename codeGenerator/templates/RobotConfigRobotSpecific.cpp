@@ -3,6 +3,7 @@ $$_GEN_NOTICE_$$
 
 #include <string>
 
+#include "utils/logging/Logger.h"
 #include "configs/RobotConfigMgr.h"
 #include "configs/RobotConfig$$_ROBOT_NAME_$$.h"
 
@@ -12,4 +13,3 @@ void RobotConfig$$_ROBOT_NAME_$$::DefineMechanisms()
 {
     $$_MECHANISMS_INITIALIZATION_$$
 }
-

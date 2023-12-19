@@ -1,4 +1,4 @@
-﻿using applicationConfiguration;
+﻿ using applicationConfiguration;
 using ApplicationData;
 using Configuration;
 using DataConfiguration;
@@ -62,9 +62,11 @@ namespace CoreCodeGenerator
             template = loadTemplate(cdf.templateFilePathName);
 
             string mechInstDef =
-                @"$$_MECHANISM_INSTANCE_NAME_$$_gen* $$_MECHANISM_INSTANCE_NAME_$$_genmech = new $$_MECHANISM_INSTANCE_NAME_$$_gen(/*string(""Example.xml""), string(""ExampleMech"")*/);
+                @"Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( ""Initializing mechanism"" ), string ( ""$$_MECHANISM_INSTANCE_NAME_$$"" ), ""start"" );
+                  $$_MECHANISM_INSTANCE_NAME_$$_gen* $$_MECHANISM_INSTANCE_NAME_$$_genmech = new $$_MECHANISM_INSTANCE_NAME_$$_gen(/*string(""Example.xml""), string(""ExampleMech"")*/);
                   m_$$_MECHANISM_INSTANCE_NAME_$$ = new $$_MECHANISM_INSTANCE_NAME_$$($$_MECHANISM_INSTANCE_NAME_$$_genmech);
                   $$_MECHANISM_INSTANCE_NAME_$$_genmech->Initialize(RobotConfigMgr::RobotIdentifier::$$_ROBOT_NAME_$$);
+                  Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( ""Initializing mechanism"" ), string ( ""$$_MECHANISM_INSTANCE_NAME_$$"" ), ""end"" );
                   ";
 
             generatorContext.clear();
