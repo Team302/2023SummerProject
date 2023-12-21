@@ -194,7 +194,37 @@
       <templateFilePathName>..\..\templates\RobotConfigRobotSpecific.cpp</templateFilePathName>
       <outputFilePathName>configs\RobotConfig$$_ROBOT_NAME_$$.cpp</outputFilePathName>
     </codeTemplateFile>
-  </codeTemplateFiles>
+    <codeTemplateFile>
+      <name>BaseStateGen_h</name>
+      <templateFilePathName>..\..\templates\baseStateGen.h</templateFilePathName>
+      <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_Base_StateGen.h</outputFilePathName>
+    </codeTemplateFile>     
+	<codeTemplateFile>
+      <name>BaseStateGen_cpp</name>
+      <templateFilePathName>..\..\templates\baseStateGen.cpp</templateFilePathName>
+      <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_Base_StateGen.cpp</outputFilePathName>
+    </codeTemplateFile>
+    <codeTemplateFile>
+      <name>stateGen_h</name>
+      <templateFilePathName>..\..\templates\stateGen.h</templateFilePathName>
+      <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_STATE_NAME_StateGen.h</outputFilePathName>
+    </codeTemplateFile>     
+	<codeTemplateFile>
+      <name>stateGen_cpp</name>
+      <templateFilePathName>..\..\templates\stateGen.cpp</templateFilePathName>
+      <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_STATE_NAME_StateGen.cpp</outputFilePathName>
+    </codeTemplateFile>  
+    <codeTemplateFile>
+      <name>stateGen_Decorator_h</name>
+      <templateFilePathName>..\..\templates\stateGen_Decorator.h</templateFilePathName>
+      <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_STATE_NAME_State.h</outputFilePathName>
+    </codeTemplateFile>     
+	<codeTemplateFile>
+      <name>stateGen_Decorator_cpp</name>
+      <templateFilePathName>..\..\templates\stateGen_Decorator.cpp</templateFilePathName>
+      <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_STATE_NAME_State.cpp</outputFilePathName>
+    </codeTemplateFile> 	
+   </codeTemplateFiles>
   <CopyrightNotice>
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302

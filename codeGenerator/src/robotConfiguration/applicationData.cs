@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Runtime.Remoting.Channels;
 using System.Security.AccessControl;
 using System.Security.Authentication.ExtendedProtection;
+using System.Security.Policy;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -343,7 +344,11 @@ namespace ApplicationData
         public List<digitalInput> digitalInput { get; set; }
         // not defined in /hw/Dragon.. public List<colorSensor> colorSensor { get; set; }
         public List<CANcoder> cancoder { get; set; }
-        //public List<state> state { get; set; }
+
+        public List<motorControlData> stateMotorControlData { get; set; }
+        //public List<solenoidControlData> solenoidControlParameters{ get; set; }
+        //public List<servoControlData> servoControlParameters { get; set; }
+        public List<state> states { get; set; }
 
         public mechanism()
         {
@@ -653,13 +658,20 @@ namespace ApplicationData
             }
         }
 
-        public FusedCANcoder fusedCANcoder { get;set; }
+        public FusedCANcoder fusedCANcoder { get; set; }
 
         public MotorController()
         {
             motorControllerType = this.GetType().Name;
         }
 
+        override public List<string> generateObjectAddToMaps()
+        {
+            string creation = string.Format("m_motorMap[{0}->GetType()] = new BaseMechMotor(m_ntName, *{0}, BaseMechMotor::EndOfTravelSensorOption::NONE, nullptr, BaseMechMotor::EndOfTravelSensorOption::NONE, nullptr)",
+                name);
+
+            return new List<string> { creation };
+        }
 
     }
 
@@ -959,7 +971,7 @@ namespace ApplicationData
                                             remoteSensorSource
                                             ));
 
-            if( fusedCANcoder.enable.value == true)
+            if (fusedCANcoder.enable.value == true)
             {
                 initCode.Add(string.Format(@"{0}->FuseCancoder(*{1}, // DragonCanCoder &cancoder
                                                                {2}, // sensorToMechanismRatio
@@ -1551,6 +1563,14 @@ namespace ApplicationData
 
             return initCode;
         }
+
+        override public List<string> generateObjectAddToMaps()
+        {
+            string creation = string.Format("m_solenoidMap[{0}->GetType()] = new BaseMechSolenoid(m_ntName, *{0})",
+                name);
+
+            return new List<string> { creation };
+        }
     }
 
     [Serializable()]
@@ -1600,6 +1620,14 @@ namespace ApplicationData
             };
 
             return initCode;
+        }
+
+        override public List<string> generateObjectAddToMaps()
+        {
+            string creation = string.Format("m_servoMap[{0}->GetUsage()] = new BaseMechServo(m_ntName, {0})",
+                name);
+
+            return new List<string> { creation };
         }
     }
 
@@ -1805,6 +1833,11 @@ namespace ApplicationData
             return new List<string> { "baseRobotElementClass.generateInitialization needs to be overridden" };
         }
 
+        virtual public List<string> generateObjectAddToMaps()
+        {
+            return new List<string> { "baseRobotElementClass.generateObjectAddToMaps needs to be overridden" };
+        }
+
         virtual public List<string> generateIncludes()
         {
             List<string> sb = new List<string>();
@@ -1902,6 +1935,155 @@ namespace ApplicationData
         }
     }
 
+    /*
+     * ====================================================
+     * David's interpretation of what is needed -> start
+     */
+
+    [Serializable()]
+    public class motorControlData : baseRobotElementClass
+    {
+        public enum CONTROL_TYPE
+        {
+            PERCENT_OUTPUT,            /// Open Loop Control - values are between -1.0 and 1.0
+            POSITION_INCH,             /// Closed Loop Control - values are displacements measured in inches
+            POSITION_ABS_TICKS,        /// Closed Loop Control - values are measured in ticks
+            POSITION_DEGREES,          /// Closed Loop Control - values are angles measured in degrees
+            POSITION_DEGREES_ABSOLUTE, /// Closed Loop Control - values are angles measured in degrees that don't need to be converted
+            VELOCITY_INCH,             /// Closed Loop Control - values are linear velocity measured in inches per second
+            VELOCITY_DEGREES,          /// Closed Loop Control - values are angular velocity measured in degrees per second
+            VELOCITY_RPS,              /// Closed Loop Control - values are in revolutions per second
+            VOLTAGE,                   /// Closed Loop Control - values are in volts
+            CURRENT,                   /// Closed Loop Control - values in amps
+            TRAPEZOID,                 /// Closed Loop Control - trapezoid profile (e.g. Motion Magic)
+            MOTION_PROFILE,            /// Closed Loop Control - motion profile
+            MOTION_PROFILE_ARC,        /// Closed Loop Control - motion profile arc
+            MAX_CONTROL_TYPES
+        };
+
+        public enum CONTROL_RUN_LOCS
+        {
+            MOTOR_CONTROLLER,
+            ROBORIO,
+            MAX_CONTROL_RUN_LOCS
+        };
+
+        public enum FEEDFORWARD_TYPE
+        {
+            VOLTAGE,
+            TORQUE_CURRENT,
+            DUTY_CYCLE
+        };
+
+        public PIDFZ PID { get; set; }
+
+        [DefaultValue(0)]
+        public doubleParameter maxAcceleration { get; set; }
+
+        [DefaultValue(0)]
+        public doubleParameter cruiseVelocity { get; set; } //todo what does this mean
+
+        [DefaultValue(false)]
+        public boolParameter enableFOC { get; set; }
+
+        [DefaultValue(FEEDFORWARD_TYPE.VOLTAGE)]
+        public FEEDFORWARD_TYPE feedForwardType { get; set; }
+
+        [DefaultValue(CONTROL_TYPE.PERCENT_OUTPUT)]
+        public CONTROL_TYPE controlType { get; set; }
+
+        [DefaultValue(CONTROL_RUN_LOCS.MOTOR_CONTROLLER)]
+        public CONTROL_RUN_LOCS controlLoopLocation { get; set; }
+        public motorControlData()
+        {
+            name = GetType().Name;
+        }
+    }
+
+    [Serializable()]
+    public class solenoidControlData
+    {
+        public enum MODE
+        {
+            POSITION,
+            VELOCITY_INCH, //todo why only inches? inch per sec?
+            VELOCITY_DEGREES, //todo what does this mean?
+            VELOCITY_RPS,
+            VOLTAGE,
+            TRAPEZOID
+        }
+
+        public string name { get; set; }
+
+        public solenoidControlData()
+        {
+            name = GetType().Name;
+        }
+    }
+
+    [Serializable()]
+    public class servoControlData
+    {
+        public enum MODE
+        {
+            POSITION,
+            VELOCITY_INCH, //todo why only inches? inch per sec?
+            VELOCITY_DEGREES, //todo what does this mean? deg /sec 
+            VELOCITY_RPS,
+            POSITION_DEGREES,
+            TRAPEZOID
+        }
+
+        public string name { get; set; }
+
+        public servoControlData()
+        {
+            name = GetType().Name;
+        }
+    }
+
+    [Serializable()]
+    public class state : baseRobotElementClass
+    {
+        public state()
+        {
+            name = GetType().Name;
+            helperFunctions.initializeNullProperties(this);
+            helperFunctions.initializeDefaultValues(this);
+        }
+
+        override public List<string> generateObjectCreation()
+        {
+            string creation = string.Format("//todo add someting here for {0}",
+                name);
+
+            return new List<string> { creation };
+        }
+
+        override public List<string> generateInitialization()
+        {
+            List<string> initCode = new List<string>()
+            {
+                string.Format("//todo create initialization for {0}", name)
+            };
+
+            return initCode;
+        }
+        override public List<string> generateObjectAddToMaps()
+        {
+            string creation = string.Format("//todo add someting here for {0}",
+                name);
+
+            return new List<string> { creation };
+        }
+    }
+    /*
+ * ====================================================
+ * David's interpretation of what is needed -> end
+ */
+
+
+
     [Serializable()]
     public class controlData
     {
@@ -1932,13 +2114,13 @@ namespace ApplicationData
         }
     }
     [Serializable()]
-    public class state
+    public class state_
     {
         public string name { get; set; }
 
         public List<controlData> controlData { get; set; }
 
-        public state()
+        public state_()
         {
             name = GetType().Name;
             controlData = new List<controlData>();

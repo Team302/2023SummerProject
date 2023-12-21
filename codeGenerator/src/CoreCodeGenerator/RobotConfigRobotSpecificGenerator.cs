@@ -62,11 +62,11 @@ namespace CoreCodeGenerator
             template = loadTemplate(cdf.templateFilePathName);
 
             string mechInstDef =
-                @"Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( ""Initializing mechanism"" ), string ( ""$$_MECHANISM_INSTANCE_NAME_$$"" ), ""start"" );
+                @"Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( ""Initializing mechanism"" ), string ( ""$$_MECHANISM_INSTANCE_NAME_$$"" ), """" );
                   $$_MECHANISM_INSTANCE_NAME_$$_gen* $$_MECHANISM_INSTANCE_NAME_$$_genmech = new $$_MECHANISM_INSTANCE_NAME_$$_gen(/*string(""Example.xml""), string(""ExampleMech"")*/);
                   m_$$_MECHANISM_INSTANCE_NAME_$$ = new $$_MECHANISM_INSTANCE_NAME_$$($$_MECHANISM_INSTANCE_NAME_$$_genmech);
-                  $$_MECHANISM_INSTANCE_NAME_$$_genmech->Initialize(RobotConfigMgr::RobotIdentifier::$$_ROBOT_NAME_$$);
-                  Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( ""Initializing mechanism"" ), string ( ""$$_MECHANISM_INSTANCE_NAME_$$"" ), ""end"" );
+                  m_$$_MECHANISM_INSTANCE_NAME_$$->Create();
+                  m_$$_MECHANISM_INSTANCE_NAME_$$->Initialize(RobotConfigMgr::RobotIdentifier::$$_ROBOT_NAME_$$);
                   ";
 
             generatorContext.clear();

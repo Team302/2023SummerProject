@@ -107,7 +107,7 @@ namespace CoreCodeGenerator
                 resultString = template;
 
                 resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mechanismName);
-                resultString = resultString.Replace("$$_MECHANISM_ELEMENTS_$$", ListToString(generateMethod(mech, "generateDefinition")));
+                resultString = resultString.Replace("$$_MECHANISM_ELEMENTS_$$", ListToString(generateMethod(mech, "generateDefinition")).Replace("state*", "//state*"));
                 resultString = resultString.Replace("$$_INCLUDE_FILES_$$", ListToString(generateMethod(mech, "generateIncludes").Distinct().ToList()));
 
                 //closed loop parameters

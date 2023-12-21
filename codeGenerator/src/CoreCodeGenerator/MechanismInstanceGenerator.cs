@@ -53,14 +53,19 @@ namespace CoreCodeGenerator
 
                         #region the generated files
                         createMechanismFolder(mechanismName, true);
+                        createMechanismFolder(mechanismName, false);
                         #region Generate Cpp File
                         cdf = theToolConfiguration.getTemplateInfo("MechanismInstance_gen_cpp");
                         template = loadTemplate(cdf.templateFilePathName);
 
                         resultString = template;
 
+                        
+                        resultString = resultString.Replace("$$_MECHANISM_TYPE_NAME_$$", ToUnderscoreCase(mi.name).ToUpper());
+                        resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
                         resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
                         resultString = resultString.Replace("$$_OBJECT_CREATION_$$", ListToString(generateMethod(mi, "generateObjectCreation"), ";"));
+                        resultString = resultString.Replace("$$_ADD_TO_MAPS_$$", ListToString(generateMethod(mi, "generateObjectAddToMaps"), ";"));
 
                         List<string> theUsings = generateMethod(mi, "generateUsings").Distinct().ToList();
                         resultString = resultString.Replace("$$_USING_DIRECTIVES_$$", ListToString(theUsings, ";"));
@@ -98,6 +103,109 @@ namespace CoreCodeGenerator
                         filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
                         copyrightAndGenNoticeAndSave(filePathName, resultString);
                         #endregion
+
+                        #region Generate CPP baseStateGen File
+                        cdf = theToolConfiguration.getTemplateInfo("BaseStateGen_cpp");
+                        template = loadTemplate(cdf.templateFilePathName);
+
+                        resultString = template;
+
+                        resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
+                        resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+
+                        filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
+                        copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        #endregion
+
+                        #region Generate H baseStateGen File
+                        cdf = theToolConfiguration.getTemplateInfo("BaseStateGen_h");
+                        template = loadTemplate(cdf.templateFilePathName);
+
+                        resultString = template;
+
+                        resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
+                        resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+
+                        filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
+                        copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        #endregion
+
+                        #region Generate H StateGen Files
+                        foreach (state s in mi.mechanism.states)
+                        {
+                            cdf = theToolConfiguration.getTemplateInfo("stateGen_h");
+                            template = loadTemplate(cdf.templateFilePathName);
+
+                            resultString = template;
+
+                            resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
+                            resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+                            resultString = resultString.Replace("$$_STATE_NAME_$$", s.name);
+
+                            filePathName = getMechanismFullFilePathName(mechanismName, 
+                                                                        cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName).Replace("STATE_NAME", s.name)
+                                                                        , true);
+                            copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        }
+                        #endregion
+
+                        #region Generate CPP StateGen Files
+                        foreach (state s in mi.mechanism.states)
+                        {
+                            cdf = theToolConfiguration.getTemplateInfo("stateGen_cpp");
+                            template = loadTemplate(cdf.templateFilePathName);
+
+                            resultString = template;
+
+                            resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
+                            resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+                            resultString = resultString.Replace("$$_STATE_NAME_$$", s.name);
+
+                            filePathName = getMechanismFullFilePathName(mechanismName,
+                                                                        cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName).Replace("STATE_NAME", s.name)
+                                                                        , true);
+                            copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        }
+                        #endregion
+
+                        #region Generate H StateGen_Decorator Files
+                        foreach (state s in mi.mechanism.states)
+                        {
+                            cdf = theToolConfiguration.getTemplateInfo("stateGen_Decorator_h");
+                            template = loadTemplate(cdf.templateFilePathName);
+
+                            resultString = template;
+
+                            resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
+                            resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+                            resultString = resultString.Replace("$$_STATE_NAME_$$", s.name);
+
+                            filePathName = getMechanismFullFilePathName(mechanismName,
+                                                                        cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName).Replace("STATE_NAME", s.name)
+                                                                        , false);
+                            copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        }
+                        #endregion
+
+                        #region Generate CPP StateGen_Decorator Files
+                        foreach (state s in mi.mechanism.states)
+                        {
+                            cdf = theToolConfiguration.getTemplateInfo("stateGen_Decorator_cpp");
+                            template = loadTemplate(cdf.templateFilePathName);
+
+                            resultString = template;
+
+                            resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
+                            resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+                            resultString = resultString.Replace("$$_STATE_NAME_$$", s.name);
+
+                            filePathName = getMechanismFullFilePathName(mechanismName,
+                                                                        cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName).Replace("STATE_NAME", s.name)
+                                                                        , false);
+                            copyrightAndGenNoticeAndSave(filePathName, resultString);
+                        }
+                        #endregion
+
                         #endregion
 
                         #region The decorator mod files

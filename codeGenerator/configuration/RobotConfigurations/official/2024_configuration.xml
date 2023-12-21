@@ -129,6 +129,13 @@
                   <type>UInt32</type>
                   <value>9</value>
                 </canID>
+                <remoteSensorCanID>
+                  <unitsFamily>none</unitsFamily>
+                  <name>remoteSensorCanID</name>
+                  <__units__ />
+                  <type>UInt32</type>
+                  <value>0</value>
+                </remoteSensorCanID>
                 <pdpID>
                   <unitsFamily>none</unitsFamily>
                   <name>pdpID</name>
@@ -150,66 +157,32 @@
                   <type>Boolean</type>
                   <value>false</value>
                 </enableFollowID>
-                <theDistanceAngleCalcInfo>
-                  <countsPerRev>
+                <fusedCANcoder>
+                  <enable>
                     <unitsFamily>none</unitsFamily>
-                    <name>countsPerRev</name>
+                    <name>enable</name>
                     <__units__ />
-                    <type>Int32</type>
-                    <value>0</value>
-                  </countsPerRev>
-                  <gearRatio>
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </enable>
+                  <fusedCANcoder>
+                    <name>CANcoderInstance</name>
+                  </fusedCANcoder>
+                  <sensorToMechanismRatio>
                     <unitsFamily>none</unitsFamily>
-                    <name>gearRatio</name>
-                    <__units__ />
-                    <type>Double</type>
-                    <value>0</value>
-                  </gearRatio>
-                  <diameter>
-                    <unitsFamily>length</unitsFamily>
-                    <name>diameter</name>
-                    <__units__>m</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </diameter>
-                  <countsPerInch>
-                    <unitsFamily>none</unitsFamily>
-                    <name>countsPerInch</name>
+                    <name>sensorToMechanismRatio</name>
                     <__units__ />
                     <type>Double</type>
                     <value>0</value>
-                  </countsPerInch>
-                  <countsPerDegree>
+                  </sensorToMechanismRatio>
+                  <rotorToSensorRatio>
                     <unitsFamily>none</unitsFamily>
-                    <name>countsPerDegree</name>
+                    <name>rotorToSensorRatio</name>
                     <__units__ />
                     <type>Double</type>
                     <value>0</value>
-                  </countsPerDegree>
-                </theDistanceAngleCalcInfo>
-                <theMotorConfigs>
-                  <deadbandPercent>
-                    <unitsFamily>percent</unitsFamily>
-                    <name>deadbandPercent</name>
-                    <__units__>%</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </deadbandPercent>
-                  <peakMin>
-                    <unitsFamily>current</unitsFamily>
-                    <name>peakMin</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakMin>
-                  <peakMax>
-                    <unitsFamily>current</unitsFamily>
-                    <name>peakMax</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakMax>
-                </theMotorConfigs>
+                  </rotorToSensorRatio>
+                </fusedCANcoder>
                 <theCurrentLimits>
                   <enableStatorCurrentLimit>
                     <unitsFamily>none</unitsFamily>
@@ -254,68 +227,99 @@
                     <value>0</value>
                   </supplyTimeThreshold>
                 </theCurrentLimits>
-                <theVoltageConfigs>
-                  <peakForwardVoltage>
-                    <unitsFamily>time</unitsFamily>
-                    <name>peakForwardVoltage</name>
-                    <__units__>s</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakForwardVoltage>
-                  <peakReverseVoltage>
-                    <unitsFamily>time</unitsFamily>
-                    <name>peakReverseVoltage</name>
-                    <__units__>s</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakReverseVoltage>
-                  <supplyVoltageTime>
-                    <unitsFamily>time</unitsFamily>
-                    <name>supplyVoltageTime</name>
-                    <__units__>s</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </supplyVoltageTime>
-                </theVoltageConfigs>
-                <theTorqueConfigs>
-                  <peakForwardTorqueCurrent>
-                    <unitsFamily>current</unitsFamily>
-                    <name>peakForwardTorqueCurrent</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakForwardTorqueCurrent>
-                  <peakReverseTorqueCurrent>
-                    <unitsFamily>current</unitsFamily>
-                    <name>peakReverseTorqueCurrent</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakReverseTorqueCurrent>
-                  <torqueNeutralDeadband>
-                    <unitsFamily>current</unitsFamily>
-                    <name>torqueNeutralDeadband</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </torqueNeutralDeadband>
-                </theTorqueConfigs>
-                <theFeedbackConfigs>
-                  <feedbackRotorOffset>
-                    <unitsFamily>angle</unitsFamily>
-                    <name>feedbackRotorOffset</name>
-                    <__units__>deg</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </feedbackRotorOffset>
-                  <remoteSensorID>
+                <PIDFs />
+                <theConfigHWLimitSW>
+                  <enableForward>
                     <unitsFamily>none</unitsFamily>
-                    <name>remoteSensorID</name>
+                    <name>enableForward</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </enableForward>
+                  <remoteForwardSensorID>
+                    <unitsFamily>none</unitsFamily>
+                    <name>remoteForwardSensorID</name>
                     <__units__ />
                     <type>Int32</type>
                     <value>0</value>
-                  </remoteSensorID>
-                </theFeedbackConfigs>
+                  </remoteForwardSensorID>
+                  <forwardResetPosition>
+                    <unitsFamily>none</unitsFamily>
+                    <name>forwardResetPosition</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </forwardResetPosition>
+                  <forwardPosition>
+                    <unitsFamily>none</unitsFamily>
+                    <name>forwardPosition</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </forwardPosition>
+                  <forwardType>LimitSwitchPin</forwardType>
+                  <forwardOpenClose>NormallyOpen</forwardOpenClose>
+                  <enableReverse>
+                    <unitsFamily>none</unitsFamily>
+                    <name>enableReverse</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </enableReverse>
+                  <remoteReverseSensorID>
+                    <unitsFamily>none</unitsFamily>
+                    <name>remoteReverseSensorID</name>
+                    <__units__ />
+                    <type>Int32</type>
+                    <value>0</value>
+                  </remoteReverseSensorID>
+                  <reverseResetPosition>
+                    <unitsFamily>none</unitsFamily>
+                    <name>reverseResetPosition</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </reverseResetPosition>
+                  <reversePosition>
+                    <unitsFamily>none</unitsFamily>
+                    <name>reversePosition</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </reversePosition>
+                  <revType>LimitSwitchPin</revType>
+                  <revOpenClose>NormallyOpen</revOpenClose>
+                </theConfigHWLimitSW>
+                <theConfigMotorSettings>
+                  <deadbandPercent>
+                    <unitsFamily>percent</unitsFamily>
+                    <name>deadbandPercent</name>
+                    <__units__>%</__units__>
+                    <type>Double</type>
+                    <value>0</value>
+                  </deadbandPercent>
+                  <peakForwardDutyCycle>
+                    <unitsFamily>none</unitsFamily>
+                    <name>peakForwardDutyCycle</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </peakForwardDutyCycle>
+                  <peakReverseDutyCycle>
+                    <unitsFamily>none</unitsFamily>
+                    <name>peakReverseDutyCycle</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </peakReverseDutyCycle>
+                </theConfigMotorSettings>
+                <diameter>
+                  <unitsFamily>none</unitsFamily>
+                  <name>diameter</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </diameter>
               </MotorController>
             </MotorControllers>
             <closedLoopControlParameters />
@@ -367,10 +371,56 @@
                 <type>CTREPCM</type>
               </solenoid>
             </solenoid>
-            <servo />
+            <servo>
+              <servo>
+                <name>armServo</name>
+                <Id>
+                  <unitsFamily>none</unitsFamily>
+                  <name>Id</name>
+                  <__units__ />
+                  <type>UInt32</type>
+                  <value>0</value>
+                </Id>
+                <minAngle>
+                  <unitsFamily>angle</unitsFamily>
+                  <name>minAngle</name>
+                  <__units__>deg</__units__>
+                  <type>Double</type>
+                  <value>0</value>
+                </minAngle>
+                <maxAngle>
+                  <unitsFamily>angle</unitsFamily>
+                  <name>maxAngle</name>
+                  <__units__>deg</__units__>
+                  <type>Double</type>
+                  <value>360</value>
+                </maxAngle>
+              </servo>
+            </servo>
             <analogInput />
             <digitalInput />
             <cancoder />
+            <stateMotorControlData />
+            <states>
+              <state>
+                <name>Forward</name>
+              </state>
+              <state>
+                <name>MaxTravel</name>
+              </state>
+              <state>
+                <name>MinTravel</name>
+              </state>
+              <state>
+                <name>Reverse</name>
+              </state>
+              <state>
+                <name>Stop</name>
+              </state>
+              <state>
+                <name>Panic</name>
+              </state>
+            </states>
           </mechanism>
         </mechanismInstance>
         <mechanismInstance>
@@ -432,6 +482,8 @@
             <analogInput />
             <digitalInput />
             <cancoder />
+            <stateMotorControlData />
+            <states />
           </mechanism>
         </mechanismInstance>
       </mechanismInstances>
@@ -550,6 +602,13 @@
                   <type>UInt32</type>
                   <value>9</value>
                 </canID>
+                <remoteSensorCanID>
+                  <unitsFamily>none</unitsFamily>
+                  <name>remoteSensorCanID</name>
+                  <__units__ />
+                  <type>UInt32</type>
+                  <value>0</value>
+                </remoteSensorCanID>
                 <pdpID>
                   <unitsFamily>none</unitsFamily>
                   <name>pdpID</name>
@@ -571,66 +630,32 @@
                   <type>Boolean</type>
                   <value>false</value>
                 </enableFollowID>
-                <theDistanceAngleCalcInfo>
-                  <countsPerRev>
+                <fusedCANcoder>
+                  <enable>
                     <unitsFamily>none</unitsFamily>
-                    <name>countsPerRev</name>
+                    <name>enable</name>
                     <__units__ />
-                    <type>Int32</type>
-                    <value>0</value>
-                  </countsPerRev>
-                  <gearRatio>
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </enable>
+                  <fusedCANcoder>
+                    <name>CANcoderInstance</name>
+                  </fusedCANcoder>
+                  <sensorToMechanismRatio>
                     <unitsFamily>none</unitsFamily>
-                    <name>gearRatio</name>
-                    <__units__ />
-                    <type>Double</type>
-                    <value>0</value>
-                  </gearRatio>
-                  <diameter>
-                    <unitsFamily>length</unitsFamily>
-                    <name>diameter</name>
-                    <__units__>m</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </diameter>
-                  <countsPerInch>
-                    <unitsFamily>none</unitsFamily>
-                    <name>countsPerInch</name>
+                    <name>sensorToMechanismRatio</name>
                     <__units__ />
                     <type>Double</type>
                     <value>0</value>
-                  </countsPerInch>
-                  <countsPerDegree>
+                  </sensorToMechanismRatio>
+                  <rotorToSensorRatio>
                     <unitsFamily>none</unitsFamily>
-                    <name>countsPerDegree</name>
+                    <name>rotorToSensorRatio</name>
                     <__units__ />
                     <type>Double</type>
                     <value>0</value>
-                  </countsPerDegree>
-                </theDistanceAngleCalcInfo>
-                <theMotorConfigs>
-                  <deadbandPercent>
-                    <unitsFamily>percent</unitsFamily>
-                    <name>deadbandPercent</name>
-                    <__units__>%</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </deadbandPercent>
-                  <peakMin>
-                    <unitsFamily>current</unitsFamily>
-                    <name>peakMin</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakMin>
-                  <peakMax>
-                    <unitsFamily>current</unitsFamily>
-                    <name>peakMax</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakMax>
-                </theMotorConfigs>
+                  </rotorToSensorRatio>
+                </fusedCANcoder>
                 <theCurrentLimits>
                   <enableStatorCurrentLimit>
                     <unitsFamily>none</unitsFamily>
@@ -675,68 +700,99 @@
                     <value>0</value>
                   </supplyTimeThreshold>
                 </theCurrentLimits>
-                <theVoltageConfigs>
-                  <peakForwardVoltage>
-                    <unitsFamily>time</unitsFamily>
-                    <name>peakForwardVoltage</name>
-                    <__units__>s</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakForwardVoltage>
-                  <peakReverseVoltage>
-                    <unitsFamily>time</unitsFamily>
-                    <name>peakReverseVoltage</name>
-                    <__units__>s</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakReverseVoltage>
-                  <supplyVoltageTime>
-                    <unitsFamily>time</unitsFamily>
-                    <name>supplyVoltageTime</name>
-                    <__units__>s</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </supplyVoltageTime>
-                </theVoltageConfigs>
-                <theTorqueConfigs>
-                  <peakForwardTorqueCurrent>
-                    <unitsFamily>current</unitsFamily>
-                    <name>peakForwardTorqueCurrent</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakForwardTorqueCurrent>
-                  <peakReverseTorqueCurrent>
-                    <unitsFamily>current</unitsFamily>
-                    <name>peakReverseTorqueCurrent</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </peakReverseTorqueCurrent>
-                  <torqueNeutralDeadband>
-                    <unitsFamily>current</unitsFamily>
-                    <name>torqueNeutralDeadband</name>
-                    <__units__>A</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </torqueNeutralDeadband>
-                </theTorqueConfigs>
-                <theFeedbackConfigs>
-                  <feedbackRotorOffset>
-                    <unitsFamily>angle</unitsFamily>
-                    <name>feedbackRotorOffset</name>
-                    <__units__>deg</__units__>
-                    <type>Double</type>
-                    <value>0</value>
-                  </feedbackRotorOffset>
-                  <remoteSensorID>
+                <PIDFs />
+                <theConfigHWLimitSW>
+                  <enableForward>
                     <unitsFamily>none</unitsFamily>
-                    <name>remoteSensorID</name>
+                    <name>enableForward</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </enableForward>
+                  <remoteForwardSensorID>
+                    <unitsFamily>none</unitsFamily>
+                    <name>remoteForwardSensorID</name>
                     <__units__ />
                     <type>Int32</type>
                     <value>0</value>
-                  </remoteSensorID>
-                </theFeedbackConfigs>
+                  </remoteForwardSensorID>
+                  <forwardResetPosition>
+                    <unitsFamily>none</unitsFamily>
+                    <name>forwardResetPosition</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </forwardResetPosition>
+                  <forwardPosition>
+                    <unitsFamily>none</unitsFamily>
+                    <name>forwardPosition</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </forwardPosition>
+                  <forwardType>LimitSwitchPin</forwardType>
+                  <forwardOpenClose>NormallyOpen</forwardOpenClose>
+                  <enableReverse>
+                    <unitsFamily>none</unitsFamily>
+                    <name>enableReverse</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </enableReverse>
+                  <remoteReverseSensorID>
+                    <unitsFamily>none</unitsFamily>
+                    <name>remoteReverseSensorID</name>
+                    <__units__ />
+                    <type>Int32</type>
+                    <value>0</value>
+                  </remoteReverseSensorID>
+                  <reverseResetPosition>
+                    <unitsFamily>none</unitsFamily>
+                    <name>reverseResetPosition</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </reverseResetPosition>
+                  <reversePosition>
+                    <unitsFamily>none</unitsFamily>
+                    <name>reversePosition</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </reversePosition>
+                  <revType>LimitSwitchPin</revType>
+                  <revOpenClose>NormallyOpen</revOpenClose>
+                </theConfigHWLimitSW>
+                <theConfigMotorSettings>
+                  <deadbandPercent>
+                    <unitsFamily>percent</unitsFamily>
+                    <name>deadbandPercent</name>
+                    <__units__>%</__units__>
+                    <type>Double</type>
+                    <value>0</value>
+                  </deadbandPercent>
+                  <peakForwardDutyCycle>
+                    <unitsFamily>none</unitsFamily>
+                    <name>peakForwardDutyCycle</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </peakForwardDutyCycle>
+                  <peakReverseDutyCycle>
+                    <unitsFamily>none</unitsFamily>
+                    <name>peakReverseDutyCycle</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </peakReverseDutyCycle>
+                </theConfigMotorSettings>
+                <diameter>
+                  <unitsFamily>none</unitsFamily>
+                  <name>diameter</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </diameter>
               </MotorController>
             </MotorControllers>
             <closedLoopControlParameters />
@@ -787,10 +843,56 @@
                 </reversed>
               </solenoid>
             </solenoid>
-            <servo />
+            <servo>
+              <servo>
+                <name>armServo</name>
+                <Id>
+                  <unitsFamily>none</unitsFamily>
+                  <name>Id</name>
+                  <__units__ />
+                  <type>UInt32</type>
+                  <value>0</value>
+                </Id>
+                <minAngle>
+                  <unitsFamily>angle</unitsFamily>
+                  <name>minAngle</name>
+                  <__units__>deg</__units__>
+                  <type>Double</type>
+                  <value>0</value>
+                </minAngle>
+                <maxAngle>
+                  <unitsFamily>angle</unitsFamily>
+                  <name>maxAngle</name>
+                  <__units__>deg</__units__>
+                  <type>Double</type>
+                  <value>360</value>
+                </maxAngle>
+              </servo>
+            </servo>
             <analogInput />
             <digitalInput />
             <cancoder />
+            <stateMotorControlData />
+            <states>
+              <state>
+                <name>Forward</name>
+              </state>
+              <state>
+                <name>MaxTravel</name>
+              </state>
+              <state>
+                <name>MinTravel</name>
+              </state>
+              <state>
+                <name>Reverse</name>
+              </state>
+              <state>
+                <name>Stop</name>
+              </state>
+              <state>
+                <name>Panic</name>
+              </state>
+            </states>
           </mechanism>
         </mechanismInstance>
       </mechanismInstances>
@@ -818,6 +920,8 @@
       <analogInput />
       <digitalInput />
       <cancoder />
+      <stateMotorControlData />
+      <states />
     </mechanism>
     <mechanism>
       <GUID>d7347c7d-bd0c-4744-a383-e41ca2276829</GUID>
@@ -829,6 +933,8 @@
       <analogInput />
       <digitalInput />
       <cancoder />
+      <stateMotorControlData />
+      <states />
     </mechanism>
   </Mechanisms>
 </topLevelAppDataElement>

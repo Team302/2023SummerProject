@@ -56,4 +56,6 @@
   <analogInput />
   <digitalInput />
   <cancoder />
+  <stateMotorControlData />
+  <states />
 </mechanism>
