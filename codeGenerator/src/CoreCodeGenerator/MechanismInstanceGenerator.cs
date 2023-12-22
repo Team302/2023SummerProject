@@ -36,6 +36,7 @@ namespace CoreCodeGenerator
                 generatorContext.theRobot = robot;
                 foreach (mechanismInstance mi in robot.mechanismInstances)
                 {
+                    generatorContext.theMechanismInstance = mi;
                     if (!mechInstanceNames.Exists(n => n == mi.name))
                     {
                         mechInstanceNames.Add(mi.name);
@@ -66,6 +67,7 @@ namespace CoreCodeGenerator
                         resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
                         resultString = resultString.Replace("$$_OBJECT_CREATION_$$", ListToString(generateMethod(mi, "generateObjectCreation"), ";"));
                         resultString = resultString.Replace("$$_ADD_TO_MAPS_$$", ListToString(generateMethod(mi, "generateObjectAddToMaps"), ";"));
+                        resultString = resultString.Replace("$$_STATE_CLASSES_INCLUDES_$$", ListToString(generateMethod(mi, "generateIncludes"), ";"));
 
                         List<string> theUsings = generateMethod(mi, "generateUsings").Distinct().ToList();
                         resultString = resultString.Replace("$$_USING_DIRECTIVES_$$", ListToString(theUsings, ";"));

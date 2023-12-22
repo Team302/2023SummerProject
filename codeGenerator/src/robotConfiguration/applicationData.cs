@@ -2052,12 +2052,30 @@ namespace ApplicationData
             helperFunctions.initializeDefaultValues(this);
         }
 
+        public override List<string> generateIncludes()
+        {
+            List<string> sb = new List<string>();
+            if (generatorContext.theMechanismInstance != null)
+            {
+                sb.Add(string.Format("#include \"mechanisms/{1}/decoratormods/{1}_{0}_State.h\"",
+                    name,
+                    generatorContext.theMechanismInstance.name));
+            }
+
+            return sb;
+        }
         override public List<string> generateObjectCreation()
         {
-            string creation = string.Format("//todo add someting here for {0}",
-                name);
+            if (generatorContext.theMechanismInstance != null)
+            {
+                string creation = string.Format("{1}{0}State* {0}State = new {1}{0}State(string(\"{0}\"), 0, new {1}{0}StateGen(string(\"{0}\"), 0, *this))",
+                name,
+                generatorContext.theMechanismInstance.name);
 
-            return new List<string> { creation };
+                return new List<string> { creation };
+            }
+
+            return new List<string>();
         }
 
         override public List<string> generateInitialization()
@@ -2071,8 +2089,7 @@ namespace ApplicationData
         }
         override public List<string> generateObjectAddToMaps()
         {
-            string creation = string.Format("//todo add someting here for {0}",
-                name);
+            string creation = string.Format("GetStateVector().emplace_back({0}State)", name);
 
             return new List<string> { creation };
         }
