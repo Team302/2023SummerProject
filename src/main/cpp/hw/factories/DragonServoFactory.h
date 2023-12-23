@@ -19,8 +19,10 @@
 #include <map>
 #include <string>
 
+#include "units/angle.h"
+
 // Team 302 includes
-#include <hw/usages/ServoUsage.h>
+#include <configs/usages/ServoUsage.h>
 
 class DragonServo;
 
@@ -43,8 +45,8 @@ public:
         std::string networkTableName,
         ServoUsage::SERVO_USAGE deviceUsage,
         int deviceID,
-        double minAngle,
-        double maxAngle);
+        units::angle::degree_t minAngle,
+        units::angle::degree_t maxAngle);
 
     /// @brief  Get a DragonServo from its usage
     /// @param [in] DragonServo::SERVO_USAGE   deviceUsage  Usage of the servo

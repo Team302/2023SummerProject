@@ -18,11 +18,11 @@
 #include <memory>
 #include <string>
 
-#include <hw/factories/DragonServoFactory.h>
-#include <hw/DragonServo.h>
-#include <hw/usages/ServoUsage.h>
+#include "hw/factories/DragonServoFactory.h"
+#include "hw/DragonServo.h"
+#include "configs/usages/ServoUsage.h"
 
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 using namespace std;
 
@@ -55,8 +55,8 @@ DragonServo *DragonServoFactory::CreateDragonServo(
     string networkTableName,
     ServoUsage::SERVO_USAGE deviceUsage,
     int deviceID,
-    double minAngle,
-    double maxAngle)
+    units::angle::degree_t minAngle,
+    units::angle::degree_t maxAngle)
 {
     if (deviceUsage > ServoUsage::SERVO_USAGE::UNKNOWN_SERVO_USAGE &&
         deviceUsage < ServoUsage::SERVO_USAGE::MAX_SERVO_USAGES)

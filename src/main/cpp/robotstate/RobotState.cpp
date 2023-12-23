@@ -13,17 +13,18 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //======================================================\==============================================================================================
 
-#include <robotstate/RobotState.h>
+#include "robotstate/RobotState.h"
 
 #include <string>
 #include <vector>
 
-#include <chassis/ChassisFactory.h>
-#include <chassis/IChassis.h>
-#include <robotstate/RobotStateChangeBroker.h>
-#include <teleopcontrol/TeleopControl.h>
-#include <utils/DragonField.h>
-#include <hw/factories/CompressorFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
+#include "chassis/IChassis.h"
+#include "robotstate/RobotStateChangeBroker.h"
+#include "teleopcontrol/TeleopControl.h"
+#include "utils/DragonField.h"
+#include "hw/factories/CompressorFactory.h"
 
 using frc::DriverStation;
 
@@ -65,8 +66,8 @@ RobotState::~RobotState()
 
 void RobotState::Init()
 {
-    auto factory = ChassisFactory::GetChassisFactory();
-    m_chassis = factory->GetIChassis();
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetIChassis() : nullptr;
 }
 
 void RobotState::Run()

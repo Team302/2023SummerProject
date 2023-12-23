@@ -3,14 +3,15 @@
   <rootOutputFolder>..\..\src\main\cpp</rootOutputFolder>
   <robotConfiguration>..\RobotConfigurations\testRobotConfig.xml</robotConfiguration>
   <appDataConfigurations>
+    <string>C:\FRC\2023SummerProject\codeGenerator\configuration\RobotConfigurations\testRobotConfig.xml</string>
     <string>../RobotConfigurations/testRobotConfig.xml</string>
   </appDataConfigurations>
   <collectionBaseTypes>
-    <string>ApplicationData.Motor</string>
+    <string>ApplicationData.MotorController</string>
     <string>ApplicationData.PriceChange</string>
     <string>ApplicationData.parameter</string>
   </collectionBaseTypes>
-  <physicalUnits>
+    <physicalUnits>
     <physicalUnit>
       <shortName>%</shortName>
       <longName>Percent</longName>
@@ -119,7 +120,14 @@
       <family>angularVelocity</family>
       <wpiClassName>Units.degrees_per_second</wpiClassName>
     </physicalUnit>
+	<physicalUnit>
+      <shortName>PSI</shortName>
+      <longName>pounds per square inch</longName>
+      <family>pressure</family>
+      <wpiClassName>Units.pounds_per_square_inch</wpiClassName>
+    </physicalUnit>
   </physicalUnits>
+
   <templateMechanismCppPath>..\templates\MECHANISM_NAME.cpp</templateMechanismCppPath>
   <templateMechanismHPath>..\templates\MECHANISM_NAME.h</templateMechanismHPath>
   <templateRobotDefinitionsCppPath>..\templates\RobotDefinitions.cpp</templateRobotDefinitionsCppPath>

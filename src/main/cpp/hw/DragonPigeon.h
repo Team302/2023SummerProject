@@ -20,38 +20,27 @@
 #include <ctre/phoenix/sensors/WPI_Pigeon2.h>
 #include <ctre/Phoenix.h>
 
-class DragonPigeon
+#include "configs/usages/CanSensorUsage.h"
+#include "hw/interfaces/IDragonPigeon.h"
+
+class DragonPigeon : public IDragonPigeon
 {
 public:
-    enum PIGEON_TYPE
-    {
-        PIGEON1,
-        PIGEON2
-    };
-
-    enum PIGEON_USAGE
-    {
-        CENTER_OF_ROBOT,
-        CENTER_OF_SHOOTER
-    };
-
-    DragonPigeon(
-        int canID,
-        std::string canBusName,
-        DragonPigeon::PIGEON_USAGE usage,
-        DragonPigeon::PIGEON_TYPE type,
-        double rotation);
+    DragonPigeon(int canID,
+                 std::string canBusName,
+                 CanSensorUsage::CANSENSOR_USAGE usage,
+                 double rotation);
     DragonPigeon() = delete;
     virtual ~DragonPigeon() = default;
 
-    double GetPitch();
-    double GetRoll();
-    double GetYaw();
-    void ReZeroPigeon(double angleDeg, int timeoutMs = 0);
+    units::angle::degree_t GetPitch() override;
+    units::angle::degree_t GetRoll() override;
+    units::angle::degree_t GetYaw() override;
+    void ReZeroPigeon(units::angle::degree_t angle, int timeoutMs = 0) override;
 
 private:
-    ctre::phoenix::sensors::WPI_PigeonIMU *m_pigeon;
-    ctre::phoenix::sensors::WPI_Pigeon2 *m_pigeon2;
+    ctre::phoenix::sensors::WPI_PigeonIMU m_pigeon;
+    CanSensorUsage::CANSENSOR_USAGE m_usage;
 
     double m_initialYaw;
     double m_initialPitch;

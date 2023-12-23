@@ -31,7 +31,7 @@
 #include <teleopcontrol/TeleopControlButton.h>
 #include <teleopcontrol/TeleopControlFunctions.h>
 #include <teleopcontrol/TeleopControlMappingEnums.h>
-#include <utils/logging/LoggableItem.h>
+#include "utils/logging/LoggableItem.h"
 
 // third part
 #include <RobinHood/robin_hood.h>
@@ -79,7 +79,7 @@ public:
         bool rightRumble // <I> - rumble right
     );
 
-    void LogInformation() const override;
+    void LogInformation() override;
 
 private:
     //----------------------------------------------------------------------------------

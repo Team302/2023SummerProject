@@ -22,18 +22,21 @@
 #include <auton/drivePrimitives/VisionDrivePrimitive.h>
 #include <chassis/ChassisMovement.h>
 #include <chassis/ChassisOptionEnums.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 
 /// DEBUGGING
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <iostream>
 
-VisionDrivePrimitive::VisionDrivePrimitive() : m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
+VisionDrivePrimitive::VisionDrivePrimitive() : m_chassis(nullptr),
                                                m_headingOption(ChassisOptionEnums::HeadingOption::MAINTAIN),
                                                m_ntName("VisionDrivePrimitive"),
                                                m_timer(new frc::Timer()),
                                                m_timeout(0.0)
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 }
 
 void VisionDrivePrimitive::Init(PrimitiveParams *params)

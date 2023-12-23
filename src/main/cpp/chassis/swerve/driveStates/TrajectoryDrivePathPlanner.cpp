@@ -18,8 +18,10 @@
 // Team302 Includes
 #include <chassis/swerve/driveStates/TrajectoryDrivePathPlanner.h>
 #include <chassis/ChassisMovement.h>
-#include <chassis/ChassisFactory.h>
-#include <utils/logging/Logger.h>
+#include "configs/RobotConfigMgr.h"
+#include "configs/RobotConfig.h"
+#include "configs/usages/CanSensorUsage.h"
+#include "utils/logging/Logger.h"
 #include <chassis/swerve/headingStates/SpecifiedHeading.h>
 
 using frc::Pose2d;
@@ -32,13 +34,19 @@ TrajectoryDrivePathPlanner::TrajectoryDrivePathPlanner(RobotDrive *robotDrive) :
                                                                                                        frc::PIDController{1.35, 0.0, 0}), // 0.325, 0.0
                                                                                  m_desiredState(),
                                                                                  m_trajectoryStates(),
-                                                                                 m_prevPose(ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose()),
+                                                                                 m_prevPose(),
                                                                                  m_wasMoving(false),
                                                                                  m_timer(std::make_unique<frc::Timer>()),
-                                                                                 m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
+                                                                                 m_chassis(nullptr),
                                                                                  m_whyDone("Trajectory isn't finished/Error")
 
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
+    if (m_chassis != nullptr)
+    {
+        m_prevPose = m_chassis->GetPose();
+    }
 }
 
 void TrajectoryDrivePathPlanner::Init(ChassisMovement &chassisMovement)
@@ -87,7 +95,7 @@ std::array<frc::SwerveModuleState, 4> TrajectoryDrivePathPlanner::UpdateSwerveMo
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Trajectory Drive Path Planner", "HolonomicRotation (Degs)", m_desiredState.holonomicRotation.Degrees().to<double>());
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Trajectory Drive Path Planner", "Omega (Rads Per Sec)", refChassisSpeeds.omega.to<double>());
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Trajectory Drive Path Planner", "Yaw Odometry (Degs)", m_chassis->GetPose().Rotation().Degrees().to<double>());
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Trajectory Drive Path Planner", "Yaw Pigeon (Degs)", PigeonFactory::GetFactory()->GetCenterPigeon()->GetYaw());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, "Trajectory Drive Path Planner", "Yaw Pigeon (Degs)", RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(CanSensorUsage::CANSENSOR_USAGE::PIGEON_ROBOT_CENTER)->GetYaw().to<double>());
 
         // Set chassisMovement speeds that will be used by RobotDrive
         return m_robotDrive->UpdateSwerveModuleStates(chassisMovement);

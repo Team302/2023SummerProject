@@ -18,7 +18,7 @@
 #include <string>
 
 #include <mechanisms/controllers/ControlModes.h>
-#include <mechanisms/controllers/MechanismTargetData.h>
+#include "mechanisms/controllers/MechanismTargetData.h"
 
 using namespace std;
 

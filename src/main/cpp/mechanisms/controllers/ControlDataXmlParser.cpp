@@ -23,9 +23,9 @@
 // FRC includes
 
 // Team 302 includes
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <mechanisms/controllers/ControlDataXmlParser.h>
 
 // Third Party Includes
@@ -71,7 +71,7 @@ ControlData *ControlDataXmlParser::ParseXML(
     modeMap[string("PERCENT_OUTPUT")] = ControlModes::CONTROL_TYPE::PERCENT_OUTPUT;
     modeMap[string("POSITION_DEGREES")] = ControlModes::CONTROL_TYPE::POSITION_DEGREES;
     modeMap[string("POSITION_INCH")] = ControlModes::CONTROL_TYPE::POSITION_INCH;
-    modeMap[string("POSITION_ABSOLUTE")] = ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE;
+    modeMap[string("POSITION_ABS_TICKS")] = ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE;
 
     map<string, ControlModes::CONTROL_RUN_LOCS> serverMap;
     serverMap[string("MOTORCONTROLLER")] = ControlModes::CONTROL_RUN_LOCS::MOTOR_CONTROLLER;

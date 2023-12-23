@@ -19,10 +19,11 @@
 
 // Team302 Includes
 #include <chassis/swerve/driveStates/FieldDrive.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
 
 /// DEBUGGING
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 FieldDrive::FieldDrive(RobotDrive *robotDrive) : RobotDrive(), m_robotDrive(robotDrive)
 {
@@ -34,6 +35,7 @@ std::array<frc::SwerveModuleState, 4> FieldDrive::UpdateSwerveModuleStates(Chass
                                                                                 chassisMovement.chassisSpeeds.vy,
                                                                                 chassisMovement.chassisSpeeds.omega,
                                                                                 ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetPose().Rotation());
+
 
     return m_robotDrive->UpdateSwerveModuleStates(chassisMovement);
 }

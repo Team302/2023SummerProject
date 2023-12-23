@@ -28,19 +28,19 @@
 
 #include <frc/kinematics/SwerveModuleState.h>
 
-#include <units/acceleration.h>
-#include <units/angular_acceleration.h>
-#include <units/angular_velocity.h>
-#include <units/time.h>
-#include <units/velocity.h>
-#include <units/voltage.h>
+#include "units/acceleration.h"
+#include "units/angular_acceleration.h"
+#include "units/angular_velocity.h"
+#include "units/time.h"
+#include "units/velocity.h"
+#include "units/voltage.h"
 
 // Team 302 Includes
-#include <chassis/PoseEstimatorEnum.h>
-#include <hw/DragonCanCoder.h>
-#include <hw/DragonFalcon.h>
-#include <hw/interfaces/IDragonMotorController.h>
-#include <mechanisms/controllers/ControlData.h>
+#include "chassis/PoseEstimatorEnum.h"
+#include "hw/DragonCanCoder.h"
+#include "hw/DragonTalonFX.h"
+#include "hw/interfaces/IDragonMotorController.h"
+#include "mechanisms/controllers/ControlData.h"
 
 // Third Party Includes
 
@@ -61,26 +61,18 @@ public:
     /// @param [in] shared_ptr<IDragonMotorController>                      turnMotor:      Motor that turns the swerve module
     /// @param [in] DragonCanCoder*       		                            canCoder:       Sensor for detecting the angle of the wheel
     SwerveModule(ModuleID type,
-                 std::shared_ptr<IDragonMotorController> driveMotor,
-                 std::shared_ptr<IDragonMotorController> turningMotor,
+                 IDragonMotorController *driveMotor,
+                 IDragonMotorController *turningMotor,
                  DragonCanCoder *canCoder,
-                 double turnP,
-                 double turnI,
-                 double turnD,
-                 double turnF,
-                 double turnNominalPos,
-                 double turnNominalNeg,
-                 double turnMaxAcc,
-                 double turnCruiseVel,
-                 double countsOnTurnEncoderPerDegreesOnAngleSensor);
+                 const ControlData &controlData,
+                 double countsOnTurnEncoderPerDegreesOnAngleSensor,
+                 units::length::inch_t wheelDiameter);
 
-    void Init(
-        units::length::inch_t wheelDiameter,
-        units::velocity::meters_per_second_t maxVelocity,
-        units::angular_velocity::radians_per_second_t maxAngularVelocity,
-        units::acceleration::meters_per_second_squared_t maxAcceleration,
-        units::angular_acceleration::radians_per_second_squared_t maxAngularAcceleration,
-        frc::Translation2d offsetFromRobotCenter);
+    void Init(units::velocity::meters_per_second_t maxVelocity,
+              units::angular_velocity::radians_per_second_t maxAngularVelocity,
+              units::acceleration::meters_per_second_squared_t maxAcceleration,
+              units::angular_acceleration::radians_per_second_squared_t maxAngularAcceleration,
+              frc::Translation2d offsetFromRobotCenter);
 
     /// @brief Turn all of the wheel to zero degrees yaw according to the pigeon
     /// @returns void
@@ -122,22 +114,21 @@ public:
 private:
     // Note:  the following was taken from the WPI code and tweaked because we were seeing some weird
     //        reversals that we believe was due to not using a tolerance
-    frc::SwerveModuleState Optimize(
-        const frc::SwerveModuleState &desiredState,
-        const frc::Rotation2d &currentAngle);
+    frc::SwerveModuleState Optimize(const frc::SwerveModuleState &desiredState,
+                                    const frc::Rotation2d &currentAngle);
 
     void SetDriveSpeed(units::velocity::meters_per_second_t speed);
     void SetTurnAngle(units::angle::degree_t angle);
 
     ModuleID m_type;
 
-    std::shared_ptr<IDragonMotorController> m_driveMotor;
-    std::shared_ptr<IDragonMotorController> m_turnMotor;
+    IDragonMotorController *m_driveMotor;
+    IDragonMotorController *m_turnMotor;
     DragonCanCoder *m_turnSensor;
 
-    ControlData *m_driveVelocityControlData;
-    ControlData *m_drivePercentControlData;
-    ControlData *m_turnPositionControlData;
+    ControlData m_driveVelocityControlData;
+    ControlData m_drivePercentControlData;
+    ControlData m_turnPositionControlData;
 
     units::length::inch_t m_wheelDiameter;
 

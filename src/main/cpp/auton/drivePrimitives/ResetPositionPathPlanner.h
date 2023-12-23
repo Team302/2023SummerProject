@@ -16,7 +16,6 @@
 #pragma once
 
 // C++ Includes
-#include <memory>
 
 // Third party includes
 #include <pathplanner/lib/PathPlanner.h>
@@ -42,6 +41,6 @@ public:
     bool IsDone() override;
 
 private:
-    std::shared_ptr<IChassis> m_chassis;
+    IChassis *m_chassis;
     pathplanner::PathPlannerTrajectory m_trajectory;
 };

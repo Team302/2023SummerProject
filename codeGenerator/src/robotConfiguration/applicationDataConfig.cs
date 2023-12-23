@@ -132,7 +132,7 @@ namespace applicationConfiguration
 
             foreach (applicationData theRobot in theRobotVariants.Robots)
             {
-                foreach (mechanismInstance mi in theRobot.mechanismInstance)
+                foreach (mechanismInstance mi in theRobot.mechanismInstances)
                 {
                     MergeMechanismParametersIntoStructure(loadMechanism(fullPathName, mi.mechanism.name), mi.mechanism);
                 }
@@ -167,7 +167,7 @@ namespace applicationConfiguration
             if (obj == null)
                 return;
 
-            PropertyInfo[] PIs = obj.GetType().GetProperties();
+            PropertyInfo[] PIs = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
             foreach (PropertyInfo pi in PIs)
             {

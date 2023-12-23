@@ -17,7 +17,7 @@
 #include <string>
 
 // Team 302 includes
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 #include <mechanisms/controllers/ControlModes.h>
 
 using namespace std;

@@ -21,7 +21,7 @@
 #include <frc/DoubleSolenoid.h>
 #include <frc/Solenoid.h>
 
-#include <hw/usages/SolenoidUsage.h>
+#include <configs/usages/SolenoidUsage.h>
 
 class DragonSolenoid
 {

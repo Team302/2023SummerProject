@@ -13,18 +13,17 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#include <frc/DriverStation.h>
-#include <driveteamfeedback/DriverFeedback.h>
-#include <hw/factories/CompressorFactory.h>
-#include <robotstate/RobotState.h>
-#include <robotstate/RobotStateChanges.h>
-#include <robotstate/IRobotStateChangeSubscriber.h>
-#include <mechanisms/Intake/IntakeStateMgr.h>
+#include "frc/DriverStation.h"
+#include "driveteamfeedback/DriverFeedback.h"
+#include "hw/factories/CompressorFactory.h"
+#include "robotstate/RobotState.h"
+#include "robotstate/RobotStateChanges.h"
+#include "robotstate/IRobotStateChangeSubscriber.h"
 #include <networktables/NetworkTableInstance.h>
 #include <networktables/NetworkTable.h>
 #include <networktables/NetworkTableEntry.h>
 
-#include <teleopcontrol/TeleopControl.h>
+#include "teleopcontrol/TeleopControl.h"
 
 using frc::DriverStation;
 
@@ -200,6 +199,7 @@ void DriverFeedback::Update(RobotStateChanges::StateChange change, int value)
     }
     else if (change == RobotStateChanges::IntakeState)
     {
+        /**
         auto state = static_cast<IntakeStateMgr::INTAKE_STATE>(value);
         bool newState = state == IntakeStateMgr::INTAKE_STATE::INTAKE;
 
@@ -208,6 +208,7 @@ void DriverFeedback::Update(RobotStateChanges::StateChange change, int value)
             m_intakeStateChanged = true;
             m_intakeIntaking = newState;
         }
+        **/
     }
     else if (change == RobotStateChanges::HoldingGamePiece)
     {

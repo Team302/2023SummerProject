@@ -19,12 +19,17 @@
 // Team302 Includes
 #include <chassis/swerve/headingStates/FaceAprilTag.h>
 #include <DragonVision/LimelightFactory.h>
-#include <hw/factories/PigeonFactory.h>
+
+#include "configs/RobotConfigMgr.h"
+#include "configs/RobotConfig.h"
+#include "configs/usages/CanSensorUsage.h"
+#include "hw/interfaces/IDragonPigeon.h"
+
 #include <utils/FMSData.h>
 #include <utils/AngleUtils.h>
 
 /// debugging
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 FaceAprilTag::FaceAprilTag() : ISwerveDriveOrientation(ChassisOptionEnums::HeadingOption::FACE_APRIL_TAG),
                                m_pipelineMode(DragonLimelight::APRIL_TAG),
@@ -83,7 +88,7 @@ bool FaceAprilTag::AtTargetAngle(std::shared_ptr<DragonVisionTarget> targetData,
             // This is calculated by taking arc/inverse tangent of our field oriented yError, divided by our field oriented xError
             // and the offset to the back of the cube node
 
-            auto pigeon = PigeonFactory::GetFactory()->GetCenterPigeon();
+            auto pigeon = RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(CanSensorUsage::CANSENSOR_USAGE::PIGEON_ROBOT_CENTER);
             units::angle::degree_t robotYaw = units::angle::degree_t(pigeon->GetYaw());
 
             auto angleToTag = units::angle::radian_t(std::atan2(yError.to<double>(), xError.to<double>()));

@@ -25,15 +25,14 @@
 
 // Team 302 includes
 #include <auton/PrimitiveParams.h>
-#include <State.h>
-#include <mechanisms/base/Mech.h>
-#include <mechanisms/base/StateMgr.h>
-#include <mechanisms/controllers/MechanismTargetData.h>
+#include "State.h"
+#include "mechanisms/base/BaseMech.h"
+#include "mechanisms/base/StateMgr.h"
+#include "mechanisms/controllers/MechanismTargetData.h"
 #include <mechanisms/controllers/StateDataXmlParser.h>
-#include <mechanisms/MechanismFactory.h>
 #include <mechanisms/StateMgrHelper.h>
 #include <mechanisms/StateStruc.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // Third Party Includes
 
@@ -47,7 +46,7 @@ StateMgr::StateMgr() : m_checkGamePadTransitions(true),
                        m_currentStateID(0)
 {
 }
-void StateMgr::Init(Mech *mech, const map<string, StateStruc> &stateMap)
+void StateMgr::Init(BaseMech *mech, const map<string, StateStruc> &stateMap)
 {
     m_mech = mech;
     if (mech != nullptr)
@@ -131,18 +130,30 @@ void StateMgr::CheckForStateTransition()
 
 void StateMgr::CheckForSensorTransitions()
 {
-    // override this method if sensors could change states
+    auto transitions = m_currentState->GetPossibleStateTransitions();
+    for (auto state : transitions)
+    {
+        auto transition = state->IsTransitionCondition(false);
+        if (transition)
+        {
+            SetCurrentState(state->GetStateId(), true);
+            break;
+        }
+    }
 }
 
 void StateMgr::CheckForGamepadTransitions()
 {
-    // override this method if joystick inputs could change states;  Format
-    // would look something like:
-    //    auto controller = TeleopControl::GetInstance();
-    //    if ( controller != nullptr )
-    //    {
-    //          code here that checks the inputs
-    //    }
+    auto transitions = m_currentState->GetPossibleStateTransitions();
+    for (auto state : transitions)
+    {
+        auto transition = state->IsTransitionCondition(true);
+        if (transition)
+        {
+            SetCurrentState(state->GetStateId(), true);
+            break;
+        }
+    }
 }
 
 /// @brief  set the current state, initialize it and run it
@@ -182,7 +193,7 @@ int StateMgr::GetCurrentStateParam(PrimitiveParams *currentParams)
     return -1;
 }
 
-void StateMgr::LogInformation() const
+void StateMgr::LogInformation()
 {
     if (m_mech != nullptr)
     {

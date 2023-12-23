@@ -19,7 +19,7 @@
 // FRC Includes
 #include <frc/kinematics/ChassisSpeeds.h>
 #include <frc/trajectory/TrajectoryUtil.h>
-#include <units/angular_velocity.h>
+#include "units/angular_velocity.h"
 #include <wpi/fs.h>
 
 // 302 Includes
@@ -27,9 +27,10 @@
 #include <auton/drivePrimitives/DragonTrajectoryUtils.h>
 #include <chassis/ChassisMovement.h>
 #include <chassis/ChassisOptionEnums.h>
-#include <chassis/ChassisFactory.h>
+#include "configs/RobotConfigMgr.h"
+#include "configs/RobotConfig.h"
 #include <chassis/IChassis.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 #include <chassis/swerve/driveStates/TrajectoryDrivePathPlanner.h>
 
 // third party includes
@@ -42,7 +43,7 @@ using namespace frc;
 
 using namespace wpi::math;
 
-DrivePathPlanner::DrivePathPlanner() : m_chassis(ChassisFactory::GetChassisFactory()->GetSwerveChassis()),
+DrivePathPlanner::DrivePathPlanner() : m_chassis(nullptr),
                                        m_timer(make_unique<Timer>()),
                                        m_trajectory(),
                                        m_pathname(),
@@ -51,6 +52,8 @@ DrivePathPlanner::DrivePathPlanner() : m_chassis(ChassisFactory::GetChassisFacto
                                        m_ntName("DrivePathPlanner")
 
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
 }
 void DrivePathPlanner::Init(PrimitiveParams *params)
 {

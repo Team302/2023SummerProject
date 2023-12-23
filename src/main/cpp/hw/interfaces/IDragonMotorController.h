@@ -25,9 +25,9 @@
 #include <frc/motorcontrol/MotorController.h>
 
 // Team 302 includes
-#include <hw/usages/MotorControllerUsage.h>
+#include "configs/usages/MotorControllerUsage.h"
 #include <mechanisms/controllers/ControlModes.h>
-#include <mechanisms/controllers/ControlData.h>
+#include "mechanisms/controllers/ControlData.h"
 
 // Third Party Includes
 #include <ctre/phoenix/motorcontrol/RemoteSensorSource.h>
@@ -72,11 +72,11 @@ public:
     // Getters
     /// @brief  Return the number of revolutions the output shaft has spun
     /// @return double number of revolutions
-    virtual double GetRotations() const = 0;
+    virtual double GetRotations() = 0;
 
     /// @brief  Return the angular velocity in revolutions per second
     /// @return double angular velocity in revolutions per second
-    virtual double GetRPS() const = 0;
+    virtual double GetRPS() = 0;
 
     /// @brief  Return the usage of the motor
     /// @return MotorControllerUsage::MOTOR_CONTROLLER_USAGE - what the motor is used for
@@ -88,15 +88,11 @@ public:
 
     /// @brief  Return the current usage
     /// @return double - amperage usage for the controller
-    virtual double GetCurrent() const = 0;
+    virtual double GetCurrent() = 0;
 
     /// @brief  Return the CAN ID
     /// @return int - CAN ID
     virtual int GetID() const = 0;
-
-    /// @brief  Return the speedcontroller
-    /// @return std::shared_ptr<frc::SpeedControll> - pointer to the speed controller object
-    virtual std::shared_ptr<frc::MotorController> GetSpeedController() const = 0;
 
     // Setters
     virtual void Set(double value) = 0;
@@ -109,17 +105,16 @@ public:
     virtual void SetDiameter(double diameter) = 0;
     virtual void SetVoltage(units::volt_t output) = 0;
     // virtual ControlModes::CONTROL_TYPE GetControlMode() const = 0;
-    virtual double GetCounts() const = 0;
+    virtual double GetCounts() = 0;
 
     /// @brief  Set the control constants (e.g. PIDF values).
     /// @param [in] int             slot - hardware slot to use
     /// @param [in] ControlData*    pid - the control constants
     /// @return void
-    virtual void SetControlConstants(int slot, ControlData *controlInfo) = 0;
+    virtual void SetControlConstants(int slot, const ControlData &controlInfo) = 0;
 
-    virtual void SetRemoteSensor(
-        int canID,
-        ctre::phoenix::motorcontrol::RemoteSensorSource deviceType) = 0;
+    virtual void SetRemoteSensor(int canID,
+                                 ctre::phoenix::motorcontrol::RemoteSensorSource deviceType) = 0;
     /**
     virtual void UpdateFramePeriods
     (
@@ -128,8 +123,7 @@ public:
     ) = 0;
     **/
 
-    virtual void SetFramePeriodPriority(
-        MOTOR_PRIORITY priority) = 0;
+    virtual void SetFramePeriodPriority(MOTOR_PRIORITY priority) = 0;
 
     virtual double GetCountsPerRev() const = 0;
 
@@ -139,16 +133,14 @@ public:
     virtual ~IDragonMotorController() = default;
     virtual double GetGearRatio() const = 0;
 
-    virtual bool IsForwardLimitSwitchClosed() const = 0;
-    virtual bool IsReverseLimitSwitchClosed() const = 0;
+    virtual bool IsForwardLimitSwitchClosed() = 0;
+    virtual bool IsReverseLimitSwitchClosed() = 0;
     virtual void EnableVoltageCompensation(double fullvoltage) = 0;
 
-    virtual void SetSelectedSensorPosition(
-        double initialPosition) = 0;
+    virtual void SetSelectedSensorPosition(double initialPosition) = 0;
     virtual double GetCountsPerInch() const = 0;
     virtual double GetCountsPerDegree() const = 0;
-    virtual void EnableDisableLimitSwitches(
-        bool enable) = 0;
+    virtual void EnableDisableLimitSwitches(bool enable) = 0;
 
 protected:
 };

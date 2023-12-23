@@ -18,35 +18,38 @@
 #include <memory>
 
 // FRC includes
-#include <units/velocity.h>
-#include <units/angular_velocity.h>
+#include "units/velocity.h"
+#include "units/angular_velocity.h"
 
 // Team 302 Includes
-#include <chassis/differential/ArcadeDrive.h>
-#include <chassis/ChassisMovement.h>
-#include <hw/DragonPigeon.h>
-#include <gamepad/IDragonGamePad.h>
-#include <teleopcontrol/TeleopControl.h>
-#include <teleopcontrol/TeleopControlFunctions.h>
-#include <State.h>
-#include <chassis/ChassisFactory.h>
-#include <hw/factories/PigeonFactory.h>
-#include <utils/logging/Logger.h>
+#include "chassis/differential/ArcadeDrive.h"
+#include "chassis/ChassisMovement.h"
+#include "hw/DragonPigeon.h"
+#include "gamepad/IDragonGamePad.h"
+#include "teleopcontrol/TeleopControl.h"
+#include "teleopcontrol/TeleopControlFunctions.h"
+#include "State.h"
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
+#include "utils/logging/Logger.h"
 
 using namespace std;
 using namespace frc;
 
 /// @brief initialize the object and validate the necessary items are not nullptrs
 ArcadeDrive::ArcadeDrive() : State(string("ArcadeDrive"), -1),
-                             m_chassis(ChassisFactory::GetChassisFactory()->GetDifferentialChassis()),
+                             m_chassis(nullptr),
                              m_controller(TeleopControl::GetInstance())
 {
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    m_chassis = config != nullptr ? config->GetDifferentialChassis() : nullptr;
+
     if (m_controller == nullptr)
     {
         Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("ArcadeDrive"), string("Constructor"), string("TeleopControl is nullptr"));
     }
 
-    if (m_chassis.get() == nullptr)
+    if (m_chassis == nullptr)
     {
         Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, string("ArcadeDrive"), string("Constructor"), string("Chassis is nullptr"));
     }
@@ -82,7 +85,7 @@ void ArcadeDrive::Exit()
 
 /// @brief indicates that we are not at our target
 /// @return bool
-bool ArcadeDrive::AtTarget() const
+bool ArcadeDrive::AtTarget()
 {
     return false;
 }

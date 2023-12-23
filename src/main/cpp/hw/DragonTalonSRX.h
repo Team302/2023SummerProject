@@ -22,40 +22,38 @@
 
 #include <frc/motorcontrol/MotorController.h>
 
-#include <hw/DistanceAngleCalcStruc.h>
-#include <hw/interfaces/IDragonControlToVendorControlAdapter.h>
-#include <hw/interfaces/IDragonMotorController.h>
-#include <hw/usages/MotorControllerUsage.h>
-#include <mechanisms/controllers/ControlModes.h>
+#include "hw/DistanceAngleCalcStruc.h"
+#include "hw/interfaces/IDragonControlToVendorControlAdapter.h"
+#include "hw/interfaces/IDragonMotorController.h"
+#include "configs/usages/MotorControllerUsage.h"
+#include "mechanisms/controllers/ControlModes.h"
 
 // Third Party Includes
-#include <ctre/phoenix/ErrorCode.h>
-#include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
-#include <ctre/phoenix/motorcontrol/RemoteSensorSource.h>
+#include "ctre/phoenix/ErrorCode.h"
+#include "ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h"
+#include "ctre/phoenix/motorcontrol/RemoteSensorSource.h"
 
 class DragonTalonSRX : public IDragonMotorController
 {
 public:
     // Constructors
     DragonTalonSRX() = delete;
-    DragonTalonSRX(
-        std::string networkTableName,
-        MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
-        int deviceID,
-        int pdpID,
-        DistanceAngleCalcStruc calcStruc,
-        IDragonMotorController::MOTOR_TYPE motortype
+    DragonTalonSRX(std::string networkTableName,
+                   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
+                   int deviceID,
+                   int pdpID,
+                   const DistanceAngleCalcStruc &calcStruc,
+                   IDragonMotorController::MOTOR_TYPE motortype
 
     );
     virtual ~DragonTalonSRX() = default;
 
     // Getters (override)
-    double GetRotations() const override;
-    double GetRPS() const override;
+    double GetRotations() override;
+    double GetRPS() override;
     MotorControllerUsage::MOTOR_CONTROLLER_USAGE GetType() const override;
     int GetID() const override;
-    std::shared_ptr<frc::MotorController> GetSpeedController() const override;
-    double GetCurrent() const override;
+    double GetCurrent() override;
     IDragonMotorController::MOTOR_TYPE GetMotorType() const override;
     bool IsMotorInverted() const override { return m_inverted; };
 
@@ -72,7 +70,7 @@ public:
     /// @param [in] int             slot - hardware slot to use
     /// @param [in] ControlData*    pid - the control constants
     /// @return void
-    void SetControlConstants(int slot, ControlData *controlInfo) override;
+    void SetControlConstants(int slot, const ControlData &controlInfo) override;
     // Method:		SelectClosedLoopProfile
     // Description:	Selects which profile slot to use for closed-loop control
     // Returns:		void
@@ -92,15 +90,12 @@ public:
 
     void SetAsFollowerMotor(int masterCANID);
 
-    void SetForwardLimitSwitch(
-        bool normallyOpen);
+    void SetForwardLimitSwitch(bool normallyOpen);
 
-    void SetReverseLimitSwitch(
-        bool normallyOpen);
+    void SetReverseLimitSwitch(bool normallyOpen);
 
-    void SetRemoteSensor(
-        int canID,
-        ctre::phoenix::motorcontrol::RemoteSensorSource deviceType) override;
+    void SetRemoteSensor(int canID,
+                         ctre::phoenix::motorcontrol::RemoteSensorSource deviceType) override;
 
     void SetDiameter(double diameter) override;
 
@@ -120,15 +115,15 @@ public:
 
     double GetCountsPerRev() const override { return m_calcStruc.countsPerRev; }
     double GetGearRatio() const override { return m_calcStruc.gearRatio; }
-    bool IsForwardLimitSwitchClosed() const override;
-    bool IsReverseLimitSwitchClosed() const override;
+    bool IsForwardLimitSwitchClosed() override;
+    bool IsReverseLimitSwitchClosed() override;
     void EnableVoltageCompensation(double fullvoltage) override;
     void SetSelectedSensorPosition(
         double initialPosition) override;
 
     double GetCountsPerInch() const override;
     double GetCountsPerDegree() const override;
-    double GetCounts() const override;
+    double GetCounts() override;
     void EnableDisableLimitSwitches(
         bool enable) override;
 

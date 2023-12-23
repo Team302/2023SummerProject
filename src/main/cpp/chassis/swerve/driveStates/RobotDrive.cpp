@@ -17,15 +17,16 @@
 
 // FRC Includes
 #include <frc/filter/SlewRateLimiter.h>
-#include <units/velocity.h>
-#include <units/angle.h>
+#include "units/velocity.h"
+#include "units/angle.h"
 
 // Team302 Includes
 
 #include <chassis/swerve/driveStates/RobotDrive.h>
-#include <chassis/ChassisFactory.h>
 #include <chassis/ChassisMovement.h>
-#include <utils/logging/Logger.h>
+#include "configs/RobotConfig.h"
+#include "configs/RobotConfigMgr.h"
+#include "utils/logging/Logger.h"
 #include <utils/FMSData.h>
 
 using std::string;
@@ -35,7 +36,8 @@ RobotDrive::RobotDrive() : ISwerveDriveState::ISwerveDriveState(),
                            m_centerOfRotation(ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetWheelBase() / 2.0, ChassisFactory::GetChassisFactory()->GetSwerveChassis()->GetTrack() / 2.0),
                            m_maxspeed(units::velocity::feet_per_second_t(1.0))
 {
-    auto chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
+    auto config = RobotConfigMgr::GetInstance()->GetCurrentConfig();
+    auto chassis = config != nullptr ? config->GetSwerveChassis() : nullptr;
     if (chassis != nullptr)
     {
         m_maxspeed = chassis->GetMaxSpeed();
@@ -58,6 +60,7 @@ std::array<frc::SwerveModuleState, 4> RobotDrive::UpdateSwerveModuleStates(Chass
     m_kinematics.DesaturateWheelSpeeds(&states, m_maxspeed);
 
     return states;
+
 }
 
 void RobotDrive::DecideTipCorrection(ChassisMovement &chassisMovement)
@@ -78,6 +81,7 @@ void RobotDrive::DecideTipCorrection(ChassisMovement &chassisMovement)
 void RobotDrive::CorrectForTipping(ChassisMovement &chassisMovement)
 {
     auto chassis = ChassisFactory::GetChassisFactory()->GetSwerveChassis();
+
     if (chassis != nullptr)
     {
         // pitch is positive when back of robot is lifted and negative when front of robot is lifted

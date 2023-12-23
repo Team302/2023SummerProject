@@ -16,63 +16,67 @@
 
 #include <string>
 
-#include <hw/DragonCanCoder.h>
-#include <utils/logging/Logger.h>
+#include "hw/DragonCanCoder.h"
+#include "utils/logging/Logger.h"
 
-#include <ctre/phoenix/sensors/WPI_CANCoder.h>
+using ctre::phoenixpro::configs::CANcoderConfiguration;
+using ctre::phoenixpro::configs::CANcoderConfigurator;
+using ctre::phoenixpro::hardware::CANcoder;
+using ctre::phoenixpro::signals::AbsoluteSensorRangeValue;
+using ctre::phoenixpro::signals::SensorDirectionValue;
+using std::string;
 
-using namespace std;
-using namespace ctre::phoenix;
-using namespace ctre::phoenix::sensors;
-
-DragonCanCoder::DragonCanCoder(
-    string networkTableName,
-    string usage,
-    int canID,
-    string canBusName,
-    double offset,
-    bool reverse) : WPI_CANCoder(canID, canBusName),
-                    m_networkTableName(networkTableName),
-                    m_usage(usage)
+DragonCanCoder::DragonCanCoder(string networkTableName,
+                               CanSensorUsage::CANSENSOR_USAGE usage,
+                               int canID,
+                               string canBusName,
+                               double offset,
+                               bool reverse) : m_networkTableName(networkTableName),
+                                               m_usage(usage),
+                                               m_cancoder(CANcoder(canID, canBusName))
 {
-    auto error = ConfigFactoryDefault(50);
-    if (error != ErrorCode::OKAY)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, string("ConfigFactoryDefault"), to_string(error));
-    }
-    error = ConfigAbsoluteSensorRange(AbsoluteSensorRange::Signed_PlusMinus180, 0);
-    if (error != ErrorCode::OKAY)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, string("ConfigAbsoluteSensorRange"), to_string(error));
-    }
+    m_cancoder.GetConfigurator().Apply(CANcoderConfiguration{});
+}
 
-    error = ConfigMagnetOffset(offset, 0);
-    if (error != ErrorCode::OKAY)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, string("ConfigMagnetOffset"), to_string(error));
-    }
+void DragonCanCoder::SetRange(AbsoluteSensorRangeValue range)
+{
+    CANcoderConfiguration configs{};
+    m_cancoder.GetConfigurator().Refresh(configs);
+    configs.MagnetSensor.AbsoluteSensorRange = range;
+    m_cancoder.GetConfigurator().Apply(configs);
+}
 
-    error = ConfigSensorDirection(reverse, 0);
-    if (error != ErrorCode::OKAY)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, string("ConfigSensorDirection"), to_string(error));
-    }
+void DragonCanCoder::SetMagnetOffset(double offset)
+{
+    CANcoderConfiguration configs{};
+    m_cancoder.GetConfigurator().Refresh(configs);
+    configs.MagnetSensor.MagnetOffset = offset;
+    m_cancoder.GetConfigurator().Apply(configs);
+}
 
-    error = ConfigSensorInitializationStrategy(SensorInitializationStrategy::BootToAbsolutePosition, 0);
-    if (error != ErrorCode::OKAY)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, string("ConfigSensorDirection"), to_string(error));
-    }
+void DragonCanCoder::SetDirection(SensorDirectionValue direction)
+{
+    CANcoderConfiguration configs{};
+    m_cancoder.GetConfigurator().Refresh(configs);
+    configs.MagnetSensor.SensorDirection = direction;
+    m_cancoder.GetConfigurator().Apply(configs);
+}
 
-    error = ConfigVelocityMeasurementPeriod(SensorVelocityMeasPeriod::Period_1Ms, 0);
-    if (error != ErrorCode::OKAY)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, string("ConfigVelocityMeasurementPeriod"), to_string(error));
-    }
+units::angle::radian_t DragonCanCoder::GetAbsolutePosition()
+{
+    auto pos = m_cancoder.GetAbsolutePosition();
+    units::angle::radian_t val = pos.GetValue();
+    return val;
+}
 
-    error = ConfigVelocityMeasurementWindow(64, 0);
-    if (error != ErrorCode::OKAY)
-    {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, networkTableName, string("ConfigVelocityMeasurementWindow"), to_string(error));
-    }
+units::angular_velocity::revolutions_per_minute_t DragonCanCoder::GetVelocity()
+{
+    auto vel = m_cancoder.GetVelocity();
+    units::angular_velocity::revolutions_per_minute_t val = vel.GetValue();
+    return val;
+}
+
+int DragonCanCoder::GetCanId()
+{
+    return m_cancoder.GetDeviceID();
 }

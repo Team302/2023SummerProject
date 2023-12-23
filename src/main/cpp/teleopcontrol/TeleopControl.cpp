@@ -29,12 +29,12 @@
 #include <frc/GenericHID.h>
 #include <gamepad/IDragonGamePad.h>
 #include <gamepad/DragonXBox.h>
-#include <gamepad/DragonGamepad.h>
-#include <teleopcontrol/TeleopControl.h>
+#include <gamepad/DragonGamePad.h>
+#include "teleopcontrol/TeleopControl.h"
 #include <teleopcontrol/TeleopControlFunctions.h>
 #include <teleopcontrol/TeleopControlMap.h>
 #include <frc/DriverStation.h>
-#include <utils/logging/Logger.h>
+#include "utils/logging/Logger.h"
 
 // using namespace frc;
 // using namespace std;
@@ -363,7 +363,7 @@ void TeleopControl::SetRumble(
 	}
 }
 
-void TeleopControl::LogInformation() const
+void TeleopControl::LogInformation()
 {
 	auto self = const_cast<TeleopControl *>(this);
 	for (int inx = 0; inx < DriverStation::kJoystickPorts; ++inx)

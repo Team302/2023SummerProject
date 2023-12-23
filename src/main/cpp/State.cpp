@@ -19,19 +19,27 @@
 // FRC includes
 
 // Team 302 includes
-#include <State.h>
+#include "State.h"
 
 // Third Party Includes
 
-using namespace std;
+using std::string;
+using std::vector;
 
-State::State(
-    string stateName,
-    int stateId) : m_stateName(stateName),
-                   m_stateId(stateId)
+State::State(string stateName, int stateId) : m_stateName(stateName),
+                                              m_stateId(stateId),
+                                              m_transitionStates()
 {
 }
 
-void State::LogInformation() const
+void State::RegisterTransitionState(State *state)
+{
+    m_transitionStates.emplace_back(state);
+}
+bool State::IsTransitionCondition(bool considerGamepadTransitions) const
+{
+    return false;
+}
+void State::LogInformation()
 {
 }

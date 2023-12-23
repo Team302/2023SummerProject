@@ -14,114 +14,67 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#include <ctre/phoenix/sensors/PigeonIMU.h>
-#include <hw/DragonPigeon.h>
+#include "ctre/phoenix/sensors/PigeonIMU.h"
+#include "hw/DragonPigeon.h"
 #include <memory>
 
 using namespace std;
 using namespace ctre::phoenix::sensors;
 
-DragonPigeon::DragonPigeon(
-    int canID,
-    string canBusName,
-    DragonPigeon::PIGEON_USAGE usage,
-    DragonPigeon::PIGEON_TYPE type,
-    double rotation) : m_pigeon(nullptr),
-                       m_pigeon2(nullptr),
-                       m_initialYaw(rotation),
-                       m_initialPitch(0.0),
-                       m_initialRoll(0.0)
+DragonPigeon::DragonPigeon(int canID,
+                           string canBusName,
+                           CanSensorUsage::CANSENSOR_USAGE usage,
+                           double rotation) : m_pigeon(WPI_PigeonIMU(canID)),
+                                              m_usage(usage),
+                                              m_initialYaw(rotation),
+                                              m_initialPitch(0.0),
+                                              m_initialRoll(0.0)
 {
-    if (type == DragonPigeon::PIGEON_TYPE::PIGEON1)
-    {
-        m_pigeon = new WPI_PigeonIMU(canID);
-        m_pigeon->ConfigFactoryDefault();
-        m_pigeon->SetYaw(rotation, 0);
-        m_pigeon->SetFusedHeading(rotation, 0);
+    m_pigeon.ConfigFactoryDefault();
+    m_pigeon.SetYaw(rotation, 0);
+    m_pigeon.SetFusedHeading(rotation, 0);
 
-        m_pigeon->SetStatusFramePeriod(PigeonIMU_StatusFrame::PigeonIMU_BiasedStatus_4_Mag, 120, 0);
-        m_pigeon->SetStatusFramePeriod(PigeonIMU_StatusFrame::PigeonIMU_CondStatus_11_GyroAccum, 120, 0);
-        m_pigeon->SetStatusFramePeriod(PigeonIMU_StatusFrame::PigeonIMU_BiasedStatus_6_Accel, 120, 0); // using fused heading not yaw
-    }
-    else
-    {
-        m_pigeon2 = new WPI_Pigeon2(canID, canBusName);
-        m_pigeon2->ConfigFactoryDefault();
-        m_pigeon2->SetYaw(rotation);
-
-        m_pigeon2->SetStatusFramePeriod(PigeonIMU_StatusFrame::PigeonIMU_BiasedStatus_4_Mag, 120, 0);
-        m_pigeon2->SetStatusFramePeriod(PigeonIMU_StatusFrame::PigeonIMU_CondStatus_11_GyroAccum, 120, 0);
-        m_pigeon2->SetStatusFramePeriod(PigeonIMU_StatusFrame::PigeonIMU_BiasedStatus_6_Accel, 120, 0); // using fused heading not yaw
-    }
+    m_pigeon.SetStatusFramePeriod(PigeonIMU_StatusFrame::PigeonIMU_BiasedStatus_4_Mag, 120, 0);
+    m_pigeon.SetStatusFramePeriod(PigeonIMU_StatusFrame::PigeonIMU_CondStatus_11_GyroAccum, 120, 0);
+    m_pigeon.SetStatusFramePeriod(PigeonIMU_StatusFrame::PigeonIMU_BiasedStatus_6_Accel, 120, 0); // using fused heading not yaw
 }
 
-double DragonPigeon::GetPitch()
+units::angle::degree_t DragonPigeon::GetPitch()
 {
-    return -(GetRawPitch() - m_initialPitch); // TODO: add inversions into code
+    return units::angle::degree_t(-(GetRawPitch() - m_initialPitch)); // TODO: add inversions into code
 }
 
-double DragonPigeon::GetRoll()
+units::angle::degree_t DragonPigeon::GetRoll()
 {
-    return GetRawRoll() - m_initialRoll;
+    return units::degree_t(GetRawRoll() - m_initialRoll);
 }
 
-double DragonPigeon::GetYaw()
+units::angle::degree_t DragonPigeon::GetYaw()
 {
-    return GetRawYaw(); // reset should have taken care of this
-    // return GetRawYaw() - m_initialYaw;
+    return units::angle::degree_t(GetRawYaw()); // reset should have taken care of this
 }
 
-void DragonPigeon::ReZeroPigeon(double angleDeg, int timeoutMs)
+void DragonPigeon::ReZeroPigeon(units::angle::degree_t angle, int timeoutMs)
 {
-    if (m_pigeon != nullptr)
-    {
-        m_pigeon->SetYaw(angleDeg, timeoutMs);
-    }
-    else if (m_pigeon2 != nullptr)
-    {
-        m_pigeon2->SetYaw(angleDeg, timeoutMs);
-    }
+    m_pigeon.SetYaw(angle.to<double>(), timeoutMs);
 }
 
 double DragonPigeon::GetRawPitch()
 {
-    auto pitch = 0.0;
-    if (m_pigeon != nullptr)
-    {
-        pitch = -m_pigeon->GetPitch();
-    }
-    else if (m_pigeon2 != nullptr)
-    {
-        pitch = -m_pigeon2->GetPitch();
-    }
+    auto pitch = -m_pigeon.GetPitch();
     return remainder(pitch, 360.0);
 }
 
 double DragonPigeon::GetRawRoll()
 {
-    auto roll = 0.0;
-    if (m_pigeon != nullptr)
-    {
-        roll = -m_pigeon->GetRoll();
-    }
-    else if (m_pigeon2 != nullptr)
-    {
-        roll = -m_pigeon2->GetRoll();
-    }
+    auto roll = -m_pigeon.GetRoll();
     return remainder(roll, 360.0);
 }
 
 double DragonPigeon::GetRawYaw()
 {
-    double yaw = 0.0;
-    if (m_pigeon != nullptr)
-    {
-        yaw = m_pigeon->GetYaw();
-    }
-    else if (m_pigeon2 != nullptr)
-    {
-        yaw = m_pigeon2->GetYaw();
-    }
+    double yaw = m_pigeon.GetYaw();
+
     yaw = remainder(yaw, 360.0);
 
     // normalize it to be between -180 and + 180
