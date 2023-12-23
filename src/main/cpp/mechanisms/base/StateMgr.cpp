@@ -46,60 +46,14 @@ StateMgr::StateMgr() : m_checkGamePadTransitions(true),
                        m_currentStateID(0)
 {
 }
-void StateMgr::Init(BaseMech *mech, const map<string, StateStruc> &stateMap)
+void StateMgr::Init(BaseMech *mech)
 {
     m_mech = mech;
-    if (mech != nullptr)
+    if (m_stateVector.size() > 0)
     {
-        // Parse the configuration file
-        auto stateXML = make_unique<StateDataXmlParser>();
-        vector<MechanismTargetData *> targetData = stateXML.get()->ParseXML(mech->GetType());
-
-        if (targetData.empty())
-        {
-            Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR, mech->GetNetworkTableName(), mech->GetControlFileName(), string("No states"));
-        }
-        else
-        {
-            // initialize the xml string to state map
-            m_stateVector.resize(stateMap.size(), nullptr);
-            // create the states passing the configuration data
-            auto stateId = 0;
-            for (auto td : targetData)
-            {
-                auto stateString = td->GetStateString();
-                Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, mech->GetNetworkTableName(), string("State") + to_string(stateId), stateString);
-                auto stateStringToStrucItr = stateMap.find(stateString);
-                if (stateStringToStrucItr != stateMap.end())
-                {
-                    auto struc = stateStringToStrucItr->second;
-                    auto slot = struc.id;
-                    if (m_stateVector[slot] == nullptr)
-                    {
-                        auto thisState = StateMgrHelper::CreateState(mech, struc, td);
-                        if (thisState != nullptr)
-                        {
-                            m_stateVector[slot] = thisState;
-                            if (struc.isDefault)
-                            {
-                                m_currentState = thisState;
-                                m_currentStateID = slot;
-                                m_currentState->Init();
-                            }
-                        }
-                    }
-                    else
-                    {
-                        auto msg = string("multiple mechanism state info for state");
-                        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, mech->GetNetworkTableName(), string("StateMgr::StateMgr"), msg);
-                    }
-                }
-                else
-                {
-                    Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, mech->GetNetworkTableName(), string("StateMgr::StateMgr"), string("state not found"));
-                }
-            }
-        }
+        m_currentState = m_stateVector[0];
+        m_currentStateID = 0;
+        m_currentState->Init();
     }
 }
 
@@ -183,6 +137,11 @@ void StateMgr::SetCurrentState(int stateID, bool run)
             }
         }
     }
+}
+
+void StateMgr::AddToStateVector(State *state)
+{
+    m_stateVector.emplace_back(state);
 }
 
 /// @brief  Get the current Parameter parm value for the state of this mechanism

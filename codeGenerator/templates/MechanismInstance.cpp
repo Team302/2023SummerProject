@@ -23,7 +23,7 @@ using std::string;
 $$_MECHANISM_INSTANCE_NAME_$$::$$_MECHANISM_INSTANCE_NAME_$$($$_MECHANISM_INSTANCE_NAME_$$_gen *base) : $$_MECHANISM_INSTANCE_NAME_$$_gen(),
                                                                                                         m_$$_MECHANISM_INSTANCE_NAME_$$(base)
 {
-    PeriodicLooper::GetInstance()->RegisterAll(*this);
+    // PeriodicLooper::GetInstance()->RegisterAll(*this);
 }
 
 // todo not sure what to do with this

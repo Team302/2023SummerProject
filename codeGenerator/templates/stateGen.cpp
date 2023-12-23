@@ -11,6 +11,11 @@ $$_GEN_NOTICE_$$
 #include "mechanisms/$$_MECHANISM_INSTANCE_NAME_$$/generated/$$_MECHANISM_INSTANCE_NAME_$$_$$_STATE_NAME_$$_StateGen.h"
 #include "mechanisms/base/BaseMech.h"
 
+#include <utils/logging/LoggableItemMgr.h>
+#include "utils/logging/Logger.h"
+#include <utils/logging/LoggerData.h>
+#include <utils/logging/LoggerEnums.h>
+
 // Third Party Includes
 
 using std::string;
@@ -25,11 +30,14 @@ $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$StateGen::$$_MECHANISM_INSTANCE_NAM
 
 void $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$StateGen::Init()
 {
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("$$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$StateGen"), string("init"));
+
     $$_MECHANISM_INSTANCE_NAME_$$BaseStateGen::Init();
 }
 
 void $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$StateGen::Run()
 {
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("$$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$StateGen"), string("run"));
     $$_MECHANISM_INSTANCE_NAME_$$BaseStateGen::Run();
 }
 

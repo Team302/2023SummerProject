@@ -46,7 +46,7 @@ namespace CoreCodeGenerator
                 sb.Clear();
                 foreach (mechanismInstance mi in robot.mechanismInstances)
                 {
-                    sb.AppendLine(string.Format("{0}* m_{0} = nullptr;", mi.name));
+                    sb.AppendLine(string.Format("{0}* m_the{0} = nullptr;", mi.name));
                     includes.AppendLine(String.Format("#include \"{0}\"", mi.getIncludePath()));
                 }
                 resultString = resultString.Replace("$$_MECHANISM_PTR_DECLARATIONS_$$", sb.ToString());
@@ -63,10 +63,12 @@ namespace CoreCodeGenerator
 
             string mechInstDef =
                 @"Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( ""Initializing mechanism"" ), string ( ""$$_MECHANISM_INSTANCE_NAME_$$"" ), """" );
-                  $$_MECHANISM_INSTANCE_NAME_$$_gen* $$_MECHANISM_INSTANCE_NAME_$$_genmech = new $$_MECHANISM_INSTANCE_NAME_$$_gen(/*string(""Example.xml""), string(""ExampleMech"")*/);
-                  m_$$_MECHANISM_INSTANCE_NAME_$$ = new $$_MECHANISM_INSTANCE_NAME_$$($$_MECHANISM_INSTANCE_NAME_$$_genmech);
-                  m_$$_MECHANISM_INSTANCE_NAME_$$->Create();
-                  m_$$_MECHANISM_INSTANCE_NAME_$$->Initialize(RobotConfigMgr::RobotIdentifier::$$_ROBOT_NAME_$$);
+                  $$_MECHANISM_INSTANCE_NAME_$$_gen* $$_MECHANISM_INSTANCE_NAME_$$_genmech = new $$_MECHANISM_INSTANCE_NAME_$$_gen();
+                  m_the$$_MECHANISM_INSTANCE_NAME_$$ = new $$_MECHANISM_INSTANCE_NAME_$$($$_MECHANISM_INSTANCE_NAME_$$_genmech);
+                  m_the$$_MECHANISM_INSTANCE_NAME_$$->Create();
+                  m_the$$_MECHANISM_INSTANCE_NAME_$$->Initialize(RobotConfigMgr::RobotIdentifier::$$_ROBOT_NAME_$$);
+                  m_the$$_MECHANISM_INSTANCE_NAME_$$->Init(m_the$$_MECHANISM_INSTANCE_NAME_$$);
+                  PeriodicLooper::GetInstance()->RegisterAll ( *m_the$$_MECHANISM_INSTANCE_NAME_$$ );
                   ";
 
             generatorContext.clear();

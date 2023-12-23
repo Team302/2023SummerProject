@@ -13,6 +13,11 @@ $$_GEN_NOTICE_$$
 #include "teleopcontrol/TeleopControl.h"
 #include "teleopcontrol/TeleopControlFunctions.h"
 
+#include <utils/logging/LoggableItemMgr.h>
+#include "utils/logging/Logger.h"
+#include <utils/logging/LoggerData.h>
+#include <utils/logging/LoggerEnums.h>
+
 // Third Party Includes
 
 using namespace std;
@@ -27,11 +32,14 @@ $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$State::$$_MECHANISM_INSTANCE_NAME_$
 
 void $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$State::Init()
 {
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("$$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$State"), string("init"));
+
     m_genState->Init();
 }
 
 void $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$State::Run()
 {
+    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("$$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$State"), string("run"));
     m_genState->Run();
 }
 

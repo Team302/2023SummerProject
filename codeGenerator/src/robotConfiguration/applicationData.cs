@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Runtime.Remoting.Channels;
 using System.Security.AccessControl;
 using System.Security.Authentication.ExtendedProtection;
+using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
 using System.Xml.Linq;
@@ -282,12 +283,14 @@ namespace ApplicationData
                     {
                         Type elementType = theObject.GetType().GetGenericArguments().Single();
                         ICollection ic = theObject as ICollection;
+                        int index = 0;
                         foreach (var v in ic)
                         {
                             if (v != null)
                             {
-                                sb.AddRange(generate(v, generateFunctionName));
+                                sb.AddRange(generate(v, generateFunctionName, index));
                             }
+                            index++;
                         }
                     }
                 }
@@ -302,6 +305,21 @@ namespace ApplicationData
             return sb;
         }
 
+        private List<string> generate(object obj, string generateFunctionName, int currentIndex)
+        {
+            MethodInfo mi = obj.GetType().GetMethod(generateFunctionName);
+            ParameterInfo[] pi = mi.GetParameters();
+
+            if (pi.Length == 0)
+                return (List<string>)mi.Invoke(obj, new object[] { });
+            else if (pi.Length == 1)
+            {
+                object[] parameters = new object[] { currentIndex };
+                return (List<string>)mi.Invoke(obj, parameters);
+            }
+
+            return new List<string>();
+        }
         private List<string> generate(object obj, string generateFunctionName)
         {
             MethodInfo mi = obj.GetType().GetMethod(generateFunctionName);
@@ -385,12 +403,14 @@ namespace ApplicationData
                     {
                         Type elementType = theObject.GetType().GetGenericArguments().Single();
                         ICollection ic = theObject as ICollection;
+                        int index = 0;
                         foreach (var v in ic)
                         {
                             if (v != null)
                             {
-                                sb.AddRange(generate(v, generateFunctionName));
+                                sb.AddRange(generate(v, generateFunctionName, index));
                             }
+                            index++;
                         }
                     }
                 }
@@ -403,6 +423,22 @@ namespace ApplicationData
             }
 
             return sb;
+        }
+
+        private List<string> generate(object obj, string generateFunctionName, int currentIndex)
+        {
+            MethodInfo mi = obj.GetType().GetMethod(generateFunctionName);
+            ParameterInfo[] pi = mi.GetParameters();
+
+            if (pi.Length == 0)
+                return (List<string>)mi.Invoke(obj, new object[] { });
+            else if (pi.Length == 2)
+            {
+                object[] parameters = new object[] { currentIndex };
+                return (List<string>)mi.Invoke(obj, parameters);
+            }
+
+            return new List<string>();
         }
 
         private List<string> generate(object obj, string generateFunctionName)
@@ -991,7 +1027,7 @@ namespace ApplicationData
             return initCode;
         }
 
-        override public List<string> generateObjectCreation()
+        override public List<string> generateIndexedObjectCreation(int currentIndex)
         {
             string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},\"{4}\")",
                 name,
@@ -1081,7 +1117,7 @@ namespace ApplicationData
             return initCode;
         }
 
-        override public List<string> generateObjectCreation()
+        override public List<string> generateIndexedObjectCreation(int currentIndex)
         {
             /*
                  DragonTalonSRX(std::string networkTableName,
@@ -1521,7 +1557,7 @@ namespace ApplicationData
         {
         }
 
-        override public List<string> generateObjectCreation()
+        override public List<string> generateIndexedObjectCreation(int currentIndex)
         {
             string creation = "";
 
@@ -1596,7 +1632,7 @@ namespace ApplicationData
         {
         }
 
-        override public List<string> generateObjectCreation()
+        override public List<string> generateIndexedObjectCreation(int currentIndex)
         {
             string creation = string.Format("{0} = new {1}(RobotElementNames::{2},{3},{4}({5}),{6}({7}))",
                 name,
@@ -1830,9 +1866,12 @@ namespace ApplicationData
         }
         virtual public List<string> generateObjectCreation()
         {
-            return new List<string> { "baseRobotElementClass.generateInitialization needs to be overridden" };
+            return new List<string> { "baseRobotElementClass.generateObjectCreation needs to be overridden" };
         }
-
+        virtual public List<string> generateIndexedObjectCreation(int index)
+        {
+            return new List<string> { "baseRobotElementClass.generateIndexedObjectCreation(int index) needs to be overridden" };
+        }
         virtual public List<string> generateObjectAddToMaps()
         {
             return new List<string> { "baseRobotElementClass.generateObjectAddToMaps needs to be overridden" };
@@ -1904,6 +1943,7 @@ namespace ApplicationData
     {
         public static mechanism theMechanism { get; set; }
         public static mechanismInstance theMechanismInstance { get; set; }
+        public static int stateIndex { get; set; }
         public static applicationData theRobot { get; set; }
         public static toolConfiguration theGeneratorConfig { get; set; }
 
@@ -1912,6 +1952,7 @@ namespace ApplicationData
             theMechanism = null;
             theMechanismInstance = null;
             theRobot = null;
+            stateIndex = 0;
         }
     }
 
@@ -2064,13 +2105,14 @@ namespace ApplicationData
 
             return sb;
         }
-        override public List<string> generateObjectCreation()
+        public override List<string> generateIndexedObjectCreation(int index)
         {
             if (generatorContext.theMechanismInstance != null)
             {
-                string creation = string.Format("{1}{0}State* {0}State = new {1}{0}State(string(\"{0}\"), 0, new {1}{0}StateGen(string(\"{0}\"), 0, *this))",
+                string creation = string.Format("{1}{0}State* {0}State = new {1}{0}State(string(\"{0}\"), {2}, new {1}{0}StateGen(string(\"{0}\"), {2}, *this))",
                 name,
-                generatorContext.theMechanismInstance.name);
+                generatorContext.theMechanismInstance.name,
+                index);
 
                 return new List<string> { creation };
             }
@@ -2089,7 +2131,7 @@ namespace ApplicationData
         }
         override public List<string> generateObjectAddToMaps()
         {
-            string creation = string.Format("GetStateVector().emplace_back({0}State)", name);
+            string creation = string.Format("AddToStateVector({0}State)", name);
 
             return new List<string> { creation };
         }
