@@ -111,15 +111,6 @@ DragonControlToCTREV5Adapter *DragonControlToCTREV5AdapterFactory::CreateAdapter
             return new DragonVelocityRPSToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;
 
-        case ControlModes::CONTROL_TYPE::CURRENT:
-            break;
-
-        case ControlModes::CONTROL_TYPE::MOTION_PROFILE:
-            break;
-
-        case ControlModes::CONTROL_TYPE::MOTION_PROFILE_ARC:
-            break;
-
         case ControlModes::CONTROL_TYPE::VOLTAGE:
             return new DragonVoltageToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller);
             break;

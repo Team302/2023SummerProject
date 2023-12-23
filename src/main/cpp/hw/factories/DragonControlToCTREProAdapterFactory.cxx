@@ -14,46 +14,138 @@
 /// OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#pragma once
-
 // C++ Includes
-#include <string>
 
 // Team 302 includes
-#include "hw/DistanceAngleCalcStruc.h"
+#include "hw/factories/DragonControlToCTREProAdapterFactory.h"
+#include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonPercentOutputToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonPositionDegreeToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonPositionInchToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonTicksToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonTrapezoidToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonVelocityDegreeToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonVelocityInchToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonVelocityRPSToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonVelocityToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonVoltageToCTREProAdapter.h"
+#include "utils/logging/Logger.h"
 
-// forward declares
-namespace ctre
+using namespace std;
+
+DragonControlToCTREProAdapterFactory *DragonControlToCTREProAdapterFactory::m_factory = nullptr;
+
+//=======================================================================================
+/// Method: GetInstance
+/// @brief  Get the factory singleton
+/// @return DragonServoFactory*    pointer to the factory
+//=======================================================================================
+DragonControlToCTREProAdapterFactory *DragonControlToCTREProAdapterFactory::GetFactory()
 {
-    namespace phoenix
+    if (DragonControlToCTREProAdapterFactory::m_factory == nullptr)
     {
-        namespace motorcontrol
-        {
-            namespace can
-            {
-                class WPI_BaseMotorController;
-            }
-        }
+        DragonControlToCTREProAdapterFactory::m_factory = new DragonControlToCTREProAdapterFactory();
     }
+    return DragonControlToCTREProAdapterFactory::m_factory;
 }
-class DragonControlToCTREV5Adapter;
-class ControlData;
 
-class DragonControlToCTREV5AdapterFactory
+DragonControlToCTREProAdapter *DragonControlToCTREProAdapterFactory::CreateAdapter(std::string networkTableName,
+                                                                                   int controllerSlot,
+                                                                                   const ControlData &controlInfo,
+                                                                                   const DistanceAngleCalcStruc &calcStruc,
+                                                                                   ctre::phoenixpro::hardware::TalonFX &controller)
 {
-public:
-    static DragonControlToCTREV5AdapterFactory *GetFactory();
-    DragonControlToCTREV5Adapter *CreateAdapter(std::string networkTableName,
-                                                int controllerSlot,
-                                                const ControlData &controlInfo,
-                                                const DistanceAngleCalcStruc &calcStruc,
-                                                ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller);
-    DragonControlToCTREV5Adapter *CreatePercentOuptutAdapter(std::string networkTableName,
-                                                             ctre::phoenix::motorcontrol::can::WPI_BaseMotorController controller);
+    switch (controlInfo.GetMode())
+    {
+    case ControlModes::CONTROL_TYPE::PERCENT_OUTPUT:
+        return new DragonPercentOutputToCTREProAdapter(networkTableName,
+                                                       controllerSlot,
+                                                       controlInfo,
+                                                       calcStruc,
+                                                       controller);
+        break;
+    case ControlModes::CONTROL_TYPE::POSITION_ABS_TICKS:
+        return new DragonTicksToCTREProAdapter(networkTableName,
+                                               controllerSlot,
+                                               controlInfo,
+                                               calcStruc,
+                                               controller);
+        break;
 
-private:
-    DragonControlToCTREV5AdapterFactory() = default;
-    ~DragonControlToCTREV5AdapterFactory() = default;
+    case ControlModes::CONTROL_TYPE::POSITION_DEGREES:
+        return new DragonPositionDegreeToCTREProAdapter(networkTableName,
+                                                        controllerSlot,
+                                                        controlInfo,
+                                                        calcStruc,
+                                                        controller);
+        break;
 
-    static DragonControlToCTREV5AdapterFactory *m_factory;
-};
+    case ControlModes::CONTROL_TYPE::POSITION_INCH:
+        return new DragonPositionInchToCTREProAdapter(networkTableName,
+                                                      controllerSlot,
+                                                      controlInfo,
+                                                      calcStruc,
+                                                      controller);
+        break;
+
+    case ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE:
+        return new DragonPercentOutputToCTREProAdapter(networkTableName,
+                                                       controllerSlot,
+                                                       controlInfo,
+                                                       calcStruc,
+                                                       controller);
+        break;
+
+    case ControlModes::CONTROL_TYPE::TRAPEZOID:
+        return new DragonTrapezoidToCTREProAdapter(networkTableName,
+                                                   controllerSlot,
+                                                   controlInfo,
+                                                   calcStruc,
+                                                   controller);
+        break;
+
+    case ControlModes::CONTROL_TYPE::VELOCITY_DEGREES:
+        return new DragonVelocityDegreeToCTREProAdapter(networkTableName,
+                                                        controllerSlot,
+                                                        controlInfo,
+                                                        calcStruc,
+                                                        controller);
+        break;
+
+    case ControlModes::CONTROL_TYPE::VELOCITY_INCH:
+        return new DragonVelocityInchToCTREProAdapter(networkTableName,
+                                                      controllerSlot,
+                                                      controlInfo,
+                                                      calcStruc,
+                                                      controller);
+        break;
+
+    case ControlModes::CONTROL_TYPE::VELOCITY_RPS:
+        return new DragonVelocityRPSToCTREProAdapter(networkTableName,
+                                                     controllerSlot,
+                                                     controlInfo,
+                                                     calcStruc,
+                                                     controller);
+        break;
+
+    case ControlModes::CONTROL_TYPE::VOLTAGE:
+        return new DragonVoltageToCTREProAdapter(networkTableName,
+                                                 controllerSlot,
+                                                 controlInfo,
+                                                 calcStruc,
+                                                 controller);
+        break;
+
+    default:
+        string msg{"Invalid control data "};
+        msg += to_string(controller.GetDeviceID());
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::ERROR_ONCE, string("DragonControlToCTREProAdapterFactory"), string("CreateAdapter"), msg);
+        return new DragonPercentOutputToCTREProAdapter(networkTableName,
+                                                       controllerSlot,
+                                                       controlInfo,
+                                                       calcStruc,
+                                                       controller);
+        break;
+    }
+    return nullptr;
+}

@@ -112,11 +112,6 @@ public:
         ) override;
         &&/
         
-        void SetFramePeriodPriority
-        (
-            MOTOR_PRIORITY              priority
-        ) override;
-
         void SetVoltage
         (
             units::volt_t output

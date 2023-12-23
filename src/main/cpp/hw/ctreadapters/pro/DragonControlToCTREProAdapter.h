@@ -24,6 +24,8 @@
 #include "hw/DragonTalonFX.h"
 #include "mechanisms/controllers/ControlData.h"
 
+#include "ctre/phoenixpro/TalonFX.hpp"
+
 class DragonControlToCTREProAdapter : public IDragonControlToVendorControlAdapter
 {
 public:
@@ -32,7 +34,7 @@ public:
                                   int controllerSlot,
                                   const ControlData &controlInfo,
                                   const DistanceAngleCalcStruc &calcStruc,
-                                  DragonTalonFX &controller);
+                                  ctre::phoenixpro::hardware::TalonFX &controller);
     void InitializeDefaults() override;
     std::string GetErrorPrompt() const;
 
@@ -51,5 +53,12 @@ protected:
     int m_controllerSlot;
     ControlData m_controlData;
     DistanceAngleCalcStruc m_calcStruc;
-    DragonTalonFX *m_controller;
+    ctre::phoenixpro::hardware::TalonFX &m_controller;
+    bool m_isDuty;
+    double m_dutyFeedForward;
+    bool m_isVoltage;
+    units::voltage::volt_t m_voltageFeedForward;
+    bool m_isTorque;
+    units::current::ampere_t m_torqueCurrentFeedForward;
+    bool m_enableFOC;
 };

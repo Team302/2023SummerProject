@@ -15,49 +15,58 @@
 //====================================================================================================================================================
 
 // C++ Includes
+#include <string>
 
 // FRC includes
 
 // Team 302 includes
+#include "hw/DistanceAngleCalcStruc.h"
 #include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
-#include "hw/ctreadapters/pro/DragonPercentOutputToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonVelocityToCTREProAdapter.h"
 #include "mechanisms/controllers/ControlData.h"
 #include "mechanisms/controllers/ControlModes.h"
+#include "utils/ConversionUtils.h"
 
 // Third Party Includes
-#include "units/dimensionless.h"
-#include "units/voltage.h"
+#include "ctre/phoenix/motorcontrol/ControlMode.h"
+#include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
-using ctre::phoenixpro::controls::DutyCycleOut;
-using ctre::phoenixpro::controls::VoltageOut;
+using ctre::phoenixpro::controls::VelocityDutyCycle;
+using ctre::phoenixpro::controls::VelocityTorqueCurrentFOC;
+using ctre::phoenixpro::controls::VelocityVoltage;
 using ctre::phoenixpro::hardware::TalonFX;
 using std::string;
 
-DragonPercentOutputToCTREProAdapter::DragonPercentOutputToCTREProAdapter(string networkTableName,
-                                                                         int controllerSlot,
-                                                                         const ControlData &controlInfo,
-                                                                         const DistanceAngleCalcStruc &calcStruc,
-                                                                         ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+DragonVelocityToCTREProAdapter::DragonVelocityToCTREProAdapter(string networkTableName,
+                                                               int controllerSlot,
+                                                               const ControlData &controlInfo,
+                                                               const DistanceAngleCalcStruc &calcStruc,
+                                                               ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
-void DragonPercentOutputToCTREProAdapter::Set(double value)
+
+void DragonVelocityToCTREProAdapter::Set(double value)
 {
     if (m_isDuty)
     {
-        DutyCycleOut out{value};
-        out.WithEnableFOC(m_enableFOC);
+        VelocityDutyCycle out{units::angular_velocity::turns_per_second_t(value)};
         m_controller.SetControl(out);
     }
     else if (m_isVoltage)
     {
-        VoltageOut out{units::volt_t(value)};
-        out.WithEnableFOC(m_enableFOC);
+        VelocityVoltage out{units::angular_velocity::turns_per_second_t(value)};
+        m_controller.SetControl(out);
+    }
+    else if (m_isTorque)
+    {
+        VelocityTorqueCurrentFOC out{units::angular_velocity::turns_per_second_t(value)};
         m_controller.SetControl(out);
     }
 }
 
-void DragonPercentOutputToCTREProAdapter::SetControlConstants(int controlSlot,
-                                                              const ControlData &controlInfo)
+void DragonVelocityToCTREProAdapter::SetControlConstants(int controlSlot,
+                                                         const ControlData &controlInfo)
 {
-    // NO-OP
+    SetPeakAndNominalValues(m_networkTableName, controlInfo);
+    SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);
 }

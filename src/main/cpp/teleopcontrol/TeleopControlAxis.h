@@ -22,7 +22,7 @@
 
 // Team 302 includes
 
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 
 struct TeleopControlAxis
 {

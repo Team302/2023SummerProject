@@ -20,7 +20,7 @@
 #include <vector>
 
 // Team 302 includes
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 #include <teleopcontrol/TeleopControlMappingEnums.h>
 
 // forward declares
@@ -31,7 +31,7 @@ namespace frc
 class AnalogAxis;
 class IButton;
 
-class DragonGamepad : public IDragonGamePad
+class DragonGamepad : public IDragonGamepad
 {
 public:
     DragonGamepad(

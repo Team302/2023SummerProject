@@ -23,14 +23,14 @@
 #include <frc/XboxController.h>
 
 // Team 302 includes
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 #include <teleopcontrol/TeleopControlMappingEnums.h>
 
 // forward declares
 class AnalogAxis;
 class IButton;
 
-class DragonXBox : public IDragonGamePad
+class DragonXBox : public IDragonGamepad
 {
 public:
     DragonXBox(

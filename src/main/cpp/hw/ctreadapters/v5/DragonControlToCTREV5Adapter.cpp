@@ -57,7 +57,6 @@ DragonControlToCTREV5Adapter::DragonControlToCTREV5Adapter(std::string networkTa
 		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_INCH ||
 		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VELOCITY_RPS ||
 		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::VOLTAGE ||
-		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::CURRENT ||
 		controlInfo.GetMode() == ControlModes::CONTROL_TYPE::TRAPEZOID)
 	{
 		SetPIDConstants(networkTableName, controllerSlot, controlInfo);
