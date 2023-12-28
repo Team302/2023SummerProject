@@ -22,12 +22,10 @@
 // FRC includes
 
 // Team 302 includes
-#include "State.h"
-#include "mechanisms/frontIntake/generated/frontIntake_Forward_StateGen.h"
-#include "mechanisms/frontIntake/decoratormods/frontIntake_Forward_State.h"
-#include "teleopcontrol/TeleopControl.h"
-#include "teleopcontrol/TeleopControlFunctions.h"
-#include "gamepad/button/David.h"
+#include "mechanisms/sideEject/generated/sideEject_gen.h"
+#include "mechanisms/sideEject/generated/sideEject_state_1_StateGen.h"
+#include "mechanisms/base/BaseMech.h"
+
 #include <utils/logging/LoggableItemMgr.h>
 #include "utils/logging/Logger.h"
 #include <utils/logging/LoggerData.h>
@@ -35,44 +33,35 @@
 
 // Third Party Includes
 
-using namespace std;
+using std::string;
 
-/// @class ExampleForwardState
+/// @class sideEjectstate_1StateGen
 /// @brief information about the control (open loop, closed loop position, closed loop velocity, etc.) for a mechanism state
-frontIntakeForwardState::frontIntakeForwardState ( std::string stateName,
+sideEjectstate_1StateGen::sideEjectstate_1StateGen ( string stateName,
         int stateId,
-        frontIntakeForwardStateGen *generatedState ) : State ( stateName, stateId ), m_genState ( generatedState )
+        sideEject_gen &mech ) : sideEjectBaseStateGen ( stateName, stateId, mech )
 {
 }
 
-void frontIntakeForwardState::Init()
+void sideEjectstate_1StateGen::Init()
 {
-	Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( "ArrivedAt" ), string ( "frontIntakeForwardState" ), string ( "init" ) );
+	Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( "ArrivedAt" ), string ( "sideEjectstate_1StateGen" ), string ( "init" ) );
 
-	m_genState->Init();
+	sideEjectBaseStateGen::Init();
 }
 
-void frontIntakeForwardState::Run()
+void sideEjectstate_1StateGen::Run()
 {
-	// Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("frontIntakeForwardState"), string("run"));
-	m_genState->Run();
+	// Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("sideEjectstate_1StateGen"), string("run"));
+	sideEjectBaseStateGen::Run();
 }
 
-void frontIntakeForwardState::Exit()
+void sideEjectstate_1StateGen::Exit()
 {
-	m_genState->Exit();
+	sideEjectBaseStateGen::Exit();
 }
 
-bool frontIntakeForwardState::AtTarget()
+bool sideEjectstate_1StateGen::AtTarget()
 {
-	auto attarget = m_genState->AtTarget();
-	return attarget;
-}
-
-bool frontIntakeForwardState::IsTransitionCondition ( bool considerGamepadTransitions ) const
-{
-	return theButton::A_BUTTON_IsPressed;
-	// auto transition = m_genState->IsTransitionCondition(considerGamepadTransitions);
-	// return transition;
-	return ( considerGamepadTransitions && TeleopControl::GetInstance()->IsButtonPressed ( TeleopControlFunctions::EXAMPLE_MECH_FORWARD ) );
+	return sideEjectBaseStateGen::AtTarget();
 }

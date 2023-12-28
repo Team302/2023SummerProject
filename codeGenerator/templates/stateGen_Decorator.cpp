@@ -39,7 +39,7 @@ void $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$State::Init()
 
 void $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$State::Run()
 {
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("$$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$State"), string("run"));
+    // Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("$$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$State"), string("run"));
     m_genState->Run();
 }
 

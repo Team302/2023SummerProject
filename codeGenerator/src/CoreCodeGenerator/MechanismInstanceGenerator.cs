@@ -60,13 +60,32 @@ namespace CoreCodeGenerator
 
                         resultString = template;
 
-                        
+
                         resultString = resultString.Replace("$$_MECHANISM_TYPE_NAME_$$", ToUnderscoreCase(mi.name).ToUpper());
                         resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
                         resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
                         resultString = resultString.Replace("$$_OBJECT_CREATION_$$", ListToString(generateMethod(mi, "generateIndexedObjectCreation"), ";"));
                         resultString = resultString.Replace("$$_ADD_TO_MAPS_$$", ListToString(generateMethod(mi, "generateObjectAddToMaps"), ";"));
                         resultString = resultString.Replace("$$_STATE_CLASSES_INCLUDES_$$", ListToString(generateMethod(mi, "generateIncludes"), ""));
+
+                        List<string> stateTransitions = new List<string>();
+                        foreach (state s in mi.mechanism.states)
+                        {
+                            if (s.transitionsTo.Count > 0)
+                            {
+                                foreach (stringParameterConstInMechInstance transition in s.transitionsTo)
+                                {
+                                    stateTransitions.Add(String.Format("{0}State->RegisterTransitionState({1}State)", s.name, transition.value));
+                                }
+                            }
+                            else
+                            {
+                                stateTransitions.Add(String.Format("{0}State->RegisterTransitionState({0}State)", s.name));
+                            }
+                        }
+
+                        resultString = resultString.Replace("$$_STATE_TRANSITION_REGISTRATION_$$", ListToString(stateTransitions, ";"));
+
 
                         List<string> theUsings = generateMethod(mi, "generateUsings").Distinct().ToList();
                         resultString = resultString.Replace("$$_USING_DIRECTIVES_$$", ListToString(theUsings, ";"));
@@ -100,6 +119,14 @@ namespace CoreCodeGenerator
 
                         resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
                         resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
+
+                        List<string> enumList = new List<string>();
+                        foreach (state s in mi.mechanism.states)
+                        {
+                            enumList.Add(String.Format("STATE_{0}", ToUnderscoreCase(s.name).ToUpper()));
+                        }
+
+                        resultString = resultString.Replace("$$_STATE_NAMES_$$", ListToString(enumList, ", "));
 
                         filePathName = getMechanismFullFilePathName(mechanismName, cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName), true);
                         copyrightAndGenNoticeAndSave(filePathName, resultString);
@@ -143,7 +170,7 @@ namespace CoreCodeGenerator
                             resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
                             resultString = resultString.Replace("$$_STATE_NAME_$$", s.name);
 
-                            filePathName = getMechanismFullFilePathName(mechanismName, 
+                            filePathName = getMechanismFullFilePathName(mechanismName,
                                                                         cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName).Replace("STATE_NAME", s.name)
                                                                         , true);
                             copyrightAndGenNoticeAndSave(filePathName, resultString);

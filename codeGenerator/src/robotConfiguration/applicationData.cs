@@ -2086,6 +2086,9 @@ namespace ApplicationData
     [Serializable()]
     public class state : baseRobotElementClass
     {
+        [ConstantInMechInstance()]
+        public List<stringParameterConstInMechInstance> transitionsTo { get; set; }
+
         public state()
         {
             name = GetType().Name;

@@ -1,7 +1,6 @@
 $$_COPYRIGHT_$$
 $$_GEN_NOTICE_$$
 
-#pragma once
 #include <string>
 
 // C++ Includes

@@ -25,6 +25,8 @@ void $$_MECHANISM_INSTANCE_NAME_$$_gen::Create()
     m_ntName = "$$_MECHANISM_INSTANCE_NAME_$$";
     $$_OBJECT_CREATION_$$
 
+    $$_STATE_TRANSITION_REGISTRATION_$$
+
     $$_ADD_TO_MAPS_$$
 
     m_table = nt::NetworkTableInstance::GetDefault().GetTable(m_ntName);

@@ -438,6 +438,31 @@ namespace DataConfiguration
     }
     #endregion
 
+
+    [Serializable()]
+    [NotUserAddable]
+    public partial class stringParameterConstInMechInstance : parameter
+    {
+        [ConstantInMechInstance]
+        public string value { get; set; }
+
+        public stringParameterConstInMechInstance()
+        {
+            if (string.IsNullOrEmpty(value))
+                value = "value";            
+            
+            showExpanded = false;
+            type = value.GetType().Name;
+
+        }
+        override public string getDisplayName(string instanceName, out helperFunctions.RefreshLevel refresh)
+        {
+            refresh = helperFunctions.RefreshLevel.none;
+
+            return string.Format("{0}", value);
+        }
+    }
+
     #region ====================== Attribute definitions
     // if applied to a property, it means that live tuning over network tables is enabled
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false)]

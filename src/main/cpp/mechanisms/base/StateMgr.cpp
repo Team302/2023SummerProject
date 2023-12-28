@@ -38,6 +38,8 @@
 
 using namespace std;
 
+State *myState;
+
 /// @brief    initialize the state manager, parse the configuration file and create the states.
 StateMgr::StateMgr() : m_checkGamePadTransitions(true),
                        m_mech(nullptr),
@@ -54,6 +56,7 @@ void StateMgr::Init(BaseMech *mech)
         m_currentState = m_stateVector[0];
         m_currentStateID = 0;
         m_currentState->Init();
+        myState = m_currentState;
     }
 }
 
@@ -63,6 +66,8 @@ void StateMgr::RunCurrentState()
 {
     if (m_mech != nullptr)
     {
+        m_currentState = myState;
+
         CheckForStateTransition();
 
         // run the current state
@@ -70,6 +75,7 @@ void StateMgr::RunCurrentState()
         {
             m_currentState->Run();
         }
+        myState = m_currentState;
     }
 }
 
@@ -156,17 +162,17 @@ void StateMgr::LogInformation()
 {
     if (m_mech != nullptr)
     {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state id"), m_currentStateID);
-        if (m_currentState != nullptr)
-        {
-            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state"), m_currentState->GetStateName());
-            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state id"), m_currentState->GetStateId());
-        }
-        auto index = 0;
-        for (auto state : m_stateVector)
-        {
-            Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("StateMgr: ") + to_string(index) + string(" - ") + string("state name"), state->GetStateName());
-            index++;
-        }
+        // Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state id"), m_currentStateID);
+        // if (m_currentState != nullptr)
+        // {
+        //     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state"), m_currentState->GetStateName());
+        //     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("current state id"), m_currentState->GetStateId());
+        // }
+        // auto index = 0;
+        // for (auto state : m_stateVector)
+        // {
+        //     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, m_mech->GetNetworkTableName(), string("StateMgr: ") + to_string(index) + string(" - ") + string("state name"), state->GetStateName());
+        //     index++;
+        // }
     }
 }

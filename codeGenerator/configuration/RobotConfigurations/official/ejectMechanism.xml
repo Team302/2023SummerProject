@@ -57,5 +57,10 @@
   <digitalInput />
   <cancoder />
   <stateMotorControlData />
-  <states />
+  <states>
+    <state>
+      <name>state_1</name>
+      <transitionsTo />
+    </state>
+  </states>
 </mechanism>

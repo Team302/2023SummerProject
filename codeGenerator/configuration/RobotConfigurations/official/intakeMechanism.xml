@@ -288,21 +288,59 @@
   <states>
     <state>
       <name>Forward</name>
+      <transitionsTo>
+        <stringParameterConstInMechInstance>
+          <unitsFamily>none</unitsFamily>
+          <name>transitionsTo[0]</name>
+          <__units__ />
+          <type>String</type>
+          <value>MaxTravel</value>
+        </stringParameterConstInMechInstance>
+      </transitionsTo>
     </state>
     <state>
       <name>MaxTravel</name>
+      <transitionsTo>
+        <stringParameterConstInMechInstance>
+          <unitsFamily>none</unitsFamily>
+          <name>transitionsTo_1</name>
+          <__units__ />
+          <type>String</type>
+          <value>MinTravel</value>
+        </stringParameterConstInMechInstance>
+      </transitionsTo>
     </state>
     <state>
       <name>MinTravel</name>
+      <transitionsTo>
+        <stringParameterConstInMechInstance>
+          <unitsFamily>none</unitsFamily>
+          <name>transitionsTo_1</name>
+          <__units__ />
+          <type>String</type>
+          <value>Reverse</value>
+        </stringParameterConstInMechInstance>
+      </transitionsTo>
     </state>
     <state>
       <name>Reverse</name>
+      <transitionsTo>
+        <stringParameterConstInMechInstance>
+          <unitsFamily>none</unitsFamily>
+          <name>transitionsTo_1</name>
+          <__units__ />
+          <type>String</type>
+          <value>Forward</value>
+        </stringParameterConstInMechInstance>
+      </transitionsTo>
     </state>
     <state>
       <name>Stop</name>
+      <transitionsTo />
     </state>
     <state>
       <name>Panic</name>
+      <transitionsTo />
     </state>
   </states>
 </mechanism>

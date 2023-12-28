@@ -1181,12 +1181,20 @@ namespace FRCrobotCodeGen302
 
                         bool isValue__ = true;
                         object obj = lnt.obj;
-                        PropertyInfo prop = nodeTag.getType(lnt).GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
-                        if (prop == null)
+                        PropertyInfo prop = null;
+                        if (obj is stringParameterConstInMechInstance)
                         {
-                            isValue__ = false;
-                            obj = nodeTag.getObject(lastSelectedValueNode.Parent.Tag);
-                            prop = obj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                            prop = nodeTag.getType(lnt).GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
+                        }
+                        else
+                        {
+                            prop = nodeTag.getType(lnt).GetProperty("value__", BindingFlags.Public | BindingFlags.Instance);
+                            if (prop == null)
+                            {
+                                isValue__ = false;
+                                obj = nodeTag.getObject(lastSelectedValueNode.Parent.Tag);
+                                prop = obj.GetType().GetProperty(lnt.name, BindingFlags.Public | BindingFlags.Instance);
+                            }
                         }
 
                         if ((prop != null) && (prop.CanWrite))
@@ -1202,6 +1210,7 @@ namespace FRCrobotCodeGen302
                             //        viewer.PushValue(valueTextBox.Text, NTViewer.ConvertFullNameToTuningKey(lnt.name));
                             //}
                         }
+
 
                         helperFunctions.RefreshLevel refresh;
                         //lastSelectedValueNode.Text = getDisplayName(isValue__ ? obj : prop.GetValue(obj), lnt.name, out refresh);
@@ -1384,7 +1393,10 @@ namespace FRCrobotCodeGen302
                     else if (baseDataConfiguration.isACollection(((robotElementType)robotElementObj).t))
                     {
                         Type elementType = ((robotElementType)robotElementObj).t.GetGenericArguments().Single();
-                        obj = Activator.CreateInstance(elementType);
+                        if (elementType == typeof(string))
+                            obj = "StateName";
+                        else
+                            obj = Activator.CreateInstance(elementType);
 
                         // get the name of the property of this type
                         PropertyInfo[] pis = nodeTag.getObject(lastSelectedValueNode.Tag).GetType().GetProperties();

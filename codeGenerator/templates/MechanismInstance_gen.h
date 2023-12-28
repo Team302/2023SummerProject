@@ -21,6 +21,11 @@ $$_GEN_NOTICE_$$
 class $$_MECHANISM_INSTANCE_NAME_$$_gen : public $$_MECHANISM_NAME_$$, public StateMgr
 {
 public:
+    enum STATE_NAMES
+    {
+        $$_STATE_NAMES_$$
+    };
+
     $$_MECHANISM_INSTANCE_NAME_$$_gen();
 
     void Create();
