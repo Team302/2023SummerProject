@@ -89,11 +89,11 @@ DragonControlToCTREProAdapter *DragonControlToCTREProAdapterFactory::CreateAdapt
         break;
 
     case ControlModes::CONTROL_TYPE::POSITION_DEGREES_ABSOLUTE:
-        return new DragonPercentOutputToCTREProAdapter(networkTableName,
-                                                       controllerSlot,
-                                                       controlInfo,
-                                                       calcStruc,
-                                                       controller);
+        return new DragonPositionDegreeToCTREProAdapter(networkTableName,
+                                                        controllerSlot,
+                                                        controlInfo,
+                                                        calcStruc,
+                                                        controller);
         break;
 
     case ControlModes::CONTROL_TYPE::TRAPEZOID:

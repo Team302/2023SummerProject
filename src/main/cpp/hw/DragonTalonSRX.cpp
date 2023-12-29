@@ -161,7 +161,7 @@ DragonTalonSRX::DragonTalonSRX(string networkTableName,
 
 double DragonTalonSRX::GetRotations()
 {
-	if (m_calcStruc.countsPerDegree > 0.01)
+	if (m_calcStruc.countsPerDegree > DistanceAngleCalcStruc::countsPerTolerance)
 	{
 		return m_talon.get()->GetSelectedSensorPosition() / (m_calcStruc.countsPerDegree * 360.0);
 	}
@@ -170,7 +170,7 @@ double DragonTalonSRX::GetRotations()
 
 double DragonTalonSRX::GetRPS()
 {
-	if (m_calcStruc.countsPerDegree > 0.01)
+	if (m_calcStruc.countsPerDegree > DistanceAngleCalcStruc::countsPerTolerance)
 	{
 		return m_talon.get()->GetSelectedSensorVelocity() * 10.0 / (m_calcStruc.countsPerDegree * 360.0);
 	}

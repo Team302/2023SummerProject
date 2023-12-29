@@ -40,7 +40,7 @@ DragonPositionDegreeToCTREV5Adapter::DragonPositionDegreeToCTREV5Adapter(std::st
 
 void DragonPositionDegreeToCTREV5Adapter::Set(double value)
 {
-    auto output = (m_calcStruc.countsPerDegree > 0.01) ? m_calcStruc.countsPerDegree * value : (ConversionUtils::DegreesToCounts(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
+    auto output = (m_calcStruc.countsPerDegree > DistanceAngleCalcStruc::countsPerTolerance) ? m_calcStruc.countsPerDegree * value : (ConversionUtils::DegreesToCounts(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
     m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
 
     // m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, 0.1);

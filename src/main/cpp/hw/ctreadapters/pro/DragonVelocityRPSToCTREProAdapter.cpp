@@ -41,8 +41,3 @@ DragonVelocityRPSToCTREProAdapter::DragonVelocityRPSToCTREProAdapter(string netw
                                                                      ctre::phoenixpro::hardware::TalonFX &controller) : DragonVelocityToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
-
-void DragonVelocityRPSToCTREProAdapter::Set(double value)
-{
-    // TODO  Add phoenix pro commands
-}

@@ -49,7 +49,7 @@ DragonPositionInchToCTREProAdapter::DragonPositionInchToCTREProAdapter(string ne
 
 void DragonPositionInchToCTREProAdapter::Set(double value)
 {
-    units::angle::degree_t target = units::angle::turn_t(value / (m_calcStruc.diameter * std::numbers::pi));
+    units::angle::degree_t target = (m_calcStruc.countsPerInch > DistanceAngleCalcStruc::countsPerTolerance) ? units::angle::turn_t(value / m_calcStruc.countsPerInch) : units::angle::turn_t(value / (m_calcStruc.diameter * std::numbers::pi));
     if (m_isVoltage)
     {
         PositionVoltage out{target, m_enableFOC, m_voltageFeedForward, m_controllerSlot, false};

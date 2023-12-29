@@ -41,7 +41,7 @@ DragonVelocityDegreeToCTREV5Adapter::DragonVelocityDegreeToCTREV5Adapter(std::st
 
 void DragonVelocityDegreeToCTREV5Adapter::Set(double value)
 {
-    auto output = (m_calcStruc.countsPerDegree > 0.01) ? m_calcStruc.countsPerDegree * value * 0.1 : (ConversionUtils::DegreesPerSecondToCounts100ms(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
+    auto output = (m_calcStruc.countsPerDegree > DistanceAngleCalcStruc::countsPerTolerance) ? m_calcStruc.countsPerDegree * value * 0.1 : (ConversionUtils::DegreesPerSecondToCounts100ms(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
     m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, output);
 }
 
