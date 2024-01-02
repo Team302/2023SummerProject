@@ -20,7 +20,7 @@
 #include <frc/GenericHID.h>
 
 // Team 302 includes
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 
 // forward declares
 class IProfile;

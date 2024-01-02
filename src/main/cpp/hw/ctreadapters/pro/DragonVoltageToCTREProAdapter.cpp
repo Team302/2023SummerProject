@@ -25,7 +25,11 @@
 #include "mechanisms/controllers/ControlModes.h"
 
 // Third Party Includes
+#include "units/dimensionless.h"
+#include "units/voltage.h"
 
+using ctre::phoenixpro::controls::DutyCycleOut;
+using ctre::phoenixpro::controls::VoltageOut;
 using ctre::phoenixpro::hardware::TalonFX;
 using std::string;
 
@@ -33,13 +37,15 @@ DragonVoltageToCTREProAdapter::DragonVoltageToCTREProAdapter(string networkTable
                                                              int controllerSlot,
                                                              const ControlData &controlInfo,
                                                              const DistanceAngleCalcStruc &calcStruc,
-                                                             DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                             ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
 void DragonVoltageToCTREProAdapter::Set(double value)
 {
-    m_controller->SetVoltage(units::voltage::volt_t(value));
+    VoltageOut out{units::volt_t(value)};
+    out.WithEnableFOC(m_enableFOC);
+    m_controller.SetControl(out);
 }
 
 void DragonVoltageToCTREProAdapter::SetControlConstants(int controlSlot,

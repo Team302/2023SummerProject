@@ -1,3 +1,4 @@
+
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302
 //
@@ -20,8 +21,8 @@
 
 // Team 302 includes
 #include "hw/DistanceAngleCalcStruc.h"
-#include "hw/ctreadapters/v5/DragonControlToCTREV5Adapter.h"
-#include "hw/ctreadapters/v5/DragonPositionDegreeToCTREV5Adapter.h"
+#include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
+#include "hw/ctreadapters/pro/DragonVelocityToCTREProAdapter.h"
 #include "mechanisms/controllers/ControlData.h"
 #include "mechanisms/controllers/ControlModes.h"
 #include "utils/ConversionUtils.h"
@@ -30,24 +31,41 @@
 #include "ctre/phoenix/motorcontrol/ControlMode.h"
 #include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
 
-DragonPositionDegreeToCTREV5Adapter::DragonPositionDegreeToCTREV5Adapter(std::string networkTableName,
-                                                                         int controllerSlot,
-                                                                         const ControlData &controlInfo,
-                                                                         const DistanceAngleCalcStruc &calcStruc,
-                                                                         ctre::phoenix::motorcontrol::can::WPI_BaseMotorController *controller) : DragonControlToCTREV5Adapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+using ctre::phoenixpro::controls::VelocityDutyCycle;
+using ctre::phoenixpro::controls::VelocityTorqueCurrentFOC;
+using ctre::phoenixpro::controls::VelocityVoltage;
+using ctre::phoenixpro::hardware::TalonFX;
+using std::string;
+
+DragonVelocityToCTREProAdapter::DragonVelocityToCTREProAdapter(string networkTableName,
+                                                               int controllerSlot,
+                                                               const ControlData &controlInfo,
+                                                               const DistanceAngleCalcStruc &calcStruc,
+                                                               ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
-void DragonPositionDegreeToCTREV5Adapter::Set(double value)
+void DragonVelocityToCTREProAdapter::Set(double value)
 {
-    auto output = (m_calcStruc.countsPerDegree > DistanceAngleCalcStruc::countsPerTolerance) ? m_calcStruc.countsPerDegree * value : (ConversionUtils::DegreesToCounts(value, m_calcStruc.countsPerRev) * m_calcStruc.gearRatio);
-    m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
-
-    // m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output, ctre::phoenix::motorcontrol::DemandType::DemandType_ArbitraryFeedForward, 0.1);
+    if (m_isDuty)
+    {
+        VelocityDutyCycle out{units::angular_velocity::turns_per_second_t(value)};
+        m_controller.SetControl(out);
+    }
+    else if (m_isVoltage)
+    {
+        VelocityVoltage out{units::angular_velocity::turns_per_second_t(value)};
+        m_controller.SetControl(out);
+    }
+    else if (m_isTorque)
+    {
+        VelocityTorqueCurrentFOC out{units::angular_velocity::turns_per_second_t(value)};
+        m_controller.SetControl(out);
+    }
 }
 
-void DragonPositionDegreeToCTREV5Adapter::SetControlConstants(int controlSlot,
-                                                              const ControlData &controlInfo)
+void DragonVelocityToCTREProAdapter::SetControlConstants(int controlSlot,
+                                                         const ControlData &controlInfo)
 {
     SetPeakAndNominalValues(m_networkTableName, controlInfo);
     SetPIDConstants(m_networkTableName, m_controllerSlot, controlInfo);

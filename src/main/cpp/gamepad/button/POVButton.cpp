@@ -17,7 +17,7 @@
 #include <frc/GenericHID.h>
 
 #include <gamepad/button/POVButton.h>
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 
 //==================================================================================
 /// <summary>

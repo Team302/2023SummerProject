@@ -21,7 +21,7 @@
 // FRC includes
 
 // Team 302 includes
-// #include <gamepad/IDragonGamePad.h>
+// #include <gamepad/IDragonGamepad.h>
 #include <teleopcontrol/TeleopControlAxis.h>
 #include <teleopcontrol/TeleopControlButton.h>
 #include <teleopcontrol/TeleopControlFunctions.h>

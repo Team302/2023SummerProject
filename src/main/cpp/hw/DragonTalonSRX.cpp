@@ -161,7 +161,7 @@ DragonTalonSRX::DragonTalonSRX(string networkTableName,
 
 double DragonTalonSRX::GetRotations()
 {
-	if (m_calcStruc.countsPerDegree > 0.01)
+	if (m_calcStruc.countsPerDegree > DistanceAngleCalcStruc::countsPerTolerance)
 	{
 		return m_talon.get()->GetSelectedSensorPosition() / (m_calcStruc.countsPerDegree * 360.0);
 	}
@@ -170,7 +170,7 @@ double DragonTalonSRX::GetRotations()
 
 double DragonTalonSRX::GetRPS()
 {
-	if (m_calcStruc.countsPerDegree > 0.01)
+	if (m_calcStruc.countsPerDegree > DistanceAngleCalcStruc::countsPerTolerance)
 	{
 		return m_talon.get()->GetSelectedSensorVelocity() * 10.0 / (m_calcStruc.countsPerDegree * 360.0);
 	}
@@ -197,64 +197,6 @@ void DragonTalonSRX::UpdateFramePeriods
 	m_talon.get()->SetStatusFramePeriod( frame, milliseconds, 0 );
 }
 **/
-void DragonTalonSRX::SetFramePeriodPriority(
-	MOTOR_PRIORITY priority)
-{
-	return;
-	/**
-	switch ( priority )
-	{
-		case HIGH:
-			UpdateFramePeriods( StatusFrameEnhanced::Status_1_General, 10 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_2_Feedback0, 20 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_3_Quadrature, 100 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_4_AinTempVbat, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_8_PulseWidth, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_10_Targets, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_11_UartGadgeteer, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_12_Feedback1, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_13_Base_PIDF0, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_14_Turn_PIDF1, 120 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_15_FirmareApiStatus, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_Brushless_Current, 200 );
-			break;
-
-		case MEDIUM:
-			UpdateFramePeriods( StatusFrameEnhanced::Status_1_General, 20 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_2_Feedback0, 30 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_3_Quadrature, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_4_AinTempVbat, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_8_PulseWidth, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_10_Targets, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_11_UartGadgeteer, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_12_Feedback1, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_13_Base_PIDF0, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_14_Turn_PIDF1, 150 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_15_FirmareApiStatus, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_Brushless_Current, 200 );
-			break;
-
-		case LOW:
-			UpdateFramePeriods( StatusFrameEnhanced::Status_1_General, 30 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_2_Feedback0, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_3_Quadrature, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_4_AinTempVbat, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_8_PulseWidth, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_10_Targets, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_11_UartGadgeteer, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_12_Feedback1, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_13_Base_PIDF0, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_14_Turn_PIDF1, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_15_FirmareApiStatus, 200 );
-			UpdateFramePeriods( StatusFrameEnhanced::Status_Brushless_Current, 200 );
-			break;
-
-		default:
-		break;
-
-	}
-	**/
-}
 
 void DragonTalonSRX::Set(double value)
 {

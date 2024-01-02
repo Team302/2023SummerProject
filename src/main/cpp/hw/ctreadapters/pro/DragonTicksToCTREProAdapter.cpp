@@ -29,7 +29,13 @@
 // Third Party Includes
 #include "ctre/phoenix/motorcontrol/ControlMode.h"
 #include "ctre/phoenix/motorcontrol/can/WPI_BaseMotorController.h"
+#include "ctre/phoenixpro/controls/PositionDutyCycle.hpp"
+#include "ctre/phoenixpro/controls/PositionTorqueCurrentFOC.hpp"
+#include "ctre/phoenixpro/controls/PositionVoltage.hpp"
 
+using ctre::phoenixpro::controls::PositionDutyCycle;
+using ctre::phoenixpro::controls::PositionTorqueCurrentFOC;
+using ctre::phoenixpro::controls::PositionVoltage;
 using ctre::phoenixpro::hardware::TalonFX;
 using std::string;
 
@@ -37,13 +43,28 @@ DragonTicksToCTREProAdapter::DragonTicksToCTREProAdapter(string networkTableName
                                                          int controllerSlot,
                                                          const ControlData &controlInfo,
                                                          const DistanceAngleCalcStruc &calcStruc,
-                                                         DragonTalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
+                                                         ctre::phoenixpro::hardware::TalonFX &controller) : DragonControlToCTREProAdapter(networkTableName, controllerSlot, controlInfo, calcStruc, controller)
 {
 }
 
 void DragonTicksToCTREProAdapter::Set(double value)
 {
-    // TODO  Add phoenix pro commands
+    units::angle::degree_t target = units::angle::turn_t(value / (m_calcStruc.countsPerRev));
+    if (m_isVoltage)
+    {
+        PositionVoltage out{target, m_enableFOC, m_voltageFeedForward, m_controllerSlot, false};
+        m_controller.SetControl(out);
+    }
+    else if (m_isTorque)
+    {
+        PositionTorqueCurrentFOC out{target, m_torqueCurrentFeedForward, m_controllerSlot, false};
+        m_controller.SetControl(out);
+    }
+    else
+    {
+        PositionDutyCycle out{target, m_enableFOC, m_dutyFeedForward, m_controllerSlot, false};
+        m_controller.SetControl(out);
+    }
 }
 
 void DragonTicksToCTREProAdapter::SetControlConstants(int controlSlot,

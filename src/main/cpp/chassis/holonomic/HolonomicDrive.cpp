@@ -28,7 +28,7 @@
 #include <chassis/ChassisOptionEnums.h>
 #include <chassis/holonomic/HolonomicDrive.h>
 #include <chassis/IChassis.h>
-#include <gamepad/IDragonGamePad.h>
+#include <gamepad/IDragonGamepad.h>
 #include "teleopcontrol/TeleopControl.h"
 #include <teleopcontrol/TeleopControlFunctions.h>
 #include "State.h"
