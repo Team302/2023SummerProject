@@ -47,22 +47,22 @@ PeriodicLooper::~PeriodicLooper()
     m_simulation.clear();
 }
 
-void PeriodicLooper::RegisterAuton(StateMgr &mgr)
+void PeriodicLooper::RegisterAuton(StateMgr *mgr)
 {
     m_auton.emplace_back(mgr);
 }
 
-void PeriodicLooper::RegisterTeleop(StateMgr &mgr)
+void PeriodicLooper::RegisterTeleop(StateMgr *mgr)
 {
     m_teleop.emplace_back(mgr);
 }
 
-void PeriodicLooper::RegisterSimulation(StateMgr &mgr)
+void PeriodicLooper::RegisterSimulation(StateMgr *mgr)
 {
     m_simulation.emplace_back(mgr);
 }
 
-void PeriodicLooper::RegisterAll(StateMgr &mgr)
+void PeriodicLooper::RegisterAll(StateMgr *mgr)
 {
     m_auton.emplace_back(mgr);
     m_teleop.emplace_back(mgr);
@@ -99,18 +99,18 @@ void PeriodicLooper::SimulationRunCurrentState()
     RunCurrentStates(m_simulation);
 }
 
-void PeriodicLooper::SetGamePadTransitions(vector<StateMgr> mgrs, bool checkSw)
+void PeriodicLooper::SetGamePadTransitions(vector<StateMgr *> mgrs, bool checkSw)
 {
-    for (auto &mgr : mgrs)
+    for (auto mgr : mgrs)
     {
-        mgr.SetAreGamepadTransitionsChecked(checkSw);
+        mgr->SetAreGamepadTransitionsChecked(checkSw);
     }
 }
 
-void PeriodicLooper::RunCurrentStates(vector<StateMgr> mgrs)
+void PeriodicLooper::RunCurrentStates(vector<StateMgr *> mgrs)
 {
-    for (auto &mgr : mgrs)
+    for (auto mgr : mgrs)
     {
-        mgr.RunCurrentState();
+        mgr->RunCurrentState();
     }
 }

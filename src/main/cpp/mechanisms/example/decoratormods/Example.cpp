@@ -35,7 +35,7 @@ using std::string;
 Example::Example(ExampleGen *base) : ExampleGen(),
                                      m_example(base)
 {
-    PeriodicLooper::GetInstance()->RegisterAll(*this);
+    PeriodicLooper::GetInstance()->RegisterAll(this);
 }
 
 bool Example::IsAtMinPosition(MotorControllerUsage::MOTOR_CONTROLLER_USAGE identifier) const
