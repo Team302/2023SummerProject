@@ -68,7 +68,7 @@ namespace CoreCodeGenerator
                   m_the$$_MECHANISM_INSTANCE_NAME_$$->Create();
                   m_the$$_MECHANISM_INSTANCE_NAME_$$->Initialize(RobotConfigMgr::RobotIdentifier::$$_ROBOT_NAME_$$);
                   m_the$$_MECHANISM_INSTANCE_NAME_$$->Init(m_the$$_MECHANISM_INSTANCE_NAME_$$);
-                  PeriodicLooper::GetInstance()->RegisterAll ( *m_the$$_MECHANISM_INSTANCE_NAME_$$ );
+                  PeriodicLooper::GetInstance()->RegisterAll ( m_the$$_MECHANISM_INSTANCE_NAME_$$ );
                   ";
 
             generatorContext.clear();

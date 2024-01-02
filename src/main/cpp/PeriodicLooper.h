@@ -24,10 +24,10 @@ class PeriodicLooper
 public:
     static PeriodicLooper *GetInstance();
 
-    void RegisterAuton(StateMgr &mgr);
-    void RegisterTeleop(StateMgr &mgr);
-    void RegisterSimulation(StateMgr &mgr);
-    void RegisterAll(StateMgr &mgr);
+    void RegisterAuton(StateMgr *mgr);
+    void RegisterTeleop(StateMgr *mgr);
+    void RegisterSimulation(StateMgr *mgr);
+    void RegisterAll(StateMgr *mgr);
 
     void AutonRunCurrentState();
     void TeleopRunCurrentState();
@@ -37,12 +37,12 @@ private:
     PeriodicLooper();
     ~PeriodicLooper();
 
-    void SetGamePadTransitions(std::vector<StateMgr> mgrs, bool checkSw);
-    void RunCurrentStates(std::vector<StateMgr> mgrs);
+    void SetGamePadTransitions(std::vector<StateMgr *> mgrs, bool checkSw);
+    void RunCurrentStates(std::vector<StateMgr *> mgrs);
 
-    std::vector<StateMgr> m_auton;
-    std::vector<StateMgr> m_teleop;
-    std::vector<StateMgr> m_simulation;
+    std::vector<StateMgr *> m_auton;
+    std::vector<StateMgr *> m_teleop;
+    std::vector<StateMgr *> m_simulation;
 
     bool m_setGamepadForAuton;
     bool m_setGamepadForTeleop;
