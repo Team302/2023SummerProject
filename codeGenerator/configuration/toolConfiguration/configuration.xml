@@ -3,9 +3,6 @@
   <rootOutputFolder>..\..\..\src\main\cpp</rootOutputFolder>
   <robotConfiguration>..\RobotConfigurations\official\2024_configuration.xml</robotConfiguration>
   <appDataConfigurations>
-    <string>C:\FRC\2023SummerProject\codeGenerator\configuration\RobotConfigurations\testRobotConfig.xml</string>
-    <string>../RobotConfigurations/testRobotConfig.xml</string>
-    <string>../RobotConfigurations/testRobotConfig_.xml</string>
     <string>../RobotConfigurations/official/2024_configuration.xml</string>
   </appDataConfigurations>
   <collectionBaseTypes>
@@ -198,8 +195,8 @@
       <name>BaseStateGen_h</name>
       <templateFilePathName>..\..\templates\baseStateGen.h</templateFilePathName>
       <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_Base_StateGen.h</outputFilePathName>
-    </codeTemplateFile>     
-	<codeTemplateFile>
+    </codeTemplateFile>
+    <codeTemplateFile>
       <name>BaseStateGen_cpp</name>
       <templateFilePathName>..\..\templates\baseStateGen.cpp</templateFilePathName>
       <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_Base_StateGen.cpp</outputFilePathName>
@@ -208,23 +205,23 @@
       <name>stateGen_h</name>
       <templateFilePathName>..\..\templates\stateGen.h</templateFilePathName>
       <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_STATE_NAME_StateGen.h</outputFilePathName>
-    </codeTemplateFile>     
-	<codeTemplateFile>
+    </codeTemplateFile>
+    <codeTemplateFile>
       <name>stateGen_cpp</name>
       <templateFilePathName>..\..\templates\stateGen.cpp</templateFilePathName>
       <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_STATE_NAME_StateGen.cpp</outputFilePathName>
-    </codeTemplateFile>  
+    </codeTemplateFile>
     <codeTemplateFile>
       <name>stateGen_Decorator_h</name>
       <templateFilePathName>..\..\templates\stateGen_Decorator.h</templateFilePathName>
       <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_STATE_NAME_State.h</outputFilePathName>
-    </codeTemplateFile>     
-	<codeTemplateFile>
+    </codeTemplateFile>
+    <codeTemplateFile>
       <name>stateGen_Decorator_cpp</name>
       <templateFilePathName>..\..\templates\stateGen_Decorator.cpp</templateFilePathName>
       <outputFilePathName>mechanisms\MECHANISM_INSTANCE_NAME_STATE_NAME_State.cpp</outputFilePathName>
-    </codeTemplateFile> 	
-   </codeTemplateFiles>
+    </codeTemplateFile>
+  </codeTemplateFiles>
   <CopyrightNotice>
 //====================================================================================================================================================
 // Copyright 2023 Lake Orion Robotics FIRST Team 302

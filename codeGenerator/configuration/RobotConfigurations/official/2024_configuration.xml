@@ -400,7 +400,160 @@
             <analogInput />
             <digitalInput />
             <cancoder />
-            <stateMotorControlData />
+            <stateMotorControlData>
+              <motorControlData>
+                <name>cd_1</name>
+                <PID>
+                  <name>PIDFZ</name>
+                  <pGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>pGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </pGain>
+                  <iGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>iGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </iGain>
+                  <dGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>dGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </dGain>
+                  <fGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>fGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </fGain>
+                  <iZone>
+                    <unitsFamily>none</unitsFamily>
+                    <name>iZone</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </iZone>
+                </PID>
+                <peakValue>
+                  <unitsFamily>none</unitsFamily>
+                  <name>peakValue</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </peakValue>
+                <nominalValue>
+                  <unitsFamily>none</unitsFamily>
+                  <name>nominalValue</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>4</value>
+                </nominalValue>
+                <maxAcceleration>
+                  <unitsFamily>none</unitsFamily>
+                  <name>maxAcceleration</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </maxAcceleration>
+                <cruiseVelocity>
+                  <unitsFamily>none</unitsFamily>
+                  <name>cruiseVelocity</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </cruiseVelocity>
+                <enableFOC>
+                  <unitsFamily>none</unitsFamily>
+                  <name>enableFOC</name>
+                  <__units__ />
+                  <type>Boolean</type>
+                  <value>false</value>
+                </enableFOC>
+              </motorControlData>
+              <motorControlData>
+                <name>cd_2</name>
+                <PID>
+                  <name>PIDFZ</name>
+                  <pGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>pGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </pGain>
+                  <iGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>iGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </iGain>
+                  <dGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>dGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </dGain>
+                  <fGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>fGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </fGain>
+                  <iZone>
+                    <unitsFamily>none</unitsFamily>
+                    <name>iZone</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </iZone>
+                </PID>
+                <peakValue>
+                  <unitsFamily>none</unitsFamily>
+                  <name>peakValue</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>2</value>
+                </peakValue>
+                <nominalValue>
+                  <unitsFamily>none</unitsFamily>
+                  <name>nominalValue</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </nominalValue>
+                <maxAcceleration>
+                  <unitsFamily>none</unitsFamily>
+                  <name>maxAcceleration</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </maxAcceleration>
+                <cruiseVelocity>
+                  <unitsFamily>none</unitsFamily>
+                  <name>cruiseVelocity</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </cruiseVelocity>
+                <enableFOC>
+                  <unitsFamily>none</unitsFamily>
+                  <name>enableFOC</name>
+                  <__units__ />
+                  <type>Boolean</type>
+                  <value>false</value>
+                </enableFOC>
+              </motorControlData>
+            </stateMotorControlData>
             <states>
               <state>
                 <name>Forward</name>
@@ -419,7 +572,7 @@
                 <transitionsTo>
                   <stringParameterConstInMechInstance>
                     <unitsFamily>none</unitsFamily>
-                    <name>transitionsTo_1</name>
+                    <name>transitionsTo[0]</name>
                     <__units__ />
                     <type>String</type>
                     <value>MinTravel</value>
@@ -431,7 +584,7 @@
                 <transitionsTo>
                   <stringParameterConstInMechInstance>
                     <unitsFamily>none</unitsFamily>
-                    <name>transitionsTo_1</name>
+                    <name>transitionsTo[0]</name>
                     <__units__ />
                     <type>String</type>
                     <value>Reverse</value>
@@ -443,7 +596,7 @@
                 <transitionsTo>
                   <stringParameterConstInMechInstance>
                     <unitsFamily>none</unitsFamily>
-                    <name>transitionsTo_1</name>
+                    <name>transitionsTo[0]</name>
                     <__units__ />
                     <type>String</type>
                     <value>Forward</value>
@@ -915,7 +1068,160 @@
             <analogInput />
             <digitalInput />
             <cancoder />
-            <stateMotorControlData />
+            <stateMotorControlData>
+              <motorControlData>
+                <name>cd_1</name>
+                <PID>
+                  <name>PIDFZ</name>
+                  <pGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>pGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </pGain>
+                  <iGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>iGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </iGain>
+                  <dGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>dGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </dGain>
+                  <fGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>fGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </fGain>
+                  <iZone>
+                    <unitsFamily>none</unitsFamily>
+                    <name>iZone</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </iZone>
+                </PID>
+                <peakValue>
+                  <unitsFamily>none</unitsFamily>
+                  <name>peakValue</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </peakValue>
+                <nominalValue>
+                  <unitsFamily>none</unitsFamily>
+                  <name>nominalValue</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </nominalValue>
+                <maxAcceleration>
+                  <unitsFamily>none</unitsFamily>
+                  <name>maxAcceleration</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </maxAcceleration>
+                <cruiseVelocity>
+                  <unitsFamily>none</unitsFamily>
+                  <name>cruiseVelocity</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </cruiseVelocity>
+                <enableFOC>
+                  <unitsFamily>none</unitsFamily>
+                  <name>enableFOC</name>
+                  <__units__ />
+                  <type>Boolean</type>
+                  <value>false</value>
+                </enableFOC>
+              </motorControlData>
+              <motorControlData>
+                <name>cd_2</name>
+                <PID>
+                  <name>PIDFZ</name>
+                  <pGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>pGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </pGain>
+                  <iGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>iGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </iGain>
+                  <dGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>dGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </dGain>
+                  <fGain>
+                    <unitsFamily>none</unitsFamily>
+                    <name>fGain</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </fGain>
+                  <iZone>
+                    <unitsFamily>none</unitsFamily>
+                    <name>iZone</name>
+                    <__units__ />
+                    <type>Double</type>
+                    <value>0</value>
+                  </iZone>
+                </PID>
+                <peakValue>
+                  <unitsFamily>none</unitsFamily>
+                  <name>peakValue</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </peakValue>
+                <nominalValue>
+                  <unitsFamily>none</unitsFamily>
+                  <name>nominalValue</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </nominalValue>
+                <maxAcceleration>
+                  <unitsFamily>none</unitsFamily>
+                  <name>maxAcceleration</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </maxAcceleration>
+                <cruiseVelocity>
+                  <unitsFamily>none</unitsFamily>
+                  <name>cruiseVelocity</name>
+                  <__units__ />
+                  <type>Double</type>
+                  <value>0</value>
+                </cruiseVelocity>
+                <enableFOC>
+                  <unitsFamily>none</unitsFamily>
+                  <name>enableFOC</name>
+                  <__units__ />
+                  <type>Boolean</type>
+                  <value>false</value>
+                </enableFOC>
+              </motorControlData>
+            </stateMotorControlData>
             <states>
               <state>
                 <name>Forward</name>
@@ -934,7 +1240,7 @@
                 <transitionsTo>
                   <stringParameterConstInMechInstance>
                     <unitsFamily>none</unitsFamily>
-                    <name>transitionsTo_1</name>
+                    <name>transitionsTo[0]</name>
                     <__units__ />
                     <type>String</type>
                     <value>MinTravel</value>
@@ -946,7 +1252,7 @@
                 <transitionsTo>
                   <stringParameterConstInMechInstance>
                     <unitsFamily>none</unitsFamily>
-                    <name>transitionsTo_1</name>
+                    <name>transitionsTo[0]</name>
                     <__units__ />
                     <type>String</type>
                     <value>Reverse</value>
@@ -958,7 +1264,7 @@
                 <transitionsTo>
                   <stringParameterConstInMechInstance>
                     <unitsFamily>none</unitsFamily>
-                    <name>transitionsTo_1</name>
+                    <name>transitionsTo[0]</name>
                     <__units__ />
                     <type>String</type>
                     <value>Forward</value>

@@ -476,13 +476,17 @@ namespace FRCrobotCodeGen302
             }
             #endregion
 
+            int index = generatorConfig.appDataConfigurations.IndexOf(generatorConfig.robotConfiguration.Replace('\\','/'));
+
             generatorConfig.rootOutputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), generatorConfig.rootOutputFolder));
             generatorConfig.robotConfiguration = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), robotConfigurationFileComboBox.Text));
             loadRobotConfig = true;
 
             // select the config in the combobox after setting loadRobotConfig to true, otherwise robotConfigurationFileComboBox_TextChanged might fire before loadRobotConfig == true
             if (robotConfigurationFileComboBox.Items.Count > 0)
-                robotConfigurationFileComboBox.SelectedIndex = 0;
+            {
+                robotConfigurationFileComboBox.SelectedIndex = index >= 0 ? index : 0;
+            }
         }
 
         private void robotConfigurationFileComboBox_TextChanged(object sender, EventArgs e)
@@ -514,6 +518,10 @@ namespace FRCrobotCodeGen302
                     {
                         throw new Exception("Issue encountered while populating the robot configuration tree view\r\n" + ex.ToString());
                     }
+
+                    addProgress("Saving the tool configuration.");
+                    saveGeneratorConfig(Path.GetDirectoryName(configurationFilePathNameTextBox.Text));
+                    addProgress("... saving completed.");
 
                     configuredOutputFolderLabel.Text = generatorConfig.rootOutputFolder;
 

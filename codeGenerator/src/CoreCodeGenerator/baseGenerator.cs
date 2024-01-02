@@ -96,6 +96,11 @@ namespace CoreCodeGenerator
 
         internal void copyrightAndGenNoticeAndSave(string outputFilePathName, string contents)
         {
+            copyrightAndGenNoticeAndSave(outputFilePathName, contents, false);
+        }
+
+        internal void copyrightAndGenNoticeAndSave(string outputFilePathName, string contents, bool doNotWriteIfExists)
+        {
             string copyright = theToolConfiguration.CopyrightNotice.Trim();
             copyright = copyright.Replace(Environment.NewLine, "\n").Replace("\n", Environment.NewLine);
 
@@ -115,13 +120,20 @@ namespace CoreCodeGenerator
             bool writeFile = true;
             if (File.Exists(outputFullFilePathName))
             {
-                currentText = File.ReadAllText(outputFullFilePathName);
-
-                currentText = removeGenerationInfo(currentText);
-                contentsWithoutGenInfo = removeGenerationInfo(contents);
-
-                if (currentText == contentsWithoutGenInfo)
+                if (doNotWriteIfExists)
+                {
                     writeFile = false;
+                }
+                else
+                {
+                    currentText = File.ReadAllText(outputFullFilePathName);
+
+                    currentText = removeGenerationInfo(currentText);
+                    contentsWithoutGenInfo = removeGenerationInfo(contents);
+
+                    if (currentText == contentsWithoutGenInfo)
+                        writeFile = false;
+                }
             }
 
             if (cleanMode)
@@ -142,10 +154,10 @@ namespace CoreCodeGenerator
                 if (writeFile)
                 {
                     File.WriteAllText(outputFullFilePathName, contents);
-                    addProgress("Wrote " + outputFullFilePathName);
+                    addProgress("\tWrote " + outputFullFilePathName);
                 }
                 else
-                    addProgress("File content has not changed " + outputFullFilePathName);
+                    addProgress("\tFile content has not changed or is a decoratorMod " + outputFullFilePathName);
             }
         }
 

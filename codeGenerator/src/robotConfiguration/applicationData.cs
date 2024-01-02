@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Channels;
 using System.Security.AccessControl;
 using System.Security.Authentication.ExtendedProtection;
@@ -15,6 +16,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using static ApplicationData.motorControlData;
 using static ApplicationData.TalonFX;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -1982,6 +1984,7 @@ namespace ApplicationData
      */
 
     [Serializable()]
+    [ImplementationName("ControlData")]
     public class motorControlData : baseRobotElementClass
     {
         public enum CONTROL_TYPE
@@ -2019,6 +2022,10 @@ namespace ApplicationData
         public PIDFZ PID { get; set; }
 
         [DefaultValue(0)]
+        public doubleParameter peakValue { get; set; }
+        [DefaultValue(0)]
+        public doubleParameter nominalValue { get; set; }
+        [DefaultValue(0)]
         public doubleParameter maxAcceleration { get; set; }
 
         [DefaultValue(0)]
@@ -2038,6 +2045,87 @@ namespace ApplicationData
         public motorControlData()
         {
             name = GetType().Name;
+        }
+
+        override public List<string> generateIndexedObjectCreation(int currentIndex)
+        {
+            /*
+        {2}, // ControlModes::CONTROL_TYPE mode
+        {3}, // ControlModes::CONTROL_RUN_LOCS server
+        {4}, // std::string indentifier
+        {5}, // double proportional
+        {6}, // double integral
+        {7}, // double derivative
+        {8}, // double feedforward
+        {9}, // FEEDFORWARD_TYPE feedforwadType
+        {10}, // double integralZone
+        {11}, // double maxAcceleration
+        {12}, // double cruiseVelocity
+        {13}, // double peakValue
+        {14}, // double nominalValue
+        {15}  // bool enableFOC"
+             */
+            string creation = string.Format(@"{0} = new {1}(
+                                                            ControlModes::CONTROL_TYPE::{2}, // ControlModes::CONTROL_TYPE mode
+                                                            ControlModes::CONTROL_RUN_LOCS::{3}, // ControlModes::CONTROL_RUN_LOCS server
+                                                            ""{0}"", // std::string indentifier
+                                                            {4}, // double proportional
+                                                            {5}, // double integral
+                                                            {6}, // double derivative
+                                                            {7}, // double feedforward
+                                                            ControlData::FEEDFORWARD_TYPE::{8}, // FEEDFORWARD_TYPE feedforwadType
+                                                            {9}, // double integralZone
+                                                            {10}, // double maxAcceleration
+                                                            {11}, // double cruiseVelocity
+                                                            {12}, // double peakValue
+                                                            {13}, // double nominalValue
+                                                            {14}  // bool enableFOC
+                )",
+            name,
+                getImplementationName(),
+                controlType.ToString(),
+                controlLoopLocation,
+                PID.pGain.value,
+                PID.iGain.value,
+                PID.dGain.value,
+                PID.fGain.value,
+                feedForwardType,
+                PID.iZone.value,
+                maxAcceleration.value,
+                cruiseVelocity.value,
+                peakValue.value,
+                nominalValue.value,
+                enableFOC.value.ToString().ToLower()
+                /*
+                utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
+                Id.value,
+                generatorContext.theGeneratorConfig.getWPIphysicalUnitType(minAngle.__units__),
+                minAngle.value,
+                generatorContext.theGeneratorConfig.getWPIphysicalUnitType(maxAngle.__units__),
+                maxAngle.value*/
+                );
+
+            return new List<string> { creation };
+        }
+
+        override public List<string> generateInitialization()
+        {
+            List<string> initCode = new List<string>()
+            {
+                string.Format("// {0} : ControlData does not have initialization needs", name)
+            };
+
+            return initCode;
+        }
+
+        override public List<string> generateObjectAddToMaps()
+        {
+            List<string> initCode = new List<string>()
+            {
+                string.Format("// {0} : ControlData is not added to a map", name)
+            };
+
+            return initCode;
         }
     }
 
