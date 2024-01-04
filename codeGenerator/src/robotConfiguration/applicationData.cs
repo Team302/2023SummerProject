@@ -32,6 +32,7 @@ using static System.Net.Mime.MediaTypeNames;
 //todo when mechanisms are renamed, the GUIDs get messed up
 //todo if a decorator mod file exists, do not write it
 //todo show the DataDescription information
+//todo target physical units should not be editable in the mechanism instance
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -366,8 +367,6 @@ namespace ApplicationData
         public List<CANcoder> cancoder { get; set; }
 
         public List<motorControlData> stateMotorControlData { get; set; }
-        //public List<solenoidControlData> solenoidControlParameters{ get; set; }
-        //public List<servoControlData> servoControlParameters { get; set; }
         public List<state> states { get; set; }
 
         public mechanism()
@@ -1964,7 +1963,7 @@ namespace ApplicationData
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < list.Count; i++)
-            {
+              {
                 list[i] = list[i].Trim();
                 if (!string.IsNullOrWhiteSpace(list[i]))
                     sb.AppendLine(string.Format("{0}{1}", list[i], delimeter));
@@ -2130,52 +2129,13 @@ namespace ApplicationData
     }
 
     [Serializable()]
-    public class solenoidControlData
-    {
-        public enum MODE
-        {
-            POSITION,
-            VELOCITY_INCH, //todo why only inches? inch per sec?
-            VELOCITY_DEGREES, //todo what does this mean?
-            VELOCITY_RPS,
-            VOLTAGE,
-            TRAPEZOID
-        }
-
-        public string name { get; set; }
-
-        public solenoidControlData()
-        {
-            name = GetType().Name;
-        }
-    }
-
-    [Serializable()]
-    public class servoControlData
-    {
-        public enum MODE
-        {
-            POSITION,
-            VELOCITY_INCH, //todo why only inches? inch per sec?
-            VELOCITY_DEGREES, //todo what does this mean? deg /sec 
-            VELOCITY_RPS,
-            POSITION_DEGREES,
-            TRAPEZOID
-        }
-
-        public string name { get; set; }
-
-        public servoControlData()
-        {
-            name = GetType().Name;
-        }
-    }
-
-    [Serializable()]
     public class state : baseRobotElementClass
     {
         [ConstantInMechInstance()]
         public List<stringParameterConstInMechInstance> transitionsTo { get; set; }
+
+        public List<doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst> doubleTargets { get;set; }
+        public List<boolParameterUserDefinedTunableOnlyValueChangeableInMechInst> booleanTargets { get; set; }
 
         public state()
         {

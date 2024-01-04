@@ -26,4 +26,7 @@ public:
     void Run() override;
     void Exit() override;
     bool AtTarget() override;
+
+private:
+    $$_TARGET_DECLARATIONS_$$
 };

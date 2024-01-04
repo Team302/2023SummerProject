@@ -66,8 +66,6 @@ void StateMgr::RunCurrentState()
 {
     if (m_mech != nullptr)
     {
-        m_currentState = myState;
-
         CheckForStateTransition();
 
         // run the current state
@@ -75,7 +73,6 @@ void StateMgr::RunCurrentState()
         {
             m_currentState->Run();
         }
-        myState = m_currentState;
     }
 }
 

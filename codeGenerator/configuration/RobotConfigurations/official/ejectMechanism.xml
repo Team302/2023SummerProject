@@ -61,6 +61,8 @@
     <state>
       <name>state_1</name>
       <transitionsTo />
+      <doubleTargets />
+      <booleanTargets />
     </state>
   </states>
 </mechanism>

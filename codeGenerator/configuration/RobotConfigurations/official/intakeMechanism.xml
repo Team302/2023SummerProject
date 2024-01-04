@@ -450,6 +450,22 @@
           <value>MaxTravel</value>
         </stringParameterConstInMechInstance>
       </transitionsTo>
+      <doubleTargets>
+        <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
+          <unitsFamily>length</unitsFamily>
+          <name>myTarget</name>
+          <__units__>m</__units__>
+          <type>Double</type>
+        </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
+      </doubleTargets>
+      <booleanTargets>
+        <boolParameterUserDefinedTunableOnlyValueChangeableInMechInst>
+          <unitsFamily>none</unitsFamily>
+          <name>myBool</name>
+          <__units__ />
+          <type>Boolean</type>
+        </boolParameterUserDefinedTunableOnlyValueChangeableInMechInst>
+      </booleanTargets>
     </state>
     <state>
       <name>MaxTravel</name>
@@ -462,6 +478,8 @@
           <value>MinTravel</value>
         </stringParameterConstInMechInstance>
       </transitionsTo>
+      <doubleTargets />
+      <booleanTargets />
     </state>
     <state>
       <name>MinTravel</name>
@@ -474,6 +492,8 @@
           <value>Reverse</value>
         </stringParameterConstInMechInstance>
       </transitionsTo>
+      <doubleTargets />
+      <booleanTargets />
     </state>
     <state>
       <name>Reverse</name>
@@ -486,14 +506,20 @@
           <value>Forward</value>
         </stringParameterConstInMechInstance>
       </transitionsTo>
+      <doubleTargets />
+      <booleanTargets />
     </state>
     <state>
       <name>Stop</name>
       <transitionsTo />
+      <doubleTargets />
+      <booleanTargets />
     </state>
     <state>
       <name>Panic</name>
       <transitionsTo />
+      <doubleTargets />
+      <booleanTargets />
     </state>
   </states>
 </mechanism>

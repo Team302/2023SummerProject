@@ -27,6 +27,8 @@ namespace DataConfiguration
         [XmlIgnore]
         public bool unitsFamilyDefinedByAttribute { get; set; } = false; // true if an attribute defines the unitsFamily
         [XmlIgnore]
+        public bool unitsFamilyConstInMechInstance { get; set; } = false; // true if the ConstantInMechInstanceAttribute attribute is defined for unitsFamily
+        [XmlIgnore]
         public string physicalUnits { get; set; } = ""; // Defined by the GUI
         [XmlIgnore]
         public valueRange range { get; set; } // Defined by an attribute
@@ -70,8 +72,12 @@ namespace DataConfiguration
 
     public partial class parameter : baseElement
     {
-        
-        public string __units__ { get; set; } = "";
+
+        public string __units__
+        {
+            get { return physicalUnits; }
+            set { physicalUnits = value; }
+        }
 
         [Constant()]
         public string type { get; set; }
@@ -124,8 +130,8 @@ namespace DataConfiguration
 
         public doubleParameter()
         {
-            range.minRange = Convert.ToDouble(decimal.MinValue/2);
-            range.maxRange = Convert.ToDouble(decimal.MaxValue/2);
+            range.minRange = Convert.ToDouble(decimal.MinValue / 2);
+            range.maxRange = Convert.ToDouble(decimal.MaxValue / 2);
             showExpanded = false;
             type = value.GetType().Name;
         }
@@ -194,6 +200,26 @@ namespace DataConfiguration
         override public string getDisplayName(string propertyName, out helperFunctions.RefreshLevel refresh)
         {
             return getDisplayName(propertyName, value, out refresh);
+        }
+    }
+    [Serializable()]
+    public partial class doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst : doubleParameterUserDefinedTunable
+    {
+        [ConstantInMechInstance]
+        new public physicalUnit.Family unitsFamily
+        {
+            get => base.unitsFamily;
+            set => base.unitsFamily = value;
+        }
+        [ConstantInMechInstance]
+        new public string name
+        {
+            get => base.name;
+            set => base.name = value;
+        }
+        public doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst()
+        {
+            type = value.GetType().Name;
         }
     }
     #endregion
@@ -388,6 +414,9 @@ namespace DataConfiguration
     [Serializable()]
     public partial class boolParameterUserDefinedBase : parameter
     {
+        [Constant]
+        new public physicalUnit.Family unitsFamily { get; set; }
+
         protected string getDisplayName(string propertyName, bool value, out helperFunctions.RefreshLevel refresh)
         {
             refresh = helperFunctions.RefreshLevel.none;
@@ -436,6 +465,21 @@ namespace DataConfiguration
             return getDisplayName(propertyName, value, out refresh);
         }
     }
+
+    [Serializable()]
+    public partial class boolParameterUserDefinedTunableOnlyValueChangeableInMechInst : boolParameterUserDefinedTunable
+    {
+        [ConstantInMechInstance]
+        new public string name
+        {
+            get => base.name;
+            set => base.name = value;
+        }
+        public boolParameterUserDefinedTunableOnlyValueChangeableInMechInst()
+        {
+            type = value.GetType().Name;
+        }
+    }
     #endregion
 
 
@@ -449,8 +493,8 @@ namespace DataConfiguration
         public stringParameterConstInMechInstance()
         {
             if (string.IsNullOrEmpty(value))
-                value = "value";            
-            
+                value = "value";
+
             showExpanded = false;
             type = value.GetType().Name;
 
@@ -659,7 +703,7 @@ namespace DataConfiguration
                     {
                         theObj = Activator.CreateInstance(pi.PropertyType);
                         pi.SetValue(obj, theObj);
-                        if( (recursive) && baseDataConfiguration.isACollection(obj) )
+                        if ((recursive) && baseDataConfiguration.isACollection(obj))
                             initializeNullProperties(theObj);
                     }
                 }

@@ -33,7 +33,7 @@
       <shortName>V</shortName>
       <longName>Volts</longName>
       <family>voltage</family>
-      <wpiClassName>Units.voltage</wpiClassName>
+      <wpiClassName>units::voltage::volt_t</wpiClassName>
     </physicalUnit>
     <physicalUnit>
       <shortName>A</shortName>
@@ -51,13 +51,13 @@
       <shortName>m</shortName>
       <longName>meters</longName>
       <family>length</family>
-      <wpiClassName>Units.meters</wpiClassName>
+      <wpiClassName>units::length::meter_t</wpiClassName>
     </physicalUnit>
     <physicalUnit>
       <shortName>in</shortName>
       <longName>inches</longName>
       <family>length</family>
-      <wpiClassName>Units.inches</wpiClassName>
+      <wpiClassName>units::length::inch_t</wpiClassName>
     </physicalUnit>
     <physicalUnit>
       <shortName>m/s</shortName>

@@ -102,7 +102,7 @@ protected:
 	BaseMechMotorState *GetMotorMechState ( RobotElementNames::MOTOR_CONTROLLER_USAGE usage ) const;
 	BaseMechSolenoidState *GetSolenoidMechState ( RobotElementNames::SOLENOID_USAGE usage ) const;
 	BaseMechServoState *GetServoMechState ( RobotElementNames::SERVO_USAGE usage ) const;
-
+	
 private:
 	frontIntake_gen m_frontIntake;
 	std::unordered_map<RobotElementNames::MOTOR_CONTROLLER_USAGE, BaseMechMotorState *> m_motorMap;

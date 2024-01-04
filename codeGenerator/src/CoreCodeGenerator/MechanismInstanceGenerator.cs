@@ -170,6 +170,17 @@ namespace CoreCodeGenerator
                             resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
                             resultString = resultString.Replace("$$_STATE_NAME_$$", s.name);
 
+                            List<string> targetDecl = new List<string>();
+                            foreach (doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst d in s.doubleTargets)
+                            {
+                                targetDecl.Add(string.Format("{0} {1} = {0}({2})", generatorContext.theGeneratorConfig.getWPIphysicalUnitType(d.__units__), d.name, d.value));
+                            }
+                            foreach (boolParameterUserDefinedTunableOnlyValueChangeableInMechInst d in s.booleanTargets)
+                            {
+                                targetDecl.Add(string.Format("bool {0} = {1}", d.name, d.value.ToString().ToLower()));
+                            }
+                            resultString = resultString.Replace("$$_TARGET_DECLARATIONS_$$", ListToString(targetDecl,";"));
+                            
                             filePathName = getMechanismFullFilePathName(mechanismName,
                                                                         cdf.outputFilePathName.Replace("MECHANISM_INSTANCE_NAME", mechanismName).Replace("STATE_NAME", s.name)
                                                                         , true);

@@ -183,7 +183,10 @@ namespace applicationConfiguration
 
                             PropertyInfo namePI = obj.GetType().GetProperty("name");
                             if (namePI != null)
-                                namePI.SetValue(obj, objectName);
+                            {
+                                if (string.IsNullOrEmpty(namePI.GetValue(obj).ToString()))
+                                    namePI.SetValue(obj, objectName);
+                            }
 
                             if (attributes != null)
                             {
@@ -212,6 +215,15 @@ namespace applicationConfiguration
                                 DataDescriptionAttribute descriptionAttr = (DataDescriptionAttribute)attributes.Find(a => a.GetType() == typeof(DataDescriptionAttribute));
                                 if (descriptionAttr != null)
                                     beObj.description = descriptionAttr.description;
+                            }
+
+                            //check if the units should be constant in a mechanism instance
+                            PropertyInfo physicalUnitsPI = obj.GetType().GetProperty("physicalUnits");
+                            if (physicalUnitsPI != null)
+                            {
+                                List<ConstantInMechInstanceAttribute> constAttr = physicalUnitsPI.GetCustomAttributes<ConstantInMechInstanceAttribute>().ToList();
+                                if (constAttr.Count > 0)
+                                    beObj.unitsFamilyConstInMechInstance = true;
                             }
 
                             if (beObj.unitsFamily != physicalUnit.Family.none)

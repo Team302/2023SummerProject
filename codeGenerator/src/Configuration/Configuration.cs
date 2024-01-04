@@ -62,15 +62,41 @@ namespace Configuration
 
             robotConfiguration_temp = robotConfiguration;
             robotConfiguration = RelativePath(rootPath, robotConfiguration);
+
+            this.physicalUnits.RemoveAll(p => p.family == physicalUnit.Family.all);
         }
 
         private void postSerialize()
         {
             rootOutputFolder = rootOutputFolder_temp;
             robotConfiguration = robotConfiguration_temp;
+
+            int cnt = physicalUnits.Count;
+            for (int i = 0; i < cnt; i++)
+            {
+                physicalUnit temp = new physicalUnit();
+                temp.family = physicalUnit.Family.all;
+                temp.shortName = physicalUnits[i].shortName;
+                temp.longName = physicalUnits[i].longName;
+                temp.wpiClassName = physicalUnits[i].wpiClassName;
+
+                physicalUnits.Add(temp);
+            }
+
         }
-        private void postDeSerialize()
+        private void postDeSerialize(toolConfiguration tc)
         {
+            int cnt = tc.physicalUnits.Count;
+            for(int i=0; i < cnt; i++)
+            {
+                physicalUnit temp = new physicalUnit();
+                temp.family = physicalUnit.Family.all;
+                temp.shortName = tc.physicalUnits[i].shortName;
+                temp.longName = tc.physicalUnits[i].longName;
+                temp.wpiClassName = tc.physicalUnits[i].wpiClassName;
+
+                tc.physicalUnits.Add(temp);
+            }
         }
         public void serialize(string rootPath)
         {
@@ -93,7 +119,7 @@ namespace Configuration
                 toolConfiguration tc = (toolConfiguration)mySerializer.Deserialize(myFileStream);
                 tc.configurationFullPath = fullFilePathName;
 
-                postDeSerialize();
+                postDeSerialize(tc);
 
                 return tc;
             }

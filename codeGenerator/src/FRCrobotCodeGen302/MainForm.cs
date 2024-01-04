@@ -95,7 +95,7 @@ namespace FRCrobotCodeGen302
                         configurationFilePathNameTextBox.Text = File.ReadAllText(configurationCacheFile);
                         loadConfiguration(configurationFilePathNameTextBox.Text);
                         addProgress("Loaded cached configuration.xml");
-                        robotConfigurationFileComboBox_TextChanged(null, null);
+                        //robotConfigurationFileComboBox_TextChanged(null, null);
                     }
                     else
                     {
@@ -176,7 +176,7 @@ namespace FRCrobotCodeGen302
                     {
                         treatAsLeafNode = true;
 
-                        // everything inside baseElement is always editable, except for the name and type properties
+                        // everything inside baseElement is always editable, except for the name, unitsFamily and type properties
                         if (tn.Parent != null)
                         {
                             nodeTag parentNt = (nodeTag)(tn.Parent.Tag);
@@ -197,6 +197,13 @@ namespace FRCrobotCodeGen302
                                             if ((grandParentNode != null) &&
                                                 (baseDataConfiguration.isACollection(((nodeTag)grandParentNode.Tag).obj)))
                                                 isConstant = false;
+
+                                            if (isPartOfAMechanismInaMechInstance(tn))
+                                            {
+                                                List<ConstantInMechInstanceAttribute> constAttr = nameProp.GetCustomAttributes<ConstantInMechInstanceAttribute>().ToList();
+                                                if (constAttr.Count > 0)
+                                                    isConstant = true;
+                                            }
                                         }
                                     }
                                     #endregion
@@ -220,6 +227,27 @@ namespace FRCrobotCodeGen302
                                         {
                                             if (valueProp.GetCustomAttribute<TunableParameterAttribute>() != null)
                                                 isTunable = true;
+                                        }
+                                    }
+                                    #endregion
+                                    #region handle the unitsFamily property
+                                    if (nodeName == "unitsFamily")
+                                    {
+                                        PropertyInfo unitsFamilyProp = nodeTag.getType(parentNt).GetProperty("unitsFamily", BindingFlags.Public | BindingFlags.Instance);
+                                        if (unitsFamilyProp != null)
+                                        {
+                                            List<ConstantAttribute> constAttr = unitsFamilyProp.GetCustomAttributes<ConstantAttribute>().ToList();
+                                            if (constAttr.Count > 0)
+                                                isConstant = true;
+
+                                            if ((isConstant==false) && isPartOfAMechanismInaMechInstance(tn))
+                                            {
+                                                List<ConstantInMechInstanceAttribute> constAttrInMech = unitsFamilyProp.GetCustomAttributes<ConstantInMechInstanceAttribute>().ToList();
+                                                if (constAttrInMech.Count > 0)
+                                                    isConstant = true;
+                                            }
+
+
                                         }
                                     }
                                     #endregion
@@ -476,7 +504,7 @@ namespace FRCrobotCodeGen302
             }
             #endregion
 
-            int index = generatorConfig.appDataConfigurations.IndexOf(generatorConfig.robotConfiguration.Replace('\\','/'));
+            int index = generatorConfig.appDataConfigurations.IndexOf(generatorConfig.robotConfiguration.Replace('\\', '/'));
 
             generatorConfig.rootOutputFolder = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), generatorConfig.rootOutputFolder));
             generatorConfig.robotConfiguration = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(filePathName), robotConfigurationFileComboBox.Text));
@@ -825,16 +853,30 @@ namespace FRCrobotCodeGen302
 
                             #region handle the name property
                             PropertyInfo nameProp = nodeTag.getType(parentNt).GetProperty("name", BindingFlags.Public | BindingFlags.Instance);
-                            object theNameObject = nameProp.GetValue(parentNt.obj);
-                            if (theNameObject == nt.obj) // means that the nt.obj is the name property as opposed to some other string in the class
+                            if (nameProp != null)
                             {
-                                allowEdit = false;
+                                object theNameObject = nameProp.GetValue(parentNt.obj);
+                                if (theNameObject == nt.obj) // means that the nt.obj is the name property as opposed to some other string in the class
+                                {
+                                    allowEdit = false;
 
-                                // if the parent of nt.obj is inside a collection, then the name will be editable, otherwise not
-                                TreeNode grandParentNode = e.Node.Parent.Parent;
-                                if ((grandParentNode != null) &&
-                                    (baseDataConfiguration.isACollection(((nodeTag)grandParentNode.Tag).obj)))
-                                    allowEdit = true;
+                                    // if the parent of nt.obj is inside a collection, then the name will be editable, otherwise not
+                                    TreeNode grandParentNode = e.Node.Parent.Parent;
+                                    if ((grandParentNode != null) &&
+                                        (baseDataConfiguration.isACollection(((nodeTag)grandParentNode.Tag).obj)))
+                                        allowEdit = true;
+
+                                    List<ConstantAttribute> constAttr = nameProp.GetCustomAttributes<ConstantAttribute>().ToList();
+                                    if (constAttr.Count > 0)
+                                        allowEdit = false;
+
+                                    if ((allowEdit == true) && isPartOfAMechanismInaMechInstance(e.Node))
+                                    {
+                                        List<ConstantInMechInstanceAttribute> constAttrInMech = nameProp.GetCustomAttributes<ConstantInMechInstanceAttribute>().ToList();
+                                        if (constAttrInMech.Count > 0)
+                                            allowEdit = false;
+                                    }
+                                }
                             }
                             #endregion
 
@@ -843,6 +885,19 @@ namespace FRCrobotCodeGen302
                             object theTypeObject = typeProp.GetValue(parentNt.obj);
                             if (theTypeObject == nt.obj) // means that the nt.obj is the type property as opposed to some other string in the class
                                 allowEdit = false;
+                            #endregion
+
+                            #region handle the unitsFamily property
+                            if ((isPartOfAMechanismInaMechInstance(e.Node)) && (nt.name == "unitsFamily"))
+                            {
+                                PropertyInfo unitsFamilyProp = nodeTag.getType(parentNt).GetProperty("unitsFamily", BindingFlags.Public | BindingFlags.Instance);
+                                if (unitsFamilyProp != null)
+                                {
+                                    List<ConstantInMechInstanceAttribute> constAttr = unitsFamilyProp.GetCustomAttributes<ConstantInMechInstanceAttribute>().ToList();
+                                    if (constAttr.Count > 0)
+                                        allowEdit = false;
+                                }
+                            }
                             #endregion
 
                             baseElement beParentObj = (baseElement)parentNt.obj;
@@ -1070,7 +1125,7 @@ namespace FRCrobotCodeGen302
                                     prop.SetValue(nt.obj, valueComboBox.Text == "True");
                                 else
                                 {
-                                    if (prop.PropertyType == typeof(boolParameter))
+                                    if (prop.PropertyType == typeof(Boolean))
                                         prop.SetValue(parentObj, valueComboBox.Text == "True");
                                     else
                                         prop.SetValue(parentObj, Enum.Parse(obj.GetType(), valueComboBox.Text));
@@ -1609,7 +1664,9 @@ namespace FRCrobotCodeGen302
                         ((TreeNode)mi.mechanism.theTreeNode).Remove();
 
                         mi.mechanism = m;
+                        robotTreeView.BeginUpdate();
                         mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name);
+                        robotTreeView.EndUpdate();
                     }
                 }
             }
