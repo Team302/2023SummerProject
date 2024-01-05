@@ -36,6 +36,4 @@ public:
                                       ctre::phoenixpro::hardware::TalonFX &controller);
 
     ~DragonVelocityRPSToCTREProAdapter() = default;
-
-    void Set(double value) override;
 };

@@ -40,7 +40,7 @@ DragonPositionInchToCTREV5Adapter::DragonPositionInchToCTREV5Adapter(std::string
 
 void DragonPositionInchToCTREV5Adapter::Set(double value)
 {
-    auto output = (m_calcStruc.countsPerInch > 0.01) ? m_calcStruc.countsPerInch * value : (ConversionUtils::InchesToCounts(value, m_calcStruc.countsPerRev, m_calcStruc.diameter) * m_calcStruc.gearRatio);
+    auto output = (m_calcStruc.countsPerInch > DistanceAngleCalcStruc::countsPerTolerance) ? m_calcStruc.countsPerInch * value : (ConversionUtils::InchesToCounts(value, m_calcStruc.countsPerRev, m_calcStruc.diameter) * m_calcStruc.gearRatio);
     m_controller->Set(ctre::phoenix::motorcontrol::ControlMode::Position, output);
 }
 

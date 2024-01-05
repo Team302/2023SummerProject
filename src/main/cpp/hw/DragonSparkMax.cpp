@@ -1,8 +1,25 @@
+
+//====================================================================================================================================================
+// Copyright 2023 Lake Orion Robotics FIRST Team 302
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+// OR OTHER DEALINGS IN THE SOFTWARE.
+//====================================================================================================================================================
+
 #include "configs/RobotElementNames.h"
 #include "hw/DragonSparkMax.h"
 #include "mechanisms/controllers/ControlData.h"
 
 #include "frc/smartdashboard/SmartDashboard.h"
+using rev::CANSparkMax;
 
 DragonSparkMax::DragonSparkMax(int id,
                                RobotElementNames::MOTOR_CONTROLLER_USAGE deviceType,
@@ -15,9 +32,10 @@ DragonSparkMax::DragonSparkMax(int id,
                                                    m_gearRatio(gearRatio),
                                                    m_deviceType(deviceType)
 {
-    m_spark->GetPIDController().SetOutputRange(-1.0, 1.0, 0);
-    m_spark->GetPIDController().SetOutputRange(-1.0, 1.0, 1);
-    m_spark->RestoreFactoryDefaults();
+    m_spark->RestoreFactoryDefaults(true);
+    auto pid = m_spark->GetPIDController();
+    pid.SetOutputRange(-1.0, 1.0, 0);
+    pid.SetOutputRange(-1.0, 1.0, 1);
     m_spark->SetOpenLoopRampRate(0.09); // 0.2 0.25
     m_spark->SetClosedLoopRampRate(0.02);
     m_spark->GetEncoder().SetPosition(0);
@@ -46,6 +64,12 @@ int DragonSparkMax::GetID() const
 
 void DragonSparkMax::SetControlConstants(int slot, const ControlData &controlInfo)
 {
+    auto pid = m_spark->GetPIDController();
+    pid.SetP(controlInfo.GetP(), slot);
+    pid.SetI(controlInfo.GetI(), slot);
+    pid.SetD(controlInfo.GetD(), slot);
+    pid.SetFF(controlInfo.GetF(), slot);
+
     switch (controlInfo.GetMode())
     {
     case ControlModes::PERCENT_OUTPUT:
@@ -53,11 +77,11 @@ void DragonSparkMax::SetControlConstants(int slot, const ControlData &controlInf
         break;
 
     case ControlModes::POSITION_INCH:
-        m_spark->GetPIDController().SetReference(0, CANSparkMax::ControlType::kPosition, slot);
+        pid.SetReference(0, CANSparkMax::ControlType::kPosition, slot);
         break;
 
     case ControlModes::VELOCITY_RPS:
-        m_spark->GetPIDController().SetReference(0, CANSparkMax::ControlType::kVelocity, slot);
+        pid.SetReference(0, CANSparkMax::ControlType::kVelocity, slot);
         break;
 
     default:
@@ -65,10 +89,6 @@ void DragonSparkMax::SetControlConstants(int slot, const ControlData &controlInf
         m_spark->Set(0);
         break;
     }
-    m_spark->GetPIDController().SetP(controlInfo.GetP(), slot);
-    m_spark->GetPIDController().SetI(controlInfo.GetI(), slot);
-    m_spark->GetPIDController().SetD(controlInfo.GetD(), slot);
-    m_spark->GetPIDController().SetFF(controlInfo.GetF(), slot);
 }
 
 void DragonSparkMax::Set(double value)
