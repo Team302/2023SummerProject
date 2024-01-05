@@ -29,10 +29,12 @@ using std::string;
 
 void RobotConfigExample::DefineMotorControllers()
 {
+    DistanceAngleCalcStruc calcstruc{};
 
     m_motor1 = new DragonTalonFX(string("ExampleMech_Motor1"),
                                  MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR1,
                                  1,
+                                 calcstruc,
                                  string(canBusName));
     m_motor1->SetCurrentLimits(true,
                                units::current::ampere_t(25.0),
@@ -47,6 +49,7 @@ void RobotConfigExample::DefineMotorControllers()
     m_motor2 = new DragonTalonFX(string("ExampleMech_Motor2"),
                                  MotorControllerUsage::MOTOR_CONTROLLER_USAGE::EXAMPLE_MOTOR2,
                                  2,
+                                 calcstruc,
                                  string(canBusName));
     m_motor2->SetCurrentLimits(true,
                                units::current::ampere_t(25.0),

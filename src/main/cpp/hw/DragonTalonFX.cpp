@@ -88,10 +88,11 @@ using std::to_string;
 DragonTalonFX::DragonTalonFX(string networkTableName,
 							 MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
 							 int deviceID,
+							 const DistanceAngleCalcStruc &calcStruc,
 							 string canBusName) : m_networkTableName(networkTableName),
 												  m_type(deviceType),
 												  m_talon(TalonFX(deviceID, canBusName)),
-												  m_calcStruc(),
+												  m_calcStruc(calcStruc),
 												  m_inverted(false)
 {
 	ResetToDefaults();
@@ -340,7 +341,7 @@ void DragonTalonFX::FuseCancoder(DragonCanCoder &cancoder,
 	TalonFXConfiguration configs{};
 	m_talon.GetConfigurator().Refresh(configs);
 	configs.Feedback.FeedbackRemoteSensorID = cancoder.GetCanId();
-	configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue::FusedCANcoder;
+	configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue::FusedCANcoder; // TODO:: need to switch to SyncCANcoder when we switch to new library
 	configs.Feedback.SensorToMechanismRatio = sensorToMechanismRatio;
 	configs.Feedback.RotorToSensorRatio = rotorToSensorRatio;
 

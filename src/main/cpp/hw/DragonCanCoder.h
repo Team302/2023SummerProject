@@ -42,6 +42,7 @@ public:
 	int GetCanId();
 	std::string GetNetworkTableName() const { return m_networkTableName; }
 	CanSensorUsage::CANSENSOR_USAGE GetUsage() const { return m_usage; }
+	ctre::phoenixpro::hardware::CANcoder GetCanCoder() const;
 
 private:
 	std::string m_networkTableName;
