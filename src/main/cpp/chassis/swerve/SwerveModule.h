@@ -64,7 +64,8 @@ public:
                  IDragonMotorController *driveMotor,
                  IDragonMotorController *turningMotor,
                  DragonCanCoder *canCoder,
-                 const ControlData &controlData,
+                 ControlData *drivecontrolData,
+                 ControlData *turncontrolData,
                  double countsOnTurnEncoderPerDegreesOnAngleSensor,
                  units::length::inch_t wheelDiameter);
 
@@ -126,9 +127,8 @@ private:
     IDragonMotorController *m_turnMotor;
     DragonCanCoder *m_turnSensor;
 
-    ControlData m_driveVelocityControlData;
-    ControlData m_drivePercentControlData;
-    ControlData m_turnPositionControlData;
+    ControlData *m_driveControlData;
+    ControlData *m_turnPositionControlData;
 
     units::length::inch_t m_wheelDiameter;
 

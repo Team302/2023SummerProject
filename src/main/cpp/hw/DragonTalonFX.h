@@ -43,6 +43,7 @@ public:
     DragonTalonFX(std::string networkTableName,
                   MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
                   int deviceID,
+                  const DistanceAngleCalcStruc &calcStruc,
                   std::string canBusName);
     // DragonTalonFX(const DragonTalonFX &other);
     virtual ~DragonTalonFX() = default;
