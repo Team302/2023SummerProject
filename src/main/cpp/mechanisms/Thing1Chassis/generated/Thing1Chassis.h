@@ -27,20 +27,24 @@
 #include "mechanisms/base/BaseMech.h"
 #include "configs/RobotConfigMgr.h"
 
-#include "hw/DragonSolenoid.h"
+#include "hw/DragonTalonSRX.h"
 
-class ejectMechanism : public BaseMech
+class Thing1Chassis : public BaseMech
 {
 public:
-	ejectMechanism() = delete;
-	~ejectMechanism() = default;
-	ejectMechanism ( MechanismTypes::MECHANISM_TYPE type, std::string networkTableName );
+	Thing1Chassis() = delete;
+	~Thing1Chassis() = default;
+	Thing1Chassis ( MechanismTypes::MECHANISM_TYPE type, std::string networkTableName );
 
 	virtual void Initialize ( RobotConfigMgr::RobotIdentifier robotFullName ) = 0;
 	void Cyclic();
 
-	DragonSolenoid* ejectSolenoid;
-//state* state_1;
+	DragonTalonSRX* TalonSRX_LeftRear;
+	DragonTalonSRX* TalonSRX_RightRear;
+//state* leftRearWheel;
+//state* RightRearWheel;
+//state* LeftFrontWheel;
+//state* RightFrontWheel;
 
 protected:
 	std::string m_ntName;

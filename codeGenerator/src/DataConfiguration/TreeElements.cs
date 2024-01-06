@@ -144,6 +144,11 @@ namespace DataConfiguration
             else
                 return string.Format("{0} ({1} {2})", instanceName, value, __units__);
         }
+
+        public override string ToString()
+        {
+            return value.ToString();
+        }
     }
 
     [Serializable()]
@@ -247,6 +252,11 @@ namespace DataConfiguration
             else
                 return string.Format("{0} ({1} {2})", instanceName, value, __units__);
         }
+
+        public override string ToString()
+        {
+            return value.ToString();
+        }
     }
 
     [Serializable()]
@@ -330,6 +340,11 @@ namespace DataConfiguration
             else
                 return string.Format("{0} ({1} {2})", instanceName, value, __units__);
         }
+
+        public override string ToString()
+        {
+            return value.ToString();
+        }
     }
 
     [Serializable()]
@@ -408,6 +423,10 @@ namespace DataConfiguration
             refresh = helperFunctions.RefreshLevel.parentHeader;
 
             return string.Format("{0} ({1})", instanceName, value);
+        }
+        public override string ToString()
+        {
+            return value.ToString().ToLower();
         }
     }
 
@@ -504,6 +523,11 @@ namespace DataConfiguration
             refresh = helperFunctions.RefreshLevel.none;
 
             return string.Format("{0}", value);
+        }
+
+        public override string ToString()
+        {
+            return value;
         }
     }
 

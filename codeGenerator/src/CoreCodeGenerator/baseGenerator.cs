@@ -48,6 +48,8 @@ namespace CoreCodeGenerator
                 list[i] = list[i].Trim();
                 if (!string.IsNullOrWhiteSpace(list[i]))
                     sb.AppendLine(string.Format("{0}{1}", list[i], delimeter));
+                else
+                    sb.AppendLine(string.Format("{0}", list[i]));
             }
 
             return sb.ToString();

@@ -281,6 +281,8 @@ namespace ApplicationData
             {
                 if (baseDataConfiguration.isACollection(pi.PropertyType))
                 {
+                    sb.Add(""); // this creates an empty line in the output file, to increase readability
+
                     object theObject = pi.GetValue(obj);
                     if (theObject != null)
                     {
@@ -651,6 +653,7 @@ namespace ApplicationData
         public string motorControllerType { get; protected set; }
 
         [DefaultValue(MOTOR_TYPE.UNKNOWN_MOTOR)]
+        [ConstantInMechInstance]
         public MOTOR_TYPE motorType { get; set; }
 
         [DefaultValue(0u)]
@@ -1037,7 +1040,12 @@ namespace ApplicationData
                 canID.value.ToString(),
                 canBusName.ToString());
 
-            return new List<string> { creation };
+            List<string> code = new List<string>() { "", creation };
+
+            code.AddRange(generateObjectAddToMaps());
+            code.Add("");
+
+            return code;
         }
     }
 
@@ -1047,7 +1055,7 @@ namespace ApplicationData
     public class TalonSRX : MotorController
     {
         [Serializable]
-        public class DistanceAngleCalcInfo : baseDataClass
+        public class DistanceAngleCalcStruc : baseDataClass
         {
             [DefaultValue(0)]
             public intParameter countsPerRev { get; set; }
@@ -1065,16 +1073,42 @@ namespace ApplicationData
             [DefaultValue(0)]
             public doubleParameter countsPerDegree { get; set; }
 
-            public DistanceAngleCalcInfo()
+            public DistanceAngleCalcStruc()
             {
+                defaultDisplayName = this.GetType().Name;
             }
 
-            public override string ToString()
+            public string getDefinition(string namePrePend)
             {
-                return string.Format("{{ {0}, {1}, {2}, {3}, {4} }}", countsPerRev.value, gearRatio.value, diameter.value, countsPerInch.value, countsPerDegree.value);
+                string fullName = getName(namePrePend);
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine(string.Format("{0} {1};", this.GetType().Name, fullName));
+
+                foreach (PropertyInfo pi in GetType().GetProperties())
+                {
+                    Object obj = pi.GetValue(this);
+                   // PhysicalUnitsFamilyAttribute unitsAttr = this.GetType().GetCustomAttribute<PhysicalUnitsFamilyAttribute>();
+
+                    string rightValue = obj.ToString();
+                    if (pi.Name == "diameter")
+                    {
+                        string units = generatorContext.theGeneratorConfig.getWPIphysicalUnitType(diameter.physicalUnits);
+                        rightValue = string.Format("units::length::inch_t({0}({1})).to<double>()", units, rightValue);
+                    }
+
+                    sb.AppendLine(string.Format("{0}.{1} = {2} ;", fullName, pi.Name, rightValue));
+                }
+
+                return sb.ToString();
+            }
+
+            public string getName(string namePrePend)
+            {
+                return namePrePend + "CalcStruct";
             }
         }
-        public DistanceAngleCalcInfo theDistanceAngleCalcInfo { get; set; }
+        public DistanceAngleCalcStruc theDistanceAngleCalcInfo { get; set; }
 
 
         [DefaultValue(1.1)]
@@ -1130,16 +1164,22 @@ namespace ApplicationData
 
     );
              */
-            string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},{4},{5}, IDragonMotorController::MOTOR_TYPE::{6})",
+            string creation = string.Format("{7}{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},{4},{5}, IDragonMotorController::MOTOR_TYPE::{6})",
                 name,
                 getImplementationName(),
                 utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
                 canID.value.ToString(),
                 pdpID.value.ToString(),
-                theDistanceAngleCalcInfo.ToString(),
-                motorType);
+                theDistanceAngleCalcInfo.getName(name),
+                motorType,
+                theDistanceAngleCalcInfo.getDefinition(name));
 
-            return new List<string> { creation };
+            List<string> code = new List<string>() { "", creation };
+            
+            code.AddRange(generateObjectAddToMaps());
+            code.Add("");
+
+            return code;
         }
     }
 
@@ -1963,7 +2003,7 @@ namespace ApplicationData
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < list.Count; i++)
-              {
+            {
                 list[i] = list[i].Trim();
                 if (!string.IsNullOrWhiteSpace(list[i]))
                     sb.AppendLine(string.Format("{0}{1}", list[i], delimeter));
@@ -2134,7 +2174,7 @@ namespace ApplicationData
         [ConstantInMechInstance()]
         public List<stringParameterConstInMechInstance> transitionsTo { get; set; }
 
-        public List<doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst> doubleTargets { get;set; }
+        public List<doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst> doubleTargets { get; set; }
         public List<boolParameterUserDefinedTunableOnlyValueChangeableInMechInst> booleanTargets { get; set; }
 
         public state()
@@ -2165,7 +2205,12 @@ namespace ApplicationData
                 generatorContext.theMechanismInstance.name,
                 index);
 
-                return new List<string> { creation };
+                List<string> code = new List<string>() { creation };
+
+                code.AddRange(generateObjectAddToMaps());
+                code.Add("");
+
+                return code;
             }
 
             return new List<string>();

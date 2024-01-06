@@ -157,7 +157,6 @@ void Robot::RobotPeriodic()
         LoggerData data = {LOGGER_LEVEL::PRINT, string("DragonLimelight"), {}, {}, {count}, {status}};
         Logger::GetLogger()->LogData(data);
     }
-#endif
 
     // ToDo:: Move to DriveTeamFeedback
     if (m_previewer != nullptr)
@@ -188,7 +187,7 @@ void Robot::RobotPeriodic()
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Pitch"), pigeon->GetPitch().to<double>());
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Roll"), pigeon->GetRoll().to<double>());
     }
-
+#endif
     static int counter = 0;
     counter++;
     if (counter == 1)

@@ -65,7 +65,6 @@ namespace CoreCodeGenerator
                         resultString = resultString.Replace("$$_MECHANISM_NAME_$$", mi.mechanism.name);
                         resultString = resultString.Replace("$$_MECHANISM_INSTANCE_NAME_$$", mi.name);
                         resultString = resultString.Replace("$$_OBJECT_CREATION_$$", ListToString(generateMethod(mi, "generateIndexedObjectCreation"), ";"));
-                        resultString = resultString.Replace("$$_ADD_TO_MAPS_$$", ListToString(generateMethod(mi, "generateObjectAddToMaps"), ";"));
                         resultString = resultString.Replace("$$_STATE_CLASSES_INCLUDES_$$", ListToString(generateMethod(mi, "generateIncludes"), ""));
 
                         List<string> stateTransitions = new List<string>();
@@ -173,7 +172,11 @@ namespace CoreCodeGenerator
                             List<string> targetDecl = new List<string>();
                             foreach (doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst d in s.doubleTargets)
                             {
-                                targetDecl.Add(string.Format("{0} {1} = {0}({2})", generatorContext.theGeneratorConfig.getWPIphysicalUnitType(d.__units__), d.name, d.value));
+                                string varType = "double";
+                                if (d.unitsFamily != physicalUnit.Family.none)
+                                    varType = generatorContext.theGeneratorConfig.getWPIphysicalUnitType(d.__units__);
+
+                                targetDecl.Add(string.Format("{0} {1} = {0}({2})", varType, d.name, d.value));
                             }
                             foreach (boolParameterUserDefinedTunableOnlyValueChangeableInMechInst d in s.booleanTargets)
                             {

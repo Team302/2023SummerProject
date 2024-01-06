@@ -27,8 +27,6 @@ void $$_MECHANISM_INSTANCE_NAME_$$_gen::Create()
 
     $$_STATE_TRANSITION_REGISTRATION_$$
 
-    $$_ADD_TO_MAPS_$$
-
     m_table = nt::NetworkTableInstance::GetDefault().GetTable(m_ntName);
     m_tuningIsEnabledStr = "Enable Tuning for " + m_ntName; // since this string is used every loop, we do not want to create the string every time
     m_table.get()->PutBoolean(m_tuningIsEnabledStr, m_tuning);

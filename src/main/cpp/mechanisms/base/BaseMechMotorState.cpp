@@ -58,6 +58,7 @@ void BaseMechMotorState::SetTargetControl(double percentOutput)
 {
     m_mode = motorMode::PERCENT;
     m_target = percentOutput;
+    m_mech.UpdateTarget(m_target);
 }
 
 /// @brief Set the target value for the actuator
