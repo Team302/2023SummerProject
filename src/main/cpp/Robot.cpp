@@ -37,6 +37,7 @@
 #include "configs/RobotConfigMgr.h"
 #include "configs/RobotConfig.h"
 #include "configs/RobotElementNames.h"
+#include "gamepad/button/David.h"
 
 /* How to check robot variant
 #if ROBOT_VARIANT == 2024
@@ -53,11 +54,17 @@ void Robot::RobotInit()
     Logger::GetLogger()->PutLoggingSelectionsOnDashboard();
     Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("RobotInit"), string("arrived"));
 
+    theButton::A_BUTTON_IsPressed = false;
+    theButton::B_BUTTON_IsPressed = false;
+    theButton::X_BUTTON_IsPressed = false;
+    theButton::Y_BUTTON_IsPressed = false;
+
     // Read build details for team number, branch, and more
     m_detailsReader = new BuildDetailsReader();
     m_details = m_detailsReader->ReadBuildDetails();
 
     m_controller = nullptr;
+    m_details.teamNumber = 1;
 
     // Build the robot
     RobotConfigMgr::GetInstance()->InitRobot((RobotConfigMgr::RobotIdentifier)m_details.teamNumber);
@@ -151,7 +158,6 @@ void Robot::RobotPeriodic()
         LoggerData data = {LOGGER_LEVEL::PRINT, string("DragonLimelight"), {}, {}, {count}, {status}};
         Logger::GetLogger()->LogData(data);
     }
-#endif
 
     // ToDo:: Move to DriveTeamFeedback
     if (m_previewer != nullptr)
@@ -174,7 +180,7 @@ void Robot::RobotPeriodic()
     auto pigeon = RobotConfigMgr::GetInstance()->GetCurrentConfig()->GetPigeon(RobotElementNames::PIGEON_USAGE::PIGEON_ROBOT_CENTER);
     if (pigeon == nullptr)
     {
-        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("DEUBGGING"), string("Pigeon Nullptr?"), "true");
+        //       Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("DEUBGGING"), string("Pigeon Nullptr?"), "true");
     }
     else
     {
@@ -182,6 +188,32 @@ void Robot::RobotPeriodic()
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Pitch"), pigeon->GetPitch().to<double>());
         Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pigeon"), string("Pigeon Roll"), pigeon->GetRoll().to<double>());
     }
+#endif
+    static int counter = 0;
+    counter++;
+    if (counter == 1)
+    {
+        theButton::press(0);
+
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pressed A"), string(""), string(""));
+    }
+    else if (counter == 5000 / 20)
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pressed B"), string(""), string(""));
+        theButton::press(1);
+    }
+    else if (counter == 10000 / 20)
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pressed X"), string(""), string(""));
+        theButton::press(2);
+    }
+    else if (counter == 15000 / 20)
+    {
+        Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("Pressed Y"), string(""), string(""));
+        theButton::press(3);
+    }
+    else if (counter == 20000 / 20)
+        counter = 0;
 }
 
 /**

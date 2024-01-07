@@ -1132,6 +1132,40 @@ namespace ApplicationData
         override public List<string> generateInitialization()
         {
             List<string> initCode = new List<string>();
+            
+            /*
+     void SetRotationOffset(double rotations) override;
+void SetVoltageRamping(double ramping, double rampingClosedLoop = -1) override; // seconds 0 to full, set to 0 to disable
+void EnableCurrentLimiting(bool enabled) override;
+void EnableBrakeMode(bool enabled) override;
+void Invert(bool inverted) override;
+void SetSensorInverted(bool inverted) override;
+
+void SetControlConstants(int slot, const ControlData &controlInfo) override;
+void SelectClosedLoopProfile(int slot, int pidIndex); // <I> - 0 for primary closed loop, 1 for cascaded closed-loop
+
+int ConfigSelectedFeedbackSensor(
+ctre::phoenix::motorcontrol::FeedbackDevice feedbackDevice,
+int pidIdx,
+int timeoutMs);
+int ConfigSelectedFeedbackSensor(
+ctre::phoenix::motorcontrol::RemoteFeedbackDevice feedbackDevice,
+int pidIdx,
+int timeoutMs);
+int ConfigPeakCurrentLimit(int amps, int timeoutMs);
+int ConfigPeakCurrentDuration(int milliseconds, int timeoutMs);
+int ConfigContinuousCurrentLimit(int amps, int timeoutMs);
+
+void SetAsFollowerMotor(int masterCANID);
+
+void SetForwardLimitSwitch(bool normallyOpen);
+
+void SetReverseLimitSwitch(bool normallyOpen);
+
+void SetRemoteSensor(int canID, ctre::phoenix::motorcontrol::RemoteSensorSource deviceType) override;
+
+void SetDiameter(double diameter) override;
+ */
 
             //initCode.Add(string.Format(@"{0}->SetCurrentLimits({1},
             //                                {2}({3}),

@@ -580,7 +580,6 @@
         <type>Boolean</type>
         <value>false</value>
       </enableFOC>
-      <controlType>POSITION_INCH</controlType>
     </motorControlData>
     <motorControlData>
       <name>motorControlData_2</name>
@@ -657,7 +656,6 @@
         <type>Boolean</type>
         <value>false</value>
       </enableFOC>
-      <controlType>VELOCITY_DEGREES</controlType>
     </motorControlData>
   </stateMotorControlData>
   <states>
@@ -692,26 +690,26 @@
       </transitionsTo>
       <doubleTargets>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_LeftRear</name>
           <__units__>m</__units__>
           <type>Double</type>
-          <value>0.3</value>
+          <value>0.31</value>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_RightRear</name>
           <__units__>m</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_RightFront</name>
           <__units__>m</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_LeftFront</name>
           <__units__>m</__units__>
           <type>Double</type>
@@ -750,25 +748,25 @@
       </transitionsTo>
       <doubleTargets>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_LeftRear</name>
           <__units__>m</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_RightRear</name>
           <__units__>m</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_RightFront</name>
           <__units__>m</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_LeftFront</name>
           <__units__>m</__units__>
           <type>Double</type>
@@ -807,25 +805,25 @@
       </transitionsTo>
       <doubleTargets>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_LeftRear</name>
           <__units__>m</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_RightRear</name>
           <__units__>m</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_RightFront</name>
           <__units__>m</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>length</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_LeftFront</name>
           <__units__>m</__units__>
           <type>Double</type>
@@ -864,25 +862,25 @@
       </transitionsTo>
       <doubleTargets>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>angularVelocity</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_LeftRear</name>
           <__units__>deg/s</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>angularVelocity</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_RightRear</name>
           <__units__>rad/s</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>angularVelocity</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_RightFront</name>
           <__units__>rad/s</__units__>
           <type>Double</type>
         </doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
         <doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst>
-          <unitsFamily>angularVelocity</unitsFamily>
+          <unitsFamily>none</unitsFamily>
           <name>TalonSRX_LeftFront</name>
           <__units__>rad/s</__units__>
           <type>Double</type>

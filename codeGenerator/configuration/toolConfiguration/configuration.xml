@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <toolConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <rootOutputFolder>..\..\..\src\main\cpp</rootOutputFolder>
-  <robotConfiguration>..\Minimal\minimalRobot.xml</robotConfiguration>
+  <robotConfiguration>..\RobotConfigurations\official\2024_configuration.xml</robotConfiguration>
   <appDataConfigurations>
     <string>../RobotConfigurations/official/2024_configuration.xml</string>
     <string>../Minimal/minimalRobot.xml</string>
