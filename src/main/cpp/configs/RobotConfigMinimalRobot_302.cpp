@@ -18,44 +18,14 @@
 
 #include <string>
 
+#include "PeriodicLooper.h"
 #include "utils/logging/Logger.h"
 #include "configs/RobotConfigMgr.h"
-#include "configs/RobotConfig.h"
 #include "configs/RobotConfigMinimalRobot_302.h"
 
-using namespace std;
+using std::string;
 
-RobotConfigMgr *RobotConfigMgr::m_instance = nullptr;
-RobotConfigMgr *RobotConfigMgr::GetInstance()
+void RobotConfigMinimalRobot_302::DefineMechanisms()
 {
-	if ( RobotConfigMgr::m_instance == nullptr )
-	{
-		RobotConfigMgr::m_instance = new RobotConfigMgr();
-	}
-	return RobotConfigMgr::m_instance;
-}
 
-RobotConfigMgr::RobotConfigMgr() : m_config ( nullptr )
-{
-}
-
-void RobotConfigMgr::InitRobot ( RobotIdentifier id )
-{
-	switch ( id )
-	{
-	case RobotIdentifier::MinimalRobot_302:
-		Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( "Initializing robot " ), string ( "MinimalRobot_302" ), string ( "" ) );
-		m_config = new RobotConfigMinimalRobot_302();
-		break;
-
-	default:
-		Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( "Skipping robot initialization because of unknown robot id " ), string ( "" ), id );
-		break;
-	}
-
-	if ( m_config != nullptr )
-	{
-		m_config->BuildRobot();
-		Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( "Initialization completed for robot " ), string ( "" ), id );
-	}
 }

@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <toolConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <rootOutputFolder>..\..\..\src\main\cpp</rootOutputFolder>
-  <robotConfiguration>..\RobotConfigurations\official\2024_configuration.xml</robotConfiguration>
+  <robotConfiguration>..\Minimal\minimalRobot.xml</robotConfiguration>
   <appDataConfigurations>
     <string>../RobotConfigurations/official/2024_configuration.xml</string>
+    <string>../RobotConfigurations/minimal/minimalRobot.xml</string>
+    <string>../Minimal/minimalRobot.xml</string>
   </appDataConfigurations>
   <collectionBaseTypes>
     <string>ApplicationData.MotorController</string>
