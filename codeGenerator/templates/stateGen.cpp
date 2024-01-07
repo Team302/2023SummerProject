@@ -30,7 +30,10 @@ $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$StateGen::$$_MECHANISM_INSTANCE_NAM
 
 void $$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$StateGen::Init()
 {
-    Logger::GetLogger()->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("$$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$StateGen"), string("init"));
+    $$_SET_TARGET_CONTROL_$$
+
+    Logger::GetLogger()
+        ->LogData(LOGGER_LEVEL::PRINT, string("ArrivedAt"), string("$$_MECHANISM_INSTANCE_NAME_$$$$_STATE_NAME_$$StateGen"), string("init"));
 
     $$_MECHANISM_INSTANCE_NAME_$$BaseStateGen::Init();
 }

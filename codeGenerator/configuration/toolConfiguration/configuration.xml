@@ -111,13 +111,13 @@
       <shortName>rad/s</shortName>
       <longName>radians per second</longName>
       <family>angularVelocity</family>
-      <wpiClassName>Units.radians_per_second</wpiClassName>
+      <wpiClassName>units::angular_velocity::radians_per_second_t</wpiClassName>
     </physicalUnit>
     <physicalUnit>
       <shortName>deg/s</shortName>
       <longName>degrees per second</longName>
       <family>angularVelocity</family>
-      <wpiClassName>Units.degrees_per_second</wpiClassName>
+      <wpiClassName>units::angular_velocity::degrees_per_second_t</wpiClassName>
     </physicalUnit>
     <physicalUnit>
       <shortName>PSI</shortName>

@@ -1088,7 +1088,7 @@ namespace ApplicationData
                 foreach (PropertyInfo pi in GetType().GetProperties())
                 {
                     Object obj = pi.GetValue(this);
-                   // PhysicalUnitsFamilyAttribute unitsAttr = this.GetType().GetCustomAttribute<PhysicalUnitsFamilyAttribute>();
+                    // PhysicalUnitsFamilyAttribute unitsAttr = this.GetType().GetCustomAttribute<PhysicalUnitsFamilyAttribute>();
 
                     string rightValue = obj.ToString();
                     if (pi.Name == "diameter")
@@ -1175,7 +1175,7 @@ namespace ApplicationData
                 theDistanceAngleCalcInfo.getDefinition(name));
 
             List<string> code = new List<string>() { "", creation };
-            
+
             code.AddRange(generateObjectAddToMaps());
             code.Add("");
 
@@ -2038,9 +2038,8 @@ namespace ApplicationData
             VELOCITY_RPS,              /// Closed Loop Control - values are in revolutions per second
             VOLTAGE,                   /// Closed Loop Control - values are in volts
             CURRENT,                   /// Closed Loop Control - values in amps
-            TRAPEZOID,                 /// Closed Loop Control - trapezoid profile (e.g. Motion Magic)
-            MOTION_PROFILE,            /// Closed Loop Control - motion profile
-            MOTION_PROFILE_ARC,        /// Closed Loop Control - motion profile arc
+            TRAPEZOID_ANGULAR_POS,     /// Closed Loop Control - trapezoid profile (e.g. Motion Magic)
+            TRAPEZOID_LINEAR_POS,     /// Closed Loop Control - trapezoid profile (e.g. Motion Magic)
             MAX_CONTROL_TYPES
         };
 
@@ -2077,6 +2076,7 @@ namespace ApplicationData
         public FEEDFORWARD_TYPE feedForwardType { get; set; }
 
         [DefaultValue(CONTROL_TYPE.PERCENT_OUTPUT)]
+        [ConstantInMechInstance]
         public CONTROL_TYPE controlType { get; set; }
 
         [DefaultValue(CONTROL_RUN_LOCS.MOTOR_CONTROLLER)]
@@ -2104,6 +2104,10 @@ namespace ApplicationData
         {14}, // double nominalValue
         {15}  // bool enableFOC"
              */
+            string controlTypeStr = controlType.ToString();
+            if ((controlType == CONTROL_TYPE.TRAPEZOID_ANGULAR_POS) || (controlType == CONTROL_TYPE.TRAPEZOID_LINEAR_POS))
+                controlTypeStr = "TRAPEZOID";
+
             string creation = string.Format(@"{0} = new {1}(
                                                             ControlModes::CONTROL_TYPE::{2}, // ControlModes::CONTROL_TYPE mode
                                                             ControlModes::CONTROL_RUN_LOCS::{3}, // ControlModes::CONTROL_RUN_LOCS server
@@ -2122,7 +2126,7 @@ namespace ApplicationData
                 )",
             name,
                 getImplementationName(),
-                controlType.ToString(),
+                controlTypeStr,
                 controlLoopLocation,
                 PID.pGain.value,
                 PID.iGain.value,
@@ -2168,9 +2172,23 @@ namespace ApplicationData
         }
     }
 
+    [Serializable]
+    public class motorControlDataLink : baseRobotElementClass
+    {
+        [ConstantInMechInstance]
+        [DefaultValue("theControlDataName")]
+        public string motorControlDataName { get; set; }
+
+        public motorControlDataLink()
+        {
+        }
+    }
+
     [Serializable()]
     public class state : baseRobotElementClass
     {
+        public List<motorControlDataLink> motorControlDataLinks { get; set;}
+
         [ConstantInMechInstance()]
         public List<stringParameterConstInMechInstance> transitionsTo { get; set; }
 

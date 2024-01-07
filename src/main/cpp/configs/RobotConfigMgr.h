@@ -25,8 +25,6 @@ class RobotConfigMgr
 public:
 	enum RobotIdentifier
 	{
-		CompBot_1 = 1,
-		PracticeBot_9900 = 9900,
 
 		MAX_ROBOT_IDENTIFIERS
 	};

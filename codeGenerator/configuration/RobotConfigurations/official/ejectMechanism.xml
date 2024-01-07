@@ -60,6 +60,7 @@
   <states>
     <state>
       <name>state_1</name>
+      <motorControlDataLinks />
       <transitionsTo />
       <doubleTargets />
       <booleanTargets />

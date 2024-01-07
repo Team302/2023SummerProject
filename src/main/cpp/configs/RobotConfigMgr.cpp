@@ -21,8 +21,6 @@
 #include "utils/logging/Logger.h"
 #include "configs/RobotConfigMgr.h"
 #include "configs/RobotConfig.h"
-#include "configs/RobotConfigCompBot_1.h"
-#include "configs/RobotConfigPracticeBot_9900.h"
 
 using namespace std;
 
@@ -44,14 +42,6 @@ void RobotConfigMgr::InitRobot ( RobotIdentifier id )
 {
 	switch ( id )
 	{
-	case RobotIdentifier::CompBot_1:
-		Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( "Initializing robot " ), string ( "CompBot_1" ), string ( "" ) );
-		m_config = new RobotConfigCompBot_1();
-		break;
-	case RobotIdentifier::PracticeBot_9900:
-		Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( "Initializing robot " ), string ( "PracticeBot_9900" ), string ( "" ) );
-		m_config = new RobotConfigPracticeBot_9900();
-		break;
 
 	default:
 		Logger::GetLogger()->LogData ( LOGGER_LEVEL::PRINT, string ( "Skipping robot initialization because of unknown robot id " ), string ( "" ), id );

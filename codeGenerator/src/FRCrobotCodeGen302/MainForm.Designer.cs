@@ -60,6 +60,7 @@ namespace FRCrobotCodeGen302
             this.addRobotElementLabel = new System.Windows.Forms.Label();
             this.deleteTreeElementButton = new System.Windows.Forms.Button();
             this.addTreeElementButton = new System.Windows.Forms.Button();
+            this.configureStatesButton = new System.Windows.Forms.Button();
             this.saveConfigBbutton = new System.Windows.Forms.Button();
             this.valueTextBox = new System.Windows.Forms.TextBox();
             this.valueDatePicker = new System.Windows.Forms.DateTimePicker();
@@ -331,6 +332,7 @@ namespace FRCrobotCodeGen302
             this.panel1.Controls.Add(this.addRobotElementLabel);
             this.panel1.Controls.Add(this.deleteTreeElementButton);
             this.panel1.Controls.Add(this.addTreeElementButton);
+            this.panel1.Controls.Add(this.configureStatesButton);
             this.panel1.Controls.Add(this.saveConfigBbutton);
             this.panel1.Controls.Add(this.valueTextBox);
             this.panel1.Controls.Add(this.valueDatePicker);
@@ -467,6 +469,17 @@ namespace FRCrobotCodeGen302
             this.addTreeElementButton.Text = "Add";
             this.addTreeElementButton.UseVisualStyleBackColor = true;
             this.addTreeElementButton.Click += new System.EventHandler(this.addTreeElementButton_Click);
+            // 
+            // configureStatesButton
+            // 
+            this.configureStatesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.configureStatesButton.Location = new System.Drawing.Point(231, 160);
+            this.configureStatesButton.Name = "configureStatesButton";
+            this.configureStatesButton.Size = new System.Drawing.Size(153, 25);
+            this.configureStatesButton.TabIndex = 14;
+            this.configureStatesButton.Text = "Configure states";
+            this.configureStatesButton.UseVisualStyleBackColor = true;
+            this.configureStatesButton.Click += new System.EventHandler(this.configureStatesButton_Click);
             // 
             // saveConfigBbutton
             // 
@@ -613,6 +626,7 @@ namespace FRCrobotCodeGen302
         private System.Windows.Forms.Button saveConfigBbutton;
         private System.Windows.Forms.NumericUpDown valueNumericUpDown;
         private System.Windows.Forms.Button addTreeElementButton;
+        private System.Windows.Forms.Button configureStatesButton;
         private System.Windows.Forms.ComboBox robotConfigurationFileComboBox;
         private System.Windows.Forms.Button clearReportButton;
         private System.Windows.Forms.Button deleteTreeElementButton;

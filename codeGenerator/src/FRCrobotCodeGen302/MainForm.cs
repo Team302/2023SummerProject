@@ -1414,6 +1414,101 @@ namespace FRCrobotCodeGen302
                 addProgress(ex.Message);
             }
         }
+        private void configureStatesButton_Click(object sender, EventArgs e)
+        {
+            if (lastSelectedArrayNode != null)
+            {
+                Type elementType = nodeTag.getObject(lastSelectedArrayNode.Tag).GetType().GetGenericArguments().Single();
+
+                if (elementType == typeof(ApplicationData.state))
+                {
+                    ApplicationData.mechanism m = (ApplicationData.mechanism)nodeTag.getObject(lastSelectedArrayNode.Parent.Tag);
+                    List<ApplicationData.state> states = (List<ApplicationData.state>)nodeTag.getObject(lastSelectedArrayNode.Tag);
+
+                    bool addedItems = false;
+                    foreach (state s in states)
+                    {
+                        foreach(MotorController mc in m.MotorControllers)
+                        {
+                            doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst target = s.doubleTargets.Find(t => t.name == mc.name);
+                            if(target == null)
+                            {
+                                target = new doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst();
+                                target.name = mc.name;
+                                s.doubleTargets.Add(target);
+                                addedItems = true;
+                            }
+
+                            motorControlDataLink mcdl = s.motorControlDataLinks.Find(cd => cd.name == mc.name);
+                            if (mcdl == null)
+                            {
+                                mcdl = new motorControlDataLink();
+                                mcdl.name = mc.name;
+                                mcdl.motorControlDataName = "fillThis";
+                                s.motorControlDataLinks.Add(mcdl);
+                                addedItems = true;
+                            }
+                            else
+                            {
+                                motorControlData mcd = m.stateMotorControlData.Find(smcd => smcd.name == mcdl.motorControlDataName);
+                                if (mcd != null)
+                                {
+                                    if (mcd.controlType == motorControlData.CONTROL_TYPE.PERCENT_OUTPUT) { target.unitsFamily = Family.none; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.POSITION_INCH) { target.unitsFamily = Family.length; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.POSITION_ABS_TICKS) { target.unitsFamily = Family.none; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.POSITION_DEGREES) { target.unitsFamily = Family.angle; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.POSITION_DEGREES_ABSOLUTE) { target.unitsFamily = Family.angle; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.VELOCITY_INCH) { target.unitsFamily = Family.velocity; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.VELOCITY_DEGREES) { target.unitsFamily = Family.angularVelocity; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.VELOCITY_RPS) { target.unitsFamily = Family.angularVelocity; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.VOLTAGE) { target.unitsFamily = Family.angularVelocity; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.CURRENT) { target.unitsFamily = Family.none; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.TRAPEZOID_LINEAR_POS) { target.unitsFamily = Family.length; }
+                                    else if (mcd.controlType == motorControlData.CONTROL_TYPE.TRAPEZOID_ANGULAR_POS) { target.unitsFamily = Family.angle; }
+
+                                    addedItems = true;
+                                }
+                            }
+                        }
+                        foreach (solenoid sol in m.solenoid)
+                        {
+                            boolParameterUserDefinedTunableOnlyValueChangeableInMechInst target = s.booleanTargets.Find(t => t.name == sol.name);
+                            if (target == null)
+                            {
+                                boolParameterUserDefinedTunableOnlyValueChangeableInMechInst newTarget = new boolParameterUserDefinedTunableOnlyValueChangeableInMechInst();
+                                newTarget.name = sol.name;
+                                s.booleanTargets.Add(newTarget);
+                                addedItems = true;
+                            }
+                        }
+                        foreach (servo ser in m.servo)
+                        {
+                            doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst target = s.doubleTargets.Find(t => t.name == ser.name);
+                            if (target == null)
+                            {
+                                doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst newTarget = new doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst();
+                                newTarget.name = ser.name;
+                                s.doubleTargets.Add(newTarget);
+                                addedItems = true;
+                            }
+                        }
+                    }
+
+                    if(addedItems)
+                    {
+                        string nodeName = lastSelectedArrayNode.Text;
+                        lastSelectedArrayNode.Remove();
+                        AddNode((TreeNode)m.theTreeNode, states, nodeName);
+
+                        mechanism theMechanism;
+                        if (isPartOfAMechanismTemplate(lastSelectedArrayNode, out theMechanism))
+                            updateMechInstancesFromMechTemplate(theMechanism);
+
+                        setNeedsSaving();
+                    }
+                }
+            }
+        }
 
         private void addTreeElementButton_Click(object sender, EventArgs e)
         {
