@@ -106,7 +106,7 @@ void Robot::RobotPeriodic()
         m_robotState->Run();
     }
 
-#define ENABLE_VISION
+// #define ENABLE_VISION
 #ifdef ENABLE_VISION
     // This is an example of how to use RobotVision
 
