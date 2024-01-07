@@ -4,7 +4,6 @@
   <robotConfiguration>..\Minimal\minimalRobot.xml</robotConfiguration>
   <appDataConfigurations>
     <string>../RobotConfigurations/official/2024_configuration.xml</string>
-    <string>../RobotConfigurations/minimal/minimalRobot.xml</string>
     <string>../Minimal/minimalRobot.xml</string>
   </appDataConfigurations>
   <collectionBaseTypes>
