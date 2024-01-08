@@ -20,9 +20,15 @@
     </physicalUnit>
     <physicalUnit>
       <shortName>s</shortName>
-      <longName>Seconds</longName>
+      <longName>Second</longName>
       <family>time</family>
       <wpiClassName>units::time::second_t</wpiClassName>
+    </physicalUnit>
+    <physicalUnit>
+      <shortName>ms</shortName>
+      <longName>millisecond</longName>
+      <family>time</family>
+      <wpiClassName>units::time::millisecond_t</wpiClassName>
     </physicalUnit>
     <physicalUnit>
       <shortName>W</shortName>

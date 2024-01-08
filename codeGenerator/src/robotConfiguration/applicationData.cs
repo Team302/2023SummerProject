@@ -605,6 +605,15 @@ namespace ApplicationData
     [XmlInclude(typeof(TalonSRX))]
     public class MotorController : baseRobotElementClass
     {
+        public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
+        public enum NeutralModeValue { Coast, Brake }
+
+        public enum SwitchPolarity
+        {
+            NormallyOpen,
+            NormallyClosed
+        };
+
         public enum RemoteSensorSource
         {
             Off,
@@ -660,10 +669,6 @@ namespace ApplicationData
         [Range(typeof(uint), "0", "62")]
         public uintParameter canID { get; set; }
 
-        [DefaultValue(0u)]
-        [Range(typeof(uint), "0", "62")]
-        public uintParameter remoteSensorCanID { get; set; }
-
         [DefaultValue(CAN_BUS.rio)]
         public CAN_BUS canBusName { get; set; }
 
@@ -678,8 +683,25 @@ namespace ApplicationData
         [DefaultValue(false)]
         public boolParameter enableFollowID { get; set; }
 
-        [DefaultValue(RemoteSensorSource.Off)]
-        public RemoteSensorSource remoteSensorSource { get; set; }
+
+
+        [Serializable]
+        public class RemoteSensor : baseDataClass
+        {
+            [DefaultValue(RemoteSensorSource.Off)]
+            public RemoteSensorSource Source { get; set; }
+
+            [DefaultValue(0u)]
+            [Range(typeof(uint), "0", "62")]
+            public uintParameter CanID { get; set; }
+
+            public RemoteSensor()
+            {
+                defaultDisplayName = this.GetType().Name;
+            }
+        }
+        public RemoteSensor remoteSensor { get; set; }
+
 
         [Serializable]
         public class FusedCANcoder : baseDataClass
@@ -795,9 +817,6 @@ namespace ApplicationData
         [Serializable]
         public class ConfigMotorSettings : baseDataClass
         {
-            public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
-            public enum NeutralModeValue { Coast, Brake }
-
             [DefaultValue(0)]
             [Range(typeof(double), "0", "100")]
             [PhysicalUnitsFamily(physicalUnit.Family.percent)]
@@ -823,7 +842,11 @@ namespace ApplicationData
 
             public ConfigMotorSettings()
             {
-                defaultDisplayName = "ConfigMotorSettings";
+                int index = this.GetType().Name.IndexOf("_");
+                if (index > 0)
+                    defaultDisplayName = this.GetType().Name.Substring(0, index);
+                else
+                    defaultDisplayName = this.GetType().Name;
             }
         }
         public ConfigMotorSettings theConfigMotorSettings { get; set; }
@@ -979,7 +1002,7 @@ namespace ApplicationData
                                             theConfigHWLimitSW.revOpenClose
                                            ));
 
-            initCode.Add(string.Format(@"{0}->ConfigMotorSettings({1}::{2}, // ctre::phoenixpro::signals::InvertedValue
+            initCode.Add(string.Format(@"{0}->ConfigMotorSettings_SRX({1}::{2}, // ctre::phoenixpro::signals::InvertedValue
                                             {3}::{4}, // ctre::phoenixpro::signals::NeutralModeValue                  
                                             {5}, // deadbandPercent                 
                                             {6}, // peakForwardDutyCycle                 
@@ -1006,9 +1029,9 @@ namespace ApplicationData
             initCode.Add(string.Format(@"{0}->SetRemoteSensor({1}, // canID
                                                               {2}::{2}_{3} ); // ctre::phoenix::motorcontrol::RemoteSensorSource",
                                             name,
-                                            remoteSensorCanID.value,
-                                            remoteSensorSource.GetType().Name,
-                                            remoteSensorSource
+                                            remoteSensor.CanID.value,
+                                            remoteSensor.Source.GetType().Name,
+                                            remoteSensor.Source
                                             ));
 
             if (fusedCANcoder.enable.value == true)
@@ -1052,6 +1075,7 @@ namespace ApplicationData
     [Serializable()]
     [ImplementationName("DragonTalonSRX")]
     [UserIncludeFile("hw/DragonTalonSRX.h")]
+    [Using("ctre::phoenix::motorcontrol::RemoteSensorSource")]
     public class TalonSRX : MotorController
     {
         [Serializable]
@@ -1110,20 +1134,110 @@ namespace ApplicationData
         }
         public DistanceAngleCalcStruc theDistanceAngleCalcInfo { get; set; }
 
+        [Serializable]
+        public class LimitSwitches : baseDataClass
+        {
+            [DefaultValue(SwitchPolarity.NormallyOpen)]
+            public SwitchPolarity ForwardLimitSwitch { get; set; }
 
-        [DefaultValue(1.1)]
-        [Range(typeof(double), "0", "62")]
-        [TunableParameter()]
-        public doubleParameter deadbandPercent_ { get; set; }
+            [DefaultValue(SwitchPolarity.NormallyOpen)]
+            public SwitchPolarity ReverseLimitSwitch { get; set; }
 
-        [DefaultValue(2.2)]
-        [Range(typeof(double), "-1.0", "3.0")]
-        public doubleParameter peakMin_ { get; set; }
+            [DefaultValue(false)]
+            public boolParameter LimitSwitchesEnabled { get; set; }
 
-        [DefaultValue(4.4)]
-        [Range(typeof(double), "-10.0", "20.0")]
-        [TunableParameter()]
-        public doubleParameter peakMax_ { get; set; }
+            public LimitSwitches()
+            {
+                defaultDisplayName = this.GetType().Name;
+            }
+        }
+        public LimitSwitches limitSwitches { get; set; }
+
+        [Serializable]
+        public class CurrentLimits_SRX : baseDataClass
+        {
+            [DefaultValue(false)]
+            public boolParameter EnableCurrentLimits { get; set; }
+
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public intParameter PeakCurrentLimit { get; set; }
+
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public intParameter PeakCurrentLimitTimeout { get; set; }
+
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public intParameter PeakCurrentDuration { get; set; }
+
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public intParameter PeakCurrentDurationTimeout { get; set; }
+
+
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            public intParameter ContinuousCurrentLimit { get; set; }
+
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public intParameter ContinuousCurrentLimitTimeout { get; set; }
+
+            public CurrentLimits_SRX()
+            {
+                int index = this.GetType().Name.IndexOf("_");
+                if (index > 0)
+                    defaultDisplayName = this.GetType().Name.Substring(0, index);
+                else
+                    defaultDisplayName = this.GetType().Name;
+            }
+        }
+        public CurrentLimits_SRX currentLimits { get; set; }
+
+        [Serializable]
+        public class ConfigMotorSettings_SRX : baseDataClass
+        {
+            [DefaultValue(InvertedValue.CounterClockwise_Positive)]
+            public InvertedValue inverted { get; set; }
+
+            [DefaultValue(NeutralModeValue.Coast)]
+            public NeutralModeValue mode { get; set; }
+
+            public ConfigMotorSettings_SRX()
+            {
+                int index = this.GetType().Name.IndexOf("_");
+                if (index > 0)
+                    defaultDisplayName = this.GetType().Name.Substring(0, index);
+                else
+                    defaultDisplayName = this.GetType().Name;
+            }
+        }
+        public ConfigMotorSettings_SRX theConfigMotorSettings { get; set; }
+
+        [Serializable]
+        public class VoltageRamping : baseDataClass
+        {
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter openLoopRampTime { get; set; }
+
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter closedLoopRampTime { get; set; }
+
+            [DefaultValue(false)]
+            public boolParameter enableClosedLoop { get; set; }
+
+            public VoltageRamping()
+            {
+                defaultDisplayName = this.GetType().Name;
+            }
+        }
+        public VoltageRamping voltageRamping { get; set; }
+
+        [DefaultValue(false)]
+        public boolParameter sensorIsInverted { get; set; }
 
         public TalonSRX()
         {
@@ -1132,56 +1246,89 @@ namespace ApplicationData
         override public List<string> generateInitialization()
         {
             List<string> initCode = new List<string>();
-            
-            /*
-     void SetRotationOffset(double rotations) override;
-void SetVoltageRamping(double ramping, double rampingClosedLoop = -1) override; // seconds 0 to full, set to 0 to disable
-void EnableCurrentLimiting(bool enabled) override;
-void EnableBrakeMode(bool enabled) override;
-void Invert(bool inverted) override;
-void SetSensorInverted(bool inverted) override;
 
-void SetControlConstants(int slot, const ControlData &controlInfo) override;
-void SelectClosedLoopProfile(int slot, int pidIndex); // <I> - 0 for primary closed loop, 1 for cascaded closed-loop
+            initCode.Add(string.Format(@"{0}->SetRemoteSensor({1}, // canID
+                                                              {2}::{2}_{3} ); // ctre::phoenix::motorcontrol::RemoteSensorSource",
+                                                                    name,
+                                                                    remoteSensor.CanID.value,
+                                                                    remoteSensor.Source.GetType().Name,
+                                                                    remoteSensor.Source
+                                                                    ));
 
-int ConfigSelectedFeedbackSensor(
-ctre::phoenix::motorcontrol::FeedbackDevice feedbackDevice,
-int pidIdx,
-int timeoutMs);
-int ConfigSelectedFeedbackSensor(
-ctre::phoenix::motorcontrol::RemoteFeedbackDevice feedbackDevice,
-int pidIdx,
-int timeoutMs);
-int ConfigPeakCurrentLimit(int amps, int timeoutMs);
-int ConfigPeakCurrentDuration(int milliseconds, int timeoutMs);
-int ConfigContinuousCurrentLimit(int amps, int timeoutMs);
+            initCode.Add(string.Format("{0}->SetSensorInverted( {1});",
+                                                                    name,
+                                                                    sensorIsInverted.ToString().ToLower()));
 
-void SetAsFollowerMotor(int masterCANID);
+            initCode.Add(string.Format("{0}->SetVoltageRamping( units::time::second_t({1}({2})).to<double>(), units::time::second_t({3}({4})).to<double>() );",
+                                                                    name,
+                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(voltageRamping.openLoopRampTime.physicalUnits),
+                                                                    voltageRamping.openLoopRampTime.value,
+                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(voltageRamping.closedLoopRampTime.physicalUnits),
+                                                                    voltageRamping.enableClosedLoop.value ? voltageRamping.closedLoopRampTime.value : 0.0));
 
-void SetForwardLimitSwitch(bool normallyOpen);
+            initCode.Add(string.Format("{0}->Invert( {1});",
+                                                                    name,
+                                                                    (theConfigMotorSettings.inverted == InvertedValue.CounterClockwise_Positive).ToString().ToLower()));
 
-void SetReverseLimitSwitch(bool normallyOpen);
+            initCode.Add(string.Format("{0}->EnableBrakeMode( {1});",
+                                                                    name,
+                                                                    (theConfigMotorSettings.mode == NeutralModeValue.Brake).ToString().ToLower()));
 
-void SetRemoteSensor(int canID, ctre::phoenix::motorcontrol::RemoteSensorSource deviceType) override;
+            initCode.Add(string.Format("{0}->EnableCurrentLimiting( {1});",
+                                                                    name,
+                                                                    currentLimits.EnableCurrentLimits.value.ToString().ToLower()));
 
-void SetDiameter(double diameter) override;
- */
+            initCode.Add(string.Format("{0}->ConfigPeakCurrentLimit(units::current::ampere_t ( {1}({2})).to<int>(), units::time::millisecond_t({3}({4})).to<int>() );",      //todo check return code
+                                                                    name,
+                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.PeakCurrentLimit.physicalUnits),
+                                                                    currentLimits.PeakCurrentLimit.value,
+                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.PeakCurrentLimitTimeout.physicalUnits),
+                                                                    currentLimits.PeakCurrentLimitTimeout.value));
 
-            //initCode.Add(string.Format(@"{0}->SetCurrentLimits({1},
-            //                                {2}({3}),
-            //                                {4},
-            //                                {5}({6}),
-            //                                {7}({8}),
-            //                                {9}({10}));",
-            //                                name, theCurrentLimits.enableStatorCurrentLimit.value.ToString().ToLower(),
-            //                                generatorContext.theGeneratorConfig.getWPIphysicalUnitType(theCurrentLimits.statorCurrentLimit.__units__), theCurrentLimits.statorCurrentLimit.value,
-            //                                theCurrentLimits.enableSupplyCurrentLimit.value.ToString().ToLower(),
-            //                                generatorContext.theGeneratorConfig.getWPIphysicalUnitType(theCurrentLimits.supplyCurrentLimit.__units__), theCurrentLimits.supplyCurrentLimit.value,
-            //                                generatorContext.theGeneratorConfig.getWPIphysicalUnitType(theCurrentLimits.supplyCurrentThreshold.__units__), theCurrentLimits.supplyCurrentThreshold.value,
-            //                                generatorContext.theGeneratorConfig.getWPIphysicalUnitType(theCurrentLimits.supplyTimeThreshold.__units__), theCurrentLimits.supplyTimeThreshold.value
-            //                                ));
+            initCode.Add(string.Format("{0}->ConfigPeakCurrentDuration(units::time::millisecond_t ( {1}({2})).to<int>(), units::time::millisecond_t({3}({4})).to<int>() );",      //todo check return code
+                                                                    name,
+                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.PeakCurrentDuration.physicalUnits),
+                                                                    currentLimits.PeakCurrentDuration.value,
+                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.PeakCurrentDurationTimeout.physicalUnits),
+                                                                    currentLimits.PeakCurrentDurationTimeout.value));
 
-            //todo add the TalonSRX initialization
+            initCode.Add(string.Format("{0}->ConfigContinuousCurrentLimit(units::current::ampere_t ( {1}({2})).to<int>(), units::time::millisecond_t({3}({4})).to<int>() );",      //todo check return code
+                                                                    name,
+                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.ContinuousCurrentLimit.physicalUnits),
+                                                                    currentLimits.ContinuousCurrentLimit.value,
+                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.ContinuousCurrentLimitTimeout.physicalUnits),
+                                                                    currentLimits.ContinuousCurrentLimitTimeout.value));
+
+            initCode.Add(string.Format("{0}->SetDiameter(units::length::inch_t ( {1}({2})).to<double>());",      //todo Should SetDiameter(double) be called within the constructor, since the diameter is inside the calcStruct that is passed to the constructor?
+                                                                    name,
+                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(theDistanceAngleCalcInfo.diameter.physicalUnits),
+                                                                    theDistanceAngleCalcInfo.diameter.value));
+
+            initCode.Add(string.Format("{0}->EnableDisableLimitSwitches( {1});",
+                                                                    name,
+                                                                    limitSwitches.LimitSwitchesEnabled.value.ToString().ToLower()));
+
+            initCode.Add(string.Format("{0}->SetForwardLimitSwitch( {1});",
+                                                                    name,
+                                                                    (limitSwitches.ForwardLimitSwitch == SwitchPolarity.NormallyOpen).ToString().ToLower()));
+
+            initCode.Add(string.Format("{0}->SetReverseLimitSwitch( {1});",
+                                                                    name,
+                                                                    (limitSwitches.ReverseLimitSwitch == SwitchPolarity.NormallyOpen).ToString().ToLower()));
+
+            if (enableFollowID.value)
+            {
+                initCode.Add(string.Format("{0}->SetAsFollowerMotor( {1} );",
+                                                                        name,
+                                                                        followID.value));
+            }
+            else
+                initCode.Add(string.Format("// {0} : Follower motor mode is not enabled", name));
+
+
+            initCode.Add(Environment.NewLine);
+
+            //todo finish the TalonSRX initialization
 
             return initCode;
         }
@@ -2221,7 +2368,7 @@ void SetDiameter(double diameter) override;
     [Serializable()]
     public class state : baseRobotElementClass
     {
-        public List<motorControlDataLink> motorControlDataLinks { get; set;}
+        public List<motorControlDataLink> motorControlDataLinks { get; set; }
 
         [ConstantInMechInstance()]
         public List<stringParameterConstInMechInstance> transitionsTo { get; set; }

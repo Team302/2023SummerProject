@@ -739,14 +739,14 @@
                   <name>uintParameter</name>
                   <__units__ />
                   <type>UInt32</type>
-                  <value>0</value>
+                  <value>10</value>
                 </followID>
                 <enableFollowID>
                   <unitsFamily>none</unitsFamily>
                   <name>boolParameter</name>
                   <__units__ />
                   <type>Boolean</type>
-                  <value>false</value>
+                  <value>true</value>
                 </enableFollowID>
                 <fusedCANcoder>
                   <enable>
@@ -811,6 +811,90 @@
                     <value>4</value>
                   </countsPerDegree>
                 </theDistanceAngleCalcInfo>
+                <limitSwitches>
+                  <LimitSwitchesEnabled>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </LimitSwitchesEnabled>
+                </limitSwitches>
+                <currentLimits>
+                  <EnableCurrentLimits>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </EnableCurrentLimits>
+                  <PeakCurrentLimit>
+                    <unitsFamily>current</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>A</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentLimit>
+                  <PeakCurrentLimitTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentLimitTimeout>
+                  <PeakCurrentDuration>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentDuration>
+                  <PeakCurrentDurationTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentDurationTimeout>
+                  <ContinuousCurrentLimit>
+                    <unitsFamily>current</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>A</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </ContinuousCurrentLimit>
+                  <ContinuousCurrentLimitTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </ContinuousCurrentLimitTimeout>
+                </currentLimits>
+                <theConfigMotorSettings />
+                <voltageRamping>
+                  <openLoopRampTime>
+                    <unitsFamily>time</unitsFamily>
+                    <name>doubleParameter</name>
+                    <__units__>ms</__units__>
+                    <type>Double</type>
+                    <value>200</value>
+                  </openLoopRampTime>
+                  <closedLoopRampTime>
+                    <unitsFamily>time</unitsFamily>
+                    <name>doubleParameter</name>
+                    <__units__>s</__units__>
+                    <type>Double</type>
+                    <value>3</value>
+                  </closedLoopRampTime>
+                  <enableClosedLoop>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>true</value>
+                  </enableClosedLoop>
+                </voltageRamping>
                 <deadbandPercent_>
                   <unitsFamily>none</unitsFamily>
                   <name>doubleParameter</name>
@@ -935,6 +1019,90 @@
                     <value>2</value>
                   </countsPerDegree>
                 </theDistanceAngleCalcInfo>
+                <limitSwitches>
+                  <LimitSwitchesEnabled>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </LimitSwitchesEnabled>
+                </limitSwitches>
+                <currentLimits>
+                  <EnableCurrentLimits>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </EnableCurrentLimits>
+                  <PeakCurrentLimit>
+                    <unitsFamily>current</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>A</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentLimit>
+                  <PeakCurrentLimitTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentLimitTimeout>
+                  <PeakCurrentDuration>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentDuration>
+                  <PeakCurrentDurationTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentDurationTimeout>
+                  <ContinuousCurrentLimit>
+                    <unitsFamily>current</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>A</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </ContinuousCurrentLimit>
+                  <ContinuousCurrentLimitTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </ContinuousCurrentLimitTimeout>
+                </currentLimits>
+                <theConfigMotorSettings />
+                <voltageRamping>
+                  <openLoopRampTime>
+                    <unitsFamily>time</unitsFamily>
+                    <name>doubleParameter</name>
+                    <__units__>s</__units__>
+                    <type>Double</type>
+                    <value>0</value>
+                  </openLoopRampTime>
+                  <closedLoopRampTime>
+                    <unitsFamily>time</unitsFamily>
+                    <name>doubleParameter</name>
+                    <__units__>s</__units__>
+                    <type>Double</type>
+                    <value>0</value>
+                  </closedLoopRampTime>
+                  <enableClosedLoop>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </enableClosedLoop>
+                </voltageRamping>
                 <deadbandPercent_>
                   <unitsFamily>none</unitsFamily>
                   <name>doubleParameter</name>
@@ -1058,6 +1226,90 @@
                     <value>0</value>
                   </countsPerDegree>
                 </theDistanceAngleCalcInfo>
+                <limitSwitches>
+                  <LimitSwitchesEnabled>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </LimitSwitchesEnabled>
+                </limitSwitches>
+                <currentLimits>
+                  <EnableCurrentLimits>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </EnableCurrentLimits>
+                  <PeakCurrentLimit>
+                    <unitsFamily>current</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>A</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentLimit>
+                  <PeakCurrentLimitTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentLimitTimeout>
+                  <PeakCurrentDuration>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentDuration>
+                  <PeakCurrentDurationTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentDurationTimeout>
+                  <ContinuousCurrentLimit>
+                    <unitsFamily>current</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>A</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </ContinuousCurrentLimit>
+                  <ContinuousCurrentLimitTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </ContinuousCurrentLimitTimeout>
+                </currentLimits>
+                <theConfigMotorSettings />
+                <voltageRamping>
+                  <openLoopRampTime>
+                    <unitsFamily>time</unitsFamily>
+                    <name>doubleParameter</name>
+                    <__units__>s</__units__>
+                    <type>Double</type>
+                    <value>0</value>
+                  </openLoopRampTime>
+                  <closedLoopRampTime>
+                    <unitsFamily>time</unitsFamily>
+                    <name>doubleParameter</name>
+                    <__units__>s</__units__>
+                    <type>Double</type>
+                    <value>0</value>
+                  </closedLoopRampTime>
+                  <enableClosedLoop>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </enableClosedLoop>
+                </voltageRamping>
                 <deadbandPercent_>
                   <unitsFamily>none</unitsFamily>
                   <name>doubleParameter</name>
@@ -1181,6 +1433,90 @@
                     <value>0</value>
                   </countsPerDegree>
                 </theDistanceAngleCalcInfo>
+                <limitSwitches>
+                  <LimitSwitchesEnabled>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </LimitSwitchesEnabled>
+                </limitSwitches>
+                <currentLimits>
+                  <EnableCurrentLimits>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </EnableCurrentLimits>
+                  <PeakCurrentLimit>
+                    <unitsFamily>current</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>A</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentLimit>
+                  <PeakCurrentLimitTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentLimitTimeout>
+                  <PeakCurrentDuration>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentDuration>
+                  <PeakCurrentDurationTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </PeakCurrentDurationTimeout>
+                  <ContinuousCurrentLimit>
+                    <unitsFamily>current</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>A</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </ContinuousCurrentLimit>
+                  <ContinuousCurrentLimitTimeout>
+                    <unitsFamily>time</unitsFamily>
+                    <name>intParameter</name>
+                    <__units__>s</__units__>
+                    <type>Int32</type>
+                    <value>0</value>
+                  </ContinuousCurrentLimitTimeout>
+                </currentLimits>
+                <theConfigMotorSettings />
+                <voltageRamping>
+                  <openLoopRampTime>
+                    <unitsFamily>time</unitsFamily>
+                    <name>doubleParameter</name>
+                    <__units__>s</__units__>
+                    <type>Double</type>
+                    <value>0</value>
+                  </openLoopRampTime>
+                  <closedLoopRampTime>
+                    <unitsFamily>time</unitsFamily>
+                    <name>doubleParameter</name>
+                    <__units__>s</__units__>
+                    <type>Double</type>
+                    <value>0</value>
+                  </closedLoopRampTime>
+                  <enableClosedLoop>
+                    <unitsFamily>none</unitsFamily>
+                    <name>boolParameter</name>
+                    <__units__ />
+                    <type>Boolean</type>
+                    <value>false</value>
+                  </enableClosedLoop>
+                </voltageRamping>
                 <deadbandPercent_>
                   <unitsFamily>none</unitsFamily>
                   <name>doubleParameter</name>
