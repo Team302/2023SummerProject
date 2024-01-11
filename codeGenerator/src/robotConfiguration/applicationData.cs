@@ -18,6 +18,7 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using static ApplicationData.motorControlData;
 using static ApplicationData.TalonFX;
+using static ApplicationData.TalonSRX;
 using static System.Net.Mime.MediaTypeNames;
 
 //todo handle optional elements such as followID in a motorcontroller
@@ -1072,10 +1073,136 @@ namespace ApplicationData
         }
     }
 
+    [Serializable]
+    public class FeedbackSensorConfigBase : baseRobotElementClass
+    {
+        [DefaultValue(0)]
+        [Range(typeof(int), "0", "3")]
+        public intParameter pidSlotId { get; set; }
+
+        [DefaultValue(0)]
+        [PhysicalUnitsFamily(physicalUnit.Family.time)]
+        public doubleParameter timeOut { get; set; }
+
+        public FeedbackSensorConfigBase()
+        {
+        }
+    }
+
+    [Serializable]
+    public class FeedbackSensorConfig_SRX : FeedbackSensorConfigBase
+    {
+        public enum TalonSRXFeedbackDevice
+        {
+            /**
+             * Quadrature encoder
+             */
+            QuadEncoder = 0,
+            //1
+            /**
+             * Analog potentiometer/encoder
+             */
+            Analog = 2,
+            //3
+            /**
+             * Tachometer
+             */
+            Tachometer = 4,
+            /**
+             * CTRE Mag Encoder in Absolute mode or
+             * any other device that uses PWM to encode its output
+             */
+            PulseWidthEncodedPosition = 8,
+            /**
+             * Sum0 + Sum1
+             */
+            SensorSum = 9,
+            /**
+             * Diff0 - Diff1
+             */
+            SensorDifference = 10,
+            /**
+             * Sensor configured in RemoteFilter0
+             */
+            RemoteSensor0 = 11,
+            /**
+             * Sensor configured in RemoteFilter1
+             */
+            RemoteSensor1 = 12,
+            //13
+            /**
+             * Position and velocity will read 0.
+             */
+            None = 14,
+            /**
+             * Motor Controller will fake a sensor based on applied motor output.
+             */
+            SoftwareEmulatedSensor = 15,
+            /**
+             * CTR mag encoder configured in absolute, is the same
+             * as a PWM sensor.
+             */
+            CTRE_MagEncoder_Absolute = PulseWidthEncodedPosition,
+            /**
+             * CTR mag encoder configured in relative, is the same
+             * as an quadrature encoder sensor.
+             */
+            CTRE_MagEncoder_Relative = QuadEncoder,
+        }
+
+        public TalonSRXFeedbackDevice device { get; set; }
+
+        public FeedbackSensorConfig_SRX()
+        {
+        }
+    }
+
+    [Serializable]
+    public class RemoteFeedbackSensorConfig_SRX : FeedbackSensorConfigBase
+    {
+        public enum RemoteFeedbackDevice
+        {
+            /**
+             * Use Sum0 + Sum1
+             */
+            SensorSum = 9,
+            /**
+             * Use Diff0 - Diff1
+             */
+            SensorDifference = 10,
+
+            /**
+             * Use the sensor configured
+             * in filter0
+             */
+            RemoteSensor0 = 11,
+            /**
+             * [[deprecated("Use RemoteSensor1 instead.")]]
+             * Use the sensor configured
+             * in filter1
+             */
+            RemoteSensor1 = 12,
+            /**
+             * Position and velocity will read 0.
+             */
+            None = 14,
+            /**
+             * Motor Controller will fake a sensor based on applied motor output.
+             */
+            SoftwareEmulatedSensor = 15,
+        };
+
+        public RemoteFeedbackDevice device { get; set; }
+
+        public RemoteFeedbackSensorConfig_SRX()
+        {
+            device = RemoteFeedbackDevice.None;
+        }
+    }
+
     [Serializable()]
     [ImplementationName("DragonTalonSRX")]
     [UserIncludeFile("hw/DragonTalonSRX.h")]
-    [Using("ctre::phoenix::motorcontrol::RemoteSensorSource")]
     public class TalonSRX : MotorController
     {
         [Serializable]
@@ -1215,6 +1342,9 @@ namespace ApplicationData
         }
         public ConfigMotorSettings_SRX theConfigMotorSettings { get; set; }
 
+        public List<FeedbackSensorConfig_SRX> feedbackSensorConfig { get; set; }
+        public List<RemoteFeedbackSensorConfig_SRX> remoteFeedbackSensorConfig { get; set; }
+
         [Serializable]
         public class VoltageRamping : baseDataClass
         {
@@ -1247,8 +1377,34 @@ namespace ApplicationData
         {
             List<string> initCode = new List<string>();
 
-            initCode.Add(string.Format(@"{0}->SetRemoteSensor({1}, // canID
-                                                              {2}::{2}_{3} ); // ctre::phoenix::motorcontrol::RemoteSensorSource",
+            foreach (RemoteFeedbackSensorConfig_SRX config in remoteFeedbackSensorConfig)
+            {
+
+                initCode.Add(string.Format(@"{0}->ConfigSelectedFeedbackSensor({1}::{2},{3}, units::time::millisecond_t({4}({5})).to<double>());",
+                                                                                    name,
+                                                                                    "ctre::phoenix::motorcontrol::RemoteFeedbackDevice",
+                                                                                    config.device,
+                                                                                    config.pidSlotId,
+                                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(config.timeOut.physicalUnits),
+                                                                                    config.timeOut
+                                                                                    ));
+            }
+
+            foreach (FeedbackSensorConfig_SRX config in feedbackSensorConfig)
+            {
+
+                initCode.Add(string.Format(@"{0}->ConfigSelectedFeedbackSensor({1}::{2},{3}, units::time::millisecond_t({4}({5})).to<double>());",
+                                                                                    name,
+                                                                                    "ctre::phoenix::motorcontrol::FeedbackDevice",
+                                                                                    config.device,
+                                                                                    config.pidSlotId,
+                                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(config.timeOut.physicalUnits),
+                                                                                    config.timeOut
+                                                                                    ));
+            }
+
+            initCode.Add(string.Format(@"{0}->SetRemoteSensor({1},
+                                                              ctre::phoenix::motorcontrol::{2}::{2}_{3} );",
                                                                     name,
                                                                     remoteSensor.CanID.value,
                                                                     remoteSensor.Source.GetType().Name,

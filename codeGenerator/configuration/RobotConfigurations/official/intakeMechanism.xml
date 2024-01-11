@@ -14,13 +14,6 @@
         <type>UInt32</type>
         <value>9</value>
       </canID>
-      <remoteSensorCanID>
-        <unitsFamily>none</unitsFamily>
-        <name>remoteSensorCanID</name>
-        <__units__ />
-        <type>UInt32</type>
-        <value>0</value>
-      </remoteSensorCanID>
       <pdpID>
         <unitsFamily>none</unitsFamily>
         <name>pdpID</name>
@@ -42,6 +35,15 @@
         <type>Boolean</type>
         <value>false</value>
       </enableFollowID>
+      <remoteSensor>
+        <CanID>
+          <unitsFamily>none</unitsFamily>
+          <name>uintParameter</name>
+          <__units__ />
+          <type>UInt32</type>
+          <value>0</value>
+        </CanID>
+      </remoteSensor>
       <fusedCANcoder>
         <enable>
           <unitsFamily>none</unitsFamily>

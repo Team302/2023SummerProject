@@ -14,13 +14,6 @@
         <type>UInt32</type>
         <value>0</value>
       </canID>
-      <remoteSensorCanID>
-        <unitsFamily>none</unitsFamily>
-        <name>uintParameter</name>
-        <__units__ />
-        <type>UInt32</type>
-        <value>0</value>
-      </remoteSensorCanID>
       <pdpID>
         <unitsFamily>none</unitsFamily>
         <name>uintParameter</name>
@@ -42,6 +35,15 @@
         <type>Boolean</type>
         <value>true</value>
       </enableFollowID>
+      <remoteSensor>
+        <CanID>
+          <unitsFamily>none</unitsFamily>
+          <name>uintParameter</name>
+          <__units__ />
+          <type>UInt32</type>
+          <value>0</value>
+        </CanID>
+      </remoteSensor>
       <fusedCANcoder>
         <enable>
           <unitsFamily>none</unitsFamily>
@@ -166,6 +168,82 @@
         </ContinuousCurrentLimitTimeout>
       </currentLimits>
       <theConfigMotorSettings />
+      <feedbackSensorConfig>
+        <FeedbackSensorConfig_SRX>
+          <name>sens_1</name>
+          <pidSlotId>
+            <unitsFamily>none</unitsFamily>
+            <name>intParameter</name>
+            <__units__ />
+            <type>Int32</type>
+            <value>0</value>
+          </pidSlotId>
+          <timeOut>
+            <unitsFamily>time</unitsFamily>
+            <name>doubleParameter</name>
+            <__units__>s</__units__>
+            <type>Double</type>
+            <value>30</value>
+          </timeOut>
+          <device>Analog</device>
+        </FeedbackSensorConfig_SRX>
+        <FeedbackSensorConfig_SRX>
+          <name>Sense_2</name>
+          <pidSlotId>
+            <unitsFamily>none</unitsFamily>
+            <name>intParameter</name>
+            <__units__ />
+            <type>Int32</type>
+            <value>2</value>
+          </pidSlotId>
+          <timeOut>
+            <unitsFamily>time</unitsFamily>
+            <name>doubleParameter</name>
+            <__units__>s</__units__>
+            <type>Double</type>
+            <value>40</value>
+          </timeOut>
+          <device>QuadEncoder</device>
+        </FeedbackSensorConfig_SRX>
+      </feedbackSensorConfig>
+      <remoteFeedbackSensorConfig>
+        <RemoteFeedbackSensorConfig_SRX>
+          <name>sense_A</name>
+          <pidSlotId>
+            <unitsFamily>none</unitsFamily>
+            <name>intParameter</name>
+            <__units__ />
+            <type>Int32</type>
+            <value>2</value>
+          </pidSlotId>
+          <timeOut>
+            <unitsFamily>time</unitsFamily>
+            <name>doubleParameter</name>
+            <__units__>s</__units__>
+            <type>Double</type>
+            <value>10</value>
+          </timeOut>
+          <device>SensorSum</device>
+        </RemoteFeedbackSensorConfig_SRX>
+        <RemoteFeedbackSensorConfig_SRX>
+          <name>sense_B</name>
+          <pidSlotId>
+            <unitsFamily>none</unitsFamily>
+            <name>intParameter</name>
+            <__units__ />
+            <type>Int32</type>
+            <value>1</value>
+          </pidSlotId>
+          <timeOut>
+            <unitsFamily>time</unitsFamily>
+            <name>doubleParameter</name>
+            <__units__>s</__units__>
+            <type>Double</type>
+            <value>200</value>
+          </timeOut>
+          <device>RemoteSensor1</device>
+        </RemoteFeedbackSensorConfig_SRX>
+      </remoteFeedbackSensorConfig>
       <voltageRamping>
         <openLoopRampTime>
           <unitsFamily>time</unitsFamily>
@@ -189,27 +267,13 @@
           <value>false</value>
         </enableClosedLoop>
       </voltageRamping>
-      <deadbandPercent_>
+      <sensorIsInverted>
         <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
+        <name>boolParameter</name>
         <__units__ />
-        <type>Double</type>
-        <value>1.1</value>
-      </deadbandPercent_>
-      <peakMin_>
-        <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
-        <__units__ />
-        <type>Double</type>
-        <value>2.2</value>
-      </peakMin_>
-      <peakMax_>
-        <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
-        <__units__ />
-        <type>Double</type>
-        <value>4.4</value>
-      </peakMax_>
+        <type>Boolean</type>
+        <value>false</value>
+      </sensorIsInverted>
     </MotorController>
     <MotorController
       xsi:type="TalonSRX">
@@ -222,13 +286,6 @@
         <type>UInt32</type>
         <value>0</value>
       </canID>
-      <remoteSensorCanID>
-        <unitsFamily>none</unitsFamily>
-        <name>uintParameter</name>
-        <__units__ />
-        <type>UInt32</type>
-        <value>0</value>
-      </remoteSensorCanID>
       <pdpID>
         <unitsFamily>none</unitsFamily>
         <name>uintParameter</name>
@@ -250,6 +307,15 @@
         <type>Boolean</type>
         <value>false</value>
       </enableFollowID>
+      <remoteSensor>
+        <CanID>
+          <unitsFamily>none</unitsFamily>
+          <name>uintParameter</name>
+          <__units__ />
+          <type>UInt32</type>
+          <value>0</value>
+        </CanID>
+      </remoteSensor>
       <fusedCANcoder>
         <enable>
           <unitsFamily>none</unitsFamily>
@@ -374,6 +440,8 @@
         </ContinuousCurrentLimitTimeout>
       </currentLimits>
       <theConfigMotorSettings />
+      <feedbackSensorConfig />
+      <remoteFeedbackSensorConfig />
       <voltageRamping>
         <openLoopRampTime>
           <unitsFamily>time</unitsFamily>
@@ -397,27 +465,13 @@
           <value>false</value>
         </enableClosedLoop>
       </voltageRamping>
-      <deadbandPercent_>
+      <sensorIsInverted>
         <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
+        <name>boolParameter</name>
         <__units__ />
-        <type>Double</type>
-        <value>1.1</value>
-      </deadbandPercent_>
-      <peakMin_>
-        <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
-        <__units__ />
-        <type>Double</type>
-        <value>2.2</value>
-      </peakMin_>
-      <peakMax_>
-        <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
-        <__units__ />
-        <type>Double</type>
-        <value>4.4</value>
-      </peakMax_>
+        <type>Boolean</type>
+        <value>false</value>
+      </sensorIsInverted>
     </MotorController>
     <MotorController
       xsi:type="TalonSRX">
@@ -429,13 +483,6 @@
         <type>UInt32</type>
         <value>2</value>
       </canID>
-      <remoteSensorCanID>
-        <unitsFamily>none</unitsFamily>
-        <name>uintParameter</name>
-        <__units__ />
-        <type>UInt32</type>
-        <value>0</value>
-      </remoteSensorCanID>
       <pdpID>
         <unitsFamily>none</unitsFamily>
         <name>uintParameter</name>
@@ -457,6 +504,15 @@
         <type>Boolean</type>
         <value>false</value>
       </enableFollowID>
+      <remoteSensor>
+        <CanID>
+          <unitsFamily>none</unitsFamily>
+          <name>uintParameter</name>
+          <__units__ />
+          <type>UInt32</type>
+          <value>0</value>
+        </CanID>
+      </remoteSensor>
       <fusedCANcoder>
         <enable>
           <unitsFamily>none</unitsFamily>
@@ -581,6 +637,8 @@
         </ContinuousCurrentLimitTimeout>
       </currentLimits>
       <theConfigMotorSettings />
+      <feedbackSensorConfig />
+      <remoteFeedbackSensorConfig />
       <voltageRamping>
         <openLoopRampTime>
           <unitsFamily>time</unitsFamily>
@@ -604,27 +662,13 @@
           <value>false</value>
         </enableClosedLoop>
       </voltageRamping>
-      <deadbandPercent_>
+      <sensorIsInverted>
         <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
+        <name>boolParameter</name>
         <__units__ />
-        <type>Double</type>
-        <value>1.1</value>
-      </deadbandPercent_>
-      <peakMin_>
-        <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
-        <__units__ />
-        <type>Double</type>
-        <value>2.2</value>
-      </peakMin_>
-      <peakMax_>
-        <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
-        <__units__ />
-        <type>Double</type>
-        <value>4.4</value>
-      </peakMax_>
+        <type>Boolean</type>
+        <value>false</value>
+      </sensorIsInverted>
     </MotorController>
     <MotorController
       xsi:type="TalonSRX">
@@ -636,13 +680,6 @@
         <type>UInt32</type>
         <value>0</value>
       </canID>
-      <remoteSensorCanID>
-        <unitsFamily>none</unitsFamily>
-        <name>uintParameter</name>
-        <__units__ />
-        <type>UInt32</type>
-        <value>0</value>
-      </remoteSensorCanID>
       <pdpID>
         <unitsFamily>none</unitsFamily>
         <name>uintParameter</name>
@@ -664,6 +701,15 @@
         <type>Boolean</type>
         <value>false</value>
       </enableFollowID>
+      <remoteSensor>
+        <CanID>
+          <unitsFamily>none</unitsFamily>
+          <name>uintParameter</name>
+          <__units__ />
+          <type>UInt32</type>
+          <value>0</value>
+        </CanID>
+      </remoteSensor>
       <fusedCANcoder>
         <enable>
           <unitsFamily>none</unitsFamily>
@@ -788,6 +834,8 @@
         </ContinuousCurrentLimitTimeout>
       </currentLimits>
       <theConfigMotorSettings />
+      <feedbackSensorConfig />
+      <remoteFeedbackSensorConfig />
       <voltageRamping>
         <openLoopRampTime>
           <unitsFamily>time</unitsFamily>
@@ -811,27 +859,13 @@
           <value>false</value>
         </enableClosedLoop>
       </voltageRamping>
-      <deadbandPercent_>
+      <sensorIsInverted>
         <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
+        <name>boolParameter</name>
         <__units__ />
-        <type>Double</type>
-        <value>1.1</value>
-      </deadbandPercent_>
-      <peakMin_>
-        <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
-        <__units__ />
-        <type>Double</type>
-        <value>2.2</value>
-      </peakMin_>
-      <peakMax_>
-        <unitsFamily>none</unitsFamily>
-        <name>doubleParameter</name>
-        <__units__ />
-        <type>Double</type>
-        <value>4.4</value>
-      </peakMax_>
+        <type>Boolean</type>
+        <value>false</value>
+      </sensorIsInverted>
     </MotorController>
   </MotorControllers>
   <closedLoopControlParameters />
