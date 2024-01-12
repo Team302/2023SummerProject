@@ -60,29 +60,6 @@ def ansiEnd = "m"
 def endSequence = ansiEscape + resetText + ansiEnd
 def boldSequence = ansiEscape + boldEffect + ansiEnd
 
-/// Check current team number and the team number used to build
-/// If theres a mismatch, allow the user to either continue or stop the build
-tasks.discoverroborio.doFirst() {
-    println("Checking team numbers...")
-    //check for version mismatch
-    String lastBuildDetails = new File(projectDir.toString() + "/src/main/utilities/BuildDetails.txt").text
-
-    String lastTeamNum = lastBuildDetails.takeBetween("(TN)")
-    if(lastTeamNum.toInteger() != project.frc.getTeamOrDefault(302))
-    {
-        println(boldSequence + "> Last built with team number: " + endSequence + lastTeamNum)
-        println(boldSequence + "> Current team number: " + endSequence + project.frc.getTeamOrDefault(302))
-        def startSequence = ansiEscape + boldEffect + ";" + yellowColor + ansiEnd
-        ant.input(message: startSequence + 'WARNING: ' + endSequence + 'Current team number does not match what code was built with, continue? Y/N:', addproperty: 'answer', defaultValue : 'N')
-        def answer = ant.properties.answer
-        if(answer == 'N' || answer == 'n')
-        {
-            startSequence = ansiEscape + boldEffect + ";" + redColor + ansiEnd
-            throw new GradleException(startSequence + "Deploy stopped due to team number mismatch" + endSequence)
-        }
-    }
-}
-
 tasks.build.doLast() {
     if(Os.isFamily(Os.FAMILY_WINDOWS))
     {
