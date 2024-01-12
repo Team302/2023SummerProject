@@ -164,6 +164,7 @@ bin/
 
 #Visual Studio code generator ignores
 codeGenerator/src/*/*/Debug
+codeGenerator/src/*/*/Release
 codeGenerator/src/.vs
 codeGenerator/src/packages
 codeGenerator/guiTests/configuration

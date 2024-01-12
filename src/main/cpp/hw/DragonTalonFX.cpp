@@ -31,7 +31,7 @@
 #include "hw/DragonTalonFX.h"
 #include "hw/factories/PDPFactory.h"
 #include "hw/factories/DragonControlToCTREProAdapterFactory.h"
-#include "configs/usages/MotorControllerUsage.h"
+#include "configs/RobotElementNames.h"
 #include "utils/logging/Logger.h"
 #include "utils/ConversionUtils.h"
 #include "hw/ctreadapters/pro/DragonControlToCTREProAdapter.h"
@@ -86,7 +86,7 @@ using std::string;
 using std::to_string;
 
 DragonTalonFX::DragonTalonFX(string networkTableName,
-							 MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
+							 RobotElementNames::MOTOR_CONTROLLER_USAGE deviceType,
 							 int deviceID,
 							 string canBusName) : m_networkTableName(networkTableName),
 												  m_type(deviceType),
@@ -269,7 +269,7 @@ void DragonTalonFX::SetSensorInverted(bool inverted)
 {
 }
 
-MotorControllerUsage::MOTOR_CONTROLLER_USAGE DragonTalonFX::GetType() const
+RobotElementNames::MOTOR_CONTROLLER_USAGE DragonTalonFX::GetType() const
 {
 	return m_type;
 }

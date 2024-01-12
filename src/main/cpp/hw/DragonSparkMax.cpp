@@ -14,7 +14,7 @@
 // OR OTHER DEALINGS IN THE SOFTWARE.
 //====================================================================================================================================================
 
-#include "configs/usages/MotorControllerUsage.h"
+#include "configs/RobotElementNames.h"
 #include "hw/DragonSparkMax.h"
 #include "mechanisms/controllers/ControlData.h"
 
@@ -22,7 +22,7 @@
 using rev::CANSparkMax;
 
 DragonSparkMax::DragonSparkMax(int id,
-                               MotorControllerUsage::MOTOR_CONTROLLER_USAGE deviceType,
+                               RobotElementNames::MOTOR_CONTROLLER_USAGE deviceType,
                                CANSparkMax::MotorType motorType,
                                double gearRatio) : IDragonMotorController(),
                                                    m_id(id),
@@ -52,7 +52,7 @@ double DragonSparkMax::GetRPS()
     return m_spark->GetEncoder().GetVelocity() / 60.0;
 }
 
-MotorControllerUsage::MOTOR_CONTROLLER_USAGE DragonSparkMax::GetType() const
+RobotElementNames::MOTOR_CONTROLLER_USAGE DragonSparkMax::GetType() const
 {
     return m_deviceType;
 }
