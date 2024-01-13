@@ -149,7 +149,9 @@ namespace ApplicationData
     public partial class applicationData
     {
 #if !enableTestAutomation
+        [DataDescription("The Power distribution panel")]
         public pdp PowerDistributionPanel { get; set; }
+        [DataDescription("Multiple pneumatic control modules can be added.")]
         public List<pcm> PneumaticControlModules { get; set; }
         public List<pigeon> Pigeons { get; set; }
         public List<limelight> Limelights { get; set; }
@@ -161,6 +163,7 @@ namespace ApplicationData
 
         [DefaultValue(1u)]
         [Range(typeof(uint), "1", "9999")]
+        [DataDescription("The robot number. The competition robot should be set to 302")]
         public uintParameter robotID { get; set; }
 
         public string name { get; set; } = "Example";

@@ -212,9 +212,11 @@ namespace applicationConfiguration
                                 if (defaultValueAttr != null)
                                     beObj.theDefault.value = defaultValueAttr.Value;
 
-                                DataDescriptionAttribute descriptionAttr = (DataDescriptionAttribute)attributes.Find(a => a.GetType() == typeof(DataDescriptionAttribute));
-                                if (descriptionAttr != null)
-                                    beObj.description = descriptionAttr.description;
+                                List<Attribute> description = attributes.FindAll(a => a.GetType() == typeof(DataDescriptionAttribute));
+                                foreach (Attribute attr in description)
+                                    beObj.description += ((DataDescriptionAttribute)attr).description + Environment.NewLine;
+
+                                beObj.description = beObj.description.Trim();
                             }
 
                             //check if the units should be constant in a mechanism instance

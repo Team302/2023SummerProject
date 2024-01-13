@@ -63,6 +63,7 @@ namespace FRCrobotCodeGen302
                     selectedNodePathTextBox.Visible = true;
                 }
             }
+            robotTreeView.ShowNodeToolTips = true;
 
             codeGenerator.setProgressCallback(addProgress);
             theAppDataConfiguration.setProgressCallback(addProgress);
@@ -142,6 +143,15 @@ namespace FRCrobotCodeGen302
 
                 if (baseDataConfiguration.isACollection(obj)) // if it is a collection, add an entry for each item
                 {
+                    //todo tooltip to check
+                    string description = "";
+                    List<Attribute> desc = obj.GetType().GetCustomAttributes(typeof(DataDescriptionAttribute)).ToList();
+                    foreach (Attribute a in desc)
+                        description += ((DataDescriptionAttribute)a).description + Environment.NewLine;
+                    description = description.Trim();
+                    if(!string.IsNullOrWhiteSpace(description))
+                        tn.ToolTipText = description;
+
                     ICollection ic = obj as ICollection;
                     foreach (var v in ic)
                         AddNode(tn, v, v.GetType().Name);
@@ -161,6 +171,7 @@ namespace FRCrobotCodeGen302
                     bool isConstant = false;
                     bool isTunable = false;
                     bool treatAsLeafNode = false;
+                    string description = "";
 
                     if (obj is baseElement)
                     {
@@ -171,6 +182,7 @@ namespace FRCrobotCodeGen302
                         range = beObj.range;
                         isConstant = beObj.isConstant;
                         isTunable = beObj.isTunable;
+                        description = beObj.description;
                     }
                     else if (isABasicSystemType(obj))
                     {
@@ -287,6 +299,10 @@ namespace FRCrobotCodeGen302
                             }
                         }
 
+                        //todo tooltip to check
+                        if (!string.IsNullOrWhiteSpace(description))
+                            tn.ToolTipText = description;
+
                         tn.Text = getDisplayName(obj, "");
                     }
                     else
@@ -306,6 +322,9 @@ namespace FRCrobotCodeGen302
                         nodeTag lnt = new nodeTag(nodeName, obj);
 
                         tn.Tag = lnt;
+
+                        if (!string.IsNullOrWhiteSpace(description))
+                            tn.ToolTipText = description;
 
                         tn.Text = getDisplayName(treatAsLeafNode ? obj : nodeTag.getObject(parent.Tag), nodeName);
                     }
