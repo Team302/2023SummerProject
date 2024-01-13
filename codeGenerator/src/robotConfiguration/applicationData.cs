@@ -730,8 +730,13 @@ namespace ApplicationData
 
         override public List<string> generateObjectAddToMaps()
         {
-            string creation = string.Format("m_motorMap[{0}->GetType()] = new BaseMechMotor(m_ntName, *{0}, BaseMechMotor::EndOfTravelSensorOption::NONE, nullptr, BaseMechMotor::EndOfTravelSensorOption::NONE, nullptr)",
-                name);
+            string creation = string.Format(@"m_motorMap[{0}->GetType()] = new BaseMechMotor(m_ntName, 
+                                                                                            *{0}, 
+                                                                                            BaseMechMotor::EndOfTravelSensorOption::NONE, 
+                                                                                            nullptr, 
+                                                                                            BaseMechMotor::EndOfTravelSensorOption::NONE, 
+                                                                                            nullptr)",
+                                                                                name);
 
             return new List<string> { creation };
         }
@@ -1380,7 +1385,9 @@ namespace ApplicationData
             foreach (RemoteFeedbackSensorConfig_SRX config in remoteFeedbackSensorConfig)
             {
 
-                initCode.Add(string.Format(@"{0}->ConfigSelectedFeedbackSensor({1}::{2},{3}, units::time::millisecond_t({4}({5})).to<double>());",
+                initCode.Add(string.Format(@"{0}->ConfigSelectedFeedbackSensor({1}::{2},
+                                                                                {3}, 
+                                                                                units::time::millisecond_t({4}({5})).to<double>());",
                                                                                     name,
                                                                                     "ctre::phoenix::motorcontrol::RemoteFeedbackDevice",
                                                                                     config.device,
@@ -1393,7 +1400,9 @@ namespace ApplicationData
             foreach (FeedbackSensorConfig_SRX config in feedbackSensorConfig)
             {
 
-                initCode.Add(string.Format(@"{0}->ConfigSelectedFeedbackSensor({1}::{2},{3}, units::time::millisecond_t({4}({5})).to<double>());",
+                initCode.Add(string.Format(@"{0}->ConfigSelectedFeedbackSensor({1}::{2},
+                                                                                {3}, 
+                                                                                units::time::millisecond_t({4}({5})).to<double>());",
                                                                                     name,
                                                                                     "ctre::phoenix::motorcontrol::FeedbackDevice",
                                                                                     config.device,
@@ -1415,7 +1424,8 @@ namespace ApplicationData
                                                                     name,
                                                                     sensorIsInverted.ToString().ToLower()));
 
-            initCode.Add(string.Format("{0}->SetVoltageRamping( units::time::second_t({1}({2})).to<double>(), units::time::second_t({3}({4})).to<double>() );",
+            initCode.Add(string.Format(@"{0}->SetVoltageRamping( units::time::second_t({1}({2})).to<double>(),
+                                                                 units::time::second_t({3}({4})).to<double>() );",
                                                                     name,
                                                                     generatorContext.theGeneratorConfig.getWPIphysicalUnitType(voltageRamping.openLoopRampTime.physicalUnits),
                                                                     voltageRamping.openLoopRampTime.value,
@@ -1434,21 +1444,24 @@ namespace ApplicationData
                                                                     name,
                                                                     currentLimits.EnableCurrentLimits.value.ToString().ToLower()));
 
-            initCode.Add(string.Format("{0}->ConfigPeakCurrentLimit(units::current::ampere_t ( {1}({2})).to<int>(), units::time::millisecond_t({3}({4})).to<int>() );",      //todo check return code
+            initCode.Add(string.Format(@"{0}->ConfigPeakCurrentLimit(units::current::ampere_t ( {1}({2})).to<int>(), 
+                                                                     units::time::millisecond_t({3}({4})).to<int>() );",      //todo check return code
                                                                     name,
                                                                     generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.PeakCurrentLimit.physicalUnits),
                                                                     currentLimits.PeakCurrentLimit.value,
                                                                     generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.PeakCurrentLimitTimeout.physicalUnits),
                                                                     currentLimits.PeakCurrentLimitTimeout.value));
 
-            initCode.Add(string.Format("{0}->ConfigPeakCurrentDuration(units::time::millisecond_t ( {1}({2})).to<int>(), units::time::millisecond_t({3}({4})).to<int>() );",      //todo check return code
+            initCode.Add(string.Format(@"{0}->ConfigPeakCurrentDuration(units::time::millisecond_t ( {1}({2})).to<int>(), 
+                                                                        units::time::millisecond_t({3}({4})).to<int>() );",      //todo check return code
                                                                     name,
                                                                     generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.PeakCurrentDuration.physicalUnits),
                                                                     currentLimits.PeakCurrentDuration.value,
                                                                     generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.PeakCurrentDurationTimeout.physicalUnits),
                                                                     currentLimits.PeakCurrentDurationTimeout.value));
 
-            initCode.Add(string.Format("{0}->ConfigContinuousCurrentLimit(units::current::ampere_t ( {1}({2})).to<int>(), units::time::millisecond_t({3}({4})).to<int>() );",      //todo check return code
+            initCode.Add(string.Format(@"{0}->ConfigContinuousCurrentLimit(units::current::ampere_t ( {1}({2})).to<int>(), 
+                                                                           units::time::millisecond_t({3}({4})).to<int>() );",      //todo check return code
                                                                     name,
                                                                     generatorContext.theGeneratorConfig.getWPIphysicalUnitType(currentLimits.ContinuousCurrentLimit.physicalUnits),
                                                                     currentLimits.ContinuousCurrentLimit.value,
@@ -1501,7 +1514,12 @@ namespace ApplicationData
 
     );
              */
-            string creation = string.Format("{7}{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},{4},{5}, IDragonMotorController::MOTOR_TYPE::{6})",
+            string creation = string.Format(@"{7}{0} = new {1}(""{0}"",
+                                                                RobotElementNames::{2},
+                                                                {3},
+                                                                {4},
+                                                                {5}, 
+                                                                IDragonMotorController::MOTOR_TYPE::{6})",
                 name,
                 getImplementationName(),
                 utilities.ListToString(generateElementNames()).ToUpper().Replace("::", "_USAGE::"),
