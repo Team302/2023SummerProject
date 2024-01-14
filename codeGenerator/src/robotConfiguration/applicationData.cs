@@ -35,6 +35,8 @@ using static System.Net.Mime.MediaTypeNames;
 //todo show the DataDescription information
 //todo target physical units should not be editable in the mechanism instance
 //todo add DataDescription for the robot elements
+//todo zoom so that the text is larger
+//todo 
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -50,6 +52,7 @@ namespace ApplicationData
     public enum CAN_BUS
     {
         rio,
+        canivore
     }
 
     [Serializable()]
@@ -690,6 +693,84 @@ namespace ApplicationData
             MAX_MOTOR_TYPES
         };
 
+        [Serializable]
+        public class DistanceAngleCalcStruc : baseDataClass
+        {
+            [DefaultValue(0)]
+            public intParameter countsPerRev { get; set; }
+
+            [DefaultValue(1.0)]
+            public doubleParameter gearRatio { get; set; }
+
+            [DefaultValue(1.0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.length)]
+            public doubleParameter diameter { get; set; }
+
+            [DefaultValue(0)]
+            public doubleParameter countsPerInch { get; set; }
+
+            [DefaultValue(0)]
+            public doubleParameter countsPerDegree { get; set; }
+
+            public DistanceAngleCalcStruc()
+            {
+                defaultDisplayName = this.GetType().Name;
+            }
+
+            public string getDefinition(string namePrePend)
+            {
+                string fullName = getName(namePrePend);
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine(string.Format("{0} {1};", this.GetType().Name, fullName));
+
+                foreach (PropertyInfo pi in GetType().GetProperties())
+                {
+                    Object obj = pi.GetValue(this);
+                    // PhysicalUnitsFamilyAttribute unitsAttr = this.GetType().GetCustomAttribute<PhysicalUnitsFamilyAttribute>();
+
+                    string rightValue = obj.ToString();
+                    if (pi.Name == "diameter")
+                    {
+                        string units = generatorContext.theGeneratorConfig.getWPIphysicalUnitType(diameter.physicalUnits);
+                        rightValue = string.Format("units::length::inch_t({0}({1})).to<double>()", units, rightValue);
+                    }
+
+                    sb.AppendLine(string.Format("{0}.{1} = {2} ;", fullName, pi.Name, rightValue));
+                }
+
+                return sb.ToString();
+            }
+
+            public string getName(string namePrePend)
+            {
+                return namePrePend + "CalcStruct";
+            }
+        }
+        public DistanceAngleCalcStruc theDistanceAngleCalcInfo { get; set; }
+
+        [Serializable]
+        public class VoltageRamping : baseDataClass
+        {
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter openLoopRampTime { get; set; }
+
+            [DefaultValue(0)]
+            [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            public doubleParameter closedLoopRampTime { get; set; }
+
+            [DefaultValue(false)]
+            public boolParameter enableClosedLoop { get; set; }
+
+            public VoltageRamping()
+            {
+                defaultDisplayName = this.GetType().Name;
+            }
+        }
+        public VoltageRamping voltageRamping { get; set; }
+
+
         [XmlIgnore]
         [Constant()]
         public string motorControllerType { get; protected set; }
@@ -759,9 +840,31 @@ namespace ApplicationData
 
         public FusedCANcoder fusedCANcoder { get; set; }
 
+        [DefaultValue(false)]
+        public boolParameter sensorIsInverted { get; set; }
+
         public MotorController()
         {
             motorControllerType = this.GetType().Name;
+        }
+
+        public override List<string> generateInitialization()
+        {
+            List<string> initCode = new List<string>();
+
+            initCode.Add(string.Format(@"{0}->SetVoltageRamping( units::time::second_t({1}({2})).to<double>(),
+                                                                 units::time::second_t({3}({4})).to<double>() );",
+                                                        name,
+                                                        generatorContext.theGeneratorConfig.getWPIphysicalUnitType(voltageRamping.openLoopRampTime.physicalUnits),
+                                                        voltageRamping.openLoopRampTime.value,
+                                                        generatorContext.theGeneratorConfig.getWPIphysicalUnitType(voltageRamping.closedLoopRampTime.physicalUnits),
+                                                        voltageRamping.enableClosedLoop.value ? voltageRamping.closedLoopRampTime.value : 0.0));
+
+            initCode.Add(string.Format("{0}->SetSensorInverted( {1});",
+                                                        name,
+                                                        sensorIsInverted.ToString().ToLower()));
+
+            return initCode;
         }
 
         override public List<string> generateObjectAddToMaps()
@@ -806,7 +909,7 @@ namespace ApplicationData
             public boolParameter enableSupplyCurrentLimit { get; set; }
 
             [DefaultValue(0)]
-            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
+            [Range(typeof(double), "0", "50.0")] //todo choose a valid range
             [PhysicalUnitsFamily(physicalUnit.Family.current)]
             public doubleParameter supplyCurrentLimit { get; set; }
 
@@ -893,6 +996,7 @@ namespace ApplicationData
         }
         public ConfigMotorSettings theConfigMotorSettings { get; set; }
 
+        [PhysicalUnitsFamily (physicalUnit.Family.length)]
         public doubleParameter diameter { get; set; }
 
         /* It seems that the following are not needed
@@ -1044,8 +1148,8 @@ namespace ApplicationData
                                             theConfigHWLimitSW.revOpenClose
                                            ));
 
-            initCode.Add(string.Format(@"{0}->ConfigMotorSettings_SRX({1}::{2}, // ctre::phoenixpro::signals::InvertedValue
-                                            {3}::{4}, // ctre::phoenixpro::signals::NeutralModeValue                  
+            initCode.Add(string.Format(@"{0}->ConfigMotorSettings(ctre::phoenixpro::signals::{1}::{2}, // ctre::phoenixpro::signals::InvertedValue
+                                            ctre::phoenixpro::signals::{3}::{4}, // ctre::phoenixpro::signals::NeutralModeValue                  
                                             {5}, // deadbandPercent                 
                                             {6}, // peakForwardDutyCycle                 
                                             {7} ); // peakReverseDutyCycle"
@@ -1093,6 +1197,8 @@ namespace ApplicationData
                                 diameter.value
                                 ));
 
+            initCode.AddRange(base.generateInitialization());
+
             return initCode;
         }
 
@@ -1105,7 +1211,7 @@ namespace ApplicationData
                 canID.value.ToString(),
                 canBusName.ToString());
 
-            List<string> code = new List<string>() { "", creation };
+            List<string> code = new List<string>() { "", theDistanceAngleCalcInfo.getDefinition(name), creation };
 
             code.AddRange(generateObjectAddToMaps());
             code.Add("");
@@ -1247,62 +1353,6 @@ namespace ApplicationData
     public class TalonSRX : MotorController
     {
         [Serializable]
-        public class DistanceAngleCalcStruc : baseDataClass
-        {
-            [DefaultValue(0)]
-            public intParameter countsPerRev { get; set; }
-
-            [DefaultValue(1.0)]
-            public doubleParameter gearRatio { get; set; }
-
-            [DefaultValue(1.0)]
-            [PhysicalUnitsFamily(physicalUnit.Family.length)]
-            public doubleParameter diameter { get; set; }
-
-            [DefaultValue(0)]
-            public doubleParameter countsPerInch { get; set; }
-
-            [DefaultValue(0)]
-            public doubleParameter countsPerDegree { get; set; }
-
-            public DistanceAngleCalcStruc()
-            {
-                defaultDisplayName = this.GetType().Name;
-            }
-
-            public string getDefinition(string namePrePend)
-            {
-                string fullName = getName(namePrePend);
-
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine(string.Format("{0} {1};", this.GetType().Name, fullName));
-
-                foreach (PropertyInfo pi in GetType().GetProperties())
-                {
-                    Object obj = pi.GetValue(this);
-                    // PhysicalUnitsFamilyAttribute unitsAttr = this.GetType().GetCustomAttribute<PhysicalUnitsFamilyAttribute>();
-
-                    string rightValue = obj.ToString();
-                    if (pi.Name == "diameter")
-                    {
-                        string units = generatorContext.theGeneratorConfig.getWPIphysicalUnitType(diameter.physicalUnits);
-                        rightValue = string.Format("units::length::inch_t({0}({1})).to<double>()", units, rightValue);
-                    }
-
-                    sb.AppendLine(string.Format("{0}.{1} = {2} ;", fullName, pi.Name, rightValue));
-                }
-
-                return sb.ToString();
-            }
-
-            public string getName(string namePrePend)
-            {
-                return namePrePend + "CalcStruct";
-            }
-        }
-        public DistanceAngleCalcStruc theDistanceAngleCalcInfo { get; set; }
-
-        [Serializable]
         public class LimitSwitches : baseDataClass
         {
             [DefaultValue(SwitchPolarity.NormallyOpen)]
@@ -1386,30 +1436,6 @@ namespace ApplicationData
         public List<FeedbackSensorConfig_SRX> feedbackSensorConfig { get; set; }
         public List<RemoteFeedbackSensorConfig_SRX> remoteFeedbackSensorConfig { get; set; }
 
-        [Serializable]
-        public class VoltageRamping : baseDataClass
-        {
-            [DefaultValue(0)]
-            [PhysicalUnitsFamily(physicalUnit.Family.time)]
-            public doubleParameter openLoopRampTime { get; set; }
-
-            [DefaultValue(0)]
-            [PhysicalUnitsFamily(physicalUnit.Family.time)]
-            public doubleParameter closedLoopRampTime { get; set; }
-
-            [DefaultValue(false)]
-            public boolParameter enableClosedLoop { get; set; }
-
-            public VoltageRamping()
-            {
-                defaultDisplayName = this.GetType().Name;
-            }
-        }
-        public VoltageRamping voltageRamping { get; set; }
-
-        [DefaultValue(false)]
-        public boolParameter sensorIsInverted { get; set; }
-
         public TalonSRX()
         {
         }
@@ -1455,18 +1481,6 @@ namespace ApplicationData
                                                                     remoteSensor.Source.GetType().Name,
                                                                     remoteSensor.Source
                                                                     ));
-
-            initCode.Add(string.Format("{0}->SetSensorInverted( {1});",
-                                                                    name,
-                                                                    sensorIsInverted.ToString().ToLower()));
-
-            initCode.Add(string.Format(@"{0}->SetVoltageRamping( units::time::second_t({1}({2})).to<double>(),
-                                                                 units::time::second_t({3}({4})).to<double>() );",
-                                                                    name,
-                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(voltageRamping.openLoopRampTime.physicalUnits),
-                                                                    voltageRamping.openLoopRampTime.value,
-                                                                    generatorContext.theGeneratorConfig.getWPIphysicalUnitType(voltageRamping.closedLoopRampTime.physicalUnits),
-                                                                    voltageRamping.enableClosedLoop.value ? voltageRamping.closedLoopRampTime.value : 0.0));
 
             initCode.Add(string.Format("{0}->Invert( {1});",
                                                                     name,
@@ -1530,6 +1544,7 @@ namespace ApplicationData
             else
                 initCode.Add(string.Format("// {0} : Follower motor mode is not enabled", name));
 
+            initCode.AddRange(base.generateInitialization());
 
             initCode.Add(Environment.NewLine);
 
@@ -1540,17 +1555,7 @@ namespace ApplicationData
 
         override public List<string> generateIndexedObjectCreation(int currentIndex)
         {
-            /*
-                 DragonTalonSRX(std::string networkTableName,
-                   RobotElementNames::MOTOR_CONTROLLER_USAGE deviceType,
-                   int deviceID,
-                   int pdpID,
-                   const DistanceAngleCalcStruc &calcStruc,
-                   IDragonMotorController::MOTOR_TYPE motortype
-
-    );
-             */
-            string creation = string.Format(@"{7}{0} = new {1}(""{0}"",
+            string creation = string.Format(@"{0} = new {1}(""{0}"",
                                                                 RobotElementNames::{2},
                                                                 {3},
                                                                 {4},
@@ -1562,10 +1567,10 @@ namespace ApplicationData
                 canID.value.ToString(),
                 pdpID.value.ToString(),
                 theDistanceAngleCalcInfo.getName(name),
-                motorType,
-                theDistanceAngleCalcInfo.getDefinition(name));
+                motorType
+                );
 
-            List<string> code = new List<string>() { "", creation };
+            List<string> code = new List<string>() { "", theDistanceAngleCalcInfo.getDefinition(name), creation };
 
             code.AddRange(generateObjectAddToMaps());
             code.Add("");
@@ -1923,7 +1928,7 @@ namespace ApplicationData
         {
         }
 
-        override public List<string> generateObjectCreation()
+        override public List<string> generateIndexedObjectCreation(int index)
         {
             string creation = string.Format("{0} = new {1}(\"{0}\",RobotElementNames::{2},{3},\"{4}\",{5},{6})",
                 name,
@@ -1991,7 +1996,7 @@ namespace ApplicationData
         {
         }
 
-        override public List<string> generateIndexedObjectCreation(int currentIndex)
+        override public List<string> generateObjectCreation()
         {
             string creation = "";
 

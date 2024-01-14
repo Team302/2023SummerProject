@@ -503,10 +503,18 @@ namespace applicationConfiguration
 
             foreach (mechanism mech in tempList)
             {
-                mechanism temp = new mechanism();
-                temp.name = mech.name;
-                temp.GUID = mech.GUID;
-                theRobotVariants.Mechanisms.Add(temp);
+                foreach (applicationData r in theRobotVariants.Robots)
+                {
+                    if (r.mechanismInstances.Find(m => (m.mechanism.name == mech.name) && (m.mechanism.GUID == mech.GUID)) != null)
+                    {
+                        mechanism temp = new mechanism();
+                        temp.name = mech.name;
+                        temp.GUID = mech.GUID;
+                        theRobotVariants.Mechanisms.Add(temp);
+                        break; 
+                    }
+                }
+
             }
 
             var robotSerializer = new XmlSerializer(typeof(topLevelAppDataElement));
