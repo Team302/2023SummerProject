@@ -117,7 +117,7 @@ namespace FRCrobotCodeGen302
             progressTextBox.AppendText(info + Environment.NewLine);
         }
 
-        private TreeNode AddNode(TreeNode parent, object obj, string nodeName)
+        private TreeNode AddNode(TreeNode parent, object obj, string nodeName, PropertyInfo pInfo)
         {
             TreeNode tn = null;
 
@@ -143,18 +143,11 @@ namespace FRCrobotCodeGen302
 
                 if (baseDataConfiguration.isACollection(obj)) // if it is a collection, add an entry for each item
                 {
-                    //todo tooltip to check
-                    string description = "";
-                    List<Attribute> desc = obj.GetType().GetCustomAttributes(typeof(DataDescriptionAttribute)).ToList();
-                    foreach (Attribute a in desc)
-                        description += ((DataDescriptionAttribute)a).description + Environment.NewLine;
-                    description = description.Trim();
-                    if(!string.IsNullOrWhiteSpace(description))
-                        tn.ToolTipText = description;
+                    SetTooltipFromObjectDescription(tn, pInfo);
 
                     ICollection ic = obj as ICollection;
                     foreach (var v in ic)
-                        AddNode(tn, v, v.GetType().Name);
+                        AddNode(tn, v, v.GetType().Name, null);
                 }
                 else // we are adding a single item which could have nested objects
                 {
@@ -294,14 +287,12 @@ namespace FRCrobotCodeGen302
                                     object theObj = pi.GetValue(obj);
 
                                     if (theObj != null)
-                                        AddNode(tn, theObj, pi.Name);
+                                        AddNode(tn, theObj, pi.Name, pi);
                                 }
                             }
                         }
 
-                        //todo tooltip to check
-                        if (!string.IsNullOrWhiteSpace(description))
-                            tn.ToolTipText = description;
+                        SetTooltipFromObjectDescription(tn, pInfo);
 
                         tn.Text = getDisplayName(obj, "");
                     }
@@ -332,6 +323,20 @@ namespace FRCrobotCodeGen302
             }
 
             return tn;
+        }
+
+        void SetTooltipFromObjectDescription(TreeNode tn, PropertyInfo pi)
+        {
+            if ((pi != null) && (tn != null))
+            {
+                string description = "";
+                List<Attribute> desc = pi.GetCustomAttributes(typeof(DataDescriptionAttribute)).ToList();
+                foreach (Attribute a in desc)
+                    description += ((DataDescriptionAttribute)a).description + Environment.NewLine;
+                description = description.Trim();
+                if (!string.IsNullOrWhiteSpace(description))
+                    tn.ToolTipText = description;
+            }
         }
 
         bool isHiddenPartOfbaseElement(string name)
@@ -413,7 +418,7 @@ namespace FRCrobotCodeGen302
         private void populateTree(applicationDataConfig theApplicationDataConfig)
         {
             robotTreeView.Nodes.Clear();
-            AddNode(null, theApplicationDataConfig.theRobotVariants, "Robot Variant");
+            AddNode(null, theApplicationDataConfig.theRobotVariants, "Robot Variant", null);
             if (theApplicationDataConfig.theRobotVariants.Robots.Count > 0)
                 robotTreeView.Nodes[0].Expand();
         }
@@ -1517,7 +1522,7 @@ namespace FRCrobotCodeGen302
                     {
                         string nodeName = lastSelectedArrayNode.Text;
                         lastSelectedArrayNode.Remove();
-                        AddNode((TreeNode)m.theTreeNode, states, nodeName);
+                        AddNode((TreeNode)m.theTreeNode, states, nodeName, null);
 
                         mechanism theMechanism;
                         if (isPartOfAMechanismTemplate(lastSelectedArrayNode, out theMechanism))
@@ -1631,11 +1636,11 @@ namespace FRCrobotCodeGen302
                             {
                                 if (mechanismInstancesNode == null)
                                 {
-                                    tn = AddNode(lastSelectedValueNode, theObj, name);
+                                    tn = AddNode(lastSelectedValueNode, theObj, name, null);
                                     mechanismInstancesNode = tn;
                                 }
                                 else
-                                    tn = AddNode(mechanismInstancesNode, obj, name + (count - 1));
+                                    tn = AddNode(mechanismInstancesNode, obj, name + (count - 1), null);
                             }
                             else
                             {
@@ -1654,7 +1659,7 @@ namespace FRCrobotCodeGen302
                             if (theObj == null)
                             {
                                 pi.SetValue(nodeTag.getObject(lastSelectedValueNode.Tag), obj);
-                                tn = AddNode(lastSelectedValueNode, obj, name);
+                                tn = AddNode(lastSelectedValueNode, obj, name, null);
                             }
                         }
                     }
@@ -1666,7 +1671,7 @@ namespace FRCrobotCodeGen302
 
                 foreach ((string, object) newObj in objectsToAddToCurrentNode)
                 {
-                    tn = AddNode(lastSelectedValueNode, newObj.Item2, newObj.Item1);
+                    tn = AddNode(lastSelectedValueNode, newObj.Item2, newObj.Item1, null);
                 }
 
                 if (tn != null)
@@ -1700,7 +1705,7 @@ namespace FRCrobotCodeGen302
                             theCollectionObj.GetType().GetMethod("Add").Invoke(theCollectionObj, new object[] { obj });
                             int count = (int)theCollectionObj.GetType().GetProperty("Count").GetValue(theCollectionObj);
 
-                            AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+                            AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1), null);
                         }
                     }
                 }
@@ -1728,7 +1733,7 @@ namespace FRCrobotCodeGen302
                             }
                             catch { }
 
-                            AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+                            AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1), null);
                         }
                     }
                     else
@@ -1751,7 +1756,7 @@ namespace FRCrobotCodeGen302
                         catch { }
 
                         theAppDataConfiguration.initializeData(nodeTag.getObject(lastSelectedArrayNode.Tag), obj, nameStr, null);
-                        AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1));
+                        AddNode(lastSelectedArrayNode, obj, elementType.Name + (count - 1), null);
                     }
                 }
 
@@ -1779,7 +1784,7 @@ namespace FRCrobotCodeGen302
 
                         mi.mechanism = m;
                         robotTreeView.BeginUpdate();
-                        mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name);
+                        mi.mechanism.theTreeNode = AddNode((TreeNode)mi.theTreeNode, mi.mechanism, mi.mechanism.name, null);
                         robotTreeView.EndUpdate();
                     }
                 }

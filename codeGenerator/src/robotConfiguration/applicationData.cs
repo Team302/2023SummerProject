@@ -34,6 +34,7 @@ using static System.Net.Mime.MediaTypeNames;
 //todo if a decorator mod file exists, do not write it
 //todo show the DataDescription information
 //todo target physical units should not be editable in the mechanism instance
+//todo add DataDescription for the robot elements
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -129,8 +130,10 @@ namespace ApplicationData
     [Serializable()]
     public class topLevelAppDataElement
     {
+        [DataDescription("The robot definitions")]
         public List<applicationData> Robots { get; set; }
 
+        [DataDescription("The mechanism templates")]
         public List<mechanism> Mechanisms { get; set; }
 
         public topLevelAppDataElement()
@@ -149,21 +152,39 @@ namespace ApplicationData
     public partial class applicationData
     {
 #if !enableTestAutomation
-        [DataDescription("The Power distribution panel")]
+
+        [DataDescription("One power distribution panel can be configured for a robot")]
         public pdp PowerDistributionPanel { get; set; }
-        [DataDescription("Multiple pneumatic control modules can be added.")]
+        
+        [DataDescription("A robot can contain multiple pneumatic control modules")]
         public List<pcm> PneumaticControlModules { get; set; }
+      
+        [DataDescription("A robot can contain multiple pigeons")]
         public List<pigeon> Pigeons { get; set; }
+
+        [DataDescription("A robot can contain multiple limelights")]
         public List<limelight> Limelights { get; set; }
+
+        [DataDescription("A robot can have one chassis definition")]
         public chassis Chassis { get; set; }
+
+        [DataDescription("A robot can contain multiple mechanism instances")]
         public List<mechanismInstance> mechanismInstances { get; set; }
+
+        [DataDescription("A robot can contain multiple cameras")]
         public List<camera> Cameras { get; set; }
+
+        [DataDescription("A robot can contain multiple roborios")]
         public List<roborio> Roborios { get; set; }
+
+        [DataDescription("A robot can contain multiple LED setups")]
+
         public List<led> Leds { get; set; }
 
         [DefaultValue(1u)]
         [Range(typeof(uint), "1", "9999")]
-        [DataDescription("The robot number. The competition robot should be set to 302")]
+        [DataDescription("The robot number.")]
+        [DataDescription("The competition robot should be set to 302")]
         public uintParameter robotID { get; set; }
 
         public string name { get; set; } = "Example";
@@ -531,6 +552,7 @@ namespace ApplicationData
     }
 
     [Serializable()]
+    [DataDescription("The Power distribution panel. A robot can only contain 1 PDP")]
     public class pdp : baseRobotElementClass
     {
         public enum pdptype { CTRE, REV, }
@@ -540,6 +562,8 @@ namespace ApplicationData
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
+        [DataDescription("The ID that is used to form the device CAD ID")]
+        [DataDescription("ID 0 is normally reserved for the roborio")]
         public uintParameter canID { get; set; }
 
         public pdp()
@@ -564,6 +588,8 @@ namespace ApplicationData
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
+        [DataDescription("The ID that is used to form the device CAD ID")]
+        [DataDescription("ID 0 is normally reserved for the roborio")]
         public uintParameter canID { get; set; }
 
         [DefaultValue(CAN_BUS.rio)]
@@ -585,10 +611,13 @@ namespace ApplicationData
     }
 
     [Serializable()]
+    [DataDescription("Multiple pneumatic control modules can be added to a robot")]
     public class pcm : baseRobotElementClass
     {
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
+        [DataDescription("The ID that is used to form the device CAD ID")]
+        [DataDescription("ID 0 is normally reserved for the roborio")]
         public uintParameter canID { get; set; }
 
         [DefaultValue(95.0)]
@@ -671,6 +700,8 @@ namespace ApplicationData
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
+        [DataDescription("The ID that is used to form the device CAD ID")]
+        [DataDescription("ID 0 is normally reserved for the roborio")]
         public uintParameter canID { get; set; }
 
         [DefaultValue(CAN_BUS.rio)]
@@ -697,6 +728,8 @@ namespace ApplicationData
 
             [DefaultValue(0u)]
             [Range(typeof(uint), "0", "62")]
+            [DataDescription("The ID that is used to form the device CAD ID")]
+            [DataDescription("ID 0 is normally reserved for the roborio")]
             public uintParameter CanID { get; set; }
 
             public RemoteSensor()
@@ -1873,6 +1906,8 @@ namespace ApplicationData
     {
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "62")]
+        [DataDescription("The ID that is used to form the device CAD ID")]
+        [DataDescription("ID 0 is normally reserved for the roborio")]
         public uintParameter canID { get; set; }
 
         [DefaultValue(CAN_BUS.rio)]

@@ -565,7 +565,7 @@ namespace DataConfiguration
         }
     }
 
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = true)]
     public class DataDescriptionAttribute : Attribute
     {
         public string description { get; set; }
