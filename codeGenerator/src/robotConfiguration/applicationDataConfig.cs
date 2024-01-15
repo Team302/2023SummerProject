@@ -191,9 +191,9 @@ namespace applicationConfiguration
                             if (attributes != null)
                             {
                                 beObj.isTunable = attributes.Find(a => a.GetType() == typeof(TunableParameterAttribute)) != null;
+                                beObj.isConstantInMechInstance = attributes.Find(a => a.GetType() == typeof(ConstantInMechInstanceAttribute)) != null;
                                 beObj.isConstant = (attributes.Find(a => a.GetType() == typeof(ConstantAttribute)) != null); 
                                 
-                                beObj.isConstantInMechInstance = attributes.Find(a => a.GetType() == typeof(ConstantInMechInstanceAttribute)) != null;
 
                                 PhysicalUnitsFamilyAttribute phyUnitsFamilyAttr = (PhysicalUnitsFamilyAttribute)attributes.Find(a => a.GetType() == typeof(PhysicalUnitsFamilyAttribute));
                                 if (phyUnitsFamilyAttr != null)

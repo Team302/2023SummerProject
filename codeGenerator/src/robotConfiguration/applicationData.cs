@@ -36,7 +36,7 @@ using static System.Net.Mime.MediaTypeNames;
 //todo target physical units should not be editable in the mechanism instance
 //todo add DataDescription for the robot elements
 //todo zoom so that the text is larger
-//todo 
+//todo handle chassis like a special mechanism
 
 // =================================== Rules =====================================
 // A property named __units__ will be converted to the list of physical units
@@ -644,7 +644,7 @@ namespace ApplicationData
         public enum InvertedValue { CounterClockwise_Positive, Clockwise_Positive }
         public enum NeutralModeValue { Coast, Brake }
 
-        public enum SwitchPolarity
+        public enum SwitchConfiguration
         {
             NormallyOpen,
             NormallyClosed
@@ -697,19 +697,24 @@ namespace ApplicationData
         public class DistanceAngleCalcStruc : baseDataClass
         {
             [DefaultValue(0)]
+            [ConstantInMechInstance]
             public intParameter countsPerRev { get; set; }
 
             [DefaultValue(1.0)]
+            [ConstantInMechInstance]
             public doubleParameter gearRatio { get; set; }
 
             [DefaultValue(1.0)]
+            [ConstantInMechInstance]
             [PhysicalUnitsFamily(physicalUnit.Family.length)]
             public doubleParameter diameter { get; set; }
 
             [DefaultValue(0)]
+            [ConstantInMechInstance]
             public doubleParameter countsPerInch { get; set; }
 
             [DefaultValue(0)]
+            [ConstantInMechInstance]
             public doubleParameter countsPerDegree { get; set; }
 
             public DistanceAngleCalcStruc()
@@ -754,13 +759,16 @@ namespace ApplicationData
         {
             [DefaultValue(0)]
             [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            [ConstantInMechInstance]
             public doubleParameter openLoopRampTime { get; set; }
 
             [DefaultValue(0)]
             [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            [ConstantInMechInstance]
             public doubleParameter closedLoopRampTime { get; set; }
 
             [DefaultValue(false)]
+            [ConstantInMechInstance]
             public boolParameter enableClosedLoop { get; set; }
 
             public VoltageRamping()
@@ -786,6 +794,7 @@ namespace ApplicationData
         public uintParameter canID { get; set; }
 
         [DefaultValue(CAN_BUS.rio)]
+        [ConstantInMechInstance]
         public CAN_BUS canBusName { get; set; }
 
         [DefaultValue(0u)]
@@ -794,6 +803,7 @@ namespace ApplicationData
 
         [DefaultValue(0u)]
         [Range(typeof(uint), "0", "19")] // REV is 0-19, CTRE 0-15, cannot handle 2 ranges for now
+        [ConstantInMechInstance]
         public uintParameter followID { get; set; }
 
         [DefaultValue(false)]
@@ -806,12 +816,12 @@ namespace ApplicationData
         public class RemoteSensor : baseDataClass
         {
             [DefaultValue(RemoteSensorSource.Off)]
+            [ConstantInMechInstance]
             public RemoteSensorSource Source { get; set; }
 
             [DefaultValue(0u)]
             [Range(typeof(uint), "0", "62")]
             [DataDescription("The ID that is used to form the device CAD ID")]
-            [DataDescription("ID 0 is normally reserved for the roborio")]
             public uintParameter CanID { get; set; }
 
             public RemoteSensor()
@@ -826,11 +836,16 @@ namespace ApplicationData
         public class FusedCANcoder : baseDataClass
         {
             [DefaultValue(false)]
+            [ConstantInMechInstance]
             public boolParameter enable { get; set; }
 
+            [ConstantInMechInstance]
             public CANcoderInstance fusedCANcoder { get; set; }
 
+            [ConstantInMechInstance]
             public doubleParameter sensorToMechanismRatio { get; set; }
+
+            [ConstantInMechInstance]
             public doubleParameter rotorToSensorRatio { get; set; }
 
             public FusedCANcoder()
@@ -842,6 +857,7 @@ namespace ApplicationData
         public FusedCANcoder fusedCANcoder { get; set; }
 
         [DefaultValue(false)]
+        [ConstantInMechInstance]
         public boolParameter sensorIsInverted { get; set; }
 
         public MotorController()
@@ -904,24 +920,29 @@ namespace ApplicationData
             [DefaultValue(0)]
             [Range(typeof(double), "0", "40.0")] //todo choose a valid range
             [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            [ConstantInMechInstance]
             public doubleParameter statorCurrentLimit { get; set; }
 
             [DefaultValue(false)]
+            [ConstantInMechInstance]
             public boolParameter enableSupplyCurrentLimit { get; set; }
 
             [DefaultValue(0)]
             [Range(typeof(double), "0", "50.0")] //todo choose a valid range
             [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            [ConstantInMechInstance]
             public doubleParameter supplyCurrentLimit { get; set; }
 
             [DefaultValue(0)]
             [Range(typeof(double), "0", "40.0")] //todo choose a valid range
             [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            [ConstantInMechInstance]
             public doubleParameter supplyCurrentThreshold { get; set; }
 
             [DefaultValue(0)]
             [Range(typeof(double), "0", "40.0")] //todo choose a valid range
             [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            [ConstantInMechInstance]
             public doubleParameter supplyTimeThreshold { get; set; }
 
             public CurrentLimits()
@@ -940,17 +961,41 @@ namespace ApplicationData
             public enum ForwardLimitTypeValue { NormallyOpen, NormallyClosed }
             public enum ReverseLimitSourceValue { LimitSwitchPin }
             public enum ReverseLimitTypeValue { NormallyOpen, NormallyClosed }
+
+            [ConstantInMechInstance]
             public boolParameter enableForward { get; set; }
+
+            [ConstantInMechInstance]
             public intParameter remoteForwardSensorID { get; set; }
+
+            [ConstantInMechInstance]
             public boolParameter forwardResetPosition { get; set; }
+
+            [ConstantInMechInstance]
             public doubleParameter forwardPosition { get; set; }
+
+            [ConstantInMechInstance]
             public ForwardLimitSourceValue forwardType { get; set; }
+
+            [ConstantInMechInstance]
             public ForwardLimitTypeValue forwardOpenClose { get; set; }
+
+            [ConstantInMechInstance]
             public boolParameter enableReverse { get; set; }
+
+            [ConstantInMechInstance]
             public intParameter remoteReverseSensorID { get; set; }
+
+            [ConstantInMechInstance]
             public boolParameter reverseResetPosition { get; set; }
+
+            [ConstantInMechInstance]
             public doubleParameter reversePosition { get; set; }
+
+            [ConstantInMechInstance]
             public ReverseLimitSourceValue revType { get; set; }
+
+            [ConstantInMechInstance]
             public ReverseLimitTypeValue revOpenClose { get; set; }
 
             public ConfigHWLimitSW()
@@ -966,24 +1011,27 @@ namespace ApplicationData
             [DefaultValue(0)]
             [Range(typeof(double), "0", "100")]
             [PhysicalUnitsFamily(physicalUnit.Family.percent)]
-            [TunableParameter()]
+            [ConstantInMechInstance]
             public doubleParameter deadbandPercent { get; set; }
 
             [DefaultValue(0)]
             [Range(typeof(double), "0", "1.0")]
             [PhysicalUnitsFamily(physicalUnit.Family.none)]
-            [TunableParameter()]
+            [ConstantInMechInstance]
             public doubleParameter peakForwardDutyCycle { get; set; }
 
             [DefaultValue(0)]
             [Range(typeof(double), "-1.0", "0.0")]
             [PhysicalUnitsFamily(physicalUnit.Family.none)]
+            [ConstantInMechInstance]
             public doubleParameter peakReverseDutyCycle { get; set; }
 
             [DefaultValue(InvertedValue.CounterClockwise_Positive)]
+            [ConstantInMechInstance]
             public InvertedValue inverted { get; set; }
 
             [DefaultValue(NeutralModeValue.Coast)]
+            [ConstantInMechInstance]
             public NeutralModeValue mode { get; set; }
 
             public ConfigMotorSettings()
@@ -998,84 +1046,9 @@ namespace ApplicationData
         public ConfigMotorSettings theConfigMotorSettings { get; set; }
 
         [PhysicalUnitsFamily (physicalUnit.Family.length)]
+        [ConstantInMechInstance]
         public doubleParameter diameter { get; set; }
 
-        /* It seems that the following are not needed
-
-        [Serializable]
-        public class VoltageConfigs : baseDataClass
-        {
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
-            [PhysicalUnitsFamily(physicalUnit.Family.time)]
-            public doubleParameter peakForwardVoltage { get; set; }
-
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
-            [PhysicalUnitsFamily(physicalUnit.Family.time)]
-            public doubleParameter peakReverseVoltage { get; set; }
-
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
-            [PhysicalUnitsFamily(physicalUnit.Family.time)]
-            public doubleParameter supplyVoltageTime { get; set; }
-
-            public VoltageConfigs()
-            {
-                defaultDisplayName = "VoltageConfigs";
-            }
-        }
-        public VoltageConfigs theVoltageConfigs { get; set; }
-
-        [Serializable]
-        public class TorqueConfigs : baseDataClass
-        {
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
-            [PhysicalUnitsFamily(physicalUnit.Family.current)]
-            public doubleParameter peakForwardTorqueCurrent { get; set; }
-
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
-            [PhysicalUnitsFamily(physicalUnit.Family.current)]
-            public doubleParameter peakReverseTorqueCurrent { get; set; }
-
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
-            [PhysicalUnitsFamily(physicalUnit.Family.current)]
-            public doubleParameter torqueNeutralDeadband { get; set; }
-
-            public TorqueConfigs()
-            {
-                defaultDisplayName = "TorqueConfigs";
-            }
-        }
-        public TorqueConfigs theTorqueConfigs { get; set; }
-
-        [Serializable]
-        public class FeedbackConfigs : baseDataClass
-        {
-            public enum FeedbackSensorSource { RotorSensor, RemoteCANcoder, FusedCANcoder }
-
-            [DefaultValue(0)]
-            [Range(typeof(double), "0", "40.0")] //todo choose a valid range
-            [PhysicalUnitsFamily(physicalUnit.Family.angle)]
-            public doubleParameter feedbackRotorOffset { get; set; }
-
-            [DefaultValue(FeedbackSensorSource.RotorSensor)]
-            public FeedbackSensorSource feedbackSensor { get; set; }
-
-            [DefaultValue(0)]
-            public intParameter remoteSensorID { get; set; }
-
-            public FeedbackConfigs()
-            {
-                defaultDisplayName = "FeedbackConfigs";
-            }
-        }
-        public FeedbackConfigs theFeedbackConfigs { get; set; }
-
-        */
         public TalonFX()
         {
         }
@@ -1226,10 +1199,12 @@ namespace ApplicationData
     {
         [DefaultValue(0)]
         [Range(typeof(int), "0", "3")]
+        [ConstantInMechInstance]
         public intParameter pidSlotId { get; set; }
 
         [DefaultValue(0)]
         [PhysicalUnitsFamily(physicalUnit.Family.time)]
+        [ConstantInMechInstance]
         public doubleParameter timeOut { get; set; }
 
         public FeedbackSensorConfigBase()
@@ -1298,6 +1273,7 @@ namespace ApplicationData
             CTRE_MagEncoder_Relative = QuadEncoder,
         }
 
+        [ConstantInMechInstance]
         public TalonSRXFeedbackDevice device { get; set; }
 
         public FeedbackSensorConfig_SRX()
@@ -1340,6 +1316,7 @@ namespace ApplicationData
             SoftwareEmulatedSensor = 15,
         };
 
+        [ConstantInMechInstance]
         public RemoteFeedbackDevice device { get; set; }
 
         public RemoteFeedbackSensorConfig_SRX()
@@ -1356,13 +1333,16 @@ namespace ApplicationData
         [Serializable]
         public class LimitSwitches : baseDataClass
         {
-            [DefaultValue(SwitchPolarity.NormallyOpen)]
-            public SwitchPolarity ForwardLimitSwitch { get; set; }
+            [DefaultValue(SwitchConfiguration.NormallyOpen)]
+            [ConstantInMechInstance]
+            public SwitchConfiguration ForwardLimitSwitch { get; set; }
 
-            [DefaultValue(SwitchPolarity.NormallyOpen)]
-            public SwitchPolarity ReverseLimitSwitch { get; set; }
+            [DefaultValue(SwitchConfiguration.NormallyOpen)]
+            [ConstantInMechInstance]
+            public SwitchConfiguration ReverseLimitSwitch { get; set; }
 
             [DefaultValue(false)]
+            [ConstantInMechInstance]
             public boolParameter LimitSwitchesEnabled { get; set; }
 
             public LimitSwitches()
@@ -1376,31 +1356,38 @@ namespace ApplicationData
         public class CurrentLimits_SRX : baseDataClass
         {
             [DefaultValue(false)]
+            [ConstantInMechInstance]
             public boolParameter EnableCurrentLimits { get; set; }
 
             [DefaultValue(0)]
             [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            [ConstantInMechInstance]
             public intParameter PeakCurrentLimit { get; set; }
 
             [DefaultValue(0)]
             [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            [ConstantInMechInstance]
             public intParameter PeakCurrentLimitTimeout { get; set; }
 
             [DefaultValue(0)]
             [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            [ConstantInMechInstance]
             public intParameter PeakCurrentDuration { get; set; }
 
             [DefaultValue(0)]
             [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            [ConstantInMechInstance]
             public intParameter PeakCurrentDurationTimeout { get; set; }
 
 
             [DefaultValue(0)]
             [PhysicalUnitsFamily(physicalUnit.Family.current)]
+            [ConstantInMechInstance]
             public intParameter ContinuousCurrentLimit { get; set; }
 
             [DefaultValue(0)]
             [PhysicalUnitsFamily(physicalUnit.Family.time)]
+            [ConstantInMechInstance]
             public intParameter ContinuousCurrentLimitTimeout { get; set; }
 
             public CurrentLimits_SRX()
@@ -1418,9 +1405,11 @@ namespace ApplicationData
         public class ConfigMotorSettings_SRX : baseDataClass
         {
             [DefaultValue(InvertedValue.CounterClockwise_Positive)]
+            [ConstantInMechInstance]
             public InvertedValue inverted { get; set; }
 
             [DefaultValue(NeutralModeValue.Coast)]
+            [ConstantInMechInstance]
             public NeutralModeValue mode { get; set; }
 
             public ConfigMotorSettings_SRX()
@@ -1530,11 +1519,11 @@ namespace ApplicationData
 
             initCode.Add(string.Format("{0}->SetForwardLimitSwitch( {1});",
                                                                     name,
-                                                                    (limitSwitches.ForwardLimitSwitch == SwitchPolarity.NormallyOpen).ToString().ToLower()));
+                                                                    (limitSwitches.ForwardLimitSwitch == SwitchConfiguration.NormallyOpen).ToString().ToLower()));
 
             initCode.Add(string.Format("{0}->SetReverseLimitSwitch( {1});",
                                                                     name,
-                                                                    (limitSwitches.ReverseLimitSwitch == SwitchPolarity.NormallyOpen).ToString().ToLower()));
+                                                                    (limitSwitches.ReverseLimitSwitch == SwitchConfiguration.NormallyOpen).ToString().ToLower()));
 
             if (enableFollowID.value)
             {
@@ -1595,7 +1584,7 @@ namespace ApplicationData
         }
 
         [DefaultValue(analogInputType.PRESSURE_GAUGE)]
-        [TunableParameter()]
+        [ConstantInMechInstance]
         public analogInputType type { get; set; }
 
         [DefaultValue(0u)]
@@ -1603,13 +1592,17 @@ namespace ApplicationData
         public uintParameter analogId { get; set; }
 
         [DefaultValue(0D)]
+        [ConstantInMechInstance]
         public doubleParameter voltageMin { get; set; }
 
         [DefaultValue(5D)]
+        [ConstantInMechInstance]
         public doubleParameter voltageMax { get; set; }
 
+        [ConstantInMechInstance]
         public doubleParameter outputMin { get; set; }
 
+        [ConstantInMechInstance]
         public doubleParameter outputMax { get; set; }
 
         public analogInput()
@@ -1820,10 +1813,12 @@ namespace ApplicationData
         public uintParameter digitalId { get; set; }
 
         [DefaultValue(false)]
+        [ConstantInMechInstance]
         public boolParameter reversed { get; set; }
 
         [DefaultValue(0D)]
         [PhysicalUnitsFamily(physicalUnit.Family.time)]
+        [ConstantInMechInstance]
         public doubleParameter debouncetime { get; set; }
 
         public digitalInput()

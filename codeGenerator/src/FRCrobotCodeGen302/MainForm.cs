@@ -162,8 +162,8 @@ namespace FRCrobotCodeGen302
                     string unitsAsString = "";
                     Family unitsFamily = Family.none;
                     DataConfiguration.valueRange range = null;
-                    bool isConstant = false;
-                    bool isConstantInAMechInstance = false;
+                    bool isConstantLocal = false;
+                    bool isConstantInAMechInstanceLocal = false;
                     bool isTunable = false;
                     bool treatAsLeafNode = false;
                     string description = "";
@@ -175,8 +175,8 @@ namespace FRCrobotCodeGen302
                         unitsFamily = beObj.unitsFamily;
                         treatAsLeafNode = !beObj.showExpanded;
                         range = beObj.range;
-                        isConstant = beObj.isConstant;
-                        isConstantInAMechInstance = beObj.isConstantInMechInstance;
+                        isConstantLocal = beObj.isConstant;
+                        isConstantInAMechInstanceLocal = beObj.isConstantInMechInstance;
                         isTunable = beObj.isTunable;
                         description = beObj.description;
                     }
@@ -196,32 +196,27 @@ namespace FRCrobotCodeGen302
                                 {
                                     ConstantInMechInstanceAttribute constInMechInstAttr = propInfo.GetCustomAttribute<ConstantInMechInstanceAttribute>();
 
-                                    isConstantInAMechInstance = constInMechInstAttr != null;
+                                    isConstantInAMechInstanceLocal = constInMechInstAttr != null;
 
                                     if (parentNt.obj is baseElement)
                                     {
                                         #region handle the name property
                                         if (nodeName == "name")
                                         {
-                                            isConstant = true;
+                                            isConstantLocal = true;
 
                                             // if the parent of nt.obj is inside a collection, then the name will be editable, otherwise not
                                             TreeNode grandParentNode = tn.Parent.Parent;
                                             if ((grandParentNode != null) &&
                                                 (baseDataConfiguration.isACollection(((nodeTag)grandParentNode.Tag).obj)))
-                                                isConstant = false;
-
-                                            if (isPartOfAMechanismInaMechInstance(tn))
-                                            {
-                                                isConstant = constInMechInstAttr != null;
-                                            }
+                                                isConstantLocal = false;
                                         }
                                         #endregion
 
                                         #region handle the type property
                                         if (nodeName == "type")
                                         {
-                                            isConstant = true;
+                                            isConstantLocal = true;
                                         }
                                         #endregion
 
@@ -236,24 +231,14 @@ namespace FRCrobotCodeGen302
                                         #region handle the unitsFamily property
                                         if (nodeName == "unitsFamily")
                                         {
-                                            List<ConstantAttribute> constAttr = propInfo.GetCustomAttributes<ConstantAttribute>().ToList();
-                                            if (constAttr.Count > 0)
-                                                isConstant = true;
-
-                                            if ((isConstant == false) && isPartOfAMechanismInaMechInstance(tn))
-                                            {
-                                                if (constInMechInstAttr != null)
-                                                    isConstant = true;
-                                            }
+                                            isConstantLocal = propInfo.GetCustomAttribute<ConstantAttribute>() != null;
                                         }
                                         #endregion
                                     }
                                     else
                                     {
-                                        if ((propInfo.GetCustomAttribute<ConstantAttribute>() != null) ||
-                                            ((constInMechInstAttr != null) && isPartOfAMechanismInaMechInstance(tn))
-                                            )
-                                            isConstant = true;
+                                        if ((propInfo.GetCustomAttribute<ConstantAttribute>() != null))
+                                            isConstantLocal = true;
                                     }
                                 }
                             }
@@ -288,14 +273,19 @@ namespace FRCrobotCodeGen302
                     {
                         // this means that this is a leaf node
                         int imageIndex = treeIconIndex_unlockedPadlock;
-                        if (isConstant)
+                        if (isConstantLocal)
                             imageIndex = treeIconIndex_lockedPadlock;
                         else if (isTunable)
                             imageIndex = treeIconIndex_wrench;
-                        else if (!isConstantInAMechInstance)
+                        else if (isPartOfAMechanismTemplate(tn))
                         {
-                            if (isPartOfAMechanismTemplate(tn))
+                            if (!isConstantInAMechInstanceLocal)
                                 imageIndex = treeIconIndex_unlockedPadlock_Instance;
+                        }
+                        else if (isPartOfAMechanismInaMechInstance(tn))
+                        {
+                            if (isConstantInAMechInstanceLocal)
+                                imageIndex = treeIconIndex_lockedPadlock;
                         }
                         //else if (isPartOfAMechanismInaMechInstance(tn))
                         //    imageIndex = treeIconIndex_lockedPadlock;
