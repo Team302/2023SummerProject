@@ -208,6 +208,8 @@ namespace ApplicationData
             //    return string.Format("{0} ({1}))", propertyName, testClass.name);
             else if (propertyName == "pdp")
                 return string.Format("{0} ({1})", propertyName, PowerDistributionPanel.type);
+            else if (propertyName == "name")
+                return this.name;
 
             return "robot class - incomplete getDisplayName";
         }
