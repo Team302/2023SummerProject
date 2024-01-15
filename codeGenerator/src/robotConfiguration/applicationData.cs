@@ -797,6 +797,7 @@ namespace ApplicationData
         public uintParameter followID { get; set; }
 
         [DefaultValue(false)]
+        [ConstantInMechInstance]
         public boolParameter enableFollowID { get; set; }
 
 

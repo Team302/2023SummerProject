@@ -6,6 +6,66 @@
     <MotorController
       xsi:type="TalonSRX">
       <name>TalonSRX_LeftRear</name>
+      <theDistanceAngleCalcInfo>
+        <countsPerRev>
+          <unitsFamily>none</unitsFamily>
+          <name>intParameter</name>
+          <__units__ />
+          <type>Int32</type>
+          <value>0</value>
+        </countsPerRev>
+        <gearRatio>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>1</value>
+        </gearRatio>
+        <diameter>
+          <unitsFamily>length</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__>m</__units__>
+          <type>Double</type>
+          <value>1</value>
+        </diameter>
+        <countsPerInch>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>0</value>
+        </countsPerInch>
+        <countsPerDegree>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>0</value>
+        </countsPerDegree>
+      </theDistanceAngleCalcInfo>
+      <voltageRamping>
+        <openLoopRampTime>
+          <unitsFamily>time</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__>s</__units__>
+          <type>Double</type>
+          <value>0</value>
+        </openLoopRampTime>
+        <closedLoopRampTime>
+          <unitsFamily>time</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__>s</__units__>
+          <type>Double</type>
+          <value>0</value>
+        </closedLoopRampTime>
+        <enableClosedLoop>
+          <unitsFamily>none</unitsFamily>
+          <name>boolParameter</name>
+          <__units__ />
+          <type>Boolean</type>
+          <value>false</value>
+        </enableClosedLoop>
+      </voltageRamping>
       <motorType>ANDYMARKNEVEREST</motorType>
       <canID>
         <unitsFamily>none</unitsFamily>
@@ -70,43 +130,13 @@
           <value>0</value>
         </rotorToSensorRatio>
       </fusedCANcoder>
-      <theDistanceAngleCalcInfo>
-        <countsPerRev>
-          <unitsFamily>none</unitsFamily>
-          <name>intParameter</name>
-          <__units__ />
-          <type>Int32</type>
-          <value>0</value>
-        </countsPerRev>
-        <gearRatio>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>1</value>
-        </gearRatio>
-        <diameter>
-          <unitsFamily>length</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__>m</__units__>
-          <type>Double</type>
-          <value>1</value>
-        </diameter>
-        <countsPerInch>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>0</value>
-        </countsPerInch>
-        <countsPerDegree>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>0</value>
-        </countsPerDegree>
-      </theDistanceAngleCalcInfo>
+      <sensorIsInverted>
+        <unitsFamily>none</unitsFamily>
+        <name>boolParameter</name>
+        <__units__ />
+        <type>Boolean</type>
+        <value>false</value>
+      </sensorIsInverted>
       <limitSwitches>
         <LimitSwitchesEnabled>
           <unitsFamily>none</unitsFamily>
@@ -244,6 +274,47 @@
           <device>RemoteSensor1</device>
         </RemoteFeedbackSensorConfig_SRX>
       </remoteFeedbackSensorConfig>
+    </MotorController>
+    <MotorController
+      xsi:type="TalonSRX">
+      <name>TalonSRX_RightRear</name>
+      <theDistanceAngleCalcInfo>
+        <countsPerRev>
+          <unitsFamily>none</unitsFamily>
+          <name>intParameter</name>
+          <__units__ />
+          <type>Int32</type>
+          <value>0</value>
+        </countsPerRev>
+        <gearRatio>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>1</value>
+        </gearRatio>
+        <diameter>
+          <unitsFamily>length</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__>m</__units__>
+          <type>Double</type>
+          <value>1</value>
+        </diameter>
+        <countsPerInch>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>0</value>
+        </countsPerInch>
+        <countsPerDegree>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>1</value>
+        </countsPerDegree>
+      </theDistanceAngleCalcInfo>
       <voltageRamping>
         <openLoopRampTime>
           <unitsFamily>time</unitsFamily>
@@ -267,17 +338,6 @@
           <value>false</value>
         </enableClosedLoop>
       </voltageRamping>
-      <sensorIsInverted>
-        <unitsFamily>none</unitsFamily>
-        <name>boolParameter</name>
-        <__units__ />
-        <type>Boolean</type>
-        <value>false</value>
-      </sensorIsInverted>
-    </MotorController>
-    <MotorController
-      xsi:type="TalonSRX">
-      <name>TalonSRX_RightRear</name>
       <motorType>ANDYMARKNEVEREST</motorType>
       <canID>
         <unitsFamily>none</unitsFamily>
@@ -342,43 +402,13 @@
           <value>0</value>
         </rotorToSensorRatio>
       </fusedCANcoder>
-      <theDistanceAngleCalcInfo>
-        <countsPerRev>
-          <unitsFamily>none</unitsFamily>
-          <name>intParameter</name>
-          <__units__ />
-          <type>Int32</type>
-          <value>0</value>
-        </countsPerRev>
-        <gearRatio>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>1</value>
-        </gearRatio>
-        <diameter>
-          <unitsFamily>length</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__>m</__units__>
-          <type>Double</type>
-          <value>1</value>
-        </diameter>
-        <countsPerInch>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>0</value>
-        </countsPerInch>
-        <countsPerDegree>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>1</value>
-        </countsPerDegree>
-      </theDistanceAngleCalcInfo>
+      <sensorIsInverted>
+        <unitsFamily>none</unitsFamily>
+        <name>boolParameter</name>
+        <__units__ />
+        <type>Boolean</type>
+        <value>false</value>
+      </sensorIsInverted>
       <limitSwitches>
         <LimitSwitchesEnabled>
           <unitsFamily>none</unitsFamily>
@@ -442,6 +472,47 @@
       <theConfigMotorSettings />
       <feedbackSensorConfig />
       <remoteFeedbackSensorConfig />
+    </MotorController>
+    <MotorController
+      xsi:type="TalonSRX">
+      <name>TalonSRX_RightFront</name>
+      <theDistanceAngleCalcInfo>
+        <countsPerRev>
+          <unitsFamily>none</unitsFamily>
+          <name>intParameter</name>
+          <__units__ />
+          <type>Int32</type>
+          <value>0</value>
+        </countsPerRev>
+        <gearRatio>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>1</value>
+        </gearRatio>
+        <diameter>
+          <unitsFamily>length</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__>m</__units__>
+          <type>Double</type>
+          <value>1</value>
+        </diameter>
+        <countsPerInch>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>0</value>
+        </countsPerInch>
+        <countsPerDegree>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>0</value>
+        </countsPerDegree>
+      </theDistanceAngleCalcInfo>
       <voltageRamping>
         <openLoopRampTime>
           <unitsFamily>time</unitsFamily>
@@ -465,17 +536,6 @@
           <value>false</value>
         </enableClosedLoop>
       </voltageRamping>
-      <sensorIsInverted>
-        <unitsFamily>none</unitsFamily>
-        <name>boolParameter</name>
-        <__units__ />
-        <type>Boolean</type>
-        <value>false</value>
-      </sensorIsInverted>
-    </MotorController>
-    <MotorController
-      xsi:type="TalonSRX">
-      <name>TalonSRX_RightFront</name>
       <canID>
         <unitsFamily>none</unitsFamily>
         <name>uintParameter</name>
@@ -539,43 +599,13 @@
           <value>0</value>
         </rotorToSensorRatio>
       </fusedCANcoder>
-      <theDistanceAngleCalcInfo>
-        <countsPerRev>
-          <unitsFamily>none</unitsFamily>
-          <name>intParameter</name>
-          <__units__ />
-          <type>Int32</type>
-          <value>0</value>
-        </countsPerRev>
-        <gearRatio>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>1</value>
-        </gearRatio>
-        <diameter>
-          <unitsFamily>length</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__>m</__units__>
-          <type>Double</type>
-          <value>1</value>
-        </diameter>
-        <countsPerInch>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>0</value>
-        </countsPerInch>
-        <countsPerDegree>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>0</value>
-        </countsPerDegree>
-      </theDistanceAngleCalcInfo>
+      <sensorIsInverted>
+        <unitsFamily>none</unitsFamily>
+        <name>boolParameter</name>
+        <__units__ />
+        <type>Boolean</type>
+        <value>false</value>
+      </sensorIsInverted>
       <limitSwitches>
         <LimitSwitchesEnabled>
           <unitsFamily>none</unitsFamily>
@@ -639,6 +669,47 @@
       <theConfigMotorSettings />
       <feedbackSensorConfig />
       <remoteFeedbackSensorConfig />
+    </MotorController>
+    <MotorController
+      xsi:type="TalonSRX">
+      <name>TalonSRX_LeftFront</name>
+      <theDistanceAngleCalcInfo>
+        <countsPerRev>
+          <unitsFamily>none</unitsFamily>
+          <name>intParameter</name>
+          <__units__ />
+          <type>Int32</type>
+          <value>0</value>
+        </countsPerRev>
+        <gearRatio>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>1</value>
+        </gearRatio>
+        <diameter>
+          <unitsFamily>length</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__>m</__units__>
+          <type>Double</type>
+          <value>1</value>
+        </diameter>
+        <countsPerInch>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>0</value>
+        </countsPerInch>
+        <countsPerDegree>
+          <unitsFamily>none</unitsFamily>
+          <name>doubleParameter</name>
+          <__units__ />
+          <type>Double</type>
+          <value>0</value>
+        </countsPerDegree>
+      </theDistanceAngleCalcInfo>
       <voltageRamping>
         <openLoopRampTime>
           <unitsFamily>time</unitsFamily>
@@ -662,17 +733,6 @@
           <value>false</value>
         </enableClosedLoop>
       </voltageRamping>
-      <sensorIsInverted>
-        <unitsFamily>none</unitsFamily>
-        <name>boolParameter</name>
-        <__units__ />
-        <type>Boolean</type>
-        <value>false</value>
-      </sensorIsInverted>
-    </MotorController>
-    <MotorController
-      xsi:type="TalonSRX">
-      <name>TalonSRX_LeftFront</name>
       <canID>
         <unitsFamily>none</unitsFamily>
         <name>uintParameter</name>
@@ -736,43 +796,13 @@
           <value>0</value>
         </rotorToSensorRatio>
       </fusedCANcoder>
-      <theDistanceAngleCalcInfo>
-        <countsPerRev>
-          <unitsFamily>none</unitsFamily>
-          <name>intParameter</name>
-          <__units__ />
-          <type>Int32</type>
-          <value>0</value>
-        </countsPerRev>
-        <gearRatio>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>1</value>
-        </gearRatio>
-        <diameter>
-          <unitsFamily>length</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__>m</__units__>
-          <type>Double</type>
-          <value>1</value>
-        </diameter>
-        <countsPerInch>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>0</value>
-        </countsPerInch>
-        <countsPerDegree>
-          <unitsFamily>none</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__ />
-          <type>Double</type>
-          <value>0</value>
-        </countsPerDegree>
-      </theDistanceAngleCalcInfo>
+      <sensorIsInverted>
+        <unitsFamily>none</unitsFamily>
+        <name>boolParameter</name>
+        <__units__ />
+        <type>Boolean</type>
+        <value>false</value>
+      </sensorIsInverted>
       <limitSwitches>
         <LimitSwitchesEnabled>
           <unitsFamily>none</unitsFamily>
@@ -836,36 +866,6 @@
       <theConfigMotorSettings />
       <feedbackSensorConfig />
       <remoteFeedbackSensorConfig />
-      <voltageRamping>
-        <openLoopRampTime>
-          <unitsFamily>time</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__>s</__units__>
-          <type>Double</type>
-          <value>0</value>
-        </openLoopRampTime>
-        <closedLoopRampTime>
-          <unitsFamily>time</unitsFamily>
-          <name>doubleParameter</name>
-          <__units__>s</__units__>
-          <type>Double</type>
-          <value>0</value>
-        </closedLoopRampTime>
-        <enableClosedLoop>
-          <unitsFamily>none</unitsFamily>
-          <name>boolParameter</name>
-          <__units__ />
-          <type>Boolean</type>
-          <value>false</value>
-        </enableClosedLoop>
-      </voltageRamping>
-      <sensorIsInverted>
-        <unitsFamily>none</unitsFamily>
-        <name>boolParameter</name>
-        <__units__ />
-        <type>Boolean</type>
-        <value>false</value>
-      </sensorIsInverted>
     </MotorController>
   </MotorControllers>
   <closedLoopControlParameters />

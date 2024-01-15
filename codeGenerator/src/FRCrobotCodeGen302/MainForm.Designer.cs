@@ -572,6 +572,7 @@ namespace FRCrobotCodeGen302
             this.treeViewIcons.Images.SetKeyName(1, "lock-unlock.ico");
             this.treeViewIcons.Images.SetKeyName(2, "gear.ico");
             this.treeViewIcons.Images.SetKeyName(3, "wrench.ico");
+            this.treeViewIcons.Images.SetKeyName(4, "lock-unlock-instance.ico");
             // 
             // MainForm
             // 

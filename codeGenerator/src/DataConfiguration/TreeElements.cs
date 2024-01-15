@@ -20,6 +20,8 @@ namespace DataConfiguration
         [XmlIgnore]
         public object parent { get; set; } = null;
         [XmlIgnore]
+        public bool isConstantInMechInstance { get; set; } = false; // Defined by an attribute
+        [XmlIgnore]
         public bool isConstant { get; set; } = false; // Defined by an attribute
         [XmlIgnore]
         public bool isTunable { get; set; } = false; // Defined by an attribute

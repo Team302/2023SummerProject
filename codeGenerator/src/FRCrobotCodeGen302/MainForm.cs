@@ -37,6 +37,7 @@ namespace FRCrobotCodeGen302
         const int treeIconIndex_unlockedPadlock = 1;
         const int treeIconIndex_gear = 2;
         const int treeIconIndex_wrench = 3;
+        const int treeIconIndex_unlockedPadlock_Instance = 4;
 
         public MainForm()
         {
@@ -162,6 +163,7 @@ namespace FRCrobotCodeGen302
                     Family unitsFamily = Family.none;
                     DataConfiguration.valueRange range = null;
                     bool isConstant = false;
+                    bool isConstantInAMechInstance = false;
                     bool isTunable = false;
                     bool treatAsLeafNode = false;
                     string description = "";
@@ -174,6 +176,7 @@ namespace FRCrobotCodeGen302
                         treatAsLeafNode = !beObj.showExpanded;
                         range = beObj.range;
                         isConstant = beObj.isConstant;
+                        isConstantInAMechInstance = beObj.isConstantInMechInstance;
                         isTunable = beObj.isTunable;
                         description = beObj.description;
                     }
@@ -187,13 +190,18 @@ namespace FRCrobotCodeGen302
                             nodeTag parentNt = (nodeTag)(tn.Parent.Tag);
                             if (parentNt != null)
                             {
-                                if (parentNt.obj is baseElement)
+                                PropertyInfo propInfo = nodeTag.getType(parentNt).GetProperty(nodeName, BindingFlags.Public | BindingFlags.Instance);
+
+                                if (propInfo != null)
                                 {
-                                    #region handle the name property
-                                    if (nodeName == "name")
+                                    ConstantInMechInstanceAttribute constInMechInstAttr = propInfo.GetCustomAttribute<ConstantInMechInstanceAttribute>();
+
+                                    isConstantInAMechInstance = constInMechInstAttr != null;
+
+                                    if (parentNt.obj is baseElement)
                                     {
-                                        PropertyInfo nameProp = nodeTag.getType(parentNt).GetProperty("name", BindingFlags.Public | BindingFlags.Instance);
-                                        if (nameProp != null)
+                                        #region handle the name property
+                                        if (nodeName == "name")
                                         {
                                             isConstant = true;
 
@@ -205,65 +213,45 @@ namespace FRCrobotCodeGen302
 
                                             if (isPartOfAMechanismInaMechInstance(tn))
                                             {
-                                                List<ConstantInMechInstanceAttribute> constAttr = nameProp.GetCustomAttributes<ConstantInMechInstanceAttribute>().ToList();
-                                                if (constAttr.Count > 0)
-                                                    isConstant = true;
+                                                isConstant = constInMechInstAttr != null;
                                             }
                                         }
-                                    }
-                                    #endregion
+                                        #endregion
 
-                                    #region handle the type property
-                                    if (nodeName == "type")
-                                    {
-                                        PropertyInfo typeProp = nodeTag.getType(parentNt).GetProperty("type", BindingFlags.Public | BindingFlags.Instance);
-                                        if (typeProp != null)
+                                        #region handle the type property
+                                        if (nodeName == "type")
                                         {
                                             isConstant = true;
                                         }
-                                    }
-                                    #endregion
+                                        #endregion
 
-                                    #region handle the value property
-                                    if (nodeName == "value")
-                                    {
-                                        PropertyInfo valueProp = nodeTag.getType(parentNt).GetProperty("value", BindingFlags.Public | BindingFlags.Instance);
-                                        if (valueProp != null)
+                                        #region handle the value property
+                                        if (nodeName == "value")
                                         {
-                                            if (valueProp.GetCustomAttribute<TunableParameterAttribute>() != null)
+                                            if (propInfo.GetCustomAttribute<TunableParameterAttribute>() != null)
                                                 isTunable = true;
                                         }
-                                    }
-                                    #endregion
-                                    #region handle the unitsFamily property
-                                    if (nodeName == "unitsFamily")
-                                    {
-                                        PropertyInfo unitsFamilyProp = nodeTag.getType(parentNt).GetProperty("unitsFamily", BindingFlags.Public | BindingFlags.Instance);
-                                        if (unitsFamilyProp != null)
+                                        #endregion
+
+                                        #region handle the unitsFamily property
+                                        if (nodeName == "unitsFamily")
                                         {
-                                            List<ConstantAttribute> constAttr = unitsFamilyProp.GetCustomAttributes<ConstantAttribute>().ToList();
+                                            List<ConstantAttribute> constAttr = propInfo.GetCustomAttributes<ConstantAttribute>().ToList();
                                             if (constAttr.Count > 0)
                                                 isConstant = true;
 
-                                            if ((isConstant==false) && isPartOfAMechanismInaMechInstance(tn))
+                                            if ((isConstant == false) && isPartOfAMechanismInaMechInstance(tn))
                                             {
-                                                List<ConstantInMechInstanceAttribute> constAttrInMech = unitsFamilyProp.GetCustomAttributes<ConstantInMechInstanceAttribute>().ToList();
-                                                if (constAttrInMech.Count > 0)
+                                                if (constInMechInstAttr != null)
                                                     isConstant = true;
                                             }
-
-
                                         }
+                                        #endregion
                                     }
-                                    #endregion
-                                }
-                                else
-                                {
-                                    PropertyInfo prop = nodeTag.getType(parentNt).GetProperty(nodeName, BindingFlags.Public | BindingFlags.Instance);
-                                    if (prop != null)
+                                    else
                                     {
-                                        if ((prop.GetCustomAttribute<ConstantAttribute>() != null) ||
-                                            ((prop.GetCustomAttribute<ConstantInMechInstanceAttribute>() != null) && isPartOfAMechanismInaMechInstance(tn))
+                                        if ((propInfo.GetCustomAttribute<ConstantAttribute>() != null) ||
+                                            ((constInMechInstAttr != null) && isPartOfAMechanismInaMechInstance(tn))
                                             )
                                             isConstant = true;
                                     }
@@ -304,6 +292,11 @@ namespace FRCrobotCodeGen302
                             imageIndex = treeIconIndex_lockedPadlock;
                         else if (isTunable)
                             imageIndex = treeIconIndex_wrench;
+                        else if (!isConstantInAMechInstance)
+                        {
+                            if (isPartOfAMechanismTemplate(tn))
+                                imageIndex = treeIconIndex_unlockedPadlock_Instance;
+                        }
                         //else if (isPartOfAMechanismInaMechInstance(tn))
                         //    imageIndex = treeIconIndex_lockedPadlock;
 
@@ -1452,10 +1445,10 @@ namespace FRCrobotCodeGen302
                     bool addedItems = false;
                     foreach (state s in states)
                     {
-                        foreach(MotorController mc in m.MotorControllers)
+                        foreach (MotorController mc in m.MotorControllers)
                         {
                             doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst target = s.doubleTargets.Find(t => t.name == mc.name);
-                            if(target == null)
+                            if (target == null)
                             {
                                 target = new doubleParameterUserDefinedTunableOnlyValueChangeableInMechInst();
                                 target.name = mc.name;
@@ -1518,7 +1511,7 @@ namespace FRCrobotCodeGen302
                         }
                     }
 
-                    if(addedItems)
+                    if (addedItems)
                     {
                         string nodeName = lastSelectedArrayNode.Text;
                         lastSelectedArrayNode.Remove();
@@ -1791,6 +1784,11 @@ namespace FRCrobotCodeGen302
             }
         }
 
+        bool isPartOfAMechanismTemplate(TreeNode tn)
+        {
+            mechanism theTemplateMechanism;
+            return isPartOfAMechanismTemplate(tn, out theTemplateMechanism);
+        }
 
         bool isPartOfAMechanismTemplate(TreeNode tn, out mechanism theTemplateMechanism)
         {
