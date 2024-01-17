@@ -324,10 +324,15 @@ void SwerveChassis::UpdateOdometry()
 {
     Rotation2d rot2d{m_pigeon->GetYaw()};
 
-    m_poseEstimator.Update(rot2d, wpi::array<frc::SwerveModulePosition, 4>{m_frontLeft->GetPosition(),
-                                                                           m_frontRight->GetPosition(),
-                                                                           m_backLeft->GetPosition(),
-                                                                           m_backRight->GetPosition()});
+    /// @todo: Add in vision location data
+    /// Need to decide what to do based on distance to april tag
+    /// Utilize kalman filter within poseEstimator AddVisionMeasurement to be accurate
+
+    m_poseEstimator.Update(rot2d, wpi::array<frc::SwerveModulePosition, 4>{m_frontLeft.get()->GetPosition(),
+                                                                           m_frontRight.get()->GetPosition(),
+                                                                           m_backLeft.get()->GetPosition(),
+                                                                           m_backRight.get()->GetPosition()});
+
     m_hasResetToVisionTarget = false;
     //}
 
